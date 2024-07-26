@@ -1,0 +1,24 @@
+/* Global */
+:root {
+  /* Color */
+  --color-black: #0f0f0f;
+  --color-dark-grey: rgb(87, 87, 87);
+  --color-grey: rgb(150, 150, 150);
+  --color-light-grey: rgb(220, 220, 220);
+  --color-light-white: rgb(247, 247, 247);
+  --color-white: white;
+  --color-blue: #036bfc;
+  --color-blue-transparent: #036bfccc;
+  --color-yellow: #f9a200;
+  --color-yellow-transparent: #f9a200cc;
+  --color-red: #e52817;
+  --color-red-transparent: #e52817cc;
+
+  /* Font weight */
+  --font-thin: 100;
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-bold: 700;
+  --font-bolder: 900;
+}

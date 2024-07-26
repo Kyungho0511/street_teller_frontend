@@ -1,0 +1,18 @@
+@import '../variables.css';
+
+.section {
+  font-size: 0.9rem;
+  line-height: 1.2rem;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  background-color: var(--color-light-white);
+  border-radius: 0.5rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  margin: 0;
+  margin-bottom: 1rem;
+}

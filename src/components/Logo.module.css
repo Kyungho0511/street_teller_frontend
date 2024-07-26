@@ -1,0 +1,19 @@
+@import '../variables.css';
+
+.logo {
+  display: block;
+  margin: auto;
+  padding: 1rem;
+  padding-top: 0.5rem;
+  opacity: 0.85;
+  width: 95%;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.container {
+  
+}
