@@ -11,3 +11,20 @@
   overflow: scroll;
   overflow-x: hidden;
 }
+
+/* scrollbar on sidebar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-light-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-light-grey);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(200, 200, 200);
+}
