@@ -9,7 +9,6 @@
   border-radius: 0.5rem;
 
   > p {
-    font-weight: var(--font-medium);
     margin-bottom: 0.5rem;
     margin-top: 1.2rem;
     line-height: 1.2rem;
