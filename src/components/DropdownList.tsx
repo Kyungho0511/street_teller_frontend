@@ -2,7 +2,7 @@ import styles from './DropdownList.module.css';
 
 type DropdownListProps = {
   list: DropdownListType;
-  selectedItem: string;
+  selectedItem?: string;
   expanded: boolean;
   spacer: boolean;
 }

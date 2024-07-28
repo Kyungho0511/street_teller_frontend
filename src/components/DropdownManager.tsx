@@ -3,14 +3,14 @@ import DropdownList, { DropdownListType } from './DropdownList';
 
 type DropdownManagerProps = {
   lists: DropdownListType[];
-  defaultItem: string;
+  defaultItem?: string;
   selectable?: boolean;
   autoCollapse?: boolean;
 }
 
 export default function DropdownManager({lists, defaultItem, selectable, autoCollapse}: DropdownManagerProps) {
   const [expandedLists, setExpandedLists] = useState<boolean[]>(() => new Array(lists.length).fill(false));
-  const [selectedItem, setSelectedItem] = useState<string>(defaultItem);
+  const [selectedItem, setSelectedItem] = useState<string | undefined>(defaultItem);
 
   const handleClick = (index: number, event: React.MouseEvent) => {
     const target = event.target as HTMLElement;

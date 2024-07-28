@@ -1,4 +1,4 @@
-import RadioList from "../components/RadioList";
+import RadioList, { RadioItem } from "../components/RadioList";
 import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
 
@@ -12,22 +12,12 @@ export default function Home() {
           </p>
           <RadioList
             name="most-important"
-            labels={[
-              "Health Vulnerability of Residents",
-              "Profitability of Facilities",
-              "Built Environment",
-            ]}
-            values={["vulnerability", "profitability", "built environment"]}
+            list={questionaire1}
           />
           <p>What is the second most important factor?</p>
           <RadioList
             name="second-important"
-            labels={[
-              "Health Vulnerability of Residents",
-              "Profitability of Facilities",
-              "Built Environment",
-            ]}
-            values={["vulnerability", "profitability", "built environment"]}
+            list={questionaire1}
           />
         </SidebarSection>
 
@@ -38,13 +28,35 @@ export default function Home() {
           </p>
           <RadioList
             name="counties"
-            labels={[
-              "NYC Counties",
-              "Upstate NY Counties",
-            ]}
-            values={["NYC Counties", "Upstate NY Counties"]}
+            list={questionaire2}
           />
         </SidebarSection>
       </Sidebar>
   );
 }
+
+const questionaire1: RadioItem[] = [
+  {
+    label: "Health Vulnerability of Residents",
+    value: "vulnerability",
+  },
+  {
+    label: "Profitability of Facilities",
+    value: "profitability",
+  },
+  {
+    label: "Built Environment",
+    value: "built environment",
+  },
+];
+
+const questionaire2: RadioItem[] = [
+  {
+    label: "NYC Counties",
+    value: "NYC Counties",
+  },
+  {
+    label: "Upstate NY Counties",
+    value: "Upstate NY Counties",
+  }
+]

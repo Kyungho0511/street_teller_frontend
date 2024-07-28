@@ -1,21 +1,41 @@
+import { useState } from "react";
 import styles from "./RadioList.module.css";
 
 type RadioListProps = {
   name: string;
-  labels: string[];
-  values: string[];
+  list: RadioItem[];
 };
 
-export default function RadioList({ name, labels, values }: RadioListProps) {
+export type RadioItem = {
+  label: string;
+  value: string;
+}
+
+export default function RadioList({ name, list }: RadioListProps) {
+const [checked, setChecked] = useState<boolean[]>(() => new Array(list.length).fill(false));
+
+  // Handle uncontrolled radio change
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newChecked = checked.map((item, i) => i === index ? event.target.checked : false)
+    setChecked(newChecked);
+  }
+
   return (
-    <div className={styles.list}>
-      {labels.map((label, index) => (
+    <form className={styles.form}>
+      {list.map((item, index) => (
         <label key={index} className={styles.label}>
-          <input className={styles.input} type="radio" name={name} value={values[index]} />
+          <input
+            className={styles.input}
+            type="radio"
+            name={name}
+            value={item.value}
+            checked={checked[index]}
+            onChange={(event) => handleChange(event, index)}
+          />
           <span className={styles.indicator}></span>
-          <div className={styles.text}>{label}</div>
+          <div className={styles.text}>{item.label}</div>
         </label>
       ))}
-    </div>
+    </form>
   );
 }
