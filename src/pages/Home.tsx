@@ -4,7 +4,6 @@ import SidebarSection from "../components/SidebarSection";
 
 export default function Home() {
   return (
-    <>
       <Sidebar>
         <SidebarSection title="Choose Your Preference">
           <p>
@@ -47,6 +46,5 @@ export default function Home() {
           />
         </SidebarSection>
       </Sidebar>
-    </>
   );
 }
