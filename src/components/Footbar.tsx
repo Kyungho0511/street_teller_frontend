@@ -32,7 +32,7 @@ export default function Footbar() {
         </ul>
       </div>
       <Link to={nextPath}> 
-        <Button text="continue" color="grey" />
+        <Button text="continue" color="grey" location="footbar" />
       </Link>
     </footer>
   )

@@ -1,3 +1,4 @@
+import Button from "../components/Button";
 import CheckboxList, { CheckboxItem } from "../components/CheckboxList";
 import { DropdownListType } from "../components/DropdownList";
 import DropdownManager from "../components/DropdownManager";
@@ -13,6 +14,7 @@ export default function Cluster() {
           the 'Cluster' button when you are ready.
         </p>
         <DropdownManager lists={vulnerabilityLists} />
+        <Button text="cluster" color="grey" location="sidebar" />
       </SidebarSection>
 
       <SidebarSection title="Filter Target Clusters">

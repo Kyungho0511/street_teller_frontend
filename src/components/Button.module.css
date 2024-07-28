@@ -1,10 +1,17 @@
 @import '../variables.css';
 
-.button {
+.footbar_button {
   font-size: 1.3rem;
   font-weight: var(--font-bold);
   margin-right: 0.6rem;
   width: 200px;
+}
+
+.sidebar_button {
+  font-size: 1rem;
+  font-weight: var(--font-bold);
+  margin-top: 0.8rem;
+  width: 100%;
 }
 
 .grey {

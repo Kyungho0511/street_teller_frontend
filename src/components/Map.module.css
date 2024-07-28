@@ -1,0 +1,10 @@
+@import '../variables.css';
+
+.map {
+  position: fixed;
+  top: 0;
+  left: 350px;
+  height: 100vh;
+  width: calc(100% - 350px);
+  z-index: -5;
+}
