@@ -1,3 +1,4 @@
+import CheckboxList, { CheckboxItem } from "../components/CheckboxList";
 import RadioList, { RadioItem } from "../components/RadioList";
 import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
@@ -6,50 +7,76 @@ export default function Home() {
   return (
     <>
       <Sidebar>
-        <SidebarSection title="Choose Your Preference">
+        <SidebarSection title="NYC Neighborhoods for you">
           <p>
-            What is the most important factor when providing healthcare
-            facilities?
+            Tell us about your life-style by selecting the categories important
+            for your new home. We will tell you about NYC neighborhoods that
+            suit your household the best.
           </p>
-          <RadioList name="most-important" list={questionaire1} />
-          <p>What is the second most important factor?</p>
-          <RadioList name="second-important" list={questionaire1} />
         </SidebarSection>
 
-        <SidebarSection title="Choose Counties">
-          <p>
-            Choose counties for healthcare provision. Click 'Continue' button
-            after you are done.
-          </p>
-          <RadioList name="counties" list={questionaire2} />
+        <SidebarSection title="Choose boroughs to discover">
+          <CheckboxList name="boroughs" list={boroughs} />
+        </SidebarSection>
+
+        <SidebarSection title="Place Your Preference in Order">
+          <RadioList name="categories" list={categories} />
         </SidebarSection>
       </Sidebar>
     </>
   );
 }
 
-const questionaire1: RadioItem[] = [
+const boroughs: CheckboxItem[] = [
   {
-    label: "Health Vulnerability of Residents",
-    value: "vulnerability",
+    text: "Manhattan",
+    value: "0",
   },
   {
-    label: "Profitability of Facilities",
-    value: "profitability",
+    text: "Brooklyn",
+    value: "1",
   },
   {
-    label: "Built Environment",
-    value: "built environment",
+    text: "Bronx",
+    value: "2",
+  },
+  {
+    text: "Queens",
+    value: "3",
+  },
+  {
+    text: "Staten Island",
+    value: "4",
   },
 ];
 
-const questionaire2: RadioItem[] = [
+const categories: RadioItem[] = [
   {
-    label: "NYC Counties",
-    value: "NYC Counties",
+    label: "Healthcare",
+    value: "Healthcare",
   },
   {
-    label: "Upstate NY Counties",
-    value: "Upstate NY Counties",
-  }
-]
+    label: "Community Demograhpics",
+    value: "Community Demograhpics",
+  },
+  {
+    label: "Transportation",
+    value: "Transportation",
+  },
+  {
+    label: "Housing Cost",
+    value: "Housing Cost",
+  },
+  {
+    label: "Parks & Recreation",
+    value: "Parks & Recreation",
+  },
+  {
+    label: "Groceries & Restaurants",
+    value: "Groceries & Restaurants",
+  },
+  {
+    label: "Libraries & Schools",
+    value: "Libraries & Schools",
+  },
+];

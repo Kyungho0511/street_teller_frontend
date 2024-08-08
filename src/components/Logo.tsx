@@ -4,7 +4,7 @@ export default function Logo() {
   return (
     <div className={styles.container}>
       <img
-        src="src/assets/images/equitable_provision.png"
+        src="src/assets/images/neighbor_teller_logo.png"
         alt="logo_image"
         className={styles.logo}
       />
