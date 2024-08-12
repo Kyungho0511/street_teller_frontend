@@ -22,7 +22,7 @@ export default function Cluster() {
           Review the subcategory values for each cluster in the legend. Exclude
           the clusters you're not targeting, and continue.
         </p>
-        <CheckboxList name="select1" list={targetClusters} />
+        <CheckboxList name="select1" list={targetClusters} colorbox />
       </SidebarSection>
     </Sidebar>
   );

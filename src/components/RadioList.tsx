@@ -3,13 +3,8 @@ import styles from "./RadioList.module.css";
 
 type RadioListProps = {
   name: string;
-  list: RadioItem[];
+  list: string[];
 };
-
-export type RadioItem = {
-  label: string;
-  value: string;
-}
 
 export default function RadioList({ name, list }: RadioListProps) {
 const [checked, setChecked] = useState<boolean[]>(() => new Array(list.length).fill(false));
@@ -28,12 +23,12 @@ const [checked, setChecked] = useState<boolean[]>(() => new Array(list.length).f
             className={styles.input}
             type="radio"
             name={name}
-            value={item.value}
+            value={item}
             checked={checked[index]}
             onChange={(event) => handleChange(event, index)}
           />
           <span className={styles.indicator}></span>
-          <div className={styles.text}>{item.label}</div>
+          <div className={styles.text}>{item}</div>
         </label>
       ))}
     </form>
