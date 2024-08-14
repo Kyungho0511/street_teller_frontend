@@ -1,12 +1,12 @@
 import { useState } from "react";
 import styles from "./CheckboxList.module.css";
-import { Survey } from "../context/SurveyContext";
+import { Boroughs, Preferences } from "../constants/type";
 
-type CheckboxListProps = {
+export type CheckboxListProps = {
   name: string;
-  list: string[];
+  list: Boroughs['list'];
   colorbox?: boolean;
-  setSurveyContext?: (newSurvey: Survey) => void;
+  setSurveyContext?: (newSurveyElement: Boroughs | Preferences) => void;
 };
 
 export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
@@ -19,10 +19,12 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
     const newChecked = checked.map((item, i) => i === index ? event.target.checked : item)
     setChecked(newChecked);
 
-    // Update survey context if setSurveyContext is provided
-    // it only updates the Boroughs in the survey context
+    // // Update Boroughs in the survey context
     // if (setSurveyContext) {
-    //   setSurveyContext();
+    //   const newList: Boroughs['list'] = list.map((item, index) => ({...item, checked: newChecked[index]}));
+      
+    //   const boroughs: Boroughs = 
+    //   setSurveyContext(newList);
     // }
   }
 
@@ -34,14 +36,14 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
             className={styles.input}
             type="checkbox"
             name={name}
-            value={item}
-            checked={checked[index]}
+            value={item.borough}
+            checked={item.checked}
             onChange={(event) => handleChange(event, index)}
           />
           <span className={styles.indicator}></span>
           <div className={styles.text}>
             {colorbox && <span className={styles.colorbox}></span>}
-            {item}
+            {item.borough}
           </div>
         </label>
       ))}

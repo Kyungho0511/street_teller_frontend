@@ -1,26 +1,32 @@
 import { createContext, useEffect, useState } from "react";
-import { Borough, LivingCategory } from "../constants/enums";
-
-type Preference = {category: LivingCategory, ranking: number}
+import { Boroughs, Preferences } from "../constants/type";
 
 export type Survey = {
-  boroughs : Borough[],
-  preferences: Preference[],
+  boroughs : Boroughs['list'],
+  preferences: Preferences['list'],
 };
 
 type SurveyContextProps = {
   survey: Survey;
-  setSurveyContext: (newSurvey: Survey) => void;
+  setSurveyContext: (newSurveyElement: Boroughs | Preferences) => void;
 };
 
 export const SurveyContext = createContext<SurveyContextProps>({} as SurveyContextProps);
 
-// Survey state management using Context hooks with session stoarge
 export function SurveyContextProvider({children} : {children: React.ReactNode;}) {
   const [survey, setSurvey] = useState<Survey>(initialSurvey);
 
-  const setSurveyContext = (newSurvey: Survey) => {
-    setSurvey(newSurvey);
+  // update survey context differently based on the survey element
+  const setSurveyContext = (newSurveyElement: Boroughs | Preferences) => {
+    if (newSurveyElement.name === "boroughs") {
+      setSurvey((prev) => ({...prev, boroughs: newSurveyElement.list}));
+    } 
+    else if (newSurveyElement.name === "preferences") {
+      setSurvey((prev) => ({...prev, preferences: newSurveyElement.list}));
+    }
+    else {
+      console.error("Invalid survey name");
+    }
   }
   
   // retrieve stored survey from session storage
@@ -36,7 +42,6 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
     sessionStorage.setItem('survey', JSON.stringify(survey))
   }, [survey])
 
-
   return (
     <SurveyContext.Provider value={{survey, setSurveyContext}}>
       {children}
@@ -44,22 +49,21 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
   );
 }
 
-
 const initialSurvey: Survey = {
   boroughs: [
-    Borough.Manhattan,
-    Borough.Brooklyn,
-    Borough.Bronx,
-    Borough.Queens,
-    Borough.StatenIsland,
+    {borough: "Manhattan", checked: true},
+    {borough: "Brooklyn", checked: true},
+    {borough: "Bronx", checked: true},
+    {borough: "Queens", checked: true},
+    {borough: "Staten Island", checked: true},
   ],
   preferences: [
-    {category: LivingCategory.HousingCost, ranking: 1},
-    {category: LivingCategory.CommunityDemographics, ranking: 2},
-    {category: LivingCategory.Transportation, ranking: 3},
-    {category: LivingCategory.HealthCare, ranking: 4},
-    {category: LivingCategory.Education, ranking: 5},
-    {category: LivingCategory.GroceriesAndRestaurants, ranking: 6},
-    {category: LivingCategory.ParksAndRecreation, ranking: 7},
+    {category: "Housing Cost", ranking: 1},
+    {category: "Community Demographics", ranking: 2},
+    {category: "Transportation", ranking: 3},
+    {category: "Health Care", ranking: 4},
+    {category: "Education", ranking: 5},
+    {category: "Groceries & Restaurants", ranking: 6},
+    {category: "Parks & Recreation", ranking: 7},
   ],
 };

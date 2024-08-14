@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Sidebar>
-        <SidebarSection title="Discover Neighborhoods for you">
+        <SidebarSection title="Discover Sites for you">
           <p>
             Tell us about your life-style by selecting the categories important
             for your new home. We will tell you about NYC neighborhoods that
@@ -23,7 +23,7 @@ export default function Home() {
           <CheckboxList name="boroughs" list={survey.boroughs} setSurveyContext={setSurveyContext} />
         </SidebarSection>
 
-        <SidebarSection title="Rank Your Living Preferences">
+        <SidebarSection title="Rank Your Site Preferences">
           <RadioList
             name="preferences"
             list={survey.preferences.map((preference) => preference.category)}
