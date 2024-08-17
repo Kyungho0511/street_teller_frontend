@@ -30,8 +30,8 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
   }
   
   // retrieve stored survey from session storage
-  useEffect(() => {
-    const storedSurvey = sessionStorage.getItem("survey");
+  useEffect(() => { 
+    const storedSurvey = sessionStorage.getItem("survey"); 
     if (storedSurvey) {
       setSurvey(JSON.parse(storedSurvey));
     }

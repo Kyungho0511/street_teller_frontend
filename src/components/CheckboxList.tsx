@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "./CheckboxList.module.css";
 import { Boroughs, Preferences } from "../constants/type";
 
@@ -10,22 +9,18 @@ export type CheckboxListProps = {
 };
 
 export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
-  const [checked, setChecked] = useState<boolean[]>(() =>
-    new Array(list.length).fill(true)
-  );
 
   // Handle uncontrolled checkbox change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newChecked = checked.map((item, i) => i === index ? event.target.checked : item)
-    setChecked(newChecked);
 
-    // // Update Boroughs in the survey context
-    // if (setSurveyContext) {
-    //   const newList: Boroughs['list'] = list.map((item, index) => ({...item, checked: newChecked[index]}));
-      
-    //   const boroughs: Boroughs = 
-    //   setSurveyContext(newList);
-    // }
+    // Update Boroughs in the survey context
+    if (setSurveyContext) {
+      const updatedList = [...list] as Boroughs['list'];
+      updatedList[index] = { ...updatedList[index], checked: event.target.checked };
+
+      const newBoroughs: Boroughs = { name: "boroughs", list: updatedList };
+      setSurveyContext(newBoroughs);
+    }
   }
 
   return (
