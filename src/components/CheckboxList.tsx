@@ -1,7 +1,7 @@
 import styles from "./CheckboxList.module.css";
 import { Boroughs, Preferences } from "../constants/type";
 
-export type CheckboxListProps = {
+type CheckboxListProps = {
   name: string;
   list: Boroughs['list'];
   colorbox?: boolean;

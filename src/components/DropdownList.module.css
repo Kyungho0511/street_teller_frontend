@@ -83,9 +83,3 @@
   color: var(--color-yellow);
   font-weight: var(--font-bold);
 }
-
-.spacer {
-  margin: 1rem 0;
-  border: solid var(--color-white) 1px;
-  pointer-events: none;;
-}

@@ -4,6 +4,7 @@ import RadioList from "../components/RadioList";
 import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
+import DraggableList from "../components/DraggableList";
 
 export default function Home() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <>
       <Sidebar>
+
         <SidebarSection title="Discover Sites for you">
           <p>
             Tell us about your life-style by selecting the categories important
@@ -24,11 +26,13 @@ export default function Home() {
         </SidebarSection>
 
         <SidebarSection title="Rank Your Site Preferences">
-          <RadioList
-            name="preferences"
-            list={survey.preferences.map((preference) => preference.category)}
+          <DraggableList
+            list={survey.preferences}
+            setSurveyContext={setSurveyContext}
+            displayIcon
           />
         </SidebarSection>
+        
       </Sidebar>
     </>
   );

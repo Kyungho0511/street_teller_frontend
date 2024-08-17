@@ -8,10 +8,10 @@
   opacity: 0.8;
   width: 95%;
   cursor: pointer;
+}
 
-  &:hover {
-    opacity: 1;
-  }
+.logo:hover {
+  opacity: 1;
 }
 
 .container {

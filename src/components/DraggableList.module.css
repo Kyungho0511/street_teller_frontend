@@ -1,5 +1,37 @@
 @import '../variables.css';
 
-.form {
-  
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: var(--color-dark-grey);
+  opacity: 0.95;
+  user-select: none;
+}
+
+.item:hover {
+  color: var(--color-black);
+  opacity: 1;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.category {
+  display: flex;
+}
+
+.text {
+  /* color: var(--color-black);
+  opacity: 1; */
 }

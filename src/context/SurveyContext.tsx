@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { Boroughs, Preferences } from "../constants/type";
+import { Boroughs, initialBoroughs, initialPreferences, Preferences } from "../constants/type";
 
 export type Survey = {
   boroughs : Boroughs['list'],
@@ -50,20 +50,6 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
 }
 
 const initialSurvey: Survey = {
-  boroughs: [
-    {borough: "Manhattan", checked: true},
-    {borough: "Brooklyn", checked: true},
-    {borough: "Bronx", checked: true},
-    {borough: "Queens", checked: true},
-    {borough: "Staten Island", checked: true},
-  ],
-  preferences: [
-    {category: "Housing Cost", ranking: 1},
-    {category: "Community Demographics", ranking: 2},
-    {category: "Transportation", ranking: 3},
-    {category: "Health Care", ranking: 4},
-    {category: "Education", ranking: 5},
-    {category: "Groceries & Restaurants", ranking: 6},
-    {category: "Parks & Recreation", ranking: 7},
-  ],
+  boroughs: initialBoroughs,
+  preferences: initialPreferences
 };

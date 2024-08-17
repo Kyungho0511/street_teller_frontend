@@ -9,9 +9,8 @@
   border-radius: 0.5rem;
 
   > p {
-    margin-bottom: 0.5rem;
-    margin-top: 1.2rem;
-    line-height: 1.2rem;
+    margin: 0.5rem 0;
+    line-height: 1.3rem;
   }
 }
 
@@ -20,5 +19,6 @@
   font-weight: bold;
   text-transform: capitalize;
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 1.3rem;
+  opacity: 0.9;
 }
