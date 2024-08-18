@@ -13,9 +13,14 @@ type DraggableListProps = {
 export default function DraggableList({list, setSurveyContext, displayIcon}: DraggableListProps) {
 
   const handleReorder = (result: Preferences['list']) => {
-
-      // Update Boroughs in the survey context
       if (setSurveyContext) {
+
+        // Update ranking of preferences based on index
+        result.forEach((item, index) => {
+          item.ranking = index + 1;
+        })
+        
+        // Update Preferences in the survey context
         const newPreferences: Preferences = { name: "preferences", list: result };
         setSurveyContext(newPreferences);
       }

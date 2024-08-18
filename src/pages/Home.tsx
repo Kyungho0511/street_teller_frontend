@@ -24,7 +24,7 @@ export default function Home() {
           <CheckboxList name="boroughs" list={survey.boroughs} setSurveyContext={setSurveyContext} />
         </SidebarSection>
 
-        <SidebarSection title="Rank Your Site Preferences">
+        <SidebarSection title="Sort Your Site Preferences">
           <DraggableList
             list={survey.preferences}
             setSurveyContext={setSurveyContext}
