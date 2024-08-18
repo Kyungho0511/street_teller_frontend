@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import CheckboxList from "../components/CheckboxList";
-import RadioList from "../components/RadioList";
 import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
@@ -32,7 +31,7 @@ export default function Home() {
             displayIcon
           />
         </SidebarSection>
-        
+
       </Sidebar>
     </>
   );

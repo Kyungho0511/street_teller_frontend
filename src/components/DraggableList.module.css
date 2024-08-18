@@ -1,10 +1,5 @@
 @import '../variables.css';
 
-.list {
-  display: flex;
-  flex-direction: column;
-}
-
 .item {
   display: flex;
   justify-content: space-between;
@@ -34,4 +29,8 @@
 .text {
   /* color: var(--color-black);
   opacity: 1; */
+}
+
+.item.dragging {
+  opacity: 0;
 }

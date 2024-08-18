@@ -13,7 +13,6 @@ type DraggableListProps = {
 export default function DraggableList({list, setSurveyContext, displayIcon}: DraggableListProps) {
 
   const handleReorder = (result: Preferences['list']) => {
-
       // Update Boroughs in the survey context
       if (setSurveyContext) {
         const newPreferences: Preferences = { name: "preferences", list: result };
@@ -22,10 +21,9 @@ export default function DraggableList({list, setSurveyContext, displayIcon}: Dra
     }
 
   return (
-    <div className={styles.list}>
       <Reorder.Group axis="y" values={list} onReorder={(result) => handleReorder(result as Preferences['list'])}>
         {list.map((item, index) => (
-          <Reorder.Item value={item} key={item.ranking}>
+          <Reorder.Item value={item} key={index}>
             <div className={styles.item}>
               <div className={styles.category}>
                 {displayIcon && <FontAwesomeIcon icon={item.icon} className={styles.icon}/>}
@@ -38,7 +36,5 @@ export default function DraggableList({list, setSurveyContext, displayIcon}: Dra
           </Reorder.Item>
         ))}
       </Reorder.Group>
-
-    </div>
   );
 }
