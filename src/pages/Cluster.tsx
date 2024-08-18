@@ -1,9 +1,9 @@
 import Button from "../components/Button";
-import CheckboxList, { CheckboxItem } from "../components/CheckboxList";
-import { DropdownListType } from "../components/DropdownList";
+import CheckboxList from "../components/CheckboxList";
 import DropdownManager from "../components/DropdownManager";
 import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
+import { targetClusters, vulnerabilityLists } from "../constants/clusterConstants";
 
 export default function Cluster() {
   return (
@@ -27,82 +27,3 @@ export default function Cluster() {
     </Sidebar>
   );
 }
-
-const targetClusters: CheckboxItem[] = [
-  {
-    text: "Cluster 1",
-    value: "0",
-  },
-  {
-    text: "Cluster 2",
-    value: "1",
-  },
-  {
-    text: "Cluster 3",
-    value: "2",
-  },
-  {
-    text: "Cluster 4",
-    value: "3",
-  },
-];
-
-
-const vulnerabilityLists: DropdownListType[] = [
-  {
-    category: "Features to Cluster",
-    items: [
-      "physical health not good for >=14 days",
-      "mental health not good for >=14 days",
-      "no leisure-time physical activity",
-      "binge drinking",
-      "sleeping less than 7 hours",
-      "current smoking",
-      "current lack of health insurance",
-      "visits to dentist or dental clinic",
-      "visits to doctor for routine checkup",
-    ],
-  },
-  {
-    category: "Features to Add",
-    items: [],
-  }
-]; 
-
-const profitabilityLists: DropdownListType[] = [
-  {
-    category: "Features to Cluster",
-    items: [
-      "unserved medicaid enrollees / km2",
-      "unserved commercial enrollees / km2",
-      "insured population / km2",
-      "median household disposable income",
-      "average land price / ft2",
-    ],
-  },
-  {
-    category: "Features to Add",
-    items: [""],
-  }
-];
-
-const builtEnvironmentLists: DropdownListType[] = [
-  {
-    category: "Features to Cluster",
-    items: [
-      "commercial district percent",
-      "residential district percent",
-      "industrial district percent",
-      "agricultural land percent",
-      "vacant land percent",
-      "drove alone percent",
-      "public transit percent",
-      "walked percent",
-      "worked from home percent",
-    ],
-  },
-  {
-    category: "Features to Add",
-    items: [""],
-  }
-];

@@ -1,12 +1,18 @@
 import styles from "./CheckboxList.module.css";
-import { Boroughs, Preferences } from "../constants/type";
+import { Boroughs, Preferences } from "../constants/homeConstants";
 
 type CheckboxListProps = {
   name: string;
-  list: Boroughs['list'];
+  list: CheckboxItem[] | Boroughs['list'];
   colorbox?: boolean;
   setSurveyContext?: (newSurveyElement: Boroughs | Preferences) => void;
 };
+
+export type CheckboxItem = {
+  name: string;
+  checked: boolean;
+  id: string;
+}
 
 export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
 
@@ -26,19 +32,19 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
   return (
     <form className={styles.form}>
       {list.map((item, index) => (
-        <label className={styles.label} key={index}>
+        <label className={styles.label} key={item.id}>
           <input
             className={styles.input}
             type="checkbox"
             name={name}
-            value={item.borough}
+            value={item.name}
             checked={item.checked}
             onChange={(event) => handleChange(event, index)}
           />
           <span className={styles.indicator}></span>
           <div className={styles.text}>
             {colorbox && <span className={styles.colorbox}></span>}
-            {item.borough}
+            {item.name}
           </div>
         </label>
       ))}

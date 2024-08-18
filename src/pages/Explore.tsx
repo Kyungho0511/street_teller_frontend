@@ -1,7 +1,7 @@
 import DropdownManager from "../components/DropdownManager";
-import { DropdownListType } from '../components/DropdownList';
 import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
+import { secondaryLists, targetLists } from "../constants/exploreConstants";
 
 export default function Explore() {
   return (
@@ -39,76 +39,3 @@ export default function Explore() {
     </Sidebar>
   );
 }
-
-const targetLists: DropdownListType[] = [
-  {
-    category: "Unserved Population Density",
-    items: [
-      "Unserved population / km2",
-      "Unserved Medicaid enrollees / km2",
-      "Unserved Commercial enrollees / km2",
-    ],
-  },
-  {
-    category: "Insured Population Density",
-    items: [
-      "Insured population / km2",
-      "Medicaid enrollees / km2",
-      "Commercial enrollees / km2",
-    ],
-  }
-];
-
-const secondaryLists: DropdownListType[] = [
-  {
-    category: "Health Behaviors",
-    items: [
-      "Current lack of health insurance",
-      "No leisure-time physical activity",
-      "Binge drinking",
-      "Sleeping less than 7 hours",
-      "Current smoking",
-      "Cholesterol screening",
-      "Taking medicine for high blood pressure",
-      "Visits to dentist or dental clinic",
-      "Visits to doctor for routine checkup"
-    ]
-  },
-  {
-    category: "Health Status",
-    items: [
-      "Physical health not good for >=14 days",
-      "Mental health not good for >=14 days",
-      "Fair or poor self-rated health status"
-    ]
-  },
-  {
-    category: "Income & Expenses",
-    items: [
-      "Median household income",
-      "Median household disposable income",
-      "Median monthly housing cost"
-    ]
-  },
-  {
-    category: "Land Use & Parcels",
-    items: [
-      "Average land price / ft2",
-      "Residential district percent",
-      "Commercial district percent",
-      "Industrial district percent",
-      "Agricultural land percent",
-      "Vacant land percent"
-    ]
-  },
-  {
-    category: "Mode of Transportation to work",
-    items: [
-      "Drove alone percent",
-      "Carpooled percent",
-      "Public transit percent",
-      "Walked percent",
-      "Worked from home percent "
-    ]
-  }
-];

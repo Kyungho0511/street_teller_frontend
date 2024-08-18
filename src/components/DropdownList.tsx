@@ -12,7 +12,8 @@ type DropdownListProps = {
 
 export type DropdownListType = {
   category: string;
-  items: string[];
+  items: {name: string, id: string}[];
+  id: string;
 }
 
 export default function DropdownList({list, selectedItem, expanded, spacer}: DropdownListProps) {
@@ -23,9 +24,9 @@ export default function DropdownList({list, selectedItem, expanded, spacer}: Dro
       </button>
       {/* ul --> className="dataset__list" */}
       <ul className={styles.list}> 
-        {list.items.map((item, index) => (
-          <li className={`${styles.item} ${selectedItem === item && styles.selectedItem}`} key={index}>
-            <p>{item}</p>
+        {list.items.map((item) => (
+          <li className={`${styles.item} ${selectedItem === item.name && styles.selectedItem}`} key={item.id}>
+            <p>{item.name}</p>
             <FontAwesomeIcon icon={faSquarePlus} />
           </li>
         ))}

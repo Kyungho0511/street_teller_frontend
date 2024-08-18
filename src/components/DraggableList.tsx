@@ -1,12 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Boroughs, Preferences } from '../constants/type';
+import { Preferences } from '../constants/homeConstants';
 import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';
 
 type DraggableListProps = {
   list: Preferences['list'];
-  setSurveyContext?: (newSurveyElement: Boroughs | Preferences) => void;
+  setSurveyContext?: (newSurveyElement: Preferences) => void;
   displayIcon?: boolean;
 };
 
@@ -22,10 +22,9 @@ export default function DraggableList({list, setSurveyContext, displayIcon}: Dra
     }
 
   return (
-    <div className={styles.list}>
-      <Reorder.Group axis="y" values={list} onReorder={(result) => handleReorder(result as Preferences['list'])}>
+      <Reorder.Group axis="y" values={list} onReorder={(result) => handleReorder(result)}>
         {list.map((item, index) => (
-          <Reorder.Item value={item} key={item.ranking}>
+          <Reorder.Item value={item} key={item.id}>
             <div className={styles.item}>
               <div className={styles.category}>
                 {displayIcon && <FontAwesomeIcon icon={item.icon} className={styles.icon}/>}
@@ -38,7 +37,5 @@ export default function DraggableList({list, setSurveyContext, displayIcon}: Dra
           </Reorder.Item>
         ))}
       </Reorder.Group>
-
-    </div>
   );
 }

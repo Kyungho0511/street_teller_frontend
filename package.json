@@ -1,5 +1,5 @@
 {
-  "name": "new_york_scape",
+  "name": "site_teller",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@types/uuid": "^10.0.0",
     "framer-motion": "^11.3.28",
     "mapbox-gl": "^3.5.2",
     "ml": "^6.0.0",
@@ -20,7 +21,8 @@
     "postcss": "^8.4.40",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.25.1"
+    "react-router-dom": "^6.25.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

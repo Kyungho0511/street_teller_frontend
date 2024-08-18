@@ -37,7 +37,7 @@ export default function DropdownManager({lists, defaultItem, selectable, autoCol
   return (
     <div>
       {lists.map((list, index) => (
-        <div key={index} onClick={(event) => handleClick(index, event)}>
+        <div key={list.id} onClick={(event) => handleClick(index, event)}>
           <DropdownList
             list={list}
             selectedItem={selectedItem}
