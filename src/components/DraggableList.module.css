@@ -7,13 +7,16 @@
   margin-bottom: 10px;
   cursor: pointer;
   color: var(--color-dark-grey);
-  opacity: 0.95;
   user-select: none;
 }
 
 .item:hover {
   color: var(--color-black);
   opacity: 1;
+
+  & .text {
+    color: var(--color-blue);
+  }
 }
 
 .icon {
@@ -27,8 +30,7 @@
 }
 
 .text {
-  /* color: var(--color-black);
-  opacity: 1; */
+  color: var(--color-black);
 }
 
 .item.dragging {

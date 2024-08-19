@@ -15,7 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/uuid": "^10.0.0",
     "framer-motion": "^11.3.28",
-    "mapbox-gl": "^3.5.2",
+    "mapbox-gl": "^3.6.0",
     "ml": "^6.0.0",
     "openai": "^4.53.1",
     "postcss": "^8.4.40",

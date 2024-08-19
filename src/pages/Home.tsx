@@ -11,15 +11,6 @@ export default function Home() {
   return (
     <>
       <Sidebar>
-
-        <SidebarSection title="Discover Sites for you">
-          <p>
-            Tell us about your life-style by selecting the categories important
-            for your new home. We will tell you about NYC neighborhoods that
-            suit your household the best.
-          </p>
-        </SidebarSection>
-
         <SidebarSection title="choose boroughs to discover">
           <CheckboxList name="boroughs" list={survey.boroughs} setSurveyContext={setSurveyContext} />
         </SidebarSection>
@@ -31,7 +22,6 @@ export default function Home() {
             displayIcon
           />
         </SidebarSection>
-
       </Sidebar>
     </>
   );

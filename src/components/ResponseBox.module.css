@@ -1,0 +1,44 @@
+@import '../variables.css';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  background-color: rgb(238, 238, 238);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom: 1px solid rgb(230, 230, 230);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.body {
+  font-size: 0.9rem;
+  line-height: 1.2rem;
+  padding: 1rem;
+  margin: 0 0 0.5rem 0;
+  background-color: var(--color-light-white);
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  & p {
+    margin: 0.5rem 0;
+    line-height: 1.3rem;
+  }
+}
+
+.navigate {
+  color: var(--color-black);
+  font-size: 0.9rem;
+  margin: 0 1rem;
+
+  & span {
+    margin: 0 0.5rem;
+    user-select: none;
+  }
+
+  & svg { /* fontawesome icons */
+    cursor: pointer;
+  }
+}

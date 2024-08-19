@@ -7,6 +7,7 @@
   margin: 0.5rem 0;
   background-color: var(--color-light-white);
   border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   > p {
     margin: 0.5rem 0;

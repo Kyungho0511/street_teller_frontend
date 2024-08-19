@@ -10,10 +10,11 @@
   align-items: center;
   margin-bottom: 10px;
   cursor: pointer;
+}
 
-  &.radio-disabled {
-    opacity: 0.3;
-    pointer-events: none;
+.label:hover {
+  & .text {
+    color: var(--color-blue);
   }
 }
 

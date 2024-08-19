@@ -35,7 +35,7 @@ export default function DraggableList({list, setSurveyContext, displayIcon}: Dra
                 {displayIcon && <FontAwesomeIcon icon={item.icon} className={styles.icon}/>}
                 <span className={styles.text}>{item.category}</span>
               </div>
-              <FontAwesomeIcon icon={faGripLines} />
+              <FontAwesomeIcon className={styles.grip} icon={faGripLines} />
             </div>
             {/* place a spacer between items */}
             {index !== (list.length -1) && <hr className='spacer' />}

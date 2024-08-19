@@ -54,8 +54,8 @@ export const initialPreferences: Preferences["list"] = [
 
 export const initialBoroughs: Boroughs["list"] = [
   { name: "Manhattan", checked: true, id: uuidv4() },
-  { name: "Brooklyn", checked: true, id: uuidv4() },
-  { name: "Bronx", checked: true, id: uuidv4() },
-  { name: "Queens", checked: true, id: uuidv4() },
+  { name: "Brooklyn", checked: false, id: uuidv4() },
+  { name: "Bronx", checked: false, id: uuidv4() },
+  { name: "Queens", checked: false, id: uuidv4() },
   { name: "Staten Island", checked: false, id: uuidv4() },
 ];

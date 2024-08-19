@@ -2,18 +2,7 @@
 
 .logo {
   display: block;
-  margin: auto;
-  padding: 1rem;
-  padding-top: 0.5rem;
-  opacity: 0.8;
-  width: 95%;
-  cursor: pointer;
-}
-
-.logo:hover {
-  opacity: 1;
-}
-
-.container {
-  
+  padding: 0.5rem;
+  pointer-events: none;
+  user-select: none;
 }
