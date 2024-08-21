@@ -40,7 +40,7 @@ export type Boroughs = {
   ];
 };
 
-// Initial constant values for the survey context.
+// Initial values for the survey context.
 // uuidv4() is used for one-time initialization.
 export const initialPreferences: Preferences["list"] = [
   { category: "Housing Cost", ranking: 1, icon: faMoneyCheckDollar, id: uuidv4() },
@@ -59,3 +59,7 @@ export const initialBoroughs: Boroughs["list"] = [
   { name: "Queens", checked: false, id: uuidv4() },
   { name: "Staten Island", checked: false, id: uuidv4() },
 ];
+
+// Initial text for the response box.
+export const initialTextHome: string =
+  "Tell us about your life-style by selecting the categories important for your new home. We will tell you about NYC neighborhoods that suit your household the best.";

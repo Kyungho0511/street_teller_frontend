@@ -1,11 +1,10 @@
 import DropdownManager from "../components/DropdownManager";
-import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
 import { secondaryLists, targetLists } from "../constants/exploreConstants";
 
 export default function Explore() {
   return (
-    <Sidebar>
+    <>
       <SidebarSection title="Explore Datasets">
         <p>
           Explore datasets of shortage areas by comparing target data on
@@ -36,6 +35,6 @@ export default function Explore() {
       <SidebarSection title="Added Features">
         <p>added features</p>
       </SidebarSection>
-    </Sidebar>
+    </>
   );
 }

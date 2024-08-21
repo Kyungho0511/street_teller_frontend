@@ -83,3 +83,7 @@ export const secondaryLists: DropdownListType[] = [
     id: uuidv4()
   }
 ];
+
+// Initial text for the response box.
+export const initialTextExplore: string = 
+  "Explore datasets of shortage areas by comparing target data on shortages with other secondary data. Add or remove datasets as needed for the clustering analysis of healthcare shortages. Once you are finished, click the 'Continue' button."

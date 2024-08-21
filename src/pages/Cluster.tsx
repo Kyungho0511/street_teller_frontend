@@ -1,13 +1,12 @@
 import Button from "../components/Button";
 import CheckboxList from "../components/CheckboxList";
 import DropdownManager from "../components/DropdownManager";
-import Sidebar from "../components/Sidebar";
 import SidebarSection from "../components/SidebarSection";
 import { targetClusters, vulnerabilityLists } from "../constants/clusterConstants";
 
 export default function Cluster() {
   return (
-    <Sidebar>
+    <>
       <SidebarSection title="Custom Clusters">
         <p>
           Add or remove features to customize your clustering analysis. Click
@@ -24,6 +23,6 @@ export default function Cluster() {
         </p>
         <CheckboxList name="select1" list={targetClusters} colorbox />
       </SidebarSection>
-    </Sidebar>
+    </>
   );
 }
