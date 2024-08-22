@@ -4,7 +4,6 @@ import Map from "../components/Map";
 import { SurveyContextProvider } from "../context/SurveyContext";
 import ResponseBox from "../components/ResponseBox";
 import Sidebar from "../components/Sidebar";
-import Legend from "../components/Legend";
 
 export default function Root() {
   return (
@@ -16,7 +15,6 @@ export default function Root() {
         </SurveyContextProvider>
       </Sidebar>
       <Map />
-      <Legend />
       <Footbar />
     </>
   )

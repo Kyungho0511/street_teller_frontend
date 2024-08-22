@@ -1,6 +1,7 @@
 import Button from "../components/Button";
 import CheckboxList from "../components/CheckboxList";
 import DropdownManager from "../components/DropdownManager";
+import Legend from "../components/Legend";
 import SidebarSection from "../components/SidebarSection";
 import { targetClusters, vulnerabilityLists } from "../constants/clusterConstants";
 

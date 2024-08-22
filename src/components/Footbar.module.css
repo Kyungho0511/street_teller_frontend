@@ -7,10 +7,8 @@
   position: fixed;
   bottom: 0;
   right: 0;
-  width: calc(100vw - 350px);
+  width: calc(100vw - 380px);
   height: 80px;
   background-color: var(--color-white);
-}
-
-.chatbox {
+  padding: 0.7rem 0;
 }

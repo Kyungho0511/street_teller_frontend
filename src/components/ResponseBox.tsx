@@ -4,6 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { initialTextHome } from "../constants/homeConstants";
+import { initialTextExplore } from "../constants/exploreConstants";
+import { initialTextCluster } from "../constants/clusterConstants";
+
+type Message = {
+  text: string,
+  sender: "ai" | "user"
+};
 
 export default function ResponseBox() {
   // history of text responses and current response index
@@ -21,15 +29,15 @@ export default function ResponseBox() {
     // send initial prompt to LLM based on url location.
     switch (location.pathname) {
       case "/":
-        setTextHistory((prev) => [...prev, "prompt initial home"]);
+        setTextHistory((prev) => [...prev, initialTextHome]);
         setTextIndex(textIndex + 1);
         break;
       case "/explore":
-        setTextHistory((prev) => [...prev, "prompt initial explore"]);
+        setTextHistory((prev) => [...prev, initialTextExplore]);
         setTextIndex(textIndex + 1);
         break;
       case "/cluster":
-        setTextHistory((prev) => [...prev, "prompt initial cluster"]);
+        setTextHistory((prev) => [...prev, initialTextCluster]);
         setTextIndex(textIndex + 1);
         break;
     }
@@ -48,16 +56,26 @@ export default function ResponseBox() {
 
   return (
     <div className={styles.container}>
+      {/* header */}
       <div className={styles.header}>
         <Logo width="160px" color="black" />
         <div className={styles.navigate}>
           <FontAwesomeIcon icon={faChevronLeft} onClick={handleClick} />
-          <span>{textIndex + 1}/{textHistory.length}</span>
+          <span>
+            {textIndex + 1}/{textHistory.length}
+          </span>
           <FontAwesomeIcon icon={faChevronRight} onClick={handleClick} />
         </div>
       </div>
+
+      {/* body */}
       <div className={styles.body}>
-        <p>{textHistory[textIndex]}</p>
+        <p className={`${styles.message} ${styles.user}`}>
+          {"hello, how can you help me? please tell me about this site."}
+        </p>
+        <p className={`${styles.message} ${styles.ai}`}>
+          {textHistory[textIndex]}
+        </p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import Button from './Button'
 import styles from './Footbar.module.css'
+import PromptBox from './PromptBox';
 
 export default function Footbar() {
 
@@ -22,9 +23,7 @@ export default function Footbar() {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.chatbox}>
-        
-      </div>
+      <PromptBox />
       <Link to={nextPath}> 
         <Button text="continue" color="grey" location="footbar" />
       </Link>

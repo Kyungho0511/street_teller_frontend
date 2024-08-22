@@ -5,15 +5,6 @@ import { secondaryLists, targetLists } from "../constants/exploreConstants";
 export default function Explore() {
   return (
     <>
-      <SidebarSection title="Explore Datasets">
-        <p>
-          Explore datasets of shortage areas by comparing target data on
-          shortages with other secondary data. Add or remove datasets as needed
-          for the clustering analysis of healthcare shortages. Once you are
-          finished, click the "Continue" button.
-        </p>
-      </SidebarSection>
-
       <SidebarSection title="Select Target Data">
         <DropdownManager
           lists={targetLists}
