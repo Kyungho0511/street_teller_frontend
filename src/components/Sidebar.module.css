@@ -23,8 +23,10 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-light-grey);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(200, 200, 200);
+  border-radius: 50%;
 }

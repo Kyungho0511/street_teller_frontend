@@ -1,7 +1,8 @@
 import styles from "./ResponseBox.module.css";
 import Logo from "./Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { initialTextHome } from "../constants/homeConstants";
@@ -71,9 +72,11 @@ export default function ResponseBox() {
       {/* body */}
       <div className={styles.body}>
         <p className={`${styles.message} ${styles.user}`}>
-          {"hello, how can you help me? please tell me about this site."}
+          <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
+          {"hello, how can you help me? I am looking for places for home. Please tell me about this site."}
         </p>
         <p className={`${styles.message} ${styles.ai}`}>
+          <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
           {textHistory[textIndex]}
         </p>
       </div>

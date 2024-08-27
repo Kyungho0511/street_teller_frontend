@@ -40,6 +40,8 @@
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: scroll;
+  overflow-x: hidden;
 
   & p {
     margin: 0.5rem 0;
@@ -48,17 +50,22 @@
 }
 
 .message {
-  border-radius: 0.5rem;
   padding: 0.5rem;
 
+
   &.user {
-    margin-right: 2.5rem;
-    margin-bottom: 2rem;
-    background-color: var(--color-light-white2);
+
   }
 
   &.ai {
-    margin-left: 2.5rem;
-    background-color: var(--color-light-grey3);
+
   }
+}
+
+/* fontawesome icons */
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
+  opacity: 0.8;
 }
