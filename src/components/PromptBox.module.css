@@ -1,7 +1,6 @@
 @import '../variables.css';
 
 .form {
-  position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -9,17 +8,23 @@
   padding: 0 2rem;
 }
 
-.input {
+.container {
+  position: relative;
   flex-grow: 1;
   max-width: 1000px;
+}
+
+.input {
   font-size: 1rem;
+  height: 100%;
+  width: 100%;
   padding: 0 2rem;
   border-radius: 2rem;
   background-color: var(--color-light-white);
   border: none;
 }
 
-.intput::selection {
+.input:focus {
   outline: none;
 }
 
@@ -30,7 +35,7 @@
 .button {
   position: absolute;
   top: 50%;
-  right: 3rem;
+  right: 0.8rem;
   transform: translateY(-50%);
   background-color: var(--color-light-grey);  
   width: 2.5rem;
@@ -39,6 +44,17 @@
   border: none;
 }
 
-.button:hover {
+.button.active {
   background-color: var(--color-grey);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-dark-grey);
+  }
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-white);
 }

@@ -24,7 +24,7 @@
   }
 
   /* fontawesome icons */
-  & svg { 
+  & .icon { 
     cursor: pointer;
   }
 }
@@ -52,6 +52,13 @@
 .message {
   padding: 0.5rem;
 
+  /* fontawesome icons */
+  & .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    opacity: 0.8;
+  }
 
   &.user {
 
@@ -62,10 +69,3 @@
   }
 }
 
-/* fontawesome icons */
-.icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 0.5rem;
-  opacity: 0.8;
-}

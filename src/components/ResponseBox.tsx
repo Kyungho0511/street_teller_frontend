@@ -61,11 +61,19 @@ export default function ResponseBox() {
       <div className={styles.header}>
         <Logo width="160px" color="black" />
         <div className={styles.navigate}>
-          <FontAwesomeIcon icon={faChevronLeft} onClick={handleClick} />
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            className={styles.icon}
+            onClick={handleClick}
+          />
           <span>
             {textIndex + 1}/{textHistory.length}
           </span>
-          <FontAwesomeIcon icon={faChevronRight} onClick={handleClick} />
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            className={styles.icon}
+            onClick={handleClick}
+          />
         </div>
       </div>
 
@@ -73,7 +81,9 @@ export default function ResponseBox() {
       <div className={styles.body}>
         <p className={`${styles.message} ${styles.user}`}>
           <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
-          {"hello, how can you help me? I am looking for places for home. Please tell me about this site."}
+          {
+            "hello, how can you help me? I am looking for places for home. Please tell me about this site."
+          }
         </p>
         <p className={`${styles.message} ${styles.ai}`}>
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
