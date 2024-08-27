@@ -1,0 +1,92 @@
+import styles from "./MessageBox.module.css";
+import Logo from "./Logo";
+import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { initialTextExplore } from "../constants/exploreConstants";
+import { initialTextCluster } from "../constants/clusterConstants";
+import { MessageContext } from "../context/MessageContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
+
+
+export default function MessageBox() {
+  // history of text responses and current response index
+  // Performance Issue: If the text history becomes large, it might be more
+  // efficient to store it in a more complex data structure or consider using
+  // the __useReducer__ hook for more sophisticated state management.
+  const {messages, setMessageContext} = useContext(MessageContext);
+  const [messageIndex, setMessageIndex] = useState<number>(0);
+
+  const location = useLocation();
+
+  console.log("index:", messageIndex, "length:", messages.length);
+
+  useEffect(() => {
+    // send initial prompt to LLM based on url location.
+    switch (location.pathname) {
+      case "/explore":
+        setMessageContext(initialTextExplore);
+        setMessageIndex(messageIndex + 1);
+        break;
+      case "/cluster":
+        setMessageContext(initialTextCluster);
+        setMessageIndex(messageIndex + 1);
+        break;
+    }
+  }, [location.pathname]);
+
+  const handleClick = (event: React.MouseEvent) => {
+    const target = event.currentTarget as HTMLElement;
+
+    if (target.dataset.icon === "chevron-right") {
+      setMessageIndex((prev) =>
+        prev === messages.length - 1 ? prev : prev + 1
+      );
+    } else if (target.dataset.icon === "chevron-left") {
+      setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      
+      {/* header */}
+      <div className={styles.header}>
+        <Logo width="160px" color="black" />
+        <div className={styles.navigate}>
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            className={styles.icon}
+            onClick={handleClick}
+          />
+          <span>
+            {messageIndex + 1}/{messages.length}
+          </span>
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            className={styles.icon}
+            onClick={handleClick}
+          />
+        </div>
+      </div>
+
+      {/* body */}
+      <div className={styles.body}>
+        <p className={`${styles.message} ${styles.user}`}>
+          <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
+          {messages[messageIndex].user}
+        </p>
+        <p className={`${styles.message} ${styles.ai}`}>
+          <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
+          {messages[messageIndex].ai}
+        </p>
+      </div>
+
+    </div>
+  );
+}

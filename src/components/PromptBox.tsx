@@ -1,17 +1,27 @@
 import styles from "./PromptBox.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Message, MessageContext } from "../context/MessageContext";
 
 export default function PromptBox() {
   const [prompt, setPrompt] = useState<string>("");
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const {setMessageContext} = useContext(MessageContext);
+  
+  const setNewMessage = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // empty prompt box
     if (prompt.trim()) {
       setPrompt("");
     }
+
+    // update message context
+    const newMessage: Message = {
+      user: prompt,
+      ai: "",
+    }
+    setMessageContext(newMessage)
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,7 +29,7 @@ export default function PromptBox() {
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={setNewMessage}>
       <div className={styles.container}>
         <input
           className={styles.input}

@@ -2,14 +2,14 @@ import { Outlet } from "react-router-dom";
 import Footbar from "../components/Footbar";
 import Map from "../components/Map";
 import { SurveyContextProvider } from "../context/SurveyContext";
-import ResponseBox from "../components/ResponseBox";
+import MessageBox from "../components/MessageBox";
 import Sidebar from "../components/Sidebar";
 
 export default function Root() {
   return (
     <>
       <Sidebar>
-        <ResponseBox />
+        <MessageBox />
         <SurveyContextProvider>
           <Outlet />
         </SurveyContextProvider>
