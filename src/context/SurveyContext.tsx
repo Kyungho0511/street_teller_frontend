@@ -13,6 +13,7 @@ type SurveyContextProps = {
 
 export const SurveyContext = createContext<SurveyContextProps>({} as SurveyContextProps);
 
+// The provider is used in Root.tsx to wrap the Outlet components.
 export function SurveyContextProvider({children} : {children: React.ReactNode;}) {
   const [survey, setSurvey] = useState<Survey>(initialSurvey);
 

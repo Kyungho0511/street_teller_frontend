@@ -6,9 +6,10 @@ import { Message, MessageContext } from "../context/MessageContext";
 
 export default function PromptBox() {
   const [prompt, setPrompt] = useState<string>("");
-  const {setMessageContext} = useContext(MessageContext);
-  
-  const setNewMessage = (event: React.FormEvent<HTMLFormElement>) => {
+  const { addMessages } = useContext(MessageContext);
+
+  // Handle MessageContext and prompt on form submission
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // empty prompt box
@@ -16,20 +17,21 @@ export default function PromptBox() {
       setPrompt("");
     }
 
-    // update message context
+    // update MessageContext
     const newMessage: Message = {
       user: prompt,
       ai: "",
-    }
-    setMessageContext(newMessage)
+    };
+    addMessages(newMessage);
   };
 
+  // Sync prompt with input field
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPrompt(event.target.value);
   };
 
   return (
-    <form className={styles.form} onSubmit={setNewMessage}>
+    <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.container}>
         <input
           className={styles.input}
@@ -38,9 +40,7 @@ export default function PromptBox() {
           value={prompt}
           onChange={handleChange}
         />
-        <button
-          className={`${styles.button} ${prompt.trim() && styles.active}`}
-        >
+        <button className={`${styles.button} ${prompt.trim() && styles.active}`}>
           <FontAwesomeIcon icon={faArrowUp} className={styles.icon} />
         </button>
       </div>

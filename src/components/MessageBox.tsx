@@ -19,23 +19,26 @@ export default function MessageBox() {
   // Performance Issue: If the text history becomes large, it might be more
   // efficient to store it in a more complex data structure or consider using
   // the __useReducer__ hook for more sophisticated state management.
-  const {messages, setMessageContext} = useContext(MessageContext);
-  const [messageIndex, setMessageIndex] = useState<number>(0);
-
+  const {
+    messages,
+    addMessages,
+    messageIndex,
+    nextMessageIndex,
+    prevMessageIndex,
+  } = useContext(MessageContext);
   const location = useLocation();
 
+  // To be deleted after testing!!
   console.log("index:", messageIndex, "length:", messages.length);
 
   useEffect(() => {
     // send initial prompt to LLM based on url location.
     switch (location.pathname) {
       case "/explore":
-        setMessageContext(initialTextExplore);
-        setMessageIndex(messageIndex + 1);
+        addMessages(initialTextExplore);
         break;
       case "/cluster":
-        setMessageContext(initialTextCluster);
-        setMessageIndex(messageIndex + 1);
+        addMessages(initialTextCluster);
         break;
     }
   }, [location.pathname]);
@@ -44,11 +47,9 @@ export default function MessageBox() {
     const target = event.currentTarget as HTMLElement;
 
     if (target.dataset.icon === "chevron-right") {
-      setMessageIndex((prev) =>
-        prev === messages.length - 1 ? prev : prev + 1
-      );
+      nextMessageIndex();
     } else if (target.dataset.icon === "chevron-left") {
-      setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
+      prevMessageIndex();
     }
   };
 
