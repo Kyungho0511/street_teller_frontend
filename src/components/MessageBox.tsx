@@ -1,6 +1,6 @@
 import styles from "./MessageBox.module.css";
 import Logo from "./Logo";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { initialTextExplore } from "../constants/exploreConstants";
 import { initialTextCluster } from "../constants/clusterConstants";
