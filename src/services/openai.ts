@@ -1,14 +1,13 @@
 import OpenAI from "openai";
-import { Cluster, clusters } from "../constants/clusterConstants";
-
-const clustersJSON = JSON.stringify(clusters);
+import { Cluster } from "../constants/clusterConstants";
+import { Stream } from "openai/streaming.mjs";
 
 // Query openai
 // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
 // Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
 const openai = new OpenAI({
-  // apiKey: 
-  // dangerouslyAllowBrowser: true,
+  // apiKey:
+  dangerouslyAllowBrowser: true,
 });
 
 export default async function runOpenAI(
@@ -16,11 +15,13 @@ export default async function runOpenAI(
   clusters?: Cluster[]
 ): Promise<string | undefined> {
 
-  let completion: OpenAI.Chat.Completions.ChatCompletion;
+  // Stream mode is essential for displaying early typing animation reponse 
+  // in the MessageBox as soon as it gets the first chunk of the response.
+  let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk>
 
   // Run openAI with prompt.
   if (prompt) {
-    completion = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
@@ -30,15 +31,23 @@ export default async function runOpenAI(
         { role: "user", content: prompt },
       ],
       model: "gpt-3.5-turbo",
+      stream: true, 
       response_format: { type: "text" },
     });
 
-    return completion.choices[0].message.content! as string;
+    for await (const chunk of stream) {
+      console.log(chunk.choices[0]?.delta?.content);
+    }
+
+    // return stream.choices[0].message.content! as string;
+    return undefined;
   }
 
   // Run openAI with clusters.
   if (clusters) {
-    completion = await openai.chat.completions.create({
+    const clustersJSON = JSON.stringify(clusters);
+
+    stream = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
@@ -53,10 +62,17 @@ export default async function runOpenAI(
         { role: "user", content: clustersJSON },
       ],
       model: "gpt-3.5-turbo",
+      stream: true,
       response_format: { type: "json_object" },
     });
 
-    return completion.choices[0].message.content! as string;
+    for await (const chunk of stream) {
+      console.log(chunk.choices[0]?.delta?.content);
+    }
+
+    // return stream.choices[0].message.content! as string;
+    return undefined;
   }
 }
+
 

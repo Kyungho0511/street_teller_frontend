@@ -1,6 +1,6 @@
 import styles from "./MessageBox.module.css";
 import Logo from "./Logo";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { initialTextExplore } from "../constants/exploreConstants";
 import { initialTextCluster } from "../constants/clusterConstants";
@@ -13,19 +13,13 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 
-
 export default function MessageBox() {
   // history of text responses and current response index
   // Performance Issue: If the text history becomes large, it might be more
   // efficient to store it in a more complex data structure or consider using
   // the __useReducer__ hook for more sophisticated state management.
-  const {
-    messages,
-    addMessages,
-    messageIndex,
-    nextMessageIndex,
-    prevMessageIndex,
-  } = useContext(MessageContext);
+  const [messageIndex, setMessageIndex] = useState<number>(0);
+  const { messages, addMessages } = useContext(MessageContext);
   const location = useLocation();
 
   // To be deleted after testing!!
@@ -36,12 +30,26 @@ export default function MessageBox() {
     switch (location.pathname) {
       case "/explore":
         addMessages(initialTextExplore);
+        lastMessageIndex();
         break;
       case "/cluster":
         addMessages(initialTextCluster);
+        lastMessageIndex();
         break;
     }
   }, [location.pathname]);
+
+  const nextMessageIndex = () => {
+    setMessageIndex((prev) => (prev === messages.length - 1 ? prev : prev + 1));
+  };
+
+  const prevMessageIndex = () => {
+    setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
+  };
+
+  const lastMessageIndex = () => {
+    setMessageIndex(messages.length);
+  }
 
   const handleClick = (event: React.MouseEvent) => {
     const target = event.currentTarget as HTMLElement;
@@ -55,7 +63,6 @@ export default function MessageBox() {
 
   return (
     <div className={styles.container}>
-      
       {/* header */}
       <div className={styles.header}>
         <Logo width="160px" color="black" />
@@ -87,7 +94,6 @@ export default function MessageBox() {
           {messages[messageIndex].ai}
         </p>
       </div>
-
     </div>
   );
 }
