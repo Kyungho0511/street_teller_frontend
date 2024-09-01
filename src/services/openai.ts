@@ -1,52 +1,46 @@
 import OpenAI from "openai";
-import { Cluster } from "../constants/clusterConstants";
 import { Stream } from "openai/streaming.mjs";
+import { Prompt, promptPresets } from "../constants/openaiConstants";
+import { clusters } from "../constants/clusterConstants";
 
 // Query openai
 // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
 // Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
 const openai = new OpenAI({
-  // apiKey:
+  // apiKey: 
   dangerouslyAllowBrowser: true,
 });
 
-export default async function runOpenAI(
-  prompt?: string,
-  clusters?: Cluster[]
-): Promise<string | undefined> {
-
-  // Stream mode is essential for displaying early typing animation reponse 
+  // Stream mode is essential for displaying early typing animation reponse
   // in the MessageBox as soon as it gets the first chunk of the response.
-  let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk>
+  // asynchroneous generator function is used to yield each chunk of the response
+export default async function* runOpenAI(prompt: Prompt): AsyncGenerator<string> {
+  let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
 
-  // Run openAI with prompt.
-  if (prompt) {
-    const stream = await openai.chat.completions.create({
+  // Run openAI with text or section prompts.
+  if (prompt.type === "text" || prompt.type === "section") {
+    const content: string = prompt.type === "text" ? prompt.content : promptPresets[prompt.content];
+
+    console.log(content);
+
+    stream = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
           content:
             "Assistant is a large language model trained by OpenAI. You are an expert in the context of urban planning, your goal is to provide insightful and informative responses to questions about site analysis especially in the context of site selection.",
         },
-        { role: "user", content: prompt },
+        { role: "user", content: content},
       ],
-      model: "gpt-3.5-turbo",
-      stream: true, 
+      model: "gpt-4o-mini",
+      stream: true,
       response_format: { type: "text" },
     });
-
-    for await (const chunk of stream) {
-      console.log(chunk.choices[0]?.delta?.content);
-    }
-
-    // return stream.choices[0].message.content! as string;
-    return undefined;
   }
 
-  // Run openAI with clusters.
-  if (clusters) {
+  // TO BE UPDATED: Run openAI with clusters prompt. 
+  if (prompt.type === "cluster") {
     const clustersJSON = JSON.stringify(clusters);
-
     stream = await openai.chat.completions.create({
       messages: [
         {
@@ -61,18 +55,23 @@ export default async function runOpenAI(
         },
         { role: "user", content: clustersJSON },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       stream: true,
       response_format: { type: "json_object" },
     });
+  }
 
-    for await (const chunk of stream) {
-      console.log(chunk.choices[0]?.delta?.content);
+  // Yield each chunk of the response as it becomes available.
+  if (stream) {
+    try {
+      for await (const chunk of stream) {
+        if (chunk.choices[0]?.delta?.content) {
+          yield chunk.choices[0].delta.content;
+        }
+      }
+    } catch (error) {
+      console.error("Error streaming responses:", error);
+      throw error;
     }
-
-    // return stream.choices[0].message.content! as string;
-    return undefined;
   }
 }
-
-

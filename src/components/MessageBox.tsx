@@ -1,9 +1,7 @@
 import styles from "./MessageBox.module.css";
-import Logo from "./Logo";
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { initialTextExplore } from "../constants/exploreConstants";
-import { initialTextCluster } from "../constants/clusterConstants";
+import Logo from "./Logo";
+import TypingResponse from "./TypingResponse";
 import { MessageContext } from "../context/MessageContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
@@ -13,31 +11,17 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 
+// Performance Issue: If the text history becomes large, it might be more
+// efficient to store it in a more complex data structure or consider using
+// the __useReducer__ hook for more sophisticated state management.
 export default function MessageBox() {
-  // history of text responses and current response index
-  // Performance Issue: If the text history becomes large, it might be more
-  // efficient to store it in a more complex data structure or consider using
-  // the __useReducer__ hook for more sophisticated state management.
+  const { messages, addMessage } = useContext(MessageContext);
   const [messageIndex, setMessageIndex] = useState<number>(0);
-  const { messages, addMessages } = useContext(MessageContext);
-  const location = useLocation();
 
-  // To be deleted after testing!!
-  console.log("index:", messageIndex, "length:", messages.length);
-
+  // Updates messageIndex when a new message is added.
   useEffect(() => {
-    // send initial prompt to LLM based on url location.
-    switch (location.pathname) {
-      case "/explore":
-        addMessages(initialTextExplore);
-        lastMessageIndex();
-        break;
-      case "/cluster":
-        addMessages(initialTextCluster);
-        lastMessageIndex();
-        break;
-    }
-  }, [location.pathname]);
+    setMessageIndex(messages.length - 1);
+  }, [messages.length])
 
   const nextMessageIndex = () => {
     setMessageIndex((prev) => (prev === messages.length - 1 ? prev : prev + 1));
@@ -46,10 +30,6 @@ export default function MessageBox() {
   const prevMessageIndex = () => {
     setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
   };
-
-  const lastMessageIndex = () => {
-    setMessageIndex(messages.length);
-  }
 
   const handleClick = (event: React.MouseEvent) => {
     const target = event.currentTarget as HTMLElement;
@@ -91,7 +71,7 @@ export default function MessageBox() {
         </p>
         <p className={`${styles.message} ${styles.ai}`}>
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
-          {messages[messageIndex].ai}
+          <TypingResponse />
         </p>
       </div>
     </div>

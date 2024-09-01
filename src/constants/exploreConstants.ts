@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DropdownListType } from '../components/DropdownList';
-import { Message } from '../context/MessageContext';
 
 /**
  * Type definitions for the Explore page.
@@ -84,10 +83,3 @@ export const secondaryLists: DropdownListType[] = [
     id: uuidv4()
   }
 ];
-
-// Initial text for the response box.
-export const initialTextExplore: Message = {
-  user: "",
-  ai: "Explore datasets of shortage areas by comparing target data on shortages with other secondary data. Add or remove datasets as needed for the clustering analysis of healthcare shortages. Once you are finished, click the 'Continue' button.",
-} 
-  

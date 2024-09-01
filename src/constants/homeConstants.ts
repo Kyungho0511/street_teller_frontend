@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Message } from '../context/MessageContext';
 import {
   faMoneyCheckDollar,
   faPeopleGroup,
@@ -60,10 +59,3 @@ export const initialBoroughs: Boroughs["list"] = [
   { name: "Queens", checked: false, id: uuidv4() },
   { name: "Staten Island", checked: false, id: uuidv4() },
 ];
-
-// Initial text for the response box.
-export const initialTextHome: Message = {
-  user: "",
-  ai: "Tell us about your life-style by selecting the categories important for your new home. We will tell you about NYC neighborhoods that suit your household the best. Tell us about your life-style by selecting the categories important for your new home. We will tell you about NYC neighborhoods that suit your household the best. Tell us about your life-style by selecting the categories important for your new home. We will tell you about NYC neighborhoods that suit your household the best. Tell us about your life-style by selecting the categories important for your new home. We will tell you about NYC neighborhoods that suit your household the best.",
-}
-  

@@ -2,12 +2,11 @@ import styles from "./PromptBox.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
-import { Message, MessageContext } from "../context/MessageContext";
-import runOpenAI from "../services/openai";
+import { MessageContext } from "../context/MessageContext";
 
 export default function PromptBox() {
   const [prompt, setPrompt] = useState<string>("");
-  const { messages, addMessages } = useContext(MessageContext);
+  const { addMessage } = useContext(MessageContext);
 
   // Handle MessageContext and prompt on form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,19 +16,9 @@ export default function PromptBox() {
     if (prompt.trim()) {
       setPrompt("");
     }
-
-    // Send prompt to LLM
-    runOpenAI(prompt).then((response) => {
-      
-      // Update MessageContext with LLM response.
-      if (response) {
-        const newMessage: Message = {
-          user: prompt,
-          ai: response,
-        };
-        addMessages(newMessage);
-      }
-    })
+    
+    // Update MessageContext with new prompt.
+    addMessage({ user: prompt, ai: "" });
   };
 
   // Sync prompt with input field

@@ -1,4 +1,3 @@
-import { Message } from '../context/MessageContext';
 import { CheckboxItem } from './../components/CheckboxList';
 import { DropdownListType } from './../components/DropdownList';
 import { v4 as uuidv4 } from 'uuid';
@@ -93,13 +92,6 @@ export const builtEnvironmentLists: DropdownListType[] = [
     id: uuidv4(),
   }
 ];
-
-// Initial text for the response box.
-export const initialTextCluster: Message = {
-  user: "",
-  ai: "Add or remove features to customize your clustering analysis. Click the 'Cluster' button when you are ready. Review the subcategory values for each cluster in the legend. Exclude the clusters you're not targeting, and continue.",
-};
-
 
 // Cluster type for kmeans center values
 export type Cluster = {

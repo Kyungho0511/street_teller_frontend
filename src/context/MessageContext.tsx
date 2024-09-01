@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-import { initialTextHome } from "../constants/homeConstants";
 
 export type Message = {
   user: string;
@@ -8,26 +7,35 @@ export type Message = {
 
 type MessageContextProps = {
   messages: Message[];
-  addMessages: (newMessage: Message) => void;
+  addMessage: (newMessage: Message) => void;
+  updateResponse: (newResponse: string) => void;
 };
 
+// MessageContext stores history of prompts and openAI responses.
+// it is updated when the openAI response streaming finishes,
+// and when the user submits a new prompt through the PromptBox.
 export const MessageContext = createContext<MessageContextProps>(
   {} as MessageContextProps);
 
 // The provider is used in Root.tsx to wrap components.
 // TO BE UPDATED: Use sessionStorage to persist messages across page refreshes!!!
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
-  const [messages, setMessages] = useState<Message[]>([initialTextHome]);
+  const [messages, setMessages] = useState<Message[]>([{user:"", ai:""}]);
 
-  const addMessages = (newMessage: Message) => {
+  const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
   }
+
+    const updateResponse = (newResponse: string) => {
+      setMessages((prev) => [...prev, {...prev[prev.length - 1], ai: newResponse}]);
+    }
 
   return (
     <MessageContext.Provider
       value={{
         messages,
-        addMessages,
+        addMessage,
+        updateResponse
       }}
     >
       {children}
