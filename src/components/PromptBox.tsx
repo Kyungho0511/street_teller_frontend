@@ -6,7 +6,7 @@ import { MessageContext } from "../context/MessageContext";
 
 export default function PromptBox() {
   const [text, setText] = useState<string>("");
-  const { updatePrompt } = useContext(MessageContext);
+  const { addMessage, updatePrompt } = useContext(MessageContext);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Handle MessageContext and prompt on form submission.
@@ -16,16 +16,10 @@ export default function PromptBox() {
     // Exit if button is inactive.
     if (!buttonRef.current?.classList.contains(styles.active)) return;
 
-    // Update prompt in MessageContext.
-    console.log(text);
+    // Update MessageContext.
+    addMessage({ user: text, ai: "" });
     updatePrompt(text);
 
-    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
-    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
-    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
-    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
-    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
-    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
     // Empty prompt box.
     if (text.trim()) {
       setText("");

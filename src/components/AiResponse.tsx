@@ -4,8 +4,8 @@ import runOpenAI from "../services/openai";
 import { Prompt, Section } from "../constants/openaiConstants";
 import { useLocation } from "react-router-dom";
 
-export default function TypingAnimation() {
-  const { prompt, addMessage, updateResponse } = useContext(MessageContext); 
+export default function AiResponse() {
+  const { prompt, messages, addMessage, updateResponse } = useContext(MessageContext); 
   const [text, setText] = useState<string>("");
   const location = useLocation();
 
@@ -19,13 +19,16 @@ export default function TypingAnimation() {
 
   // Get openAI instructions for each page.
   useEffect(() => {
-    console.log("Typing Section Prompt");
     const pathToSection: { [key: string]: Section } = {
       "/": "home",
       "/explore": "explore",
       "/cluster": "cluster",
       "/report": "report",
     };
+
+    // Initialize an empty message
+    addMessage({ user: "", ai: "" });
+
     // Proceed typing animation for the section
     const section: Section = pathToSection[location.pathname];
     const prompt: Prompt = { type: "section", content: section };
@@ -47,9 +50,6 @@ export default function TypingAnimation() {
       // When the response is fully fetched, update states.
       updateResponse(accumulatedResponse);
       setText("");
-
-      // Initiate the next message.
-      addMessage({ user: "", ai: "" });
     } catch (error) {
       console.error("Failed to fetch openAI response:", error);
     }
