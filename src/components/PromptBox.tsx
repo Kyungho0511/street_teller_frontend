@@ -1,29 +1,40 @@
 import styles from "./PromptBox.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { MessageContext } from "../context/MessageContext";
 
 export default function PromptBox() {
-  const [prompt, setPrompt] = useState<string>("");
-  const { addMessage } = useContext(MessageContext);
+  const [text, setText] = useState<string>("");
+  const { updatePrompt } = useContext(MessageContext);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Handle MessageContext and prompt on form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // Exit if button is inactive.
+    if (!buttonRef.current?.classList.contains(styles.active)) return;
+
+    // Update prompt in MessageContext.
+    console.log(text);
+    updatePrompt(text);
+
+    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
+    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
+    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
+    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
+    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
+    // Text variable is empty --> need to be fixed!!!!!!!!!!!!!!!!
     // Empty prompt box.
-    if (prompt.trim()) {
-      setPrompt("");
+    if (text.trim()) {
+      setText("");
     }
-    
-    // Update MessageContext with new prompt.
-    addMessage({ user: prompt, ai: "" });
   };
 
   // Sync prompt with input field
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPrompt(event.target.value);
+    setText(event.target.value);
   };
 
   return (
@@ -33,10 +44,10 @@ export default function PromptBox() {
           className={styles.input}
           type="text"
           placeholder="Ask SiteTeller"
-          value={prompt}
+          value={text}
           onChange={handleChange}
         />
-        <button className={`${styles.button} ${prompt.trim() && styles.active}`}>
+        <button ref={buttonRef} className={`${styles.button} ${text.trim() && styles.active}`}>
           <FontAwesomeIcon icon={faArrowUp} className={styles.icon} />
         </button>
       </div>

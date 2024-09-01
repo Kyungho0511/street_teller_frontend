@@ -9,6 +9,8 @@ type MessageContextProps = {
   messages: Message[];
   addMessage: (newMessage: Message) => void;
   updateResponse: (newResponse: string) => void;
+  prompt: string;
+  updatePrompt: (newPrompt: string) => void;
 };
 
 // MessageContext stores history of prompts and openAI responses.
@@ -21,21 +23,38 @@ export const MessageContext = createContext<MessageContextProps>(
 // TO BE UPDATED: Use sessionStorage to persist messages across page refreshes!!!
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
   const [messages, setMessages] = useState<Message[]>([{user:"", ai:""}]);
-
+  const [prompt, setPrompt] = useState<string>("");
+  
   const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
   }
 
-    const updateResponse = (newResponse: string) => {
-      setMessages((prev) => [...prev, {...prev[prev.length - 1], ai: newResponse}]);
-    }
+  // Update the last message's response(ai).
+  const updateResponse = (newResponse: string) => { 
+    setMessages((prev) => [
+      ...prev.slice(0, prev.length - 1),
+      { ...prev[prev.length - 1], ai: newResponse },
+    ]);
+  }
+
+  // Update the last message's prompt(user).
+  const updatePrompt = (newPrompt: string) => {
+    console.log("updatePrompt:", newPrompt);
+    setPrompt(newPrompt);
+    setMessages((prev) => [
+      ...prev.slice(0, prev.length - 1),
+      { ...prev[prev.length - 1], user: newPrompt },
+    ]);
+  }
 
   return (
     <MessageContext.Provider
       value={{
         messages,
         addMessage,
-        updateResponse
+        updateResponse,
+        prompt,
+        updatePrompt,
       }}
     >
       {children}

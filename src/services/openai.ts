@@ -7,7 +7,7 @@ import { clusters } from "../constants/clusterConstants";
 // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
 // Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
 const openai = new OpenAI({
-  // apiKey: 
+  // apiKey:
   dangerouslyAllowBrowser: true,
 });
 
