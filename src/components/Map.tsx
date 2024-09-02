@@ -1,32 +1,39 @@
 import styles from './Map.module.css';
-import { useEffect, useState } from "react";
-import { CreateMap, setLayers, RemoveMap } from "../services/mapbox";
+import { useContext, useEffect } from "react";
+import * as mapbox from "../services/mapbox";
 import { useLocation } from 'react-router-dom';
 import { pathToSection, Section } from '../services/navigate';
+import { MapContext } from '../context/MapContext';
+import { mapSections } from '../constants/mapConstants';
 
 export default function Map() {
-  const [map, setMap] = useState<mapboxgl.Map>();
+  const { map, setMap, setParentLayer } = useContext(MapContext);
   const location = useLocation();
 
   // Create a map instance on component mount.
   useEffect(() => {
-    const temp = CreateMap();
+    const temp = mapbox.CreateMap();
     temp.on("load", () => {
       setMap(temp);
     });
 
     // Cleanup function to remove the map instance on component unmount
     return () => {
-      map && RemoveMap(map);
+      map && mapbox.RemoveMap(map);
       setMap(undefined);
     };
   }, [])
 
-  // Update the map layers based on the current location.
+  
   useEffect(() => {
     if (map) {
+      // Update the map layers of the current location.
       const section: Section = pathToSection(location.pathname);
-      setLayers(section, map);
+      mapbox.setLayers(section, map);
+
+      // Update the map parent layer of the current location.
+      const mapSection = mapSections.find((sec) => sec.id === section);
+      mapSection && setParentLayer(mapSection.attributeParentLayer);
     }
   }, [location.pathname, map])
 

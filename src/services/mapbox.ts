@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import { Color, configs, LayerBound, MapLayer, sections } from "../constants/mapConstants";
+import { Color, configs, LayerBound, layerBounds, MapLayer, mapSections } from "../constants/mapConstants";
 import { Section } from "./navigate";
 
 // const accessToken =
@@ -70,7 +70,7 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
 export function setLayers(section: Section, map: mapboxgl.Map): void {
   
   // Exit if the section is not found.
-  const mapSection = sections.find((sec) => sec.id === section);
+  const mapSection = mapSections.find((sec) => sec.id === section);
   if (!mapSection) return;
 
   // Update layer opacity.
@@ -79,24 +79,15 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
 
   // Update layer style, adjusting the color interpolation.
   if (section === "home") {
-    const { name, color, bound, parent } = mapSection.attribute!;
+    const { name, color, bound } = mapSection.attribute!;
     updateLayerStyle(
-      parent,
+      mapSection.attributeParentLayer!,
       name,
       bound,
       color,
       map
     );
   }
-}
-
-// Turn off all layers with opacity 0.
-function offLayers(map: mapboxgl.Map) {
-  sections.forEach((sec) => {
-    sec.layers.forEach((layer) => {
-      setLayerOpacity({ name: layer.name, opacity: 0 }, map);
-    });
-  });
 }
 
 export function updateLayerStyle(
@@ -115,4 +106,17 @@ export function updateLayerStyle(
     bound.max,
     color.max,
   ]);
+}
+
+export function getBound(layer: string): LayerBound | undefined {
+    return layerBounds.find((bound) => bound.name === layer);
+}
+
+// Turn off all layers with opacity 0.
+function offLayers(map: mapboxgl.Map) {
+  mapSections.forEach((sec) => {
+    sec.layers.forEach((layer) => {
+      setLayerOpacity({ name: layer.name, opacity: 0 }, map);
+    });
+  });
 }

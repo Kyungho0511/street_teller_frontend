@@ -36,7 +36,7 @@ export default function Home() {
       </SidebarSection>
 
       <LegendSection title={preference.category as string}>
-        <SelectableList list={preference.subCategories} />
+        <SelectableList list={preference.subCategories} mappable />
       </LegendSection>
     </>
   );

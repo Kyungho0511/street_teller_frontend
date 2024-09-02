@@ -1,3 +1,4 @@
+import { getBound } from "../services/mapbox";
 import { Section } from "./../services/navigate";
 
 export const configs = {
@@ -18,7 +19,7 @@ export type Color = {
   max: Hex;
 };
 
-const color: { [key in string]: Color } = {
+export const color: { [key in string]: Color } = {
   blue: {
     categorized: ["#cdecd0", "#7ed7dd", "#2b9ded", "#0f4bee"],
     min: "#f7faff",
@@ -223,14 +224,22 @@ export type MapLayer = {
   opacity: number;
 };
 
+export type MapAttribute = {
+  name: string;
+  color: Color;
+  bound: LayerBound;
+};
+
 export type MapSection = {
   id: Section;
   layers: MapLayer[];
+  // Parent layer containing attributes
+  attributeParentLayer?: string;
   // Attribute in parent layer to be visualized.
-  attribute?: { name: string; color: Color; bound: LayerBound; parent: string };
+  attribute?: MapAttribute;
 };
 
-export const sections: MapSection[] = [
+export const mapSections: MapSection[] = [
   {
     id: "home",
     layers: [
@@ -240,9 +249,9 @@ export const sections: MapSection[] = [
     attribute: {
       name: "unserved population / km2",
       color: color.yellow,
-      bound: layerBounds.find((bound) => bound.name === "unserved population / km2")!,
-      parent: "tracts-features-nyc",
+      bound: getBound("unserved population / km2")!,
     },
+    attributeParentLayer: "tracts-features-nyc",
   },
   {
     id: "cluster",
