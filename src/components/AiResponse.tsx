@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { MessageContext } from "../context/MessageContext";
 import runOpenAI from "../services/openai";
-import { Prompt, Section } from "../constants/openaiConstants";
+import { Prompt } from "../constants/openaiConstants";
 import { useLocation } from "react-router-dom";
+import { pathToSection, Section } from "../services/navigate";
 
 export default function AiResponse() {
-  const { prompt, messages, addMessage, updateResponse } = useContext(MessageContext); 
+  const { prompt, addMessage, updateResponse } = useContext(MessageContext); 
   const [text, setText] = useState<string>("");
   const location = useLocation();
 
@@ -17,20 +18,13 @@ export default function AiResponse() {
     }
   }, [prompt]);
 
-  // Get openAI instructions for each page.
+  // Get openAI instructions based on the current location.
   useEffect(() => {
-    const pathToSection: { [key: string]: Section } = {
-      "/": "home",
-      "/explore": "explore",
-      "/cluster": "cluster",
-      "/report": "report",
-    };
-
     // Initialize an empty message
     addMessage({ user: "", ai: "" });
 
     // Proceed typing animation for the section
-    const section: Section = pathToSection[location.pathname];
+    const section: Section = pathToSection(location.pathname);
     const prompt: Prompt = { type: "section", content: section };
     section && startTypingAnimation(prompt);
   }, [location.pathname]);

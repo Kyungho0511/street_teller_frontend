@@ -7,7 +7,6 @@ import Cluster from './pages/Cluster';
 import NotFound from './pages/NotFound';
 import Report from './pages/Report';
 
-
 const router = createBrowserRouter([
   {
     path: '/',
@@ -15,9 +14,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, element: <Home /> },
-      { path: '/explore', element: <Explore /> },
       { path: '/cluster', element: <Cluster /> },
-      { path: '/report', element: <Report />}
     ]
   }
 ]);

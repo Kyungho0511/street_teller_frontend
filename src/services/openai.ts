@@ -3,10 +3,9 @@ import { Stream } from "openai/streaming.mjs";
 import { Prompt, promptPresets } from "../constants/openaiConstants";
 import { clusters } from "../constants/clusterConstants";
 
-// Query openai
-// Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
-// Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
 const openai = new OpenAI({
+  // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
+// Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
   // apiKey: 
   dangerouslyAllowBrowser: true,
 });
@@ -20,9 +19,6 @@ export default async function* runOpenAI(prompt: Prompt): AsyncGenerator<string>
   // Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
     const content: string = prompt.type === "text" ? prompt.content : promptPresets[prompt.content];
-
-    console.log(content);
-
     stream = await openai.chat.completions.create({
       messages: [
         {

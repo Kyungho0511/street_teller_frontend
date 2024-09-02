@@ -18,8 +18,6 @@ export default function MessageBox() {
   const { messages } = useContext(MessageContext);
   const [messageIndex, setMessageIndex] = useState<number>(0);
 
-  console.log("length:", messages && messages.length, "index:", messageIndex);
-
   // Updates messageIndex when a new message is added.
   useEffect(() => {
     messages.length > 1 && setMessageIndex(messages.length - 1); 

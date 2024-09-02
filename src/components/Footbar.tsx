@@ -11,9 +11,6 @@ export default function Footbar() {
 
   switch (location.pathname) {
     case "/":
-      nextPath = "/explore";
-      break;
-    case "/explore":
       nextPath = "/cluster";
       break;
     case "/cluster":
