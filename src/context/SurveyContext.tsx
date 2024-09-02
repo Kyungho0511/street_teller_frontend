@@ -44,7 +44,12 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
   }, [survey])
 
   return (
-    <SurveyContext.Provider value={{survey, setSurveyContext}}>
+    <SurveyContext.Provider
+      value={{
+        survey,
+        setSurveyContext,
+      }}
+    >
       {children}
     </SurveyContext.Provider>
   );

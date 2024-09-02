@@ -1,0 +1,25 @@
+@import '../variables.css';
+
+.list {
+}
+
+.item {
+  font-size: 0.9rem;
+  font-weight: var(--font-regular);
+  color: var(--color-dark-grey);
+  opacity: 0.85;
+  padding: 0.1rem 0;
+  cursor: pointer;
+
+  & p {
+    width: 100%;
+    margin: 0;
+  }
+
+  &.selected,
+  &:hover {
+    color: var(--color-black);
+    opacity: 1;
+    font-weight: var(--font-bold);
+  }
+}

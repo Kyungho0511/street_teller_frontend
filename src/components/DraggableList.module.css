@@ -10,15 +10,18 @@
   user-select: none;
 
   & .text {
-    opacity: 0.9;
+    opacity: 0.85;
+    font-weight: var(--font-regular);
   }
 }
 
-.item:hover {
+.item:hover,
+.item.selected {
   color: var(--color-black);
 
   & .text {
     opacity: 1;
+    font-weight: var(--font-bold);
   }
 
   & .ranking_icon {

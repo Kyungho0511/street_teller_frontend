@@ -1,37 +1,69 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Preferences } from '../constants/homeConstants';
+import { Preference, Preferences } from '../constants/homeConstants';
 import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';
+import { useRef } from 'react';
 
 type DraggableListProps = {
-  list: Preferences['list'];
+  list: Preference[];
   setSurveyContext?: (newSurveyElement: Preferences) => void;
+  selectable?: boolean;
   displayIcon?: boolean;
   displayRanking?: boolean;
 };
 
-export default function DraggableList({list, setSurveyContext, displayIcon, displayRanking}: DraggableListProps) {
+export default function DraggableList({
+  list, 
+  setSurveyContext, 
+  selectable, 
+  displayIcon, 
+  displayRanking
+}: DraggableListProps) {
 
-  const handleReorder = (result: Preferences['list']) => {
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const handleReorder = (result: Preference[]) => {
       if (setSurveyContext) {
-
         // Update ranking of preferences based on index
         result.forEach((item, index) => {
           item.ranking = index + 1;
         })
-        
         // Update Preferences in the survey context
-        const newPreferences: Preferences = { name: "preferences", list: result };
-        setSurveyContext(newPreferences);
+        setSurveyContext({ name: "preferences", list: result });
       }
     }
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
+    if (!selectable) return;
+
+    // Highlight the selected item.
+    const target = event.currentTarget as HTMLDivElement;
+    itemRefs.current.forEach((item) => item?.classList.remove(styles.selected));
+    target.classList.add(styles.selected);
+
+    // Update preferences selected property in the SurveyContext.
+    if (setSurveyContext) {
+      const newPreferences = list.map((item, i) => {
+        if (i === index) {
+          return {...item, selected: true};
+        } else {
+          return {...item, selected: false};
+        }
+      });
+      setSurveyContext({name: "preferences", list: newPreferences});
+    }
+  }
 
   return (
       <Reorder.Group axis="y" values={list} onReorder={(result) => handleReorder(result)}>
         {list.map((item, index) => (
           <Reorder.Item value={item} key={item.id}>
-            <div className={styles.item}>
+            <div 
+              ref={(element) => itemRefs.current[index] = element} 
+              className={`${styles.item} ${item.selected && styles.selected}`} 
+              onClick={(event) => handleClick(event, index)}
+            >
               <div className={styles.category}>
                 {displayIcon && <FontAwesomeIcon icon={item.icon} className={styles.icon}/>}
                 {displayRanking && <div className={styles.ranking_icon}>{item.ranking}</div>}

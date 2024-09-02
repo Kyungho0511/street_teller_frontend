@@ -1,6 +1,5 @@
-import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
-
 import styles from './DropdownList.module.css';
+import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type DropdownListProps = {
@@ -25,7 +24,10 @@ export default function DropdownList({list, selectedItem, expanded, spacer}: Dro
       {/* ul --> className="dataset__list" */}
       <ul className={styles.list}> 
         {list.items.map((item) => (
-          <li className={`${styles.item} ${selectedItem === item.name && styles.selectedItem}`} key={item.id}>
+          <li 
+            className={`${styles.item} ${selectedItem === item.name && styles.selectedItem}`} 
+            key={item.id}
+          >
             <p>{item.name}</p>
             <FontAwesomeIcon icon={faSquarePlus} />
           </li>

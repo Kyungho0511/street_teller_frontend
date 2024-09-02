@@ -2,10 +2,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import Root from './pages/Root';
 import Home from './pages/Home';
-import Explore from './pages/Explore';
 import Cluster from './pages/Cluster';
 import NotFound from './pages/NotFound';
-import Report from './pages/Report';
 
 const router = createBrowserRouter([
   {
