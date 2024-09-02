@@ -16,6 +16,7 @@
   --color-yellow-transparent: #f9a200cc;
   --color-red: #e52817;
   --color-red-transparent: #e52817cc;
+  --color-box-shadow: rgba(0, 0, 0, 0.1);
 
   /* Font weight */
   --font-thin: 100;

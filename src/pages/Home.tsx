@@ -9,15 +9,17 @@ export default function Home() {
 
   return (
     <>
-        <SidebarSection title="choose boroughs to discover">
+        {/* Site choice */}
+        {/* <SidebarSection title="choose boroughs to discover">
           <CheckboxList name="boroughs" list={survey.boroughs} setSurveyContext={setSurveyContext} />
-        </SidebarSection>
+        </SidebarSection> */}
 
-        <SidebarSection title="rank your site preferences">
+        <SidebarSection title="rank healthcare site preferences">
           <DraggableList
             list={survey.preferences}
             setSurveyContext={setSurveyContext}
-            displayIcon
+            displayIcon={false}
+            displayRanking
           />
         </SidebarSection>
     </>

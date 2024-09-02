@@ -10,7 +10,10 @@ export default function Map() {
 
   // Create a map instance on component mount.
   useEffect(() => {
-    setMap(CreateMap());
+    const temp = CreateMap();
+    temp.on("load", () => {
+      setMap(temp);
+    });
 
     // Cleanup function to remove the map instance on component unmount
     return () => {
@@ -25,7 +28,7 @@ export default function Map() {
       const section: Section = pathToSection(location.pathname);
       setLayers(section, map);
     }
-  }, [location.pathname])
+  }, [location.pathname, map])
 
   return (
     <div id="map" className={styles.map}></div>

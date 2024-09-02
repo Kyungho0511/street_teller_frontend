@@ -5,12 +5,14 @@ import { SurveyContextProvider } from "../context/SurveyContext";
 import MessageBox from "../components/MessageBox";
 import Sidebar from "../components/Sidebar";
 import { MessageContextProvider } from "../context/MessageContext";
+import Legend from "../components/Legend";
 
 export default function Root() {
   return (
     <>
       <Map />
       <MessageContextProvider>
+        <Legend />
         <Sidebar>
           <MessageBox />
           <SurveyContextProvider>

@@ -6,27 +6,24 @@ import {
   faHospitalUser,
   faGraduationCap,
   faStore,
-  faTree,
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Type definitions for the Home page.
  */
-type LivingCategory =
-  | "Housing Cost"
-  | "Community Demographics"
-  | "Transportation"
-  | "Health Care"
-  | "Education"
-  | "Groceries & Restaurants"
-  | "Parks & Recreation";
-
+type SiteCategory =
+  | "Unserved Population Density"
+  | "Insured Population Density"
+  | "Health Status"
+  | "Income & Expenses"
+  | "Land Use"
+  | "Mode of Transportation";
 
 // name is used as a unique identifier when updating the survey context.
 export type Preferences = {
   name: "preferences";
-  list: { category: LivingCategory; ranking: number; icon: IconDefinition; id: string}[]
+  list: { category: SiteCategory; ranking: number; icon: IconDefinition; id: string}[]
 };
 
 export type Boroughs = {
@@ -43,13 +40,12 @@ export type Boroughs = {
 // Initial values for the survey context.
 // uuidv4() is used for one-time initialization.
 export const initialPreferences: Preferences["list"] = [
-  { category: "Housing Cost", ranking: 1, icon: faMoneyCheckDollar, id: uuidv4() },
-  { category: "Community Demographics", ranking: 2, icon: faPeopleGroup, id: uuidv4() },
-  { category: "Transportation", ranking: 3, icon: faPersonWalking, id: uuidv4() },
-  { category: "Health Care", ranking: 4, icon: faHospitalUser, id: uuidv4() },
-  { category: "Education", ranking: 5, icon: faGraduationCap, id: uuidv4() },
-  { category: "Groceries & Restaurants", ranking: 6, icon: faStore, id: uuidv4() },
-  { category: "Parks & Recreation", ranking: 7, icon: faTree, id: uuidv4() },
+  { category: "Unserved Population Density", ranking: 1, icon: faMoneyCheckDollar, id: uuidv4() },
+  { category: "Insured Population Density", ranking: 2, icon: faPeopleGroup, id: uuidv4() },
+  { category: "Health Status", ranking: 3, icon: faPersonWalking, id: uuidv4() },
+  { category: "Income & Expenses", ranking: 4, icon: faHospitalUser, id: uuidv4() },
+  { category: "Land Use", ranking: 5, icon: faGraduationCap, id: uuidv4() },
+  { category: "Mode of Transportation", ranking: 6, icon: faStore, id: uuidv4() },
 ];
 
 export const initialBoroughs: Boroughs["list"] = [

@@ -8,9 +8,10 @@ type DraggableListProps = {
   list: Preferences['list'];
   setSurveyContext?: (newSurveyElement: Preferences) => void;
   displayIcon?: boolean;
+  displayRanking?: boolean;
 };
 
-export default function DraggableList({list, setSurveyContext, displayIcon}: DraggableListProps) {
+export default function DraggableList({list, setSurveyContext, displayIcon, displayRanking}: DraggableListProps) {
 
   const handleReorder = (result: Preferences['list']) => {
       if (setSurveyContext) {
@@ -33,6 +34,7 @@ export default function DraggableList({list, setSurveyContext, displayIcon}: Dra
             <div className={styles.item}>
               <div className={styles.category}>
                 {displayIcon && <FontAwesomeIcon icon={item.icon} className={styles.icon}/>}
+                {displayRanking && <div className={styles.ranking_icon}>{item.ranking}</div>}
                 <span className={styles.text}>{item.category}</span>
               </div>
               <FontAwesomeIcon className={styles.grip} icon={faGripLines} />

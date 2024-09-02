@@ -3,8 +3,8 @@ import { Section } from "./../services/navigate";
 export const configs = {
   style: "mapbox://styles/klee0511/clv0xyqe0016v01pe0ogo6xre",
   location: {
-    center: [-73.970766, 40.713326],
-    zoom: 9.8,
+    center: [-73.860766, 40.713326],
+    zoom: 11,
     pitch: 0,
     bearing: 0,
   },
@@ -240,9 +240,7 @@ export const sections: MapSection[] = [
     attribute: {
       name: "unserved population / km2",
       color: color.yellow,
-      bound: layerBounds.find(
-        (bound) => bound.name === "unserved population / km2"
-      )!,
+      bound: layerBounds.find((bound) => bound.name === "unserved population / km2")!,
       parent: "tracts-features-nyc",
     },
   },

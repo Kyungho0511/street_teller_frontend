@@ -6,16 +6,23 @@
   align-items: center;
   margin-bottom: 10px;
   cursor: pointer;
-  color: var(--color-dark-grey);
+  color: var(--color-grey);
   user-select: none;
+
+  & .text {
+    opacity: 0.9;
+  }
 }
 
 .item:hover {
   color: var(--color-black);
-  opacity: 1;
 
   & .text {
-    color: var(--color-blue);
+    opacity: 1;
+  }
+
+  & .ranking_icon {
+    background-color: var(--color-dark-grey);
   }
 }
 
@@ -23,6 +30,18 @@
   width: 20px;
   height: 20px;
   margin-right: 10px;
+}
+
+.ranking_icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: var(--color-grey);
+  color: var(--color-white);
 }
 
 .category {
