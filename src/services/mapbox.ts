@@ -1,6 +1,7 @@
 import mapboxgl from "mapbox-gl";
-import { Color, configs, LayerBound, layerBounds, MapLayer, mapSections } from "../constants/mapConstants";
-import { Section } from "./navigate";
+import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
+import { Section } from "../constants/homeConstants";
+import * as utilities from "./utilities";
 
 // const accessToken =
 
@@ -79,12 +80,11 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
 
   // Update layer style, adjusting the color interpolation.
   if (section === "home") {
-    const { name, color, bound } = mapSection.attribute!;
+    const name = mapSection.attribute!.name;
     updateLayerStyle(
       mapSection.attributeParentLayer!,
       name,
-      bound,
-      color,
+      mapSection.color!,
       map
     );
   }
@@ -93,10 +93,10 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
 export function updateLayerStyle(
   layer: string,
   attribute: string,
-  bound: LayerBound,
   color: Color,
   map: mapboxgl.Map
 ) {
+  const bound: MapBound = utilities.getBound(attribute)!;
   map.setPaintProperty(layer, "fill-color", [
     "interpolate",
     bound.rateOfChange,
@@ -106,10 +106,6 @@ export function updateLayerStyle(
     bound.max,
     color.max,
   ]);
-}
-
-export function getBound(layer: string): LayerBound | undefined {
-    return layerBounds.find((bound) => bound.name === layer);
 }
 
 // Turn off all layers with opacity 0.

@@ -3,7 +3,8 @@ import { MessageContext } from "../context/MessageContext";
 import runOpenAI from "../services/openai";
 import { Prompt } from "../constants/openaiConstants";
 import { useLocation } from "react-router-dom";
-import { pathToSection, Section } from "../services/navigate";
+import { pathToSection } from "../services/utilities";
+import { Section } from "../constants/homeConstants";
 
 export default function AiResponse() {
   const { prompt, addMessage, updateResponse } = useContext(MessageContext); 

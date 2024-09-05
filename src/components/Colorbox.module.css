@@ -1,0 +1,16 @@
+@import '../variables.css';
+
+.container {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.colorbox {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 10px;
+  border: solid rgba(173, 173, 173, 0.34) 1px;
+  background-color: rgba(214, 214, 214, 0.28);
+}

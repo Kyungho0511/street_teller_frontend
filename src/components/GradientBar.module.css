@@ -1,0 +1,20 @@
+@import '../variables.css';
+
+.container {
+  margin-top: 1rem;
+}
+
+.bar {
+  height: 0.7rem;
+  background: linear-gradient(
+    to right,
+    var(--color-white) 0%,
+    var(--color-blue) 100%
+  );
+  margin-bottom: 0.5rem;
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+}

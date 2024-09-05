@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ListItem } from '../components/SelectableList';
 
+export type Section = "home" | "cluster";
 
 export type SiteCategory =
   | "Unserved Population Density"

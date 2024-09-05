@@ -2,12 +2,13 @@ import styles from './Map.module.css';
 import { useContext, useEffect } from "react";
 import * as mapbox from "../services/mapbox";
 import { useLocation } from 'react-router-dom';
-import { pathToSection, Section } from '../services/navigate';
+import { pathToSection } from '../services/utilities';
 import { MapContext } from '../context/MapContext';
 import { mapSections } from '../constants/mapConstants';
+import { Section } from '../constants/homeConstants';
 
 export default function Map() {
-  const { map, setMap, setParentLayer } = useContext(MapContext);
+  const { map, setMap, setParentLayer, setColor } = useContext(MapContext);
   const location = useLocation();
 
   // Create a map instance on component mount.
@@ -34,6 +35,9 @@ export default function Map() {
       // Update the map parent layer of the current location.
       const mapSection = mapSections.find((sec) => sec.id === section);
       mapSection && setParentLayer(mapSection.attributeParentLayer);
+
+      // Update the map color
+      setColor(mapSection?.color);
     }
   }, [location.pathname, map])
 

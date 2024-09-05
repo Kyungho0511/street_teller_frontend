@@ -1,5 +1,5 @@
-import { Section } from "../services/navigate";
 import { Cluster } from "./clusterConstants";
+import { Section } from "./homeConstants";
 
 type textPrompt = {type: "text", content: string};
 type sectionPrompt = {type: "section", content: Section}; 

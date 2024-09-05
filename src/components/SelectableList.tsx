@@ -1,11 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./SelectableList.module.css";
 import { MapContext } from "../context/MapContext";
+import { MapAttribute, mapAttributes } from "../constants/mapConstants";
 import * as mapbox from "../services/mapbox";
-import * as mapConstants from "../constants/mapConstants";
 
 type SelectableListProps = {
   list: ListItem[];
+  setAttribute?: (newAttribute: MapAttribute) => void;
   mappable?: boolean;
 }
 
@@ -14,13 +15,14 @@ export type ListItem = {
   id: string;
 }
 
-export default function SelectableList({list, mappable}: SelectableListProps) {
+export default function SelectableList({list, setAttribute, mappable}: SelectableListProps) {
   const [selectedItem, setSelectedItem] = useState<string>(list[0].name);
-  const { map, parentLayer } = useContext(MapContext);
+  const { map, parentLayer, color } = useContext(MapContext);
 
-  // Set the first item as the selected item on rerender.
   useEffect(() => {
+    // Update Mapping with the selected item on list update.
     setSelectedItem(list[0].name);
+    updateMapping(list[0].name);
   }, [list])
 
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -36,23 +38,19 @@ export default function SelectableList({list, mappable}: SelectableListProps) {
     setSelectedItem(list[index].name);
 
     // Update Mapping with the selected item.
-    if (!mappable) return;
+    updateMapping(list[index].name);
+  }
 
-    if (!map) {
-      console.error("Map is not instantiated.");
-      return;
+  const updateMapping = (attributeName: string): void => {
+    // Update Mapping with the selected item.
+    if (map && mappable && parentLayer && color) {
+      mapbox.updateLayerStyle(parentLayer, selectedItem, color, map);
     }
-    const bound = mapbox.getBound(selectedItem);
-    
-    if (!bound) {
-      console.error("Bound not found for layer: ", selectedItem);
-      return;
+    // Update the attribute for map legned.
+    if (setAttribute) {
+      const newAttribute = mapAttributes.find((attribute) => attribute.name === attributeName);
+      newAttribute ? setAttribute(newAttribute) : console.error("Attribute not found.");
     }
-    if (!parentLayer) {
-      console.error("Parent layer not found for the page.");
-      return;
-    }
-    mapbox.updateLayerStyle(parentLayer, selectedItem, bound, mapConstants.color.yellow, map)
   }
 
   return (
