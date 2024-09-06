@@ -1,9 +1,9 @@
 import { createContext, useEffect, useState } from "react";
-import { Boroughs, initialBoroughs, initialPreferences, Preferences } from "../constants/homeConstants";
+import { Boroughs, initialBoroughs, initialPreferences, Preference, Preferences } from "../constants/homeConstants";
 
 export type Survey = {
   boroughs : Boroughs['list'],
-  preferences: Preferences['list'],
+  preferences: Preference[],
 };
 
 type SurveyContextProps = {

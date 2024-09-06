@@ -45,7 +45,11 @@ export default function Home() {
       </SidebarSection>
 
       <LegendSection title={preference.category as string}>
-        <SelectableList list={preference.subCategories} setAttribute={setAttribute} mappable />
+        <SelectableList
+          list={preference.subCategories}
+          setAttribute={setAttribute}
+          mappable
+        />
         <GradientBar bound={attribute.bound} unit={attribute.unit} />
         <Colorbox label={"non-shortage areas"} />
       </LegendSection>

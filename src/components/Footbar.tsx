@@ -11,12 +11,15 @@ export default function Footbar() {
 
   switch (location.pathname) {
     case "/":
-      nextPath = "/cluster";
+      nextPath = "/cluster/1";
       break;
-    case "/cluster":
-      nextPath = "/";
+    case "/cluster/1":
+      nextPath = "/cluster/2";
       break;
-  }
+    case "/cluster/2":
+      nextPath = "/cluster/3";
+      break;
+}
 
   return (
     <footer className={styles.footer}>

@@ -24,7 +24,6 @@ export default function Map() {
       setMap(undefined);
     };
   }, [])
-
   
   useEffect(() => {
     if (map) {
@@ -39,7 +38,7 @@ export default function Map() {
       // Update the map color
       setColor(mapSection?.color);
     }
-  }, [location.pathname, map])
+  }, [location.pathname, map, setColor, setParentLayer])
 
   return (
     <div id="map" className={styles.map}></div>

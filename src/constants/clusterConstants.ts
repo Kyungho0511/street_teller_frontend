@@ -1,9 +1,9 @@
 import { CheckboxItem } from './../components/CheckboxList';
 import { v4 as uuidv4 } from 'uuid';
 
-/**
- * Type definitions for the Cluster page.
- */
+// Number of preferences to be used for each clustering analysis.
+export const clusteringSize = 2;
+
 export const targetClusters: CheckboxItem[] = [
   {
     name: "Cluster 1",

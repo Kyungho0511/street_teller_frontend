@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, element: <Home /> },
-      { path: '/cluster', element: <Cluster /> },
+      { path: '/cluster/:clusterId', element: <Cluster /> },
     ]
   }
 ]);

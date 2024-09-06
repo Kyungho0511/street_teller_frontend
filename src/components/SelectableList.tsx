@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styles from "./SelectableList.module.css";
 import { MapContext } from "../context/MapContext";
 import { MapAttribute, mapAttributes } from "../constants/mapConstants";
@@ -20,15 +20,24 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
   const { map, parentLayer, color } = useContext(MapContext);
 
   useEffect(() => {
-    // Update Mapping with the selected item on list update.
     setSelectedItem(list[0].name);
-    updateMapping(list[0].name);
   }, [list])
+
+  useEffect(() => {
+    // Update Mapping with the selected item.
+    if (map && mappable && parentLayer && color) {
+      mapbox.updateLayerStyle(parentLayer, selectedItem, color, map);
+    }
+    // Update the attribute for map legned.
+    if (setAttribute) {
+      const newAttribute = mapAttributes.find((attribute) => attribute.name === selectedItem);
+      newAttribute ? setAttribute(newAttribute) : console.error("Attribute not found.");
+    }
+  }, [selectedItem, map, mappable ,parentLayer, color, setAttribute]);
 
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const handleClick = (event: React.MouseEvent<HTMLLIElement>, index: number) => {
-
     // Highlight the selected item.
     const target = event.currentTarget as HTMLLIElement;
     itemRefs.current.forEach((item) => item?.classList.remove(styles.selected));
@@ -36,21 +45,6 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
 
     // Update the selected item.
     setSelectedItem(list[index].name);
-
-    // Update Mapping with the selected item.
-    updateMapping(list[index].name);
-  }
-
-  const updateMapping = (attributeName: string): void => {
-    // Update Mapping with the selected item.
-    if (map && mappable && parentLayer && color) {
-      mapbox.updateLayerStyle(parentLayer, selectedItem, color, map);
-    }
-    // Update the attribute for map legned.
-    if (setAttribute) {
-      const newAttribute = mapAttributes.find((attribute) => attribute.name === attributeName);
-      newAttribute ? setAttribute(newAttribute) : console.error("Attribute not found.");
-    }
   }
 
   return (

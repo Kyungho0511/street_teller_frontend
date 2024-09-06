@@ -37,9 +37,8 @@ export default function AiResponse() {
 
       // play typing animation while fetching response
       for await (const chunk of runOpenAI(prompt)) {
-        const formattedChunk = chunk.charAt(0).toLowerCase() + chunk.slice(1) + ' ';
-        accumulatedResponse += formattedChunk;
-        setText((prev) => prev + formattedChunk);
+        accumulatedResponse += chunk;
+        setText((prev) => prev + chunk);
       }
 
       // When the response is fully fetched, update states.
