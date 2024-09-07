@@ -3,10 +3,8 @@ import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/ma
 import { Section } from "../constants/homeConstants";
 import * as utilities from "./utilities";
 
-// const accessToken =
-
 export function CreateMap(): mapboxgl.Map {
-  mapboxgl.accessToken = accessToken;
+  mapboxgl.accessToken = import.meta.env.VITE_API_KEY_MAPBOX as string;
   const bounds: mapboxgl.LngLatBoundsLike = [
     [-85, 36], // Southwest coordinates
     [-65, 48], // Northeast coordinates

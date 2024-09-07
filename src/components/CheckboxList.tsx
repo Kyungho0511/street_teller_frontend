@@ -1,11 +1,11 @@
 import styles from "./CheckboxList.module.css";
-import { Boroughs, Preferences } from "../constants/homeConstants";
+import { BoroughList, PreferenceList } from "../constants/homeConstants";
 
 type CheckboxListProps = {
   name: string;
-  list: CheckboxItem[] | Boroughs['list'];
+  list: CheckboxItem[];
   colorbox?: boolean;
-  setSurveyContext?: (newSurveyElement: Boroughs | Preferences) => void;
+  setSurveyContext?: (newSurveyElement: BoroughList | PreferenceList) => void;
 };
 
 export type CheckboxItem = {
@@ -21,10 +21,10 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
 
     // Update Boroughs in the survey context
     if (setSurveyContext) {
-      const updatedList = [...list] as Boroughs['list'];
+      const updatedList = [...list] as BoroughList['list'];
       updatedList[index] = { ...updatedList[index], checked: event.target.checked };
 
-      const newBoroughs: Boroughs = { name: "boroughs", list: updatedList };
+      const newBoroughs: BoroughList = { name: "boroughs", list: updatedList };
       setSurveyContext(newBoroughs);
     }
   }

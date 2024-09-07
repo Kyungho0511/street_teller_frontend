@@ -1,11 +1,12 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
 import { Prompt, promptPresets } from "../constants/openaiConstants";
-import { clusters } from "../constants/clusterConstants";
+import { clusterLists } from "../constants/clusterConstants";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
 // Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
+  apiKey: import.meta.env.VITE_API_KEY_OPENAI as string,
   dangerouslyAllowBrowser: true,
 });
 
@@ -35,7 +36,7 @@ export default async function* runOpenAI(prompt: Prompt): AsyncGenerator<string>
 
   // TO BE UPDATED: Run openAI with clusters prompt. 
   if (prompt.type === "cluster") {
-    const clustersJSON = JSON.stringify(clusters);
+    const clustersJSON = JSON.stringify(clusterLists);
     stream = await openai.chat.completions.create({
       messages: [
         {

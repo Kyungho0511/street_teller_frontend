@@ -10,6 +10,7 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { ListItem } from '../components/SelectableList';
+import { CheckboxItem } from '../components/CheckboxList';
 
 export type Section = "home" | "cluster";
 
@@ -30,20 +31,14 @@ export type Preference = {
   subCategories: ListItem[];
 };
 
-export type Preferences = {
+export type PreferenceList = {
   name: "preferences";
   list: Preference[];
 };
 
-export type Boroughs = {
+export type BoroughList = {
   name: "boroughs";
-  list: [
-    { name: "Manhattan"; checked: boolean; id: string },
-    { name: "Brooklyn"; checked: boolean; id: string },
-    { name: "Bronx"; checked: boolean; id: string },
-    { name: "Queens"; checked: boolean; id: string },
-    { name: "Staten Island"; checked: boolean; id: string }
-  ];
+  list: CheckboxItem[];
 };
 
 // Initial values for the survey context.
@@ -137,7 +132,7 @@ export const initialPreferences: Preference[] = [
   },
 ];
 
-export const initialBoroughs: Boroughs["list"] = [
+export const initialBoroughs: BoroughList["list"] = [
   { name: "Manhattan", checked: true, id: uuidv4() },
   { name: "Brooklyn", checked: false, id: uuidv4() },
   { name: "Bronx", checked: false, id: uuidv4() },

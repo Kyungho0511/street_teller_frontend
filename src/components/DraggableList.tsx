@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Preference, Preferences } from '../constants/homeConstants';
+import { Preference, PreferenceList } from '../constants/homeConstants';
 import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';
@@ -7,7 +7,7 @@ import { useRef } from 'react';
 
 type DraggableListProps = {
   list: Preference[];
-  setSurveyContext?: (newSurveyElement: Preferences) => void;
+  setSurveyContext?: (newSurveyElement: PreferenceList) => void;
   selectable?: boolean;
   displayIcon?: boolean;
   displayRanking?: boolean;

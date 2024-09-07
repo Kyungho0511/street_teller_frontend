@@ -1,14 +1,16 @@
 import { createContext, useEffect, useState } from "react";
-import { Boroughs, initialBoroughs, initialPreferences, Preference, Preferences } from "../constants/homeConstants";
+import { BoroughList, initialBoroughs, initialPreferences, PreferenceList } from "../constants/homeConstants";
+import { ClusterList, clusterLists } from "../constants/clusterConstants";
 
 export type Survey = {
-  boroughs : Boroughs['list'],
-  preferences: Preference[],
+  boroughList : BoroughList['list'],
+  preferenceList: PreferenceList['list'],
+  clusterLists: ClusterList[]
 };
 
 type SurveyContextProps = {
   survey: Survey;
-  setSurveyContext: (newSurveyElement: Boroughs | Preferences) => void;
+  setSurveyContext: (newSurveyElement: BoroughList | PreferenceList | ClusterList) => void;
 };
 
 export const SurveyContext = createContext<SurveyContextProps>({} as SurveyContextProps);
@@ -18,17 +20,25 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
   const [survey, setSurvey] = useState<Survey>(initialSurvey);
 
   // update survey context differently based on the survey element
-  const setSurveyContext = (newSurveyElement: Boroughs | Preferences) => {
+  const setSurveyContext = (
+    newSurveyElement: BoroughList | PreferenceList | ClusterList,
+    clusterIndex?: number
+  ) => {
     if (newSurveyElement.name === "boroughs") {
-      setSurvey((prev) => ({...prev, boroughs: newSurveyElement.list}));
-    } 
-    else if (newSurveyElement.name === "preferences") {
-      setSurvey((prev) => ({...prev, preferences: newSurveyElement.list}));
-    }
-    else {
+      setSurvey((prev) => ({ ...prev, boroughList: newSurveyElement.list }));
+    } else if (newSurveyElement.name === "preferences") {
+      setSurvey((prev) => ({ ...prev, preferenceList: newSurveyElement.list }));
+    } else if (newSurveyElement.name === "clusterList" && clusterIndex) {
+      setSurvey((prev) => ({
+        ...prev,
+        clusterLists: prev.clusterLists.map((list, i) =>
+          i === clusterIndex ? newSurveyElement : list
+        ),
+      }));
+    } else {
       console.error("Invalid survey name");
     }
-  }
+  };
   
   // retrieve stored survey from session storage
   useEffect(() => { 
@@ -56,6 +66,7 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
 }
 
 const initialSurvey: Survey = {
-  boroughs: initialBoroughs,
-  preferences: initialPreferences
+  boroughList: initialBoroughs,
+  preferenceList: initialPreferences,
+  clusterLists: clusterLists
 };

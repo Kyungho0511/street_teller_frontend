@@ -44,4 +44,3 @@ export default function Map() {
     <div id="map" className={styles.map}></div>
   )
 }
-
