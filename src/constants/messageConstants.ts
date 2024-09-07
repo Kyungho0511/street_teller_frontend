@@ -1,5 +1,4 @@
-import { Cluster } from "./clusterConstants";
-import { Section } from "./homeConstants";
+import { Section, Cluster } from "./surveyConstants";
 
 type textPrompt = {type: "text", content: string};
 type sectionPrompt = {type: "section", content: Section}; 

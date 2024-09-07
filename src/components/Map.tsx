@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { pathToSection } from '../services/utilities';
 import { MapContext } from '../context/MapContext';
 import { mapSections } from '../constants/mapConstants';
-import { Section } from '../constants/homeConstants';
+import { Section } from '../constants/surveyConstants';
 
 export default function Map() {
   const { map, setMap, setParentLayer, setColor } = useContext(MapContext);

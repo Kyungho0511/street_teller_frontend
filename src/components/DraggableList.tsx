@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Preference, PreferenceList } from '../constants/homeConstants';
+import { Preference, PreferenceList } from '../constants/surveyConstants';
 import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';

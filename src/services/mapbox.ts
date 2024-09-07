@@ -1,6 +1,6 @@
 import mapboxgl from "mapbox-gl";
 import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
-import { Section } from "../constants/homeConstants";
+import { Section } from "../constants/surveyConstants";
 import * as utilities from "./utilities";
 
 export function CreateMap(): mapboxgl.Map {

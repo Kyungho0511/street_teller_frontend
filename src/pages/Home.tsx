@@ -4,10 +4,11 @@ import DraggableList from "../components/DraggableList";
 import LegendSection from "../components/LegendSection";
 import SelectableList from "../components/SelectableList";
 import { SurveyContext } from "../context/SurveyContext";
-import { initialPreferences, Preference } from "../constants/homeConstants";
+import { initialPreferences, Preference } from "../constants/surveyConstants";
 import GradientBar from "../components/GradientBar";
 import Colorbox from "../components/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
+// import CheckboxList from "../components/CheckboxList";
 
 
 export default function Home() {
@@ -31,7 +32,7 @@ export default function Home() {
     <>
       {/* Site choice */}
       {/* <SidebarSection title="choose boroughs to discover">
-          <CheckboxList name="boroughs" list={survey.boroughs} setSurveyContext={setSurveyContext} />
+          <CheckboxList name="boroughs" list={survey.boroughList} setSurveyContext={setSurveyContext} />
         </SidebarSection> */}
 
       <SidebarSection title="rank healthcare site preferences">

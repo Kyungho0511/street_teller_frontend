@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { MessageContext } from "../context/MessageContext";
 import runOpenAI from "../services/openai";
-import { Prompt } from "../constants/openaiConstants";
+import { Prompt } from "../constants/messageConstants";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../services/utilities";
-import { Section } from "../constants/homeConstants";
+import { Section } from "../constants/surveyConstants";
 
 export default function AiResponse() {
   const { prompt, addMessage, updateResponse } = useContext(MessageContext); 

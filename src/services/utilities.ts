@@ -1,4 +1,4 @@
-import { Section } from "../constants/homeConstants";
+import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
 
 // Returns the section corresponding to the path.

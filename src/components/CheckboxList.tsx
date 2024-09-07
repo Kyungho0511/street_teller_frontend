@@ -1,5 +1,5 @@
 import styles from "./CheckboxList.module.css";
-import { BoroughList, PreferenceList } from "../constants/homeConstants";
+import { BoroughList, PreferenceList } from "../constants/surveyConstants";
 
 type CheckboxListProps = {
   name: string;

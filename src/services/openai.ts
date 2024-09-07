@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
-import { Prompt, promptPresets } from "../constants/openaiConstants";
-import { clusterLists } from "../constants/clusterConstants";
+import { Prompt, promptPresets } from "../constants/messageConstants";
+import { clusterLists } from "../constants/surveyConstants";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!

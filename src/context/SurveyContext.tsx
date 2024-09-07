@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { BoroughList, initialBoroughs, initialPreferences, PreferenceList } from "../constants/homeConstants";
-import { ClusterList, clusterLists } from "../constants/clusterConstants";
+import { BoroughList, initialBoroughs, initialPreferences, PreferenceList, ClusterList, clusterLists } from "../constants/surveyConstants";
 
 export type Survey = {
   boroughList : BoroughList['list'],

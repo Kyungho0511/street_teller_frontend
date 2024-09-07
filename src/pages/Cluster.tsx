@@ -3,9 +3,9 @@ import CheckboxList from "../components/CheckboxList";
 import DropdownManager from "../components/DropdownManager";
 import LegendSection from "../components/LegendSection";
 import SidebarSection from "../components/SidebarSection";
-import { clusteringSize, clusterLists } from "../constants/clusterConstants";
 import { SurveyContext } from "../context/SurveyContext";
 import { useParams } from "react-router-dom";
+import { clusteringSize, clusterLists } from "../constants/surveyConstants";
 
 export default function Cluster() {
   const [datasets, setDatasets] = useState<string[]>([]);

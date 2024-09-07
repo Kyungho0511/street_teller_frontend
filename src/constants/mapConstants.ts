@@ -1,5 +1,5 @@
 import { getBound } from "../services/utilities";
-import { Section } from "./homeConstants";
+import { Section } from "./surveyConstants";
 
 export const configs = {
   style: "mapbox://styles/klee0511/clv0xyqe0016v01pe0ogo6xre",
