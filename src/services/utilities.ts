@@ -1,7 +1,13 @@
 import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
+import { HealthcareFeatureCollection } from "../constants/geoJsonConstants";
+import { FeatureCollection } from "geojson";
 
-// Returns the section corresponding to the path.
+/**
+ * Returns the section corresponding to the path.
+ * @param path Url path name.
+ * @returns Section name associated with the url path.
+ */
 export function pathToSection(path: string): Section {
   switch (path) {
     case "/":
@@ -13,12 +19,21 @@ export function pathToSection(path: string): Section {
   }
 }
 
-// Returns the bound corresponding to the layer name.
+/**
+ * Returns the bound corresponding to the layer name.
+ * @param layer Name of the layer to search for the bound.
+ * @returns 
+ */
 export function getBound(layer: string): MapBound | undefined {
     return mapAttributes.find((attribute) => attribute.name === layer)?.bound;
 }
 
-// Format the number based on the unit.
+/**
+ * Format the number based on the unit type.
+ * @param num Number to be formatted.
+ * @param unit Unit type to be used for formatting.
+ * @returns Formatted number with the unit.
+ */
 export function formatUnit(num: number, unit: UnitType): string {
   switch (unit) {
     case "population density":
@@ -34,4 +49,21 @@ export function formatUnit(num: number, unit: UnitType): string {
     default: 
       return `${Math.round(num)}`;
   }
+}
+
+/**
+ * Get GeoJson features filtered with indexes.
+ * @param geoJson 
+ * @param indexes 
+ * @returns 
+ */
+export function filterGeoJsonFeatures(geoJson: any, indexes: number[]): any {
+  // Filter GeoJson features array based on the indexes
+  const filteredFeatures = geoJson.features.filter((feature: object, i: number) =>
+    indexes.includes(i)
+  );
+  const filteredGeoJson = structuredClone(geoJson);
+  filteredGeoJson.features = filteredFeatures;
+
+  return filteredGeoJson;
 }

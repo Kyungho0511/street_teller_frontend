@@ -128,7 +128,6 @@ export const initialPreferences: Preference[] = [
   },
 ];
 
-
 /**
  * Boroughs for the survey.
  */
@@ -145,13 +144,9 @@ export const initialBoroughs: CheckboxItem[] = [
   { name: "Staten Island", checked: false, id: uuidv4() },
 ];
 
-
 /**
  * Clusters for the survey.
  */
-// Number of preferences to be used for each clustering analysis.
-export const clusteringSize = 2;
-
 export type Cluster = {
   name: string; // cluster label name
   values: Record<string, number>; // kmeans center values
