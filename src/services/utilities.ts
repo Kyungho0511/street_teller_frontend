@@ -9,11 +9,17 @@ import { FeatureCollection } from "geojson";
  * @returns Section name associated with the url path.
  */
 export function pathToSection(path: string): Section {
+  console.log(path); 
+
   switch (path) {
     case "/":
       return "home";
-    case "/cluster":
-      return "cluster";
+    case "/cluster/1":
+      return "cluster1";
+    case "/cluster/2":
+      return "cluster2";
+    case "/cluster/3":
+      return "cluster3";
     default:
       return "home";
   }

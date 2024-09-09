@@ -1,5 +1,7 @@
 import { kmeans, Options } from 'ml-kmeans';
 import { KMeansResult } from 'ml-kmeans/lib/KMeansResult';
+import { Color } from '../constants/mapConstants';
+import { Feature, FeatureCollection } from 'geojson';
 import {
   HealthcareFeature,
   HealthcareFeatureCollection,
@@ -20,6 +22,27 @@ const SEED = 10;
 
 // Initialization method for KMeans clustering.
 const INITIALIZATION = "kmeans++";
+
+export type KMeansLayer = {
+  geoJson: FeatureCollection;
+  title: string;
+  color: Color;
+}
+
+/**
+ * Run kmeans clustering analysis.
+ * @param data 2D array data to be clustered.
+ * @returns KMeans clustering result.
+ */
+export function run(data: number[][]): KMeansResult {
+  // Run kMeans clustering
+  const options: Options = {
+    seed: SEED,
+    initialization: INITIALIZATION,
+    maxIterations: MAX_ITERATIONS,
+  };
+  return kmeans(data, NUMBER_OF_CLUSTERS, options);
+}
 
 /**
  * Process geojson data into 2D array for clustering analysis.
@@ -57,17 +80,27 @@ export function processData(
 }
 
 /**
- * Run kmeans clustering analysis.
- * @param data 2D array data to be clustered.
- * @returns KMeans clustering result.
+ * Set the kMeans clustering result as a layer object for mapping.
  */
-export function run(data: number[][]): KMeansResult {
-  // Run kMeans clustering
-  const options: Options = {
-    seed: SEED,
-    initialization: INITIALIZATION,
-    maxIterations: MAX_ITERATIONS,
-  };
-  return kmeans(data, NUMBER_OF_CLUSTERS, options);
-}
+export function setLayer(
+  kMeans: KMeansResult,
+  geoJson: HealthcareFeatureCollection,
+  title: string,
+  color: Color
+): KMeansLayer {
 
+    // Deep copy data and set clustering result values.
+    const kMeansGeoJson = structuredClone(geoJson);
+    kMeansGeoJson.features.forEach((feature: Feature, index) => {
+      feature.properties = {};
+      feature.properties.cluster = kMeans.clusters[index];
+    });
+
+    const kMeansLayer: KMeansLayer = {
+      geoJson: kMeansGeoJson,
+      title: title,
+      color: color,
+    };
+
+    return kMeansLayer;
+}

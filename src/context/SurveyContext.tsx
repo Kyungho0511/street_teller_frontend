@@ -27,7 +27,7 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
       setSurvey((prev) => ({ ...prev, boroughList: newSurveyElement.list }));
     } else if (newSurveyElement.name === "preferences") {
       setSurvey((prev) => ({ ...prev, preferenceList: newSurveyElement.list }));
-    } else if (newSurveyElement.name === "clusterList" && clusterIndex) {
+    } else if (["cluster1", "cluster2", "cluster3"].includes(newSurveyElement.name)  && clusterIndex) {
       setSurvey((prev) => ({
         ...prev,
         clusterLists: prev.clusterLists.map((list, i) =>

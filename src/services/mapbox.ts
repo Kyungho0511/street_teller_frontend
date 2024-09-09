@@ -3,6 +3,9 @@ import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/ma
 import { Section } from "../constants/surveyConstants";
 import * as utilities from "./utilities";
 
+/**
+ * Create a mapbox map instance.
+ */
 export function CreateMap(): mapboxgl.Map {
   mapboxgl.accessToken = import.meta.env.VITE_API_KEY_MAPBOX as string;
   const bounds: mapboxgl.LngLatBoundsLike = [
@@ -29,10 +32,16 @@ export function CreateMap(): mapboxgl.Map {
   return map;
 }
 
+/**
+ * Remove the mapbox map instance.
+ */
 export function RemoveMap(map: mapboxgl.Map): void {
   map.remove();
 }
 
+/**
+ * Get the paint type of the mapbox layer.
+ */
 export function getLayerPaintType(layer: MapLayer, map: mapboxgl.Map): string[] | undefined {
   // Exit if the layer type is not found.
   const layerType = map.getLayer(layer.name)?.type;
@@ -58,6 +67,9 @@ export function getLayerPaintType(layer: MapLayer, map: mapboxgl.Map): string[] 
   }  
 }
 
+/**
+ * Set the opacity of the mapbox layer.
+ */
 export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
   const paintProps: string[] | undefined = getLayerPaintType(layer, map);
   paintProps && paintProps.forEach(function (prop) {
@@ -65,7 +77,9 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
   });
 }
 
-// Turn on layers based on the section.
+/**
+ * Turn on layers based on the section.
+ */
 export function setLayers(section: Section, map: mapboxgl.Map): void {
   
   // Exit if the section is not found.
@@ -76,7 +90,7 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   offLayers(map);
   mapSection.layers.forEach((layer) => setLayerOpacity(layer, map));
 
-  // Update layer style, adjusting the color interpolation.
+  // Home: Update layer style, adjusting the color interpolation.
   if (section === "home") {
     const name = mapSection.attribute!.name;
     updateLayerStyle(
@@ -88,6 +102,9 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   }
 }
 
+/**
+ * Visualize the input attribute of the mapbox layer.
+ */
 export function updateLayerStyle(
   layer: string,
   attribute: string,
@@ -106,7 +123,9 @@ export function updateLayerStyle(
   ]);
 }
 
-// Turn off all layers with opacity 0.
+/**
+ * Turn off all layers by setting opacity to 0.
+ */
 function offLayers(map: mapboxgl.Map) {
   mapSections.forEach((sec) => {
     sec.layers.forEach((layer) => {

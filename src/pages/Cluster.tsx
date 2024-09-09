@@ -4,25 +4,37 @@ import DropdownManager from "../components/DropdownManager";
 import LegendSection from "../components/LegendSection";
 import SidebarSection from "../components/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { clusterLists } from "../constants/surveyConstants";
 import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
-import { geoJsonfilePath, HealthcareFeatureCollection, HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
+import { MapContext } from "../context/MapContext";
+import { pathToSection } from "../services/utilities";
+import { Color, mapSections } from "../constants/mapConstants";
+import {
+  geoJsonfilePath,
+  HealthcareFeatureCollection,
+  HealthcarePropertyName,
+} from "../constants/geoJsonConstants";
 
+/**
+ * Cluster page component, which consists of three sub-sections.
+ */
 export default function Cluster() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { map } = useContext(MapContext);
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
+  const location = useLocation();
 
-  const [kMeansLayer, setKMeansLayer] = useState(null); 
+  const [kMeansLayer, setKMeansLayer] = useState<kmeans.KMeansLayer>();
   const [error, setError] = useState<string>(""); // error message for the fetch request
   const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
     type: "FeatureCollection",
     features: [],
-  }); 
+  });
 
   // Fetch GeoJson.
   useEffect(() => {
@@ -62,23 +74,60 @@ export default function Cluster() {
       });
     }
 
-    // Process the fetched data and run KMeans clustering.
-    const data: number[][] = (kmeans.processData(geoJson, selectedAttributes));
-    const kMeansResult = kmeans.run(data);
+    // Set KMeansLayer based on the selected attributes.
+    const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
+    const kMeansResult: KMeansResult = kmeans.run(data);
+    const title = pathToSection(location.pathname) as string;
+    const color: Color = mapSections.find((sec) => sec.id === title)!.color!;
+    setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, title, color));
+  }, [clusterId, survey.preferenceList, geoJson, location.pathname]);
 
-    console.log(kMeansResult);
+  // Add KMeansLayer to the map.
+  useEffect(() => {
+    if (!kMeansLayer || !map) return;
 
-    // Update clusterLists in the survey context.
-  }, [clusterId, survey.preferenceList, geoJson]);
+    // Check if the source already exists, and remove it if necessary
+    if (map.getSource(kMeansLayer.title)) {
+      map.removeLayer(kMeansLayer.title);
+      map.removeSource(kMeansLayer.title);
+    }
 
-
+    // Add the source and layer to the map
+    map.addSource(kMeansLayer.title, {
+      type: "geojson",
+      data: kMeansLayer.geoJson,
+    });
+    map.addLayer(
+      {
+        id: kMeansLayer.title,
+        type: "fill",
+        source: kMeansLayer.title,
+        paint: {
+          "fill-color": [
+            "case",
+            ["==", ["get", "cluster"], 0],
+            kMeansLayer.color.categorized[0],
+            ["==", ["get", "cluster"], 1],
+            kMeansLayer.color.categorized[1],
+            ["==", ["get", "cluster"], 2],
+            kMeansLayer.color.categorized[2],
+            ["==", ["get", "cluster"], 3],
+            kMeansLayer.color.categorized[3],
+            "#ffffff",
+          ],
+          "fill-opacity": 1,
+          "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+        },
+      },
+      "road-simple"
+    );
+  }, [kMeansLayer, map]);
 
   // Update kMeansLayer on clusters checkbox change.
-// const handleCheckboxChange = () => {}
+  // const handleCheckboxChange = () => {}
 
   // Update mapping on kMeansLayer change.
-  useEffect(() => {
-  }, [survey.clusterLists[clusterIndex].list]);
+  useEffect(() => {}, [survey.clusterLists[clusterIndex].list]);
 
   return (
     <>
