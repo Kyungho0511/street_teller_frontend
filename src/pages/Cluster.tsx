@@ -8,24 +8,23 @@ import { useParams } from "react-router-dom";
 import { clusterLists } from "../constants/surveyConstants";
 import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
-import { HealthcareFeatureCollection } from "../constants/geoJsonConstants";
+import { geoJsonfilePath, HealthcareFeatureCollection, HealthcarePropertyName } from "../constants/geoJsonConstants";
+import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 export default function Cluster() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
 
+  const [kMeansLayer, setKMeansLayer] = useState(null); 
   const [error, setError] = useState<string>(""); // error message for the fetch request
   const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
     type: "FeatureCollection",
     features: [],
   }); 
-  const [processedData, setProcessedData] = useState<number[][]>([]); 
 
-  const geoJsonfilePath = "/data/tracts_features_nyc_normalized.geojson";
-
-  // 1.Set GeoJson.
+  // Fetch GeoJson.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,8 +32,8 @@ export default function Cluster() {
         if (!response.ok) {
           throw new Error("Network error: " + response.statusText);
         }
-        const result = await response.json();
-        setGeoJson(result);
+        const data = await response.json();
+        setGeoJson(data);
         setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
@@ -47,14 +46,14 @@ export default function Cluster() {
     fetchData();
   }, []);
 
-  console.log("geoJson: ", geoJson);
-
-  // 2.Set processed data.
+  // Set KMeansLayer on loading a new clustering page.
   useEffect(() => {
+    if (geoJson.features.length === 0) return;
+
     // Get attributes selected by users.
-    const startIndex: number = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
-    const endIndex: number = CLUSTERING_SIZE * parseInt(clusterId!);
-    const selectedAttributes: string[] = [];
+    const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
+    const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);
+    const selectedAttributes: HealthcarePropertyName[] = [];
 
     for (let i = startIndex, n = endIndex; i < n; i++) {
       if (survey.preferenceList.length - 1 < i) break;
@@ -63,16 +62,22 @@ export default function Cluster() {
       });
     }
 
-    // Filter the fetched data and run KMeans clustering.
-    kmeans.prepareData(geoJson, selectedAttributes);
+    // Process the fetched data and run KMeans clustering.
+    const data: number[][] = (kmeans.processData(geoJson, selectedAttributes));
+    const kMeansResult = kmeans.run(data);
+
+    console.log(kMeansResult);
 
     // Update clusterLists in the survey context.
   }, [clusterId, survey.preferenceList, geoJson]);
 
-  // 3.Update mapping and legend.
+
+
+  // Update kMeansLayer on clusters checkbox change.
+// const handleCheckboxChange = () => {}
+
+  // Update mapping on kMeansLayer change.
   useEffect(() => {
-    // Update mapping with clustering result.
-    // Update the legend section.
   }, [survey.clusterLists[clusterIndex].list]);
 
   return (

@@ -1,4 +1,5 @@
 import { getBound } from "../services/utilities";
+import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 
 export const configs = {
@@ -51,7 +52,7 @@ export type MapBound = {
 };
 
 export type MapAttribute = {
-  name: string;
+  name: HealthcarePropertyName;
   bound: MapBound;
   unit: UnitType;
 };

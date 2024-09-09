@@ -1,41 +1,47 @@
-import { FeatureCollection, Polygon } from 'geojson';
+import { Feature, FeatureCollection, Polygon } from 'geojson';
 
-type HealthcareProperties = {
-  "GEOID": string;
-  "medicaid enrollees / km2": number;
-  "commercial enrollees / km2": number;
-  "insured population / km2": number;
-  "unserved medicaid enrollees / km2": number;
-  "unserved commercial enrollees / km2": number;
-  "average land price / ft2": number;
-  "agricultural land percent": number;
-  "residential district percent": number;
-  "vacant land percent": number;
-  "commercial district percent": number;
-  "industrial district percent": number;
-  "residential area / ft2": number;
-  "commercial area / ft2": number;
-  "drove alone percent": number;
-  "carpooled percent": number;
-  "public transit percent": number;
-  "walked percent": number;
-  "worked from home percent": number;
-  "no leisure-time physical activity": number;
-  "binge drinking": number;
-  "sleeping less than 7 hours": number;
-  "current smoking": number;
-  "cholesterol screening": number;
-  "current lack of health insurance": number;
-  "taking medicine for high blood pressure": number;
-  "visits to dentist or dental clinic": number;
-  "visits to doctor for routine checkup": number;
-  "physical health not good for >=14 days": number;
-  "mental health not good for >=14 days": number;
-  "fair or poor self-rated health status": number;
-  "median household income": number;
-  "median household disposable income": number;
-  "median monthly housing cost": number;
-  "unserved population / km2": number;
+export const geoJsonfilePath = "/data/tracts_features_nyc_normalized.geojson";
+
+export type HealthcarePropertyName =
+  | "medicaid enrollees / km2"
+  | "commercial enrollees / km2"
+  | "insured population / km2"
+  | "unserved medicaid enrollees / km2"
+  | "unserved commercial enrollees / km2"
+  | "average land price / ft2"
+  | "agricultural land percent"
+  | "residential district percent"
+  | "vacant land percent"
+  | "commercial district percent"
+  | "industrial district percent"
+  | "residential area / ft2"
+  | "commercial area / ft2"
+  | "drove alone percent"
+  | "carpooled percent"
+  | "public transit percent"
+  | "walked percent"
+  | "worked from home percent"
+  | "no leisure-time physical activity"
+  | "binge drinking"
+  | "sleeping less than 7 hours"
+  | "current smoking"
+  | "cholesterol screening"
+  | "current lack of health insurance"
+  | "taking medicine for high blood pressure"
+  | "visits to dentist or dental clinic"
+  | "visits to doctor for routine checkup"
+  | "physical health not good for >=14 days"
+  | "mental health not good for >=14 days"
+  | "fair or poor self-rated health status"
+  | "median household income"
+  | "median household disposable income"
+  | "median monthly housing cost"
+  | "unserved population / km2";
+
+export type HealthcareProperties = {
+  [key in HealthcarePropertyName]: number;
 }
+
+export type HealthcareFeature = Feature<Polygon, HealthcareProperties>;
 
 export type HealthcareFeatureCollection = FeatureCollection<Polygon, HealthcareProperties>;
