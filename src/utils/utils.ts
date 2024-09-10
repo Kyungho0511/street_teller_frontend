@@ -10,8 +10,6 @@ import { FeatureCollection } from "geojson";
  * @returns Section name associated with the url path.
  */
 export function pathToSection(path: string): Section {
-  console.log(path); 
-
   switch (path) {
     case "/":
       return "home";

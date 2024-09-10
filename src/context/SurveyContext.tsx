@@ -1,9 +1,9 @@
 import { createContext, useEffect, useState } from "react";
-import { BoroughList, initialBoroughs, initialPreferences, PreferenceList, ClusterList, clusterLists } from "../constants/surveyConstants";
+import { BoroughList, PreferenceList, ClusterList, initialPreferenceList, initialClusterLists, initialBoroughList } from "../constants/surveyConstants";
 
 export type Survey = {
-  boroughList : BoroughList['list'],
-  preferenceList: PreferenceList['list'],
+  boroughList : BoroughList,
+  preferenceList: PreferenceList,
   clusterLists: ClusterList[]
 };
 
@@ -21,17 +21,22 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
   // update survey context differently based on the survey element
   const setSurveyContext = (
     newSurveyElement: BoroughList | PreferenceList | ClusterList,
-    clusterIndex?: number
   ) => {
     if (newSurveyElement.name === "boroughs") {
-      setSurvey((prev) => ({ ...prev, boroughList: newSurveyElement.list }));
-    } else if (newSurveyElement.name === "preferences") {
-      setSurvey((prev) => ({ ...prev, preferenceList: newSurveyElement.list }));
-    } else if (["cluster1", "cluster2", "cluster3"].includes(newSurveyElement.name)  && clusterIndex) {
       setSurvey((prev) => ({
         ...prev,
-        clusterLists: prev.clusterLists.map((list, i) =>
-          i === clusterIndex ? newSurveyElement : list
+        boroughList: { name: "boroughs", list: newSurveyElement.list },
+      }));
+    } else if (newSurveyElement.name === "preferences") {
+      setSurvey((prev) => ({
+        ...prev,
+        preferenceList: { name: "preferences", list: newSurveyElement.list },
+      }));
+    } else if (["cluster1", "cluster2", "cluster3"].includes(newSurveyElement.name)) {
+      setSurvey((prev) => ({
+        ...prev,
+        clusterLists: prev.clusterLists.map((list) =>
+          newSurveyElement.name === list.name ? newSurveyElement : list
         ),
       }));
     } else {
@@ -65,7 +70,7 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
 }
 
 const initialSurvey: Survey = {
-  boroughList: initialBoroughs,
-  preferenceList: initialPreferences,
-  clusterLists: clusterLists
+  boroughList: initialBoroughList,
+  preferenceList: initialPreferenceList,
+  clusterLists: initialClusterLists
 };

@@ -4,7 +4,7 @@ import DraggableList from "../components/molecules/DraggableList";
 import LegendSection from "../components/organisms/LegendSection";
 import SelectableList from "../components/molecules/SelectableList";
 import { SurveyContext } from "../context/SurveyContext";
-import { initialPreferences, Preference } from "../constants/surveyConstants";
+import { initialPreferenceList, Preference } from "../constants/surveyConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
@@ -15,7 +15,7 @@ export default function Home() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
 
   // Currently selected preference.
-  const [preference, setPreference] = useState<Preference>(initialPreferences[0]);
+  const [preference, setPreference] = useState<Preference>(initialPreferenceList.list[0]);
 
   // Currently selected mapbox layer attribute. 
   const [attribute, setAttribute] = useState<MapAttribute>(
@@ -24,7 +24,7 @@ export default function Home() {
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
-    const selectedPreference = survey.preferenceList.find((item) => item.selected);
+    const selectedPreference = survey.preferenceList.list.find((item) => item.selected);
     selectedPreference && setPreference(selectedPreference);
   }, [survey]);
 
@@ -37,7 +37,7 @@ export default function Home() {
 
       <SidebarSection title="rank healthcare site preferences">
         <DraggableList
-          list={survey.preferenceList}
+          list={survey.preferenceList.list}
           setSurveyContext={setSurveyContext}
           displayIcon={false}
           displayRanking

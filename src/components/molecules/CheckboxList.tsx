@@ -1,11 +1,12 @@
 import styles from "./CheckboxList.module.css";
-import { BoroughList, PreferenceList } from "../../constants/surveyConstants";
+import { BoroughList, ClusterCheckboxItem, ClusterList } from "../../constants/surveyConstants";
+import Colorbox from "../atoms/Colorbox";
 
 type CheckboxListProps = {
   name: string;
   list: CheckboxItem[];
   colorbox?: boolean;
-  setSurveyContext?: (newSurveyElement: BoroughList | PreferenceList) => void;
+  setSurveyContext: (newSurveyElement: BoroughList | ClusterList) => void;
 };
 
 export type CheckboxItem = {
@@ -18,15 +19,23 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
 
   // Handle uncontrolled checkbox change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-
-    // Update Boroughs in the survey context
-    if (setSurveyContext) {
-      const updatedList = [...list] as BoroughList['list'];
+      const updatedList = [...list];
       updatedList[index] = { ...updatedList[index], checked: event.target.checked };
 
-      const newBoroughs: BoroughList = { name: "boroughs", list: updatedList };
-      setSurveyContext(newBoroughs);
-    }
+      // Update Boroughs in the survey context
+      if (name === "boroughs") {
+        const newBoroughs: BoroughList = { name: "boroughs", list: updatedList as CheckboxItem[]};
+        setSurveyContext(newBoroughs);
+      } 
+      
+      // Update ClusterList in the survey context
+      else if ([ "cluster1", "cluster2", "cluster3" ].includes(name)) {
+        const newCluster: ClusterList = {
+          name: name as "cluster1" | "cluster2" | "cluster3",
+          list: updatedList as ClusterCheckboxItem[],
+        };
+        setSurveyContext(newCluster);
+      }
   }
 
   return (
@@ -43,8 +52,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
           />
           <span className={styles.indicator}></span>
           <div className={styles.text}>
-            {colorbox && <span className={styles.colorbox}></span>}
-            {item.name}
+            {colorbox ? <Colorbox label={item.name} color={item.color} /> : item.name}
           </div>
         </label>
       ))}

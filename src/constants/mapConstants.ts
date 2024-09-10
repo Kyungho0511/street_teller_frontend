@@ -12,7 +12,7 @@ export const configs = {
   },
 };
 
-type Hex = `#${string}`;
+export type Hex = `#${string}`;
 
 export type Color = {
   categorized: Hex[];

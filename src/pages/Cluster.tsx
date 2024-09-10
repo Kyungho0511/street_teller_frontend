@@ -5,7 +5,6 @@ import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
-import { clusterLists } from "../constants/surveyConstants";
 import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
@@ -17,6 +16,7 @@ import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
+import { ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
 
 /**
  * Cluster page component, which consists of three sub-sections.
@@ -27,9 +27,9 @@ export default function Cluster() {
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
+  const clusterName = pathToSection(location.pathname)
 
   const [kMeansLayer, setKMeansLayer] = useState<kmeans.KMeansLayer>();
-  const [error, setError] = useState<string>(""); // error message for the fetch request
   const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
     type: "FeatureCollection",
@@ -49,7 +49,6 @@ export default function Cluster() {
         setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
-          setError(error.message);
           console.error(error.message);
         }
         setLoading(false);
@@ -68,19 +67,34 @@ export default function Cluster() {
     const selectedAttributes: HealthcarePropertyName[] = [];
 
     for (let i = startIndex, n = endIndex; i < n; i++) {
-      if (survey.preferenceList.length - 1 < i) break;
-      survey.preferenceList[i].subCategories.forEach((subCategory) => {
+      if (survey.preferenceList.list.length - 1 < i) break;
+      survey.preferenceList.list[i].subCategories.forEach((subCategory) => {
         selectedAttributes.push(subCategory.name);
       });
     }
-
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.run(data);
-    const title = pathToSection(location.pathname) as string;
-    const color: Color = mapSections.find((sec) => sec.id === title)!.color!;
-    setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, title, color));
-  }, [clusterId, survey.preferenceList, geoJson, location.pathname]);
+    const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
+    setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized));
+  }, [clusterId, survey.preferenceList.list, geoJson, location.pathname]);
+
+  // Set ClusterList in the survey context
+  useEffect(() => {
+    if (!kMeansLayer) return;
+    const list = [...survey.clusterLists[clusterIndex].list];
+    const updatedList = list.map((item, index) => ({
+      ...item,
+      values: kMeansLayer.centroids[index],
+      color: kMeansLayer.colors[index],
+    }));
+
+    const newCluster: ClusterList = {
+      name: clusterName as "cluster1" | "cluster2" | "cluster3",
+      list: updatedList as ClusterCheckboxItem[],
+    };
+    setSurveyContext(newCluster);
+  }, [kMeansLayer])
 
   // Add KMeansLayer to the map.
   useEffect(() => {
@@ -106,13 +120,13 @@ export default function Cluster() {
           "fill-color": [
             "case",
             ["==", ["get", "cluster"], 0],
-            kMeansLayer.color.categorized[0],
+            kMeansLayer.colors[0],
             ["==", ["get", "cluster"], 1],
-            kMeansLayer.color.categorized[1],
+            kMeansLayer.colors[1],
             ["==", ["get", "cluster"], 2],
-            kMeansLayer.color.categorized[2],
+            kMeansLayer.colors[2],
             ["==", ["get", "cluster"], 3],
-            kMeansLayer.color.categorized[3],
+            kMeansLayer.colors[3],
             "#ffffff",
           ],
           "fill-opacity": 1,
@@ -137,9 +151,10 @@ export default function Cluster() {
           the clusters you're not targeting, and continue.
         </p>
         <CheckboxList
-          name="select1"
-          list={clusterLists[clusterIndex].list}
+          name={clusterName}
+          list={survey.clusterLists[clusterIndex].list}
           colorbox
+          setSurveyContext={setSurveyContext}
         />
       </SidebarSection>
 

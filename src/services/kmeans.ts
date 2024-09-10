@@ -1,6 +1,6 @@
 import { kmeans, Options } from 'ml-kmeans';
 import { KMeansResult } from 'ml-kmeans/lib/KMeansResult';
-import { Color } from '../constants/mapConstants';
+import { Color, Hex } from '../constants/mapConstants';
 import { Feature, FeatureCollection } from 'geojson';
 import {
   HealthcareFeature,
@@ -25,8 +25,9 @@ const INITIALIZATION = "kmeans++";
 
 export type KMeansLayer = {
   geoJson: FeatureCollection;
+  centroids: number[][];
   title: string;
-  color: Color;
+  colors: Hex[];
 }
 
 /**
@@ -86,7 +87,7 @@ export function setLayer(
   kMeans: KMeansResult,
   geoJson: HealthcareFeatureCollection,
   title: string,
-  color: Color
+  colors: Hex[]
 ): KMeansLayer {
 
     // Deep copy data and set clustering result values.
@@ -98,8 +99,9 @@ export function setLayer(
 
     const kMeansLayer: KMeansLayer = {
       geoJson: kMeansGeoJson,
+      centroids: kMeans.centroids,
       title: title,
-      color: color,
+      colors: colors,
     };
 
     return kMeansLayer;
