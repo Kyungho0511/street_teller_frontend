@@ -1,7 +1,8 @@
+import { HealthcareFeatureCollection } from '../constants/geoJsonConstants';
 import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
-import { HealthcareFeatureCollection } from "../constants/geoJsonConstants";
 import { FeatureCollection } from "geojson";
+
 
 /**
  * Returns the section corresponding to the path.

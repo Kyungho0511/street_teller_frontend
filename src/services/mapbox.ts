@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
 import { Section } from "../constants/surveyConstants";
-import * as utilities from "./utilities";
+import * as utils from "../utils/utils";
 
 /**
  * Create a mapbox map instance.
@@ -111,7 +111,7 @@ export function updateLayerStyle(
   color: Color,
   map: mapboxgl.Map
 ) {
-  const bound: MapBound = utilities.getBound(attribute)!;
+  const bound: MapBound = utils.getBound(attribute)!;
   map.setPaintProperty(layer, "fill-color", [
     "interpolate",
     bound.rateOfChange,

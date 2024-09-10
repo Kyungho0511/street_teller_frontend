@@ -1,11 +1,11 @@
 import styles from './Map.module.css';
 import { useContext, useEffect } from "react";
-import * as mapbox from "../services/mapbox";
+import * as mapbox from "../../services/mapbox";
 import { useLocation } from 'react-router-dom';
-import { pathToSection } from '../services/utilities';
-import { MapContext } from '../context/MapContext';
-import { mapSections } from '../constants/mapConstants';
-import { Section } from '../constants/surveyConstants';
+import { pathToSection } from '../../utils/utils';
+import { MapContext } from '../../context/MapContext';
+import { mapSections } from '../../constants/mapConstants';
+import { Section } from '../../constants/surveyConstants';
 
 export default function Map() {
   const { map, setMap, setParentLayer, setColor } = useContext(MapContext);

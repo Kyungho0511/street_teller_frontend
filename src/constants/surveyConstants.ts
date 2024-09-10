@@ -9,8 +9,8 @@ import {
   faTree,
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import { ListItem } from '../components/SelectableList';
-import { CheckboxItem } from '../components/CheckboxList';
+import { ListItem } from '../components/molecules/SelectableList';
+import { CheckboxItem } from '../components/molecules/CheckboxList';
 import { HealthcarePropertyName } from './geoJsonConstants';
 
 export type Section = "home" | "cluster1" | "cluster2" | "cluster3";

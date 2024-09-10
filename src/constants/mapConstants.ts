@@ -1,4 +1,4 @@
-import { getBound } from "../services/utilities";
+import { getBound } from "../utils/utils";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 

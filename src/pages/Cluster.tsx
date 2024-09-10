@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import CheckboxList from "../components/CheckboxList";
-import DropdownManager from "../components/DropdownManager";
-import LegendSection from "../components/LegendSection";
-import SidebarSection from "../components/SidebarSection";
+import CheckboxList from "../components/molecules/CheckboxList";
+import DropdownManager from "../components/molecules/DropdownManager";
+import LegendSection from "../components/organisms/LegendSection";
+import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
 import { clusterLists } from "../constants/surveyConstants";
@@ -10,7 +10,7 @@ import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
-import { pathToSection } from "../services/utilities";
+import { pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
 import {
   geoJsonfilePath,

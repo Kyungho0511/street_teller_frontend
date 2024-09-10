@@ -2,7 +2,7 @@ import styles from "./PromptBox.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useRef, useState } from "react";
-import { MessageContext } from "../context/MessageContext";
+import { MessageContext } from "../../context/MessageContext";
 
 export default function PromptBox() {
   const [text, setText] = useState<string>("");

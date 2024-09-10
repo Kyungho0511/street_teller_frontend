@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./SelectableList.module.css";
-import { MapContext } from "../context/MapContext";
-import { MapAttribute, mapAttributes } from "../constants/mapConstants";
-import * as mapbox from "../services/mapbox";
-import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import { MapContext } from "../../context/MapContext";
+import { MapAttribute, mapAttributes } from "../../constants/mapConstants";
+import * as mapbox from "../../services/mapbox";
+import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 
 type SelectableListProps = {
   list: ListItem[];

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import SidebarSection from "../components/SidebarSection";
-import DraggableList from "../components/DraggableList";
-import LegendSection from "../components/LegendSection";
-import SelectableList from "../components/SelectableList";
+import SidebarSection from "../components/organisms/SidebarSection";
+import DraggableList from "../components/molecules/DraggableList";
+import LegendSection from "../components/organisms/LegendSection";
+import SelectableList from "../components/molecules/SelectableList";
 import { SurveyContext } from "../context/SurveyContext";
 import { initialPreferences, Preference } from "../constants/surveyConstants";
-import GradientBar from "../components/GradientBar";
-import Colorbox from "../components/Colorbox";
+import GradientBar from "../components/atoms/GradientBar";
+import Colorbox from "../components/atoms/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
 // import CheckboxList from "../components/CheckboxList";
 

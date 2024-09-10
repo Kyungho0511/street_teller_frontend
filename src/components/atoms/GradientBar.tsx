@@ -1,6 +1,6 @@
 import styles from "./GradientBar.module.css";
-import { MapBound, UnitType } from "../constants/mapConstants";
-import * as utilities from "../services/utilities";
+import { MapBound, UnitType } from "../../constants/mapConstants";
+import * as utils from "../../utils/utils";
 
 type GradientBarProps = {
   bound: MapBound;
@@ -8,8 +8,8 @@ type GradientBarProps = {
 }
 
 export default function GradientBar({ bound, unit }: GradientBarProps) {
-  const scaleMin: string = utilities.formatUnit(bound.min, unit);
-  const scaleMax: string = utilities.formatUnit(bound.max, unit);
+  const scaleMin: string = utils.formatUnit(bound.min, unit);
+  const scaleMax: string = utils.formatUnit(bound.max, unit);
 
   return (
     <div className={styles.container}>

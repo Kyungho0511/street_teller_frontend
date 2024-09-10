@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
-import Footbar from "../components/Footbar";
-import Map from "../components/Map";
+import Footbar from "../components/organisms/Footbar";
+import Map from "../components/organisms/Map";
 import { SurveyContextProvider } from "../context/SurveyContext";
-import MessageBox from "../components/MessageBox";
-import Sidebar from "../components/Sidebar";
+import MessageBox from "../components/molecules/MessageBox";
+import Sidebar from "../components/organisms/Sidebar";
 import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
 
