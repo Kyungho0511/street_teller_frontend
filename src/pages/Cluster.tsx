@@ -28,6 +28,7 @@ export default function Cluster() {
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
   const clusterName = pathToSection(location.pathname)
+  const clusterList = survey.clusterLists[clusterIndex];
 
   const [kMeansLayer, setKMeansLayer] = useState<kmeans.KMeansLayer>();
   const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
@@ -77,7 +78,7 @@ export default function Cluster() {
     const kMeansResult: KMeansResult = kmeans.run(data);
     const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
     setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized));
-  }, [clusterId, survey.preferenceList.list, geoJson, location.pathname]);
+  }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
 
   // Set ClusterList in the survey context
   useEffect(() => {
@@ -137,11 +138,25 @@ export default function Cluster() {
     );
   }, [kMeansLayer, map]);
 
-  // Update kMeansLayer on clusters checkbox change.
-  // const handleCheckboxChange = () => {}
+  // Update mapping on selected clusterList change
+  useEffect(() => {
+    if (map && map.getLayer(clusterList.name)) {
+      const list = clusterList.list;
 
-  // Update mapping on kMeansLayer change.
-  useEffect(() => {}, [survey.clusterLists[clusterIndex].list]);
+      map.setPaintProperty(clusterList.name, "fill-color", [
+        "case",
+        ["==", ["get", "cluster"], 0],
+        list[0].checked ? list[0].color : "#ffffff",
+        ["==", ["get", "cluster"], 1],
+        list[1].checked ? list[1].color : "#ffffff",
+        ["==", ["get", "cluster"], 2],
+        list[2].checked ? list[2].color : "#ffffff",
+        ["==", ["get", "cluster"], 3],
+        list[3].checked ? list[3].color : "#ffffff",
+        "#ffffff",
+      ])
+    }
+  }, [clusterList, map]);
 
   return (
     <>

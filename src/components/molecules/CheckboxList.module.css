@@ -3,6 +3,7 @@
 .form {
   display: flex;
   flex-direction: column;
+  margin-top: 1rem;
 }
 
 .label {
@@ -10,11 +11,16 @@
   align-items: center;
   margin-bottom: 10px;
   cursor: pointer;
+
+  & p {
+    font-weight: var(--font-regular);
+    margin: 0.25rem;
+  }
 }
 
 .label:hover {
-  & .text {
-    color: var(--color-blue);
+  & p {
+    font-weight: var(--font-bold);
   }
 }
 
@@ -49,10 +55,6 @@
 
 .input:checked + .indicator::before {
   transform: scale(1);
-}
-
-.text {
-  margin: 0.25rem;
 }
 
 .colorbox {

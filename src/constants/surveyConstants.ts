@@ -158,7 +158,6 @@ export const initialBoroughList: BoroughList = {
 export type Cluster = {
   name: string; // cluster label name
   values: Partial<{ [key in HealthcarePropertyName]: number }>; // kmeans center values
-  color: Hex;
 };
 
 export type ClusterCheckboxItem = CheckboxItem & Cluster;

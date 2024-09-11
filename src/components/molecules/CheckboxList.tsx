@@ -1,6 +1,7 @@
 import styles from "./CheckboxList.module.css";
 import { BoroughList, ClusterCheckboxItem, ClusterList } from "../../constants/surveyConstants";
 import Colorbox from "../atoms/Colorbox";
+import { Hex } from "../../constants/mapConstants";
 
 type CheckboxListProps = {
   name: string;
@@ -13,6 +14,7 @@ export type CheckboxItem = {
   name: string;
   checked: boolean;
   id: string;
+  color?: Hex;
 }
 
 export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
@@ -24,7 +26,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
 
       // Update Boroughs in the survey context
       if (name === "boroughs") {
-        const newBoroughs: BoroughList = { name: "boroughs", list: updatedList as CheckboxItem[]};
+        const newBoroughs: BoroughList = { name: "boroughs", list: updatedList};
         setSurveyContext(newBoroughs);
       } 
       
@@ -51,9 +53,11 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
             onChange={(event) => handleChange(event, index)}
           />
           <span className={styles.indicator}></span>
-          <div className={styles.text}>
-            {colorbox ? <Colorbox label={item.name} color={item.color} /> : item.name}
-          </div>
+          {colorbox ? (
+            <Colorbox label={item.name} color={item.color} />
+          ) : (
+            <p className={styles.text}>{item.name}</p>
+          )}
         </label>
       ))}
     </form>
