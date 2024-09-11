@@ -77,17 +77,20 @@ export default function Cluster() {
     const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.run(data);
     const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
-    setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized));
+    setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized, selectedAttributes));
   }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
 
   // Set ClusterList in the survey context
   useEffect(() => {
     if (!kMeansLayer) return;
     const list = [...survey.clusterLists[clusterIndex].list];
-    const updatedList = list.map((item, index) => ({
+    const updatedList = list.map((item, i) => ({
       ...item,
-      values: kMeansLayer.centroids[index],
-      color: kMeansLayer.colors[index],
+      centroids: kMeansLayer.attributes.map((attr, j) => ({
+        name: attr,
+        value: kMeansLayer.centroids[i][j],
+      })),
+      color: kMeansLayer.colors[i],
     }));
 
     const newCluster: ClusterList = {
@@ -174,7 +177,7 @@ export default function Cluster() {
       </SidebarSection>
 
       <LegendSection>
-        <div></div>
+        <DropdownManager lists={clusterList.list} />
       </LegendSection>
     </>
   );

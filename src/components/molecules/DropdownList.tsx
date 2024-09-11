@@ -1,39 +1,28 @@
+import { v4 as uuidv4 } from "uuid";
+import { ClusterCheckboxItem } from '../../constants/surveyConstants';
 import styles from './DropdownList.module.css';
-import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type DropdownListProps = {
-  list: DropdownListType;
-  selectedItem?: string;
-  expanded: boolean;
-  spacer: boolean;
+  list: ClusterCheckboxItem;
+  expanded?: boolean;
 }
 
-export type DropdownListType = {
-  category: string;
-  items: {name: string, id: string}[];
-  id: string;
-}
-
-export default function DropdownList({list, selectedItem, expanded, spacer}: DropdownListProps) {
+export default function DropdownList({list, expanded}: DropdownListProps) {
   return (
-    <div className={`${expanded && styles.expanded}`}>
-      <button className={styles.button}>
-        <span className={styles.triangle}></span>{list.category}
+    <div className={`${styles.container} ${expanded && styles.expanded}`}>
+      <button className={styles.list_button}>
+        <span className={styles.triangle}></span>{list.name}
       </button>
-      {/* ul --> className="dataset__list" */}
       <ul className={styles.list}> 
-        {list.items.map((item) => (
+        {list.centroids.map((item) => (
           <li 
-            className={`${styles.item} ${selectedItem === item.name && styles.selectedItem}`} 
-            key={item.id}
+            className={styles.text} 
+            key={uuidv4()}
           >
-            <p>{item.name}</p>
-            <FontAwesomeIcon icon={faSquarePlus} />
+            <p>{item.name}: {item.value}</p>
           </li>
         ))}
       </ul>
-      {spacer && <hr className="spacer" />}
     </div>
   )
 }

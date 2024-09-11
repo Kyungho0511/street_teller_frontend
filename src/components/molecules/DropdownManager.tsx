@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import DropdownList, { DropdownListType } from './DropdownList';
+import DropdownList from './DropdownList';
+import { ClusterCheckboxItem } from '../../constants/surveyConstants';
 
 type DropdownManagerProps = {
-  lists: DropdownListType[];
-  defaultItem?: string;
-  selectable?: boolean;
+  lists: ClusterCheckboxItem[];
   autoCollapse?: boolean;
 }
 
-export default function DropdownManager({lists, defaultItem, selectable, autoCollapse}: DropdownManagerProps) {
+export default function DropdownManager({lists, autoCollapse}: DropdownManagerProps) {
   const [expandedLists, setExpandedLists] = useState<boolean[]>(() => new Array(lists.length).fill(false));
-  const [selectedItem, setSelectedItem] = useState<string | undefined>(defaultItem);
 
   const handleClick = (index: number, event: React.MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -27,11 +25,6 @@ export default function DropdownManager({lists, defaultItem, selectable, autoCol
         );
       }
     }
-
-    // selectable option allows users to select items in the list
-    if (target.tagName === "P" && selectable) {
-      setSelectedItem(target.textContent! as string);
-    }
   };
 
   return (
@@ -40,9 +33,7 @@ export default function DropdownManager({lists, defaultItem, selectable, autoCol
         <div key={list.id} onClick={(event) => handleClick(index, event)}>
           <DropdownList
             list={list}
-            selectedItem={selectedItem}
             expanded={expandedLists[index]}
-            spacer={index === expandedLists.length - 1 ? false : true}
           />
         </div>
       ))}

@@ -28,6 +28,7 @@ export type KMeansLayer = {
   centroids: number[][];
   title: string;
   colors: Hex[];
+  attributes: HealthcarePropertyName[];
 }
 
 /**
@@ -87,7 +88,8 @@ export function setLayer(
   kMeans: KMeansResult,
   geoJson: HealthcareFeatureCollection,
   title: string,
-  colors: Hex[]
+  colors: Hex[],
+  attributes: HealthcarePropertyName[]
 ): KMeansLayer {
 
     // Deep copy data and set clustering result values.
@@ -102,6 +104,7 @@ export function setLayer(
       centroids: kMeans.centroids,
       title: title,
       colors: colors,
+      attributes: attributes,
     };
 
     return kMeansLayer;

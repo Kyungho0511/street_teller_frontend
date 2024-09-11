@@ -156,8 +156,8 @@ export const initialBoroughList: BoroughList = {
  * Clusters for the survey.
  */
 export type Cluster = {
-  name: string; // cluster label name
-  values: Partial<{ [key in HealthcarePropertyName]: number }>; // kmeans center values
+  name: string;
+  centroids: { name: HealthcarePropertyName; value: number }[];
 };
 
 export type ClusterCheckboxItem = CheckboxItem & Cluster;
@@ -174,28 +174,28 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "label1",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label2",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label3",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label4",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -207,28 +207,28 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "label1",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label2",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label3",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label4",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -240,28 +240,28 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "label1",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label2",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label3",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
       },
       {
         name: "label4",
-        values: {},
+        centroids: [{}],
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
