@@ -1,4 +1,4 @@
-import { getBound } from "../utils/utils";
+import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 
@@ -240,7 +240,7 @@ export const mapSections: MapSection[] = [
     ],
     attribute: {
       name: "unserved population / km2",
-      bound: getBound("unserved population / km2")!,
+      bound: utils.getBound("unserved population / km2")!,
       unit: "population density",
     },
     attributeParentLayer: "tracts-features-nyc",

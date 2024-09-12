@@ -17,6 +17,7 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import { ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
+import * as mapbox from "../services/mapbox";
 
 /**
  * Cluster page component, which consists of three sub-sections.
@@ -80,6 +81,7 @@ export default function Cluster() {
     setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized, selectedAttributes));
   }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
 
+
   // Set ClusterList in the survey context
   useEffect(() => {
     if (!kMeansLayer) return;
@@ -100,65 +102,20 @@ export default function Cluster() {
     setSurveyContext(newCluster);
   }, [kMeansLayer])
 
+
   // Add KMeansLayer to the map.
   useEffect(() => {
     if (!kMeansLayer || !map) return;
+    mapbox.addClusterLayer(kMeansLayer, map);
 
-    // Check if the source already exists, and remove it if necessary
-    if (map.getSource(kMeansLayer.title)) {
-      map.removeLayer(kMeansLayer.title);
-      map.removeSource(kMeansLayer.title);
-    }
-
-    // Add the source and layer to the map
-    map.addSource(kMeansLayer.title, {
-      type: "geojson",
-      data: kMeansLayer.geoJson,
-    });
-    map.addLayer(
-      {
-        id: kMeansLayer.title,
-        type: "fill",
-        source: kMeansLayer.title,
-        paint: {
-          "fill-color": [
-            "case",
-            ["==", ["get", "cluster"], 0],
-            kMeansLayer.colors[0],
-            ["==", ["get", "cluster"], 1],
-            kMeansLayer.colors[1],
-            ["==", ["get", "cluster"], 2],
-            kMeansLayer.colors[2],
-            ["==", ["get", "cluster"], 3],
-            kMeansLayer.colors[3],
-            "#ffffff",
-          ],
-          "fill-opacity": 1,
-          "fill-outline-color": "rgba(217, 217, 217, 0.36)",
-        },
-      },
-      "road-simple"
-    );
+    // Remove KMeansLayer from mapbox when on unmount.
+    return () => mapbox.removeClusterLayer(kMeansLayer, map)
   }, [kMeansLayer, map]);
+
 
   // Update mapping on selected clusterList change
   useEffect(() => {
-    if (map && map.getLayer(clusterList.name)) {
-      const list = clusterList.list;
-
-      map.setPaintProperty(clusterList.name, "fill-color", [
-        "case",
-        ["==", ["get", "cluster"], 0],
-        list[0].checked ? list[0].color : "#ffffff",
-        ["==", ["get", "cluster"], 1],
-        list[1].checked ? list[1].color : "#ffffff",
-        ["==", ["get", "cluster"], 2],
-        list[2].checked ? list[2].color : "#ffffff",
-        ["==", ["get", "cluster"], 3],
-        list[3].checked ? list[3].color : "#ffffff",
-        "#ffffff",
-      ])
-    }
+    mapbox.updateClusterLayer(clusterList, map);
   }, [clusterList, map]);
 
   return (

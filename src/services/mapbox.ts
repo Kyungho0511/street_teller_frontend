@@ -1,6 +1,7 @@
+import { KMeansLayer } from './kmeans';
 import mapboxgl from "mapbox-gl";
 import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
-import { Section } from "../constants/surveyConstants";
+import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
 
 /**
@@ -86,6 +87,8 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   const mapSection = mapSections.find((sec) => sec.id === section);
   if (!mapSection) return;
 
+  console.log("setting layers...", section);
+
   // Update layer opacity.
   offLayers(map);
   mapSection.layers.forEach((layer) => setLayerOpacity(layer, map));
@@ -93,7 +96,7 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   // Home: Update layer style, adjusting the color interpolation.
   if (section === "home") {
     const name = mapSection.attribute!.name;
-    updateLayerStyle(
+    updateLayerAttribute(
       mapSection.attributeParentLayer!,
       name,
       mapSection.color!,
@@ -103,9 +106,9 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
 }
 
 /**
- * Visualize the input attribute of the mapbox layer.
+ * Update attribute of the mapbox layer to be drawn.
  */
-export function updateLayerStyle(
+export function updateLayerAttribute(
   layer: string,
   attribute: string,
   color: Color,
@@ -121,6 +124,70 @@ export function updateLayerStyle(
     bound.max,
     color.max,
   ]);
+}
+
+/**
+ * Add a k-means cluster layer to the mapbox map.
+ */
+export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
+  map.addSource(kMeansLayer.title, {
+      type: "geojson",
+      data: kMeansLayer.geoJson,
+    });
+  map.addLayer(
+    {
+      id: kMeansLayer.title,
+      type: "fill",
+      source: kMeansLayer.title,
+      paint: {
+        "fill-color": [
+          "case",
+          ["==", ["get", "cluster"], 0],
+          kMeansLayer.colors[0],
+          ["==", ["get", "cluster"], 1],
+          kMeansLayer.colors[1],
+          ["==", ["get", "cluster"], 2],
+          kMeansLayer.colors[2],
+          ["==", ["get", "cluster"], 3],
+          kMeansLayer.colors[3],
+          "#ffffff",
+        ],
+        "fill-opacity": 1,
+        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+      },
+    },
+    "road-simple"
+  );
+}
+
+/**
+ * Remove a k-means cluster layer from the mapbox map.
+ */
+export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
+  map.removeLayer(kMeansLayer.title);
+  map.removeSource(kMeansLayer.title);
+}
+
+/**
+ * Update a k-means cluster layer color style on the mapbox map.
+ * @param clusterList Informs which clusters are selected.
+ */
+export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map) {
+  if (map && map.getLayer(clusterList.name)) {
+    const list = clusterList.list;
+    map.setPaintProperty(clusterList.name, "fill-color", [
+      "case",
+      ["==", ["get", "cluster"], 0],
+      list[0].checked ? list[0].color : "#ffffff",
+      ["==", ["get", "cluster"], 1],
+      list[1].checked ? list[1].color : "#ffffff",
+      ["==", ["get", "cluster"], 2],
+      list[2].checked ? list[2].color : "#ffffff",
+      ["==", ["get", "cluster"], 3],
+      list[3].checked ? list[3].color : "#ffffff",
+      "#ffffff",
+    ])
+  }
 }
 
 /**

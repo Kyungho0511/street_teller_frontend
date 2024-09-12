@@ -12,7 +12,6 @@ import {
 import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
-import { Hex } from "./mapConstants";
 
 export type Section = "home" | "cluster1" | "cluster2" | "cluster3";
 

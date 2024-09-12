@@ -27,7 +27,7 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
   useEffect(() => {
     // Update Mapping with the selected item.
     if (map && mappable && parentLayer && color) {
-      mapbox.updateLayerStyle(parentLayer, selectedItem, color, map);
+      mapbox.updateLayerAttribute(parentLayer, selectedItem, color, map);
     }
     // Update the attribute for map legned.
     if (setAttribute) {
