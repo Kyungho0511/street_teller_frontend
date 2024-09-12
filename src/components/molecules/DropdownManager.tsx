@@ -4,16 +4,21 @@ import { ClusterCheckboxItem } from '../../constants/surveyConstants';
 
 type DropdownManagerProps = {
   lists: ClusterCheckboxItem[];
-  autoCollapse?: boolean;
+  displayChart?: boolean; // display a chart for each list item.
+  expandFirstList?: boolean; // expand the first list item by default.
+  autoCollapse?: boolean; // only one list can be expanded at a time.
 }
 
-export default function DropdownManager({lists, autoCollapse}: DropdownManagerProps) {
-  const [expandedLists, setExpandedLists] = useState<boolean[]>(() => new Array(lists.length).fill(false));
+export default function DropdownManager({lists, displayChart, expandFirstList, autoCollapse}: DropdownManagerProps) {
+  const [expandedLists, setExpandedLists] = useState<boolean[]>(() => {
+    const expandedLists = new Array(lists.length).fill(false);
+    if (expandFirstList) expandedLists[0] = true;
+    return expandedLists;
+  });
 
   const handleClick = (index: number, event: React.MouseEvent) => {
     const target = event.target as HTMLElement;
 
-    // autoCollapse option makes sure only one list is expanded at a time
     if (target.tagName === "BUTTON") {
       if (autoCollapse) {
         setExpandedLists((list) =>
@@ -34,6 +39,7 @@ export default function DropdownManager({lists, autoCollapse}: DropdownManagerPr
           <DropdownList
             list={list}
             expanded={expandedLists[index]}
+            displayChart
           />
         </div>
       ))}

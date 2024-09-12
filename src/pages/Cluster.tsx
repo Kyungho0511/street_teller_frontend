@@ -20,7 +20,7 @@ import { ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 
 /**
- * Cluster page component, which consists of three sub-sections.
+ * Cluster page component which consists of three clustering sub-sections.
  */
 export default function Cluster() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
@@ -134,7 +134,12 @@ export default function Cluster() {
       </SidebarSection>
 
       <LegendSection>
-        <DropdownManager lists={clusterList.list} />
+        <DropdownManager
+          lists={clusterList.list}
+          displayChart
+          expandFirstList
+          autoCollapse
+        />
       </LegendSection>
     </>
   );

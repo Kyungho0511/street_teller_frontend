@@ -1,7 +1,6 @@
-import { HealthcareFeatureCollection } from '../constants/geoJsonConstants';
+import { HealthcarePropertyName } from '../constants/geoJsonConstants';
 import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
-import { FeatureCollection } from "geojson";
 
 
 /**
@@ -25,19 +24,26 @@ export function pathToSection(path: string): Section {
 }
 
 /**
- * Returns the bound corresponding to the layer name.
- * @param layer Name of the layer to search for the bound.
- * @returns 
+ * Get the bound corresponding to the attribute name.
+ * @param attribute name of the attribute in search for the bound.
  */
-export function getBound(layer: string): MapBound | undefined {
-    return mapAttributes.find((attribute) => attribute.name === layer)?.bound;
+export function getBound(attribute: HealthcarePropertyName): MapBound {
+    return mapAttributes.find((attr) => attr.name === attribute)!.bound;
+}
+
+/**
+ * Get the unit type corresponding to the attribute name.
+ * @param attribute name of the attribute in search for the unit type.
+ */
+export function getUnit(attribute: HealthcarePropertyName): UnitType | undefined {
+  return mapAttributes.find((attr) => attr.name === attribute)?.unit;
 }
 
 /**
  * Format the number based on the unit type.
- * @param num Number to be formatted.
- * @param unit Unit type to be used for formatting.
- * @returns Formatted number with the unit.
+ * @param num number to be formatted.
+ * @param unit unit type to be used for formatting.
+ * @returns formatted string with the unit.
  */
 export function formatUnit(num: number, unit: UnitType): string {
   switch (unit) {
@@ -58,9 +64,6 @@ export function formatUnit(num: number, unit: UnitType): string {
 
 /**
  * Get GeoJson features filtered with indexes.
- * @param geoJson 
- * @param indexes 
- * @returns 
  */
 export function filterGeoJsonFeatures(geoJson: any, indexes: number[]): any {
   // Filter GeoJson features array based on the indexes
