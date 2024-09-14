@@ -87,8 +87,6 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   const mapSection = mapSections.find((sec) => sec.id === section);
   if (!mapSection) return;
 
-  console.log("setting layers...", section);
-
   // Update layer opacity.
   offLayers(map);
   mapSection.layers.forEach((layer) => setLayerOpacity(layer, map));

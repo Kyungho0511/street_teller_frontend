@@ -35,8 +35,6 @@ export default function Map() {
       const mapSection = mapSections.find((sec) => sec.id === section);
       mapSection && setParentLayer(mapSection.attributeParentLayer);
 
-      console.log("updating mapping...", section);
-
       // Update the map color
       setColor(mapSection?.color);
     }

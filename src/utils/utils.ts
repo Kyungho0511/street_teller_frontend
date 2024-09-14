@@ -63,6 +63,16 @@ export function formatUnit(num: number, unit: UnitType): string {
 }
 
 /**
+ * Restore original value of the normalized number(0-1)
+ * @param value value to be restored.
+ * @param bound bound of the original value. 
+ * @returns restored value.
+ */
+export function unNormalize(value: number, bound: MapBound): number {
+  return (bound.max - bound.min) * value;
+}
+
+/**
  * Get GeoJson features filtered with indexes.
  */
 export function filterGeoJsonFeatures(geoJson: any, indexes: number[]): any {

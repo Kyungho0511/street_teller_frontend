@@ -4,7 +4,6 @@ import { ClusterCheckboxItem } from '../../constants/surveyConstants';
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
 import Colorbox from "../atoms/Colorbox";
-import { useState } from "react";
 
 type DropdownListProps = {
   list: ClusterCheckboxItem;
@@ -23,7 +22,6 @@ export default function DropdownList({
   displayChart,
   displayColorbox,
 }: DropdownListProps) {
-  const [selected, setSelected] = useState(() => expanded ? true : false);
 
   return (
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
