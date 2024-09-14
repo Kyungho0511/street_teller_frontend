@@ -13,7 +13,7 @@ type BarChartProps = {
  */
 export default function BarChart({ label, value, unit }: BarChartProps) {
   return (
-    <>
+    <div className={styles.container}>
       <p className={styles.text}>
         {label}: {unit ? utils.formatUnit(value, unit) : value}
       </p>
@@ -23,6 +23,6 @@ export default function BarChart({ label, value, unit }: BarChartProps) {
           style={{ width: `${Math.round(value * 100)}%` }}
         ></div>
       </div>
-    </>
+    </div>
   );
 }

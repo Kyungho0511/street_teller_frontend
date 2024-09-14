@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 300px;
+  max-width: 400px;
   font-size: 0.9rem;
   padding: 1rem;
   margin: 0.5rem;

@@ -133,10 +133,11 @@ export default function Cluster() {
         />
       </SidebarSection>
 
-      <LegendSection>
+      <LegendSection title={`${clusterName} centroids`}>
         <DropdownManager
           lists={clusterList.list}
           displayChart
+          displayColorbox
           expandFirstList
           autoCollapse
         />

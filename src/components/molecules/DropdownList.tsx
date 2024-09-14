@@ -3,30 +3,47 @@ import styles from './DropdownList.module.css';
 import { ClusterCheckboxItem } from '../../constants/surveyConstants';
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
+import Colorbox from "../atoms/Colorbox";
+import { useState } from "react";
 
 type DropdownListProps = {
   list: ClusterCheckboxItem;
+  index: number;
+  toggleList: (index: number) => void;
+  expanded: boolean;
   displayChart?: boolean; // display a chart for each list item.
-  expanded?: boolean;
+  displayColorbox?: boolean; // display a color box for each list item.
 }
 
-export default function DropdownList({list, displayChart, expanded}: DropdownListProps) {
+export default function DropdownList({
+  list,
+  index,
+  toggleList: toggleList,
+  expanded,
+  displayChart,
+  displayColorbox,
+}: DropdownListProps) {
+  const [selected, setSelected] = useState(() => expanded ? true : false);
+
   return (
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
-      <button className={styles.list_button}>
-        <span className={styles.triangle}></span>{list.name}
+      <button className={styles.list_button} onClick={() => toggleList(index)}>
+        {displayColorbox && <Colorbox label={list.name} color={list.color} fontSize={"1rem"} />}
+        <span className={styles.triangle}></span>
       </button>
-      <ul className={styles.list}> 
+      <ul className={styles.list}>
         {list.centroids.map((item) => (
-          <li 
-            className={styles.text} 
-            key={uuidv4()}
-          >
-            {/* <p>{item.name}: {item.value}</p> */}
-            {displayChart && <BarChart label={item.name} value={item.value} unit={utils.getUnit(item.name)} />}
+          <li className={styles.item} key={uuidv4()}>
+            {displayChart && (
+              <BarChart
+                label={item.name}
+                value={item.value}
+                unit={utils.getUnit(item.name)}
+              />
+            )}
           </li>
         ))}
       </ul>
     </div>
-  )
+  );
 }

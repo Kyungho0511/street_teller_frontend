@@ -1,5 +1,9 @@
 @import '../../styles/variables.css';
 
+.container {
+  width: 100%;
+}
+
 .background {
   position: relative;
   width: 100%;
@@ -18,5 +22,4 @@
 }
 
 .text {
-  font-size: 0.5rem;
 }

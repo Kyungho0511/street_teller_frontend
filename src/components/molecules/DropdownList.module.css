@@ -1,11 +1,13 @@
 @import '../../styles/variables.css';
 
 .container {
-  padding: 0.5rem
+  padding: 0.3rem
 }
 
 .list_button {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   text-align: start;
   padding: 0;
@@ -14,6 +16,20 @@
   border: none;
   cursor: pointer;
   background-color: var(--color-white);
+
+  & p {
+    font-weight: var(--font-regular);
+  }
+}
+
+.list_button:hover {
+  & p {
+    font-weight: var(--font-bold);
+  }
+
+  & .triangle {
+    border-left: 0.45rem solid var(--color-dark-grey);
+  }
 }
 
 .triangle {
@@ -23,24 +39,20 @@
   height: 0;
   margin-right: 0.8rem;
   vertical-align: middle;
-  border-left: 0.4rem solid var(--color-grey);
-  border-top: 0.4rem solid transparent;
-  border-bottom: 0.4rem solid transparent;
+  border-left: 0.45rem solid var(--color-grey);
+  border-top: 0.45rem solid transparent;
+  border-bottom: 0.45rem solid transparent;
   transition: transform 300ms ease;
   transform: translateY(-10%);
 }
 
 .expanded .triangle {
   transform: rotate(90deg) translateY(-10%);
-}
-
-.button:hover .triangle {
-  border-left: 0.4rem solid var(--color-dark-grey);
+  border-left: 0.45rem solid var(--color-dark-grey);
 }
 
 .list {
   display: none;
-  margin-top: 0.5rem;
   min-width: 160px;
 }
 
@@ -48,12 +60,15 @@
   display: block;
 }
 
-.text {
+.expanded .list_button p {
+  font-weight: var(--font-bold);
+}
+
+.item {
   font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--color-dark-grey);
   padding: 0.2rem 0;
 
   & p {

@@ -54,7 +54,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
           />
           <span className={styles.indicator}></span>
           {colorbox ? (
-            <Colorbox label={item.name} color={item.color} />
+            <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
           ) : (
             <p className={styles.text}>{item.name}</p>
           )}
