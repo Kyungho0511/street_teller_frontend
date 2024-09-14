@@ -1,18 +1,18 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
-import Root from './pages/Root';
-import Home from './pages/Home';
-import Cluster from './pages/Cluster';
-import NotFound from './pages/NotFound';
+import RootPage from './pages/RootPage';
+import HomePage from './pages/HomePage';
+import ClusterPage from './pages/ClusterPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root />,
-    errorElement: <NotFound />,
+    element: <RootPage />,
+    errorElement: <NotFoundPage />,
     children: [
-      { index: true, element: <Home /> },
-      { path: '/cluster/:clusterId', element: <Cluster /> },
+      { index: true, element: <HomePage /> },
+      { path: '/cluster/:clusterId', element: <ClusterPage /> },
     ]
   }
 ]);

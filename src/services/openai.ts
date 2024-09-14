@@ -13,6 +13,8 @@ const openai = new OpenAI({
   // in the MessageBox as soon as it gets the first chunk of the response.
   // asynchroneous generator function is used to yield each chunk of the response
 export default async function* runOpenAI(prompt: Prompt): AsyncGenerator<string> {
+  console.log("openAI running!!");
+
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
 
   // Run openAI with text or section prompts.
@@ -35,6 +37,9 @@ export default async function* runOpenAI(prompt: Prompt): AsyncGenerator<string>
 
   // TO BE UPDATED: Run openAI with clusters prompt. 
   if (prompt.type === "cluster") {
+
+    console.log("openAI running with JSON!!");
+
     const clustersJSON = JSON.stringify(prompt.content);
     stream = await openai.chat.completions.create({
       messages: [
@@ -61,6 +66,7 @@ export default async function* runOpenAI(prompt: Prompt): AsyncGenerator<string>
     try {
       for await (const chunk of stream) {
         if (chunk.choices[0]?.delta?.content) {
+          console.log(chunk.choices[0].delta.content);
           yield chunk.choices[0].delta.content;
         }
       }

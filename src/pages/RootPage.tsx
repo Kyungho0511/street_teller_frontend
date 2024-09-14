@@ -7,7 +7,7 @@ import Sidebar from "../components/organisms/Sidebar";
 import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
 
-export default function Root() {
+export default function RootPage() {
   return (
     <>
       <MapContextProvider>

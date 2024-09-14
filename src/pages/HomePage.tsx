@@ -11,7 +11,7 @@ import { MapAttribute, mapSections } from "../constants/mapConstants";
 // import CheckboxList from "../components/CheckboxList";
 
 
-export default function Home() {
+export default function HomePage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
 
   // Currently selected preference.

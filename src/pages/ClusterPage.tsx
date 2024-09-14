@@ -16,15 +16,21 @@ import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
-import { ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
+import { Cluster, ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
+import Button from "../components/atoms/Button";
+import runOpenAI from "../services/openai";
+import { Prompt } from "../constants/messageConstants";
+import { MessageContext } from "../context/MessageContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
-export default function Cluster() {
+export default function ClusterPage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { updatePrompt } = useContext(MessageContext);
   const { map } = useContext(MapContext);
+
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
@@ -118,6 +124,18 @@ export default function Cluster() {
     mapbox.updateClusterLayer(clusterList, map);
   }, [clusterList, map]);
 
+  const runCluster = async () => {
+    const content: Cluster[] = survey.clusterLists[clusterIndex].list.map(
+      (cluster) =>
+        ({ name: cluster.name, centroids: cluster.centroids } as Cluster)
+    );
+    const prompt: Prompt = { type: "cluster", content };
+
+    for await (const chunk of runOpenAI(prompt)) {
+      console.log(chunk);
+    }
+  }
+
   return (
     <>
       <SidebarSection title={"Filter Target Clusters"}>
@@ -131,9 +149,10 @@ export default function Cluster() {
           colorbox
           setSurveyContext={setSurveyContext}
         />
+        <Button text={"Cluster"} color={"grey"} location={"sidebar"} handleClick={runCluster} />
       </SidebarSection>
 
-      <LegendSection title={`${clusterName} centroids`}>
+      <LegendSection title={`${clusterName} analysis`}>
         <DropdownManager
           lists={clusterList.list}
           displayChart
