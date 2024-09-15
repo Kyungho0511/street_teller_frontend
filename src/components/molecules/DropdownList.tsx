@@ -26,7 +26,8 @@ export default function DropdownList({
   return (
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
       <button className={styles.list_button} onClick={() => toggleList(index)}>
-        {displayColorbox && <Colorbox label={list.name} color={list.color} fontSize={"1rem"} />}
+        {displayColorbox && <Colorbox label={list.name} color={list.color} />}
+        <div className={styles.spacer}></div>
         <span className={styles.triangle}></span>
       </button>
       <ul className={styles.list}>

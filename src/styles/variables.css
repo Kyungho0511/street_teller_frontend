@@ -7,7 +7,7 @@
   --color-light-grey: rgb(220, 220, 220);
   --color-light-grey2: rgb(230, 230, 230);
   --color-light-grey3: rgb(238, 238, 238);
-  --color-light-white: rgb(245, 245, 245);
+  --color-light-white: rgb(246, 246, 246);
   --color-light-white2: rgb(252, 252, 252);
   --color-white: white;
   --color-blue: #005FFF;
@@ -25,4 +25,9 @@
   --font-medium: 500;
   --font-bold: 700;
   --font-bolder: 900;
+
+  /* Font size */
+  --font-small: 0.9rem;
+  --font-regular: 1rem;
+  --font-large: 1.1rem;
 }

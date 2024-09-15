@@ -2,6 +2,7 @@ import styles from "./CheckboxList.module.css";
 import { BoroughList, ClusterCheckboxItem, ClusterList } from "../../constants/surveyConstants";
 import Colorbox from "../atoms/Colorbox";
 import { Hex } from "../../constants/mapConstants";
+import { useState } from "react";
 
 type CheckboxListProps = {
   name: string;
@@ -18,6 +19,11 @@ export type CheckboxItem = {
 }
 
 export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
+  const [type, setType] = useState<"cluster" | "borough">(() => {
+    if (name === "boroughs") return "borough";
+    if ([ "cluster1", "cluster2", "cluster3" ].includes(name)) return "cluster";
+    throw new Error("Invalid name");
+  });
 
   // Handle uncontrolled checkbox change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -25,13 +31,13 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
       updatedList[index] = { ...updatedList[index], checked: event.target.checked };
 
       // Update Boroughs in the survey context
-      if (name === "boroughs") {
+      if (type === "borough") {
         const newBoroughs: BoroughList = { name: "boroughs", list: updatedList};
         setSurveyContext(newBoroughs);
       } 
       
       // Update ClusterList in the survey context
-      else if ([ "cluster1", "cluster2", "cluster3" ].includes(name)) {
+      if (type === "cluster") {
         const newCluster: ClusterList = {
           name: name as "cluster1" | "cluster2" | "cluster3",
           list: updatedList as ClusterCheckboxItem[],
@@ -41,25 +47,28 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
   }
 
   return (
-    <form className={styles.form}>
+    <ul className={styles.list}>
       {list.map((item, index) => (
-        <label className={styles.label} key={item.id}>
-          <input
-            className={styles.input}
-            type="checkbox"
-            name={name}
-            value={item.name}
-            checked={item.checked}
-            onChange={(event) => handleChange(event, index)}
-          />
-          <span className={styles.indicator}></span>
-          {colorbox ? (
-            <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
-          ) : (
-            <p className={styles.text}>{item.name}</p>
-          )}
-        </label>
+        <li key={item.id}>
+          <label className={styles.label} >
+            <input
+              className={styles.input}
+              type="checkbox"
+              name={name}
+              value={item.name}
+              checked={item.checked}
+              onChange={(event) => handleChange(event, index)}
+            />
+            <span className={styles.indicator}></span>
+            {colorbox ? (
+              <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
+            ) : (
+              <p>{item.name}</p>
+            )}
+          </label>
+          {type === "cluster" && <div className={styles.text}>{item.reasoning}</div>}
+        </li>
       ))}
-    </form>
+    </ul>
   );
 }

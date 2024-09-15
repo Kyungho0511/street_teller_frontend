@@ -5,6 +5,7 @@
   top: 0;
   right: 0;
   max-width: 400px;
+  min-width: 250px;
   font-size: 0.9rem;
   padding: 1rem;
   margin: 0.5rem;

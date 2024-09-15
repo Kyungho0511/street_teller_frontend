@@ -24,31 +24,28 @@
 
 .list_button:hover {
   & p {
-    font-weight: var(--font-bold);
+    text-shadow: 0px 0px 1px black;
   }
 
   & .triangle {
-    border-left: 0.45rem solid var(--color-dark-grey);
+    border-left: 0.5rem solid var(--color-dark-grey);
   }
 }
 
 .triangle {
-  content: "";
   display: inline-block;
   width: 0;
   height: 0;
-  margin-right: 0.8rem;
   vertical-align: middle;
-  border-left: 0.45rem solid var(--color-grey);
-  border-top: 0.45rem solid transparent;
-  border-bottom: 0.45rem solid transparent;
+  border-left: 0.5rem solid var(--color-grey);
+  border-top: 0.5rem solid transparent;
+  border-bottom: 0.5rem solid transparent;
   transition: transform 300ms ease;
-  transform: translateY(-10%);
 }
 
 .expanded .triangle {
-  transform: rotate(90deg) translateY(-10%);
-  border-left: 0.45rem solid var(--color-dark-grey);
+  transform: rotate(90deg);
+  border-left: 0.5rem solid var(--color-dark-grey);
 }
 
 .list {
@@ -61,7 +58,7 @@
 }
 
 .expanded .list_button p {
-  font-weight: var(--font-bold);
+  text-shadow: 0px 0px 1px black;
 }
 
 .item {
@@ -75,4 +72,8 @@
     width: 100%;
     margin: 0;
   }
+}
+
+.spacer {
+  width: 5rem;
 }

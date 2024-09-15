@@ -19,16 +19,14 @@ import {
 import { Cluster, ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
-import runOpenAI from "../services/openai";
+import { OpenAiResponseJSON, runOpenAI } from "../services/openai";
 import { Prompt } from "../constants/messageConstants";
-import { MessageContext } from "../context/MessageContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
-  const { updatePrompt } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   const { clusterId } = useParams<string>()!;
@@ -124,24 +122,45 @@ export default function ClusterPage() {
     mapbox.updateClusterLayer(clusterList, map);
   }, [clusterList, map]);
 
-  const runCluster = async () => {
+
+  const getOpenAIReasoning = async () => {
+    // Construct the prompt with clustering results for OpenAI. 
     const content: Cluster[] = survey.clusterLists[clusterIndex].list.map(
       (cluster) =>
-        ({ name: cluster.name, centroids: cluster.centroids } as Cluster)
+        ({ name: "", centroids: cluster.centroids } as Cluster)
     );
     const prompt: Prompt = { type: "cluster", content };
 
-    for await (const chunk of runOpenAI(prompt)) {
-      console.log(chunk);
-    }
+    // Fetch the cluster analysis interpretation from OpenAI
+    const response = await runOpenAI(prompt);
+    const data: OpenAiResponseJSON = JSON.parse(response);
+
+    // Update the clusterList in the survey context
+    const list = [...survey.clusterLists[clusterIndex].list];
+    const updatedList = list.map((item, i) => ({
+      ...item,
+      name: data.clusters[i].name,
+      reasoning: data.clusters[i].reasoning,
+    }));
+    const newCluster: ClusterList = {
+      name: clusterName as "cluster1" | "cluster2" | "cluster3",
+      list: updatedList as ClusterCheckboxItem[],
+    };
+    setSurveyContext(newCluster);
+
+    // for await (const chunk of runOpenAI(prompt)) {
+    //   console.log(chunk);
+    // }
   }
 
   return (
     <>
-      <SidebarSection title={"Filter Target Clusters"}>
+      <SidebarSection title={"Select Target Clusters"}>
         <p>
-          Review the subcategory values for each cluster in the legend. Exclude
-          the clusters you're not targeting, and continue.
+          Review the site analysis of clusters. If you want me to retry
+          clustering reasoning, press the "retry analysis" button below. When
+          you are ready, exclude the clusters you're not targeting, and
+          continue.
         </p>
         <CheckboxList
           name={clusterName}
@@ -149,7 +168,12 @@ export default function ClusterPage() {
           colorbox
           setSurveyContext={setSurveyContext}
         />
-        <Button text={"Cluster"} color={"grey"} location={"sidebar"} handleClick={runCluster} />
+        <Button
+          text={"retry analysis"}
+          color={"grey"}
+          location={"sidebar"}
+          handleClick={getOpenAIReasoning}
+        />
       </SidebarSection>
 
       <LegendSection title={`${clusterName} analysis`}>

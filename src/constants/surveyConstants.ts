@@ -157,6 +157,7 @@ export const initialBoroughList: BoroughList = {
 export type Cluster = {
   name: string;
   centroids: { name: HealthcarePropertyName; value: number }[];
+  reasoning: string;
 };
 
 export type ClusterCheckboxItem = CheckboxItem & Cluster;
@@ -174,6 +175,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label1",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -181,6 +183,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label2",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -188,6 +191,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label3",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -195,6 +199,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label4",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -207,6 +212,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label1",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -214,6 +220,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label2",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -221,6 +228,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label3",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -228,6 +236,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label4",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -240,6 +249,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label1",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -247,6 +257,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label2",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -254,6 +265,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label3",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),
@@ -261,6 +273,7 @@ export const initialClusterLists: ClusterList[] = [
       {
         name: "label4",
         centroids: [{}],
+        reasoning: "",
         color: "#ffffff",
         checked: true,
         id: uuidv4(),

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
-import runOpenAI from "../../services/openai";
+import { streamOpenAI } from "../../services/openai";
 import { Prompt } from "../../constants/messageConstants";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
@@ -36,7 +36,7 @@ export default function AiResponse() {
       let accumulatedResponse = ""; // Temporary variable to hold the entire response
 
       // play typing animation while fetching response
-      for await (const chunk of runOpenAI(prompt)) {
+      for await (const chunk of streamOpenAI(prompt)) {
         accumulatedResponse += chunk;
         setText((prev) => prev + chunk);
       }

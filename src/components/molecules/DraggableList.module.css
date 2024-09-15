@@ -21,7 +21,7 @@
 
   & .text {
     opacity: 1;
-    font-weight: var(--font-bold);
+    text-shadow: 0px 0px 1px black;
   }
 
   & .ranking_icon {
