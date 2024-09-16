@@ -86,24 +86,10 @@ export default function ClusterPage() {
   }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
 
 
-  // Set ClusterList in the survey context
+  // Fetch and display OpenAI reasoning for the clustering analysis.
   useEffect(() => {
     if (!kMeansLayer) return;
-    const list = [...survey.clusterLists[clusterIndex].list];
-    const updatedList = list.map((item, i) => ({
-      ...item,
-      centroids: kMeansLayer.attributes.map((attr, j) => ({
-        name: attr,
-        value: kMeansLayer.centroids[i][j],
-      })),
-      color: kMeansLayer.colors[i],
-    }));
-
-    const newCluster: ClusterList = {
-      name: clusterName as "cluster1" | "cluster2" | "cluster3",
-      list: updatedList as ClusterCheckboxItem[],
-    };
-    setSurveyContext(newCluster);
+    getOpenAIReport();
   }, [kMeansLayer])
 
 
@@ -123,11 +109,20 @@ export default function ClusterPage() {
   }, [clusterList, map]);
 
 
-  const getOpenAIReasoning = async () => {
-    // Construct the prompt with clustering results for OpenAI. 
+  const getOpenAIReport = async () => {
+
+    console.log("get openAI reasoning...");
+
+    // Construct the prompt with clustering results for OpenAI.
     const content: Cluster[] = survey.clusterLists[clusterIndex].list.map(
-      (cluster) =>
-        ({ name: "", centroids: cluster.centroids } as Cluster)
+      (cluster, i) =>
+        ({
+          name: "",
+          centroids: kMeansLayer?.attributes.map((attr, j) => ({
+            name: attr,
+            value: kMeansLayer?.centroids[i][j],
+          })),
+        } as Cluster)
     );
     const prompt: Prompt = { type: "cluster", content };
 
@@ -136,15 +131,16 @@ export default function ClusterPage() {
     const data: OpenAiResponseJSON = JSON.parse(response);
 
     // Update the clusterList in the survey context
-    const list = [...survey.clusterLists[clusterIndex].list];
-    const updatedList = list.map((item, i) => ({
-      ...item,
-      name: data.clusters[i].name,
-      reasoning: data.clusters[i].reasoning,
-    }));
+    const updatedList = survey.clusterLists[clusterIndex].list.map(
+      (item, i) => ({
+        ...item,
+        name: data.clusters[i].name,
+        reasoning: data.clusters[i].reasoning,
+      })
+    );
     const newCluster: ClusterList = {
       name: clusterName as "cluster1" | "cluster2" | "cluster3",
-      list: updatedList as ClusterCheckboxItem[],
+      list: updatedList,
     };
     setSurveyContext(newCluster);
 
@@ -172,7 +168,7 @@ export default function ClusterPage() {
           text={"retry analysis"}
           color={"grey"}
           location={"sidebar"}
-          handleClick={getOpenAIReasoning}
+          handleClick={getOpenAIReport}
         />
       </SidebarSection>
 
