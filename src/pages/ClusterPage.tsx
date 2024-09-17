@@ -16,17 +16,18 @@ import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
-import { Cluster, ClusterCheckboxItem, ClusterList } from "../constants/surveyConstants";
+import { Cluster, ClusterList } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
 import { OpenAiResponseJSON, runOpenAI } from "../services/openai";
-import { Prompt } from "../constants/messageConstants";
+import { MessageContext } from "../context/MessageContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { updatePromptJson } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   const { clusterId } = useParams<string>()!;
@@ -34,7 +35,7 @@ export default function ClusterPage() {
   const location = useLocation();
   const clusterName = pathToSection(location.pathname)
   const clusterList = survey.clusterLists[clusterIndex];
-
+  
   const [kMeansLayer, setKMeansLayer] = useState<kmeans.KMeansLayer>();
   const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
@@ -63,6 +64,7 @@ export default function ClusterPage() {
     fetchData();
   }, []);
 
+
   // Set KMeansLayer on loading a new clustering page.
   useEffect(() => {
     if (geoJson.features.length === 0) return;
@@ -80,7 +82,7 @@ export default function ClusterPage() {
     }
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
-    const kMeansResult: KMeansResult = kmeans.run(data);
+    const kMeansResult: KMeansResult = kmeans.runKMeans(data);
     const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
     setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized, selectedAttributes));
   }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
@@ -89,7 +91,7 @@ export default function ClusterPage() {
   // Fetch and display OpenAI reasoning for the clustering analysis.
   useEffect(() => {
     if (!kMeansLayer) return;
-    getOpenAIReport();
+    startOpenAIReport();
   }, [kMeansLayer])
 
 
@@ -109,13 +111,10 @@ export default function ClusterPage() {
   }, [clusterList, map]);
 
 
-  const getOpenAIReport = async () => {
-
-    console.log("get openAI reasoning...");
-
-    // Construct the prompt with clustering results for OpenAI.
-    const content: Cluster[] = survey.clusterLists[clusterIndex].list.map(
-      (cluster, i) =>
+  // Update prompt JSON in the MessageContext, triggering OpenAI response streaming.
+  const startOpenAIReport = async () => {
+    const promptJson: Cluster[] = survey.clusterLists[clusterIndex].list.map(
+      (_, i) =>
         ({
           name: "",
           centroids: kMeansLayer?.attributes.map((attr, j) => ({
@@ -124,29 +123,7 @@ export default function ClusterPage() {
           })),
         } as Cluster)
     );
-    const prompt: Prompt = { type: "cluster", content };
-
-    // Fetch the cluster analysis interpretation from OpenAI
-    const response = await runOpenAI(prompt);
-    const data: OpenAiResponseJSON = JSON.parse(response);
-
-    // Update the clusterList in the survey context
-    const updatedList = survey.clusterLists[clusterIndex].list.map(
-      (item, i) => ({
-        ...item,
-        name: data.clusters[i].name,
-        reasoning: data.clusters[i].reasoning,
-      })
-    );
-    const newCluster: ClusterList = {
-      name: clusterName as "cluster1" | "cluster2" | "cluster3",
-      list: updatedList,
-    };
-    setSurveyContext(newCluster);
-
-    // for await (const chunk of runOpenAI(prompt)) {
-    //   console.log(chunk);
-    // }
+    updatePromptJson(promptJson);
   }
 
   return (
@@ -168,7 +145,7 @@ export default function ClusterPage() {
           text={"retry analysis"}
           color={"grey"}
           location={"sidebar"}
-          handleClick={getOpenAIReport}
+          handleClick={startOpenAIReport}
         />
       </SidebarSection>
 

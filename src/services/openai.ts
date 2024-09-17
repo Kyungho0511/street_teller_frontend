@@ -1,7 +1,8 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
 import { Prompt, promptPresets } from "../constants/messageConstants";
-import AiResponse from "../components/atoms/AiResponse";
+import AiResponseText from "../components/atoms/AiResponseText";
+import { parse } from "best-effort-json-parser";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
@@ -16,11 +17,11 @@ export type OpenAiResponseJSON = {
 
 /**
  * Stream chunks of openAI response. It's meant to be rendered with typing animation
- * in the {@link AiResponse} as soon as it gets the first chunk of the response.
+ * in the {@link AiResponseText} as soon as it gets the first chunk of the response.
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @returns a generator that yields each chunk of the openAI response.
  */
-export async function* streamOpenAI(prompt: Prompt): AsyncGenerator<string> {
+export async function* streamOpenAI(prompt: Prompt): AsyncGenerator<string | OpenAiResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
 
   // Run openAI with text or section prompts.
@@ -65,10 +66,32 @@ export async function* streamOpenAI(prompt: Prompt): AsyncGenerator<string> {
 
   // Yield each chunk of the response as it becomes available.
   if (stream) {
+    let accumulatedResponse = "";
+
     try {
       for await (const chunk of stream) {
-        if (chunk.choices[0]?.delta?.content) {
-          yield chunk.choices[0].delta.content;
+        if (!chunk.choices[0]?.delta?.content) continue;
+
+        const content = chunk.choices[0].delta.content;
+        accumulatedResponse += content;
+
+        // Yield the text type content
+        if (prompt.type === "text" || prompt.type === "section") {
+          yield content;
+        } 
+        
+        // Yield the JSON object type content
+        else if (prompt.type === "cluster") {
+          let parsedData;
+          try {
+            parsedData = parse(accumulatedResponse);
+          } catch (error) {
+            console.error("Parsing failed due to incomplete JSON:", error);
+            continue;
+          }
+          if (parsedData) {
+            yield parsedData;
+          }
         }
       }
     } catch (error) {

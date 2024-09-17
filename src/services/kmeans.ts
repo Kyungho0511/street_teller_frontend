@@ -1,6 +1,6 @@
 import { kmeans, Options } from 'ml-kmeans';
 import { KMeansResult } from 'ml-kmeans/lib/KMeansResult';
-import { Color, Hex } from '../constants/mapConstants';
+import { Hex } from '../constants/mapConstants';
 import { Feature, FeatureCollection } from 'geojson';
 import {
   HealthcareFeature,
@@ -36,7 +36,7 @@ export type KMeansLayer = {
  * @param data 2D array data to be clustered.
  * @returns KMeans clustering result.
  */
-export function run(data: number[][]): KMeansResult {
+export function runKMeans(data: number[][]): KMeansResult {
   // Run kMeans clustering
   const options: Options = {
     seed: SEED,

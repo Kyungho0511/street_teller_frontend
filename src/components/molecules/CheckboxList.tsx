@@ -3,6 +3,7 @@ import { BoroughList, ClusterCheckboxItem, ClusterList } from "../../constants/s
 import Colorbox from "../atoms/Colorbox";
 import { Hex } from "../../constants/mapConstants";
 import { useState } from "react";
+import AiResponseJSON from "../atoms/AiResponseJSON";
 
 type CheckboxListProps = {
   name: string;
@@ -66,6 +67,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
               <p>{item.name}</p>
             )}
           </label>
+          {type === "cluster" && <AiResponseJSON />}
           {type === "cluster" && <div className={styles.text}>{item.reasoning}</div>}
         </li>
       ))}

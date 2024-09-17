@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/geojson": "^7946.0.14",
     "@types/uuid": "^10.0.0",
+    "best-effort-json-parser": "^1.1.2",
     "framer-motion": "^11.3.28",
     "mapbox-gl": "^3.6.0",
     "ml-kmeans": "^6.0.0",

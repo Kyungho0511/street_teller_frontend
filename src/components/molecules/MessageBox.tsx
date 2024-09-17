@@ -1,7 +1,7 @@
 import styles from "./MessageBox.module.css";
 import { useContext, useEffect, useState } from "react";
 import Logo from "../atoms/Logo";
-import AiReponse from "../atoms/AiResponse";
+import AiReponse from "../atoms/AiResponseText";
 import { MessageContext } from "../../context/MessageContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";

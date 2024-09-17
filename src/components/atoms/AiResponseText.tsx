@@ -6,8 +6,8 @@ import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { Section } from "../../constants/surveyConstants";
 
-export default function AiResponse() {
-  const { prompt, addMessage, updateResponse } = useContext(MessageContext); 
+export default function AiResponseText() {
+  const { promptText: prompt, addMessage, updateResponse } = useContext(MessageContext); 
   const [text, setText] = useState<string>("");
   const location = useLocation();
 
@@ -19,7 +19,7 @@ export default function AiResponse() {
     }
   }, [prompt]);
 
-  // Get openAI instructions based on the current location.
+  // Get openAI instructions on the current page.
   useEffect(() => {
     // Initialize an empty message
     addMessage({ user: "", ai: "" });
@@ -33,9 +33,8 @@ export default function AiResponse() {
 
   async function startTypingAnimation(prompt: Prompt): Promise<void> {
     try {
-      let accumulatedResponse = ""; // Temporary variable to hold the entire response
-
       // play typing animation while fetching response
+      let accumulatedResponse = ""; 
       for await (const chunk of streamOpenAI(prompt)) {
         accumulatedResponse += chunk;
         setText((prev) => prev + chunk);

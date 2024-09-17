@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { Cluster } from "../constants/surveyConstants";
 
 export type Message = {
   user: string;
@@ -9,8 +10,10 @@ type MessageContextProps = {
   messages: Message[] | [];
   addMessage: (newMessage: Message) => void;
   updateResponse: (newResponse: string) => void;
-  prompt: string;
-  updatePrompt: (newPrompt: string) => void;
+  promptText: string;
+  updatePromptText: (newPrompt: string) => void;
+  promptJson: Cluster[];
+  updatePromptJson: (newJson: Cluster[]) => void;
 };
 
 // MessageContext stores history of prompts and openAI responses.
@@ -22,8 +25,9 @@ export const MessageContext = createContext<MessageContextProps>(
 // The provider is used in Root.tsx to wrap components.
 // TO BE UPDATED: Use sessionStorage to persist messages across page refreshes.
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
-  const [messages, setMessages] = useState<Message[] | []>([]);
-  const [prompt, setPrompt] = useState<string>("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [promptText, setPromptText] = useState<string>("");
+  const [promptJson, setPromptJson] = useState<Cluster[]>([]);
 
   const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
@@ -38,13 +42,17 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
   };
 
   // Update the last message's prompt(user).
-  const updatePrompt = (newPrompt: string) => {
-    setPrompt(newPrompt);
+  const updatePromptText = (newPrompt: string) => {
+    setPromptText(newPrompt);
     setMessages((prev) => [
       ...prev.slice(0, prev.length - 1),
       { ...prev[prev.length - 1], user: newPrompt },
     ]);
   };
+
+  const updatePromptJson = (newJson: Cluster[]) => {
+    setPromptJson(newJson);
+  }
 
   return (
     <MessageContext.Provider
@@ -52,8 +60,10 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
         messages,
         addMessage,
         updateResponse,
-        prompt,
-        updatePrompt,
+        promptText,
+        updatePromptText,
+        promptJson,
+        updatePromptJson,
       }}
     >
       {children}
