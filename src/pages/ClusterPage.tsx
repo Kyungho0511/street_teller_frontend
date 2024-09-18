@@ -86,7 +86,7 @@ export default function ClusterPage() {
   }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
 
 
-  // Fetch and display OpenAI reasoning for the clustering analysis.
+  // Fetch and display OpenAI reasoning on setting kMeansLayer.
   useEffect(() => {
     if (!kMeansLayer) return;
     startOpenAIReport();
@@ -128,12 +128,18 @@ export default function ClusterPage() {
 
       // Update the survey context with parsed data.
       // Performance optimization needed here!!!!!!!
+      // Performance optimization needed here!!!!!!!
         const newList = [...clusterList.list];
         response?.clusters?.forEach((cluster, i) => {
           newList[i] = {
             ...newList[i],
             name: cluster?.name,
             reasoning: cluster?.reasoning,
+            centroids: kMeansLayer!.attributes.map((attr, j) => ({
+              name: attr,
+              value: kMeansLayer!.centroids[i][j],
+            })),
+            color: kMeansLayer!.colors[i],
           };
         });
         setSurveyContext({name: clusterName, list: newList} as ClusterList);
