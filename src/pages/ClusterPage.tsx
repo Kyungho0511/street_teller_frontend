@@ -19,15 +19,13 @@ import {
 import { Cluster, ClusterList } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
-import { OpenAiResponseJSON, runOpenAI } from "../services/openai";
-import { MessageContext } from "../context/MessageContext";
+import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
-  const { updatePromptJson } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   const { clusterId } = useParams<string>()!;
@@ -111,9 +109,9 @@ export default function ClusterPage() {
   }, [clusterList, map]);
 
 
-  // Update prompt JSON in the MessageContext, triggering OpenAI response streaming.
   const startOpenAIReport = async () => {
-    const promptJson: Cluster[] = survey.clusterLists[clusterIndex].list.map(
+    // Construct prompt JSON for OpenAI.
+    const promptJson: Cluster[] = clusterList.list.map(
       (_, i) =>
         ({
           name: "",
@@ -123,7 +121,26 @@ export default function ClusterPage() {
           })),
         } as Cluster)
     );
-    updatePromptJson(promptJson);
+    try {
+      // Start OpenAI JSON response streaming.
+      for await (const chunk of streamOpenAI({ type:"cluster", content: promptJson })) {
+        const response = chunk as OpenAiResponseJSON;
+
+      // Update the survey context with parsed data.
+      // Performance optimization needed here!!!!!!!
+        const newList = [...clusterList.list];
+        response?.clusters?.forEach((cluster, i) => {
+          newList[i] = {
+            ...newList[i],
+            name: cluster?.name,
+            reasoning: cluster?.reasoning,
+          };
+        });
+        setSurveyContext({name: clusterName, list: newList} as ClusterList);
+      }
+    } catch (error) {
+      console.error("Failed to fetch openAI response:", error);
+    }
   }
 
   return (
@@ -137,7 +154,7 @@ export default function ClusterPage() {
         </p>
         <CheckboxList
           name={clusterName}
-          list={survey.clusterLists[clusterIndex].list}
+          list={clusterList.list}
           colorbox
           setSurveyContext={setSurveyContext}
         />

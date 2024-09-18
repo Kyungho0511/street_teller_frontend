@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-import { Cluster } from "../constants/surveyConstants";
 
 export type Message = {
   user: string;
@@ -12,22 +11,22 @@ type MessageContextProps = {
   updateResponse: (newResponse: string) => void;
   promptText: string;
   updatePromptText: (newPrompt: string) => void;
-  promptJson: Cluster[];
-  updatePromptJson: (newJson: Cluster[]) => void;
 };
 
-// MessageContext stores history of prompts and openAI responses.
-// it is updated when the openAI response streaming finishes,
-// and when the user submits a new prompt through the PromptBox.
+/**
+ * Message context to manage the message state between the user and the AI.
+ * The context is updated when the openAI response streaming finishes,
+ * and when the user submits a new prompt through the PromptBox.
+ */
 export const MessageContext = createContext<MessageContextProps>(
   {} as MessageContextProps);
 
-// The provider is used in Root.tsx to wrap components.
-// TO BE UPDATED: Use sessionStorage to persist messages across page refreshes.
+/**
+ * Message context provider to manage the message state between the user and the AI.
+ */
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [promptText, setPromptText] = useState<string>("");
-  const [promptJson, setPromptJson] = useState<Cluster[]>([]);
 
   const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
@@ -50,10 +49,6 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
     ]);
   };
 
-  const updatePromptJson = (newJson: Cluster[]) => {
-    setPromptJson(newJson);
-  }
-
   return (
     <MessageContext.Provider
       value={{
@@ -62,8 +57,6 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
         updateResponse,
         promptText,
         updatePromptText,
-        promptJson,
-        updatePromptJson,
       }}
     >
       {children}

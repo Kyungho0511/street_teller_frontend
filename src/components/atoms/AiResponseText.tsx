@@ -6,18 +6,21 @@ import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { Section } from "../../constants/surveyConstants";
 
+/**
+ * Response component with typing animation for the text response from OpenAI.
+ */
 export default function AiResponseText() {
-  const { promptText: prompt, addMessage, updateResponse } = useContext(MessageContext); 
+  const { promptText, addMessage, updateResponse } = useContext(MessageContext); 
   const [text, setText] = useState<string>("");
   const location = useLocation();
 
   // Send added text prompt to openAI and render the response.
   useEffect(() => {
-    if (prompt) {
+    if (promptText) {
       // Proceed typing animation for the text prompt
-      startTypingAnimation({ type: "text", content: prompt });
+      startTypingAnimation({ type: "text", content: promptText });
     }
-  }, [prompt]);
+  }, [promptText]);
 
   // Get openAI instructions on the current page.
   useEffect(() => {

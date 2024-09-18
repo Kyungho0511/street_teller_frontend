@@ -12,9 +12,15 @@ type SurveyContextProps = {
   setSurveyContext: (newSurveyElement: BoroughList | PreferenceList | ClusterList) => void;
 };
 
+/**
+ * Survey context to manage the survey state from users on 
+ * questionnaire regarding preferences, boroughs, and clusters.
+ */
 export const SurveyContext = createContext<SurveyContextProps>({} as SurveyContextProps);
 
-// The provider is used in Root.tsx to wrap the Outlet components.
+/**
+ * Survey context provider to manage the survey state.
+ */
 export function SurveyContextProvider({children} : {children: React.ReactNode;}) {
   const [survey, setSurvey] = useState<Survey>(initialSurvey);
 
