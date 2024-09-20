@@ -179,10 +179,9 @@ export default function ClusterPage() {
     <>
       <SidebarSection title={"Select Target Clusters"}>
         <p>
-          Review the site analysis of clusters. If you want me to retry
-          clustering reasoning, press the "retry analysis" button below. When
-          you are ready, exclude the clusters you're not targeting, and
-          continue.
+          Review the site analysis of clusters. If you want me to re-explain
+          clustering analysis, press the "retry analysis" button below. When you
+          are ready, select clusters you're targeting, and continue.
         </p>
         <CheckboxList
           name={clusterName}
@@ -198,7 +197,11 @@ export default function ClusterPage() {
         />
       </SidebarSection>
 
-      <LegendSection title={`${clusterName} analysis`}>
+      <LegendSection
+        title={`Clustering Step`}
+        steps={[1, 2, 3]}
+        currentStep={parseInt(clusterId!)}
+      >
         <DropdownManager
           lists={clusterList.list}
           displayChart

@@ -14,9 +14,31 @@
   box-shadow: 0 2px 4px var(--color-box-shadow);
 }
 
+.header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .title {
   text-transform: capitalize;
   font-size: 1.1rem;
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin: 0 0.8rem 0 0;
+}
+
+.step_icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: var(--color-light-grey);
+  color: var(--color-white);
+
+  &.current {
+    background-color: var(--color-dark-grey);
+  }
 }
