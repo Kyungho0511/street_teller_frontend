@@ -173,7 +173,7 @@ export const initialClusterLists: ClusterList[] = [
     name: "cluster1",
     list: [
       {
-        name: "label1",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -181,7 +181,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label2",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -189,7 +189,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label3",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -197,7 +197,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label4",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -210,7 +210,7 @@ export const initialClusterLists: ClusterList[] = [
     name: "cluster2",
     list: [
       {
-        name: "label1",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -218,7 +218,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label2",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -226,7 +226,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label3",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -234,7 +234,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label4",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -247,7 +247,7 @@ export const initialClusterLists: ClusterList[] = [
     name: "cluster3",
     list: [
       {
-        name: "label1",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -255,7 +255,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label2",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -263,7 +263,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label3",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",
@@ -271,7 +271,7 @@ export const initialClusterLists: ClusterList[] = [
         id: uuidv4(),
       },
       {
-        name: "label4",
+        name: "",
         centroids: [{}],
         reasoning: "",
         color: "#ffffff",

@@ -50,18 +50,18 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
     }
   };
   
-  // retrieve stored survey from session storage
-  useEffect(() => { 
-    const storedSurvey = sessionStorage.getItem("survey"); 
-    if (storedSurvey) {
-      setSurvey(JSON.parse(storedSurvey));
-    }
-  }, []);
+  // // retrieve stored survey from session storage
+  // useEffect(() => { 
+  //   const storedSurvey = sessionStorage.getItem("survey"); 
+  //   if (storedSurvey) {
+  //     setSurvey(JSON.parse(storedSurvey));
+  //   }
+  // }, []);
 
-  // update session storage when survey changes
-  useEffect(() => {
-    sessionStorage.setItem('survey', JSON.stringify(survey))
-  }, [survey])
+  // // update session storage when survey changes
+  // useEffect(() => {
+  //   sessionStorage.setItem('survey', JSON.stringify(survey))
+  // }, [survey])
 
   return (
     <SurveyContext.Provider
