@@ -3,6 +3,8 @@ import { Feature, FeatureCollection, Polygon } from 'geojson';
 export const geoJsonfilePath = "/data/tracts_features_nyc_normalized.geojson";
 
 export type HealthcarePropertyName =
+  | "GEOID"
+  | "cluster"
   | "medicaid enrollees / km2"
   | "commercial enrollees / km2"
   | "insured population / km2"

@@ -1,4 +1,4 @@
-import { HealthcarePropertyName } from '../constants/geoJsonConstants';
+import { HealthcareFeatureCollection, HealthcarePropertyName } from '../constants/geoJsonConstants';
 import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
 
@@ -70,18 +70,4 @@ export function formatUnit(num: number, unit: UnitType): string {
  */
 export function unNormalize(value: number, bound: MapBound): number {
   return (bound.max - bound.min) * value;
-}
-
-/**
- * Get GeoJson features filtered with indexes.
- */
-export function filterGeoJsonFeatures(geoJson: any, indexes: number[]): any {
-  // Filter GeoJson features array based on the indexes
-  const filteredFeatures = geoJson.features.filter((feature: object, i: number) =>
-    indexes.includes(i)
-  );
-  const filteredGeoJson = structuredClone(geoJson);
-  filteredGeoJson.features = filteredFeatures;
-
-  return filteredGeoJson;
 }

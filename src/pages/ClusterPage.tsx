@@ -25,42 +25,56 @@ import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
+
+  // Global states
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const { map } = useContext(MapContext);
 
+  // Local states
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
   const clusterName = pathToSection(location.pathname)
   const clusterList = survey.clusterLists[clusterIndex];
-  
-  const [kMeansLayer, setKMeansLayer] = useState<kmeans.KMeansLayer>();
+  const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
     type: "FeatureCollection",
     features: [],
   });
 
-  // Fetch GeoJson.
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(geoJsonfilePath);
-        if (!response.ok) {
-          throw new Error("Network error: " + response.statusText);
+    // Initial fetch of GeoJson data.
+    if (geoJson.features.length === 0)
+    {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(geoJsonfilePath);
+          if (!response.ok) {
+            throw new Error("Network error: " + response.statusText);
+          }
+          const data = await response.json();
+          setGeoJson(data);
+          setLoading(false);
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error(error.message);
+          }
+          setLoading(false);
         }
-        const data = await response.json();
-        setGeoJson(data);
-        setLoading(false);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        }
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+      };
+      fetchData();
+    }
+
+    // Filter the geoJson data based on the selected clusters from the previous cluster page.
+    if (clusterIndex > 0) {
+      const selection: boolean[] = survey.clusterLists[
+        clusterIndex - 1
+      ].list.map((cluster) => cluster.checked);
+      const filteredGeoJson = kmeans.getFilteredGeoJson(selection, kMeansLayers[clusterIndex - 1].geoJson);
+      setGeoJson(filteredGeoJson);
+    }
+  }, [location.pathname]);
 
 
   // Set KMeansLayer on loading a new clustering page.
@@ -78,29 +92,41 @@ export default function ClusterPage() {
         selectedAttributes.push(subCategory.name);
       });
     }
+
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
     const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
-    setKMeansLayer(kmeans.setLayer(kMeansResult, geoJson, clusterName, color.categorized, selectedAttributes));
-  }, [clusterId, survey.preferenceList.list, geoJson, location.pathname, clusterName]);
+    setKMeansLayers((prev) => {
+      const kMeansLayer = kmeans.setLayer(
+        kMeansResult,
+        geoJson,
+        clusterName,
+        color.categorized,
+        selectedAttributes
+      );
+      const kMeansLayers = [...prev];
+      kMeansLayers[clusterIndex] = kMeansLayer;
+      return kMeansLayers;
+    });
+  }, [survey.preferenceList.list, geoJson]);
 
 
   // Fetch and display OpenAI reasoning on setting kMeansLayer.
   useEffect(() => {
-    if (!kMeansLayer) return;
+    if (!kMeansLayers[clusterIndex]) return;
     startOpenAIReport();
-  }, [kMeansLayer])
+  }, [kMeansLayers])
 
 
   // Add KMeansLayer to the map.
   useEffect(() => {
-    if (!kMeansLayer || !map) return;
-    mapbox.addClusterLayer(kMeansLayer, map);
+    if (!kMeansLayers[clusterIndex] || !map) return;
+    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map);
 
     // Remove KMeansLayer from mapbox when on unmount.
-    return () => mapbox.removeClusterLayer(kMeansLayer, map)
-  }, [kMeansLayer, map]);
+    return () => mapbox.removeClusterLayer(kMeansLayers[clusterIndex], map)
+  }, [kMeansLayers, map]);
 
 
   // Update mapping on selected clusterList change
@@ -115,9 +141,9 @@ export default function ClusterPage() {
       (_, i) =>
         ({
           name: "",
-          centroids: kMeansLayer?.attributes.map((attr, j) => ({
+          centroids: kMeansLayers[clusterIndex]?.attributes.map((attr, j) => ({
             name: attr,
-            value: kMeansLayer?.centroids[i][j],
+            value: kMeansLayers[clusterIndex]?.centroids[i][j],
           })),
         } as Cluster)
     );
@@ -135,11 +161,11 @@ export default function ClusterPage() {
             ...newList[i],
             name: cluster?.name,
             reasoning: cluster?.reasoning,
-            centroids: kMeansLayer!.attributes.map((attr, j) => ({
+            centroids: kMeansLayers[clusterIndex]!.attributes.map((attr, j) => ({
               name: attr,
-              value: kMeansLayer!.centroids[i][j],
+              value: kMeansLayers[clusterIndex]!.centroids[i][j],
             })),
-            color: kMeansLayer!.colors[i],
+            color: kMeansLayers[clusterIndex]!.colors[i],
           };
         });
         setSurveyContext({name: clusterName, list: newList} as ClusterList);

@@ -19,6 +19,9 @@ export default function Footbar() {
     case "/cluster/2":
       nextPath = "/cluster/3";
       break;
+    case "/cluster/3":
+      nextPath = "/cluster/3";
+      break;
 }
 
   return (

@@ -1,7 +1,7 @@
 import { kmeans, Options } from 'ml-kmeans';
 import { KMeansResult } from 'ml-kmeans/lib/KMeansResult';
 import { Hex } from '../constants/mapConstants';
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature } from 'geojson';
 import {
   HealthcareFeature,
   HealthcareFeatureCollection,
@@ -24,7 +24,7 @@ const SEED = 10;
 const INITIALIZATION = "kmeans++";
 
 export type KMeansLayer = {
-  geoJson: FeatureCollection;
+  geoJson: HealthcareFeatureCollection;
   centroids: number[][];
   title: string;
   colors: Hex[];
@@ -95,8 +95,7 @@ export function setLayer(
     // Deep copy data and set clustering result values.
     const kMeansGeoJson = structuredClone(geoJson);
     kMeansGeoJson.features.forEach((feature: Feature, index) => {
-      feature.properties = {};
-      feature.properties.cluster = kMeans.clusters[index];
+      feature.properties!.cluster = kMeans.clusters[index];
     });
 
     const kMeansLayer: KMeansLayer = {
@@ -108,4 +107,21 @@ export function setLayer(
     };
 
     return kMeansLayer;
+}
+
+/**
+ * Filter GeoJSON with the selected census tracts based on the user's selection of clusters.
+ * @param selection user's selection of clusters.
+ * @param geoJson geoJson that contains the kmeans clustering results.
+ */
+export function getFilteredGeoJson(
+  selection: boolean[],
+  geoJson: HealthcareFeatureCollection
+): HealthcareFeatureCollection {
+  const filteredGeoJson = structuredClone(geoJson);
+  filteredGeoJson.features = geoJson.features.filter(
+    (feature) => selection[feature.properties!.cluster]
+  );
+
+  return filteredGeoJson;
 }

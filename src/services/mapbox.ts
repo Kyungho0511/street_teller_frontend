@@ -3,6 +3,7 @@ import mapboxgl from "mapbox-gl";
 import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
+import { HealthcarePropertyName } from '../constants/geoJsonConstants';
 
 /**
  * Create a mapbox map instance.
@@ -108,7 +109,7 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
  */
 export function updateLayerAttribute(
   layer: string,
-  attribute: string,
+  attribute: HealthcarePropertyName,
   color: Color,
   map: mapboxgl.Map
 ) {
