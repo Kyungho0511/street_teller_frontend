@@ -6,7 +6,6 @@ import {
   faHospitalUser,
   faGraduationCap,
   faStore,
-  faTree,
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { ListItem } from "../components/molecules/SelectableList";
@@ -174,7 +173,7 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -182,7 +181,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -190,7 +189,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -198,7 +197,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -211,7 +210,7 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -219,7 +218,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -227,7 +226,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -235,7 +234,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -248,7 +247,7 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -256,7 +255,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -264,7 +263,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,
@@ -272,7 +271,7 @@ export const initialClusterLists: ClusterList[] = [
       },
       {
         name: "",
-        centroids: [{}],
+        centroids: [{name: "walked percent", value: 0}],
         reasoning: "",
         color: "#ffffff",
         checked: true,

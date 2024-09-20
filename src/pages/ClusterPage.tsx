@@ -37,7 +37,6 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname)
   const clusterList = survey.clusterLists[clusterIndex];
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // loading status for the fetch request
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
     type: "FeatureCollection",
     features: [],
@@ -55,12 +54,10 @@ export default function ClusterPage() {
           }
           const data = await response.json();
           setGeoJson(data);
-          setLoading(false);
         } catch (error) {
           if (error instanceof Error) {
             console.error(error.message);
           }
-          setLoading(false);
         }
       };
       fetchData();

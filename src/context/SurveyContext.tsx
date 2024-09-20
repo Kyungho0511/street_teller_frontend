@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { BoroughList, PreferenceList, ClusterList, initialPreferenceList, initialClusterLists, initialBoroughList } from "../constants/surveyConstants";
 
 export type Survey = {

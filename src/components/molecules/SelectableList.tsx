@@ -17,7 +17,7 @@ export type ListItem = {
 }
 
 export default function SelectableList({list, setAttribute, mappable}: SelectableListProps) {
-  const [selectedItem, setSelectedItem] = useState<string>(list[0].name);
+  const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(list[0].name);
   const { map, parentLayer, color } = useContext(MapContext);
 
   useEffect(() => {

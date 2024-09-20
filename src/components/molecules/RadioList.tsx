@@ -11,7 +11,7 @@ const [checked, setChecked] = useState<boolean[]>(() => new Array(list.length).f
 
   // Handle uncontrolled radio change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newChecked = checked.map((item, i) => i === index ? event.target.checked : false)
+    const newChecked = checked.map((_, i) => i === index ? event.target.checked : false)
     setChecked(newChecked);
   }
 

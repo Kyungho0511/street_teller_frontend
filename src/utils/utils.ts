@@ -1,4 +1,4 @@
-import { HealthcareFeatureCollection, HealthcarePropertyName } from '../constants/geoJsonConstants';
+import { HealthcarePropertyName } from '../constants/geoJsonConstants';
 import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
 

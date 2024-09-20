@@ -16,6 +16,7 @@ export type CheckboxItem = {
   checked: boolean;
   id: string;
   color?: Hex;
+  reasoning?: string; // Need to be cleaned up!!
 }
 
 /**
@@ -23,11 +24,17 @@ export type CheckboxItem = {
  */
 export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
   // Local state for the type of the list
-  const [type, setType] = useState<"cluster" | "borough">(() => {
+  // switching between borough and cluster type should be restructured,
+  // as JSX element is not referencing the correct type of the list. 
+  const [type] = useState<"cluster" | "borough">(() => {
     if (name === "boroughs") return "borough";
     if ([ "cluster1", "cluster2", "cluster3" ].includes(name)) return "cluster";
     throw new Error("Invalid name");
   });
+
+  // Casting the list to the appropriate type
+  let typedList = list as CheckboxItem[];
+  if (type === "cluster") typedList = list as ClusterCheckboxItem[];
 
   // Handle uncontrolled checkbox change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -52,7 +59,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
 
   return (
     <ul className={styles.list}>
-      {list.map((item, index) => (
+      {typedList.map((item, index) => (
         <li key={item.id}>
           <label className={styles.label} >
             <input
