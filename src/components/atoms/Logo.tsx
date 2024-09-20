@@ -10,7 +10,7 @@ export default function Logo({ width, color }: LogoProps) {
   return (
     <Link to="/" draggable={false}>
       <img
-        src={`src/assets/images/site_teller_${color ?? "black"}_logo.png`}
+        src={`/src/assets/images/site_teller_${color ?? "black"}_logo.png`}
         alt="logo_image"
         className={styles.logo}
         style={{ width: width }}
