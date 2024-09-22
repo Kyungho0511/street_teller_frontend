@@ -2,7 +2,7 @@ import styles from "./MessageBox.module.css";
 import { useContext, useEffect, useState } from "react";
 import Logo from "../atoms/Logo";
 import AiReponse from "../atoms/AiResponseText";
-import { MessageContext } from "../../context/MessageContext";
+import { Message, MessageContext } from "../../context/MessageContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -16,19 +16,26 @@ import {
 // the _useReducer_ hook for more sophisticated state management.
 export default function MessageBox() {
   const { messages } = useContext(MessageContext);
-  const [messageIndex, setMessageIndex] = useState<number>(0);
+
+  // Get messages with text type only.
+  const [texts, setTexts] = useState<Message[]>([]);
+  const [textIndex, setTextIndex] = useState<number>(0);
+
+  useEffect(() => {
+    setTexts(messages.filter((message) => message.type === "text"));
+  }, [messages.length]);
 
   // Updates messageIndex when a new message is added.
   useEffect(() => {
-    messages.length > 1 && setMessageIndex(messages.length - 1); 
-  }, [messages.length]);
+    texts.length > 1 && setTextIndex(texts.length - 1); 
+  }, [texts.length]);
 
   const nextMessageIndex = () => {
-    setMessageIndex((prev) => (prev === messages.length - 1 ? prev : prev + 1));
+    setTextIndex((prev) => (prev === messages.length - 1 ? prev : prev + 1));
   };
 
   const prevMessageIndex = () => {
-    setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
+    setTextIndex((prev) => (prev === 0 ? 0 : prev - 1));
   };
 
   const handleClick = (event: React.MouseEvent) => {
@@ -49,22 +56,22 @@ export default function MessageBox() {
         <div className={styles.navigate}>
           <FontAwesomeIcon icon={faChevronLeft} className={styles.icon} onClick={handleClick}/>
           <span>
-            {messageIndex + 1}/{messages.length}
+            {textIndex + 1}/{messages.length}
           </span>
           <FontAwesomeIcon icon={faChevronRight} className={styles.icon} onClick={handleClick}/>
         </div>
       </div>
       {/* body */}
       <div className={styles.body}>
-        {messages.length > 0 && messages[messageIndex].user && (
+        {messages.length > 0 && messages[textIndex].user && (
           <p className={`${styles.message} ${styles.user}`}>
             <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
-            {messages[messageIndex].user}
+            {messages[textIndex].user}
           </p>
         )}
         <p className={`${styles.message} ${styles.ai}`}>
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
-          {messages.length > 0 && messages[messageIndex].ai && messages[messageIndex].ai}
+          {messages.length > 0 && messages[textIndex].ai && messages[textIndex].ai}
           <AiReponse />
         </p>
       </div>

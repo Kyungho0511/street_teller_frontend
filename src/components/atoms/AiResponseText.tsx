@@ -10,7 +10,7 @@ import { Section } from "../../constants/surveyConstants";
  * Response component with typing animation for the text response from OpenAI.
  */
 export default function AiResponseText() {
-  const { promptText, addMessage, updateResponse } = useContext(MessageContext); 
+  const { promptText, messages, addMessage, updateResponse } = useContext(MessageContext); 
   const [text, setText] = useState<string>("");
   const location = useLocation();
 
@@ -25,7 +25,7 @@ export default function AiResponseText() {
   // Get openAI instructions on the current page.
   useEffect(() => {
     // Initialize an empty message
-    addMessage({ user: "", ai: "" });
+    addMessage({ user: "", ai: "", type: "section" });
 
     // Proceed typing animation for the section
     const section: Section = pathToSection(location.pathname);
@@ -38,7 +38,7 @@ export default function AiResponseText() {
     try {
       // play typing animation while fetching response
       let accumulatedResponse = ""; 
-      for await (const chunk of streamOpenAI(prompt)) {
+      for await (const chunk of streamOpenAI(prompt, messages)) {
         accumulatedResponse += chunk;
         setText((prev) => prev + chunk);
       }

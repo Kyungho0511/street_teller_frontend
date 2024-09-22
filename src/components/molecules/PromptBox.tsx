@@ -17,7 +17,7 @@ export default function PromptBox() {
     if (!buttonRef.current?.classList.contains(styles.active)) return;
 
     // Update MessageContext.
-    addMessage({ user: text, ai: "" });
+    addMessage({ user: text, ai: "", type: "text" });
     updatePromptText(text);
 
     // Empty prompt box.

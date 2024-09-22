@@ -20,6 +20,7 @@ import { Cluster, ClusterList } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
 import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
+import { MessageContext } from "../context/MessageContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -28,6 +29,7 @@ export default function ClusterPage() {
 
   // Global states
   const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { messages } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   // Local states
@@ -146,7 +148,7 @@ export default function ClusterPage() {
     );
     try {
       // Start OpenAI JSON response streaming.
-      for await (const chunk of streamOpenAI({ type:"cluster", content: promptJson })) {
+      for await (const chunk of streamOpenAI({ type:"cluster", content: promptJson }, messages)) {
         const response = chunk as OpenAiResponseJSON;
 
       // Update the survey context with parsed data.

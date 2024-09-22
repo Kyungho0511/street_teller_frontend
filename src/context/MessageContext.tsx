@@ -3,6 +3,7 @@ import { createContext, useState } from "react";
 export type Message = {
   user: string;
   ai: string;
+  type: "text" | "section" | "cluster";
 };
 
 type MessageContextProps = {
@@ -32,7 +33,7 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
     setMessages((prev) => [...prev, newMessage]);
   };
 
-  // Update the last message's response(ai).
+  // Update the last message's response (ai)
   const updateResponse = (newResponse: string) => {
     setMessages((prev) => [
       ...prev.slice(0, prev.length - 1),
@@ -40,7 +41,7 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
     ]);
   };
 
-  // Update the last message's prompt(user).
+  // Update the last message's prompt (user)
   const updatePromptText = (newPrompt: string) => {
     setPromptText(newPrompt);
     setMessages((prev) => [
