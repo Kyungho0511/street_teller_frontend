@@ -29,7 +29,7 @@ export default function ClusterPage() {
 
   // Global states
   const { survey, setSurveyContext } = useContext(SurveyContext);
-  const { messages } = useContext(MessageContext);
+  const { messages, addMessage } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   // Local states
@@ -148,8 +148,9 @@ export default function ClusterPage() {
     );
     try {
       // Start OpenAI JSON response streaming.
+      let response: OpenAiResponseJSON = {clusters:[{name:"",reasoning:""}]};
       for await (const chunk of streamOpenAI({ type:"cluster", content: promptJson }, messages)) {
-        const response = chunk as OpenAiResponseJSON;
+        response = chunk as OpenAiResponseJSON;
 
       // Update the survey context with parsed data.
       // Performance optimization needed here!!!!!!!
@@ -169,6 +170,14 @@ export default function ClusterPage() {
         });
         setSurveyContext({name: clusterName, list: newList} as ClusterList);
       }
+
+      // Update the message context when the response is fully fetched.
+      addMessage({
+        user: JSON.stringify(promptJson),
+        ai: JSON.stringify(response),
+        type: "cluster",
+      });
+
     } catch (error) {
       console.error("Failed to fetch openAI response:", error);
     }

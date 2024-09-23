@@ -22,8 +22,11 @@ export default function MessageBox() {
   const [textIndex, setTextIndex] = useState<number>(0);
 
   useEffect(() => {
-    setTexts(messages.filter((message) => message.type === "text"));
-  }, [messages.length]);
+    setTexts(messages.filter((message) => message.type === "text" || message.type === "section"));
+  }, [messages]);
+
+  console.log("messages: ", messages);
+  console.log("texts: ", texts);
 
   // Updates messageIndex when a new message is added.
   useEffect(() => {
@@ -56,22 +59,22 @@ export default function MessageBox() {
         <div className={styles.navigate}>
           <FontAwesomeIcon icon={faChevronLeft} className={styles.icon} onClick={handleClick}/>
           <span>
-            {textIndex + 1}/{messages.length}
+            {textIndex + 1}/{texts.length}
           </span>
           <FontAwesomeIcon icon={faChevronRight} className={styles.icon} onClick={handleClick}/>
         </div>
       </div>
       {/* body */}
       <div className={styles.body}>
-        {messages.length > 0 && messages[textIndex].user && (
+        {texts.length > 0 && texts[textIndex].user && (
           <p className={`${styles.message} ${styles.user}`}>
             <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
-            {messages[textIndex].user}
+            {texts[textIndex].user}
           </p>
         )}
         <p className={`${styles.message} ${styles.ai}`}>
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
-          {messages.length > 0 && messages[textIndex].ai && messages[textIndex].ai}
+          {texts.length > 0 && texts[textIndex].ai && texts[textIndex].ai}
           <AiReponse />
         </p>
       </div>

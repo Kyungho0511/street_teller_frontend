@@ -32,10 +32,6 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
     throw new Error("Invalid name");
   });
 
-  // Casting the list to the appropriate type
-  let typedList = list as CheckboxItem[];
-  if (type === "cluster") typedList = list as ClusterCheckboxItem[];
-
   // Handle uncontrolled checkbox change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
       const updatedList = [...list];
@@ -59,7 +55,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
 
   return (
     <ul className={styles.list}>
-      {typedList.map((item, index) => (
+      {list.map((item, index) => (
         <li key={item.id}>
           <label className={styles.label} >
             <input

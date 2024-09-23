@@ -57,43 +57,28 @@ export async function* streamOpenAI(
     })
   }
 
-  // 2. Add messages from the conversation history.
+  // 2. Add messages from the conversation history, which includes a current prompt.
   filteredHistory.forEach((message) => {
-    const user: OpenAiMessage = {
-      role: "user",
-      content: message.user
-    };
-    messages.push(user);
-
-    const ai: OpenAiMessage = {
-      role: "assistant",
-      content: message.ai
-    };
-    messages.push(ai);
+    if (message.user.length > 0) {
+      const user: OpenAiMessage = {
+        role: "user",
+        content: message.user
+      };
+      messages.push(user);
+    }
+    if (message.ai.length > 0) {
+      const ai: OpenAiMessage = {
+        role: "assistant",
+        content: message.ai
+      };
+      messages.push(ai);
+    }
   });
 
-  // 3. Add current prompt message.
-  if (prompt.type === "text" || prompt.type === "section") {
-    messages.push({
-      role: "user",
-      content: prompt.type === "text" ? prompt.content : promptPresets[prompt.content]
-    });
-  } else if (prompt.type === "cluster") {
-    messages.push({
-      role: "assistant",
-      content:
-        '{"clusters": [{"name": "name for cluster1", "reasoning": "reasoning for cluster1"}, {"name": "name for cluster2", "reasoning": "reasoning for cluster2"}, {"name": "name for cluster3", "reasoning": "reasoning for cluster3"}, {"name": "name for cluster4", "reasoning": "reasoning for cluster4"}]',
-    });
-    messages.push({
-      role: "user",
-      content: JSON.stringify(prompt.content),
-    });
-  }
+  // console.log(filteredHistory);
+  // console.log(messages);
 
-  console.log(messages.length);
-  console.log(messages);
-
-  // Run openAI with text or section prompts.
+  // 3. Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
     stream = await openai.chat.completions.create({
       messages: messages,
@@ -103,7 +88,7 @@ export async function* streamOpenAI(
     });
   }
 
-  // Run openAI with cluster prompt.
+  // 3. Run openAI with cluster prompt.
   if (prompt.type === "cluster") {
     stream = await openai.chat.completions.create({
       messages: messages,
@@ -113,7 +98,7 @@ export async function* streamOpenAI(
     });
   }
 
-  // Yield each chunk of the response as it becomes available.
+  // 4. Yield each chunk of the response as it becomes available.
   if (stream) {
     let accumulatedResponse = "";
 
