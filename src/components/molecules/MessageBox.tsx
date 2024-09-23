@@ -25,9 +25,6 @@ export default function MessageBox() {
     setTexts(messages.filter((message) => message.type === "text" || message.type === "section"));
   }, [messages]);
 
-  console.log("messages: ", messages);
-  console.log("texts: ", texts);
-
   // Updates messageIndex when a new message is added.
   useEffect(() => {
     texts.length > 1 && setTextIndex(texts.length - 1); 

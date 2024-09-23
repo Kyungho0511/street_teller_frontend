@@ -57,7 +57,7 @@ export async function* streamOpenAI(
     })
   }
 
-  // 2. Add messages from the conversation history, which includes a current prompt.
+  // 2. Add messages from the conversation history.
   filteredHistory.forEach((message) => {
     if (message.user.length > 0) {
       const user: OpenAiMessage = {
@@ -75,13 +75,14 @@ export async function* streamOpenAI(
     }
   });
 
-  // console.log(filteredHistory);
-  // console.log(messages);
-
   // 3. Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
     stream = await openai.chat.completions.create({
-      messages: messages,
+      messages: [...messages, 
+        {
+          role: "user", 
+          content: prompt.type === "text" ? prompt.content : promptPresets[prompt.content]
+        }],
       model: "gpt-4o-mini",
       stream: true,
       response_format: { type: "text" },
@@ -91,7 +92,7 @@ export async function* streamOpenAI(
   // 3. Run openAI with cluster prompt.
   if (prompt.type === "cluster") {
     stream = await openai.chat.completions.create({
-      messages: messages,
+      messages: [...messages, {role: "user", content: JSON.stringify(prompt.content)}],
       model: "gpt-4o-mini",
       stream: true,
       response_format: { type: "json_object" },
