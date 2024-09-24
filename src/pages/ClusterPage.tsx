@@ -186,11 +186,6 @@ export default function ClusterPage() {
   return (
     <>
       <SidebarSection title={"Select Target Clusters"}>
-        <p>
-          Review the site analysis of clusters. If you want me to re-explain
-          clustering analysis, press the "retry analysis" button below. When you
-          are ready, select clusters you're targeting, and continue.
-        </p>
         <CheckboxList
           name={clusterName}
           list={clusterList.list}

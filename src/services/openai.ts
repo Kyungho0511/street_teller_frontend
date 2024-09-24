@@ -1,9 +1,10 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
-import { Prompt, promptPresets } from "../constants/messageConstants";
+import { assistantMessage, Prompt, sectionMessages, systemMessage } from "../constants/messageConstants";
 import AiResponseText from "../components/atoms/AiResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
+import { Preference, Section } from "../constants/surveyConstants";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
@@ -30,7 +31,8 @@ type OpenAiMessage = {
  */
 export async function* streamOpenAI(
   prompt: Prompt,
-  history: Message[]
+  history: Message[],
+  // preferences: Preference[] 
 ): AsyncGenerator<string | OpenAiResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   
@@ -46,18 +48,16 @@ export async function* streamOpenAI(
   if (prompt.type === "text" || prompt.type === "section") { 
     messages.push({
       role: "system",
-      content:
-        "Assistant is a large language model trained by OpenAI. You are an expert in the context of urban planning, your goal is to provide insightful and informative responses to questions about site analysis especially in the context of site selection.",
+      content: systemMessage.text
     })
   } else if (prompt.type === "cluster") {
     messages.push({
       role: "system",
-      content:
-        "Assistant is a large language model trained by OpenAI. You are a helpful assistant designed to output JSON. You are an expert for interpreting machine learning outcomes, especially in the context of urban planning, your focus is on analyzing and labeling clusters from k-means clustering. You translate the values of variables within these k-means clusters into understandable, human language names. This process involves examining the distinctive characteristics of each cluster, understanding the significance of each variable within the context of urban fabrics, and then formulating descriptive names that accurately reflect the underlying patterns and relationships. I will provide you a JSON containing four objects representing clusters with numeric values for cluster centers means from k-means clustering. I want you to name each cluster with meaningful names based on numeric values. Please be consistent with naming logic for all clusters and keep the name within four words. For the reasoning part, please keep it under 100 words and specify two distinctive data in number.",
+      content: systemMessage.cluster
     })
   }
 
-  // 2. Add messages from the conversation history.
+  // 2. Add contextual messages from the conversation history.
   filteredHistory.forEach((message) => {
     if (message.user.length > 0) {
       const user: OpenAiMessage = {
@@ -75,13 +75,18 @@ export async function* streamOpenAI(
     }
   });
 
-  // 3. Run openAI with text or section prompts.
+  // 3. Add contextual messages from the preferences.
+  // const  = preferences.map((preference) => {
+
+  // });
+
+  // 4. Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
     stream = await openai.chat.completions.create({
       messages: [...messages, 
         {
           role: "user", 
-          content: prompt.type === "text" ? prompt.content : promptPresets[prompt.content]
+          content: prompt.type === "text" ? prompt.content : sectionMessages[prompt.content]
         }],
       model: "gpt-4o-mini",
       stream: true,
@@ -89,17 +94,20 @@ export async function* streamOpenAI(
     });
   }
 
-  // 3. Run openAI with cluster prompt.
+  // 4. Run openAI with cluster prompt.
   if (prompt.type === "cluster") {
     stream = await openai.chat.completions.create({
-      messages: [...messages, {role: "user", content: JSON.stringify(prompt.content)}],
+      messages: [...messages, 
+        {role: "assistant", content: assistantMessage},
+        {role: "user", content: JSON.stringify(prompt.content)}
+      ],
       model: "gpt-4o-mini",
       stream: true,
       response_format: { type: "json_object" },
     });
   }
 
-  // 4. Yield each chunk of the response as it becomes available.
+  // 5. Yield each chunk of the response as it becomes available.
   if (stream) {
     let accumulatedResponse = "";
 
@@ -146,13 +154,12 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
 
   // Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
-    const content: string = prompt.type === "text" ? prompt.content : promptPresets[prompt.content];
+    const content: string = prompt.type === "text" ? prompt.content : sectionMessages[prompt.content];
     completion = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
-          content:
-            "Assistant is a large language model trained by OpenAI. You are an expert in the context of urban planning, your goal is to provide insightful and informative responses to questions about site analysis especially in the context of site selection.",
+          content: systemMessage.text
         },
         { role: "user", content: content},
       ],
@@ -169,13 +176,11 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
       messages: [
         {
           role: "system",
-          content:
-            "Assistant is a large language model trained by OpenAI. You are a helpful assistant designed to output JSON. You are an expert for interpreting machine learning outcomes, especially in the context of urban planning, your focus is on analyzing and labeling clusters from k-means clustering. You translate the values of variables within these k-means clusters into understandable, human language names. This process involves examining the distinctive characteristics of each cluster, understanding the significance of each variable within the context of urban fabrics, and then formulating descriptive names that accurately reflect the underlying patterns and relationships. I will provide you a JSON containing four objects representing clusters with numeric values for cluster centers means from k-means clustering. I want you to name each cluster with meaningful names based on numeric values. Please be consistent with naming logic for all clusters and keep the name within four words. For the reasoning part, please keep it under 100 words and specify two distinctive data in number.",
+          content: systemMessage.cluster
         },
         {
           role: "assistant",
-          content:
-            '{"clusters": [{"name": "name for cluster1", "reasoning": "reasoning for cluster1"}, {"name": "name for cluster2", "reasoning": "reasoning for cluster2"}, {"name": "name for cluster3", "reasoning": "reasoning for cluster3"}, {"name": "name for cluster4", "reasoning": "reasoning for cluster4"}]',
+          content: assistantMessage
         },
         { role: "user", content: clustersJSON },
       ],

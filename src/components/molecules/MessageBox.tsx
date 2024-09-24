@@ -31,7 +31,7 @@ export default function MessageBox() {
   }, [texts.length]);
 
   const nextMessageIndex = () => {
-    setTextIndex((prev) => (prev === messages.length - 1 ? prev : prev + 1));
+    setTextIndex((prev) => (prev === texts.length - 1 ? prev : prev + 1));
   };
 
   const prevMessageIndex = () => {
