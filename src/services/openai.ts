@@ -1,10 +1,12 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
-import { assistantMessage, Prompt, sectionMessages, systemMessage } from "../constants/messageConstants";
+import { assistantMessage, Prompt, sectionMessages, siteCategoriesMessage, systemMessage, wordCountMessage } from "../constants/messageConstants";
 import AiResponseText from "../components/atoms/AiResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
-import { Preference, Section } from "../constants/surveyConstants";
+import { Preference, SiteCategory } from "../constants/surveyConstants";
+import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import { CLUSTERING_SIZE } from "./kmeans";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
@@ -32,16 +34,11 @@ type OpenAiMessage = {
 export async function* streamOpenAI(
   prompt: Prompt,
   history: Message[],
-  // preferences: Preference[] 
+  preferences?: Preference[],
+  clusterIndex?: number
+
 ): AsyncGenerator<string | OpenAiResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
-  
-  // Filter out "section" type messages as section descriptions are not necessary
-  // for tracking the conversation context between the user and the AI.
-  const filteredHistory: Message[] = history.filter(
-    (message) => message.type === "text" || message.type === "cluster"
-  );
-  
   const messages: OpenAiMessage[] = [];
   
   // 1. Add system messages.
@@ -57,8 +54,8 @@ export async function* streamOpenAI(
     })
   }
 
-  // 2. Add contextual messages from the conversation history.
-  filteredHistory.forEach((message) => {
+  // 2-1. Provide the conversation history for context.
+  history.forEach((message) => {
     if (message.user.length > 0) {
       const user: OpenAiMessage = {
         role: "user",
@@ -75,12 +72,28 @@ export async function* streamOpenAI(
     }
   });
 
-  // 3. Add contextual messages from the preferences.
-  // const  = preferences.map((preference) => {
+  // 2-2. Provide all preference categories for context.
+  messages.push({
+    role: "user",
+    content: siteCategoriesMessage
+  });
 
-  // });
+  // 2-3. Provide user selection of preferences for context.
+  if (preferences && clusterIndex) {
+    const startIndex = CLUSTERING_SIZE * clusterIndex;
+    messages.push({
+      role: "user",
+      content: `Among the list of site preference categories, the user ranked the categories in the following order: ${preferences.map((pref) => pref.category).join(", ")}. In this clustering analysis session, the user is focusing on the ${preferences[startIndex].category} and ${preferences[startIndex + 1].category} categories. When you are asked questions regarding categories, please refer to the list of subcategories under each category.`
+    });
+  }
 
-  // 4. Run openAI with text or section prompts.
+  // 2-4. Provide the word count instruction.
+  messages.push({
+    role: "user",
+    content: wordCountMessage
+  });
+
+  // 3-1. Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
     stream = await openai.chat.completions.create({
       messages: [...messages, 
@@ -94,7 +107,7 @@ export async function* streamOpenAI(
     });
   }
 
-  // 4. Run openAI with cluster prompt.
+  // 3-2. Run openAI with cluster prompt.
   if (prompt.type === "cluster") {
     stream = await openai.chat.completions.create({
       messages: [...messages, 
@@ -107,7 +120,7 @@ export async function* streamOpenAI(
     });
   }
 
-  // 5. Yield each chunk of the response as it becomes available.
+  // 4. Yield each chunk of the response as it becomes available.
   if (stream) {
     let accumulatedResponse = "";
 

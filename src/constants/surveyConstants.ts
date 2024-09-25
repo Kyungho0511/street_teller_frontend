@@ -131,6 +131,15 @@ export const initialPreferenceList: PreferenceList = {
   ],
 };
 
+export const siteCategories = initialPreferenceList.list.map(
+  (preference) => ({
+    category: preference.category,
+    subCategories: preference.subCategories.map(
+      (subCategory) => subCategory.name
+    ),
+  })
+);
+
 /**
  * Boroughs for the survey.
  */

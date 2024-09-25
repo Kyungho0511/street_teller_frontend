@@ -17,9 +17,18 @@
 
 .title {
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: var(--font-bold);
   text-transform: capitalize;
   margin: 0;
-  margin-bottom: 1.3rem;
+  margin-bottom: 0.7rem;
+  opacity: 0.9;
+}
+
+.subtitle {
+  font-size: 1rem;
+  font-weight: var(--font-medium);
+  text-transform: capitalize;
+  margin: 0;
+  margin-bottom: 0.5rem;
   opacity: 0.9;
 }

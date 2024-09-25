@@ -24,7 +24,7 @@ export default function AiResponseText() {
 
   // Get openAI instructions on the current page.
   useEffect(() => {
-    // Initialize an empty message
+    // Initialize a section message
     addMessage({ user: "", ai: "", type: "section" });
 
     // Proceed typing animation for the section

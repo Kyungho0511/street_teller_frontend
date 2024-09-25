@@ -149,26 +149,33 @@ export default function ClusterPage() {
     try {
       // Start OpenAI JSON response streaming.
       let response: OpenAiResponseJSON = {clusters:[{name:"",reasoning:""}]};
-      for await (const chunk of streamOpenAI({ type:"cluster", content: promptJson }, messages)) {
+      for await (const chunk of streamOpenAI(
+        { type: "cluster", content: promptJson },
+        messages,
+        survey.preferenceList.list,
+        clusterIndex
+      )) {
         response = chunk as OpenAiResponseJSON;
 
-      // Update the survey context with parsed data.
-      // Performance optimization needed here!!!!!!!
-      // Performance optimization needed here!!!!!!!
+        // Update the survey context with parsed data.
+        // Performance optimization needed here!!!!!!!
+        // Performance optimization needed here!!!!!!!
         const newList = [...clusterList.list];
         response?.clusters?.forEach((cluster, i) => {
           newList[i] = {
             ...newList[i],
             name: cluster?.name,
             reasoning: cluster?.reasoning,
-            centroids: kMeansLayers[clusterIndex]!.attributes.map((attr, j) => ({
-              name: attr,
-              value: kMeansLayers[clusterIndex]!.centroids[i][j],
-            })),
+            centroids: kMeansLayers[clusterIndex]!.attributes.map(
+              (attr, j) => ({
+                name: attr,
+                value: kMeansLayers[clusterIndex]!.centroids[i][j],
+              })
+            ),
             color: kMeansLayers[clusterIndex]!.colors[i],
           };
         });
-        setSurveyContext({name: clusterName, list: newList} as ClusterList);
+        setSurveyContext({ name: clusterName, list: newList } as ClusterList);
       }
 
       // Update the message context when the response is fully fetched.
@@ -185,7 +192,18 @@ export default function ClusterPage() {
 
   return (
     <>
-      <SidebarSection title={"Select Target Clusters"}>
+      <SidebarSection
+        title={"select target clusters on"}
+        subtitles={[
+          `${clusterIndex * CLUSTERING_SIZE + 1} - ${
+            survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category
+          }`,
+          `${clusterIndex * CLUSTERING_SIZE + 2} - ${
+            survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1]
+              .category
+          }`,
+        ]}
+      >
         <CheckboxList
           name={clusterName}
           list={clusterList.list}

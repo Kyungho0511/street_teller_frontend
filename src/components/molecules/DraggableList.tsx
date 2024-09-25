@@ -4,6 +4,7 @@ import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';
 import { useRef } from 'react';
+import { div } from 'framer-motion/client';
 
 type DraggableListProps = {
   list: Preference[];
@@ -56,6 +57,7 @@ export default function DraggableList({
   }
 
   return (
+    <div className={styles.container}>
       <Reorder.Group axis="y" values={list} onReorder={(result) => handleReorder(result)}>
         {list.map((item, index) => (
           <Reorder.Item value={item} key={item.id}>
@@ -76,5 +78,6 @@ export default function DraggableList({
           </Reorder.Item>
         ))}
       </Reorder.Group>
+    </div>
   );
 }
