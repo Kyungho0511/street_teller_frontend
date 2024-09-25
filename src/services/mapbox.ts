@@ -25,8 +25,10 @@ export function CreateMap(): mapboxgl.Map {
     pitch: configs.location.pitch,
     scrollZoom: true,
     maxBounds: bounds,
+    attributionControl: false,
+    logoPosition: "top-left"
   });
-  
+
   // Disable rotation using touch and mouse
   map.dragRotate.disable();
   map.touchZoomRotate.disableRotation();

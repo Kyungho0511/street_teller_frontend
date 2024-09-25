@@ -4,7 +4,8 @@
   font-size: 1.3rem;
   font-weight: var(--font-bold);
   margin-right: 0.7rem;
-  width: 200px;
+  width: 240px;
+  height: 60px;
 }
 
 .sidebar_button {

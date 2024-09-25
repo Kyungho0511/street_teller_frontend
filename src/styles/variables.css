@@ -10,6 +10,7 @@
   --color-light-white: rgb(246, 246, 246);
   --color-light-white2: rgb(252, 252, 252);
   --color-white: white;
+  --color-white-transparent: rgba(255, 255, 255, 0.5);
   --color-blue: #005FFF;
   --color-blue-transparent: #005FFFcc;
   --color-yellow: #f9a200;
