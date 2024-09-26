@@ -10,6 +10,7 @@ import {
   faChevronRight,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
+import MarkdownRenderer from "../atoms/MarkdownRenderer";
 
 // Performance Issue: If the text history becomes large, it might be more
 // efficient to store it in a more complex data structure or consider using
@@ -50,7 +51,7 @@ export default function MessageBox() {
 
   return (
     <div className={styles.container}>
-      {/* header */}
+
       <div className={styles.header}>
         <Logo width="160px" color="black" />
         <div className={styles.navigate}>
@@ -61,20 +62,22 @@ export default function MessageBox() {
           <FontAwesomeIcon icon={faChevronRight} className={styles.icon} onClick={handleClick}/>
         </div>
       </div>
-      {/* body */}
+
       <div className={styles.body}>
         {texts.length > 0 && texts[textIndex].user && (
-          <p className={`${styles.message} ${styles.user}`}>
+          <div className={styles.message}>
             <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
             {texts[textIndex].user}
-          </p>
+          </div>
         )}
-        <p className={`${styles.message} ${styles.ai}`}>
+        <div className={styles.message}>
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
-          {texts.length > 0 && texts[textIndex].ai && texts[textIndex].ai}
+          {texts.length > 0 && texts[textIndex].ai && <MarkdownRenderer content={texts[textIndex].ai} />}
           <AiReponse />
-        </p>
+        </div>
+        
       </div>
+
     </div>
   );
 }

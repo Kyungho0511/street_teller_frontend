@@ -17,11 +17,11 @@ body {
 }
 
 h2 {
-  line-height: 2.2rem;
+  line-height: var(--line-height-xlarge);
 }
 
 p {
-  line-height: 1.5rem;
+  line-height: var(--line-height-regular);
 }
 
 ul {

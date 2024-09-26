@@ -4,7 +4,6 @@ import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';
 import { useRef } from 'react';
-import { div } from 'framer-motion/client';
 
 type DraggableListProps = {
   list: Preference[];

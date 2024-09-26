@@ -4,8 +4,7 @@ import { assistantMessage, Prompt, sectionMessages, siteCategoriesMessage, syste
 import AiResponseText from "../components/atoms/AiResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
-import { Preference, SiteCategory } from "../constants/surveyConstants";
-import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import { Preference } from "../constants/surveyConstants";
 import { CLUSTERING_SIZE } from "./kmeans";
 
 const openai = new OpenAI({

@@ -5,6 +5,7 @@ import { Prompt } from "../../constants/messageConstants";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { Section } from "../../constants/surveyConstants";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 /**
  * Response component with typing animation for the text response from OpenAI.
@@ -51,5 +52,5 @@ export default function AiResponseText() {
     }
   }
 
-  return <>{text}</>;
+  return <MarkdownRenderer content={text} />;
 }

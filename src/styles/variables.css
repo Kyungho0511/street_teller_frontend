@@ -31,4 +31,10 @@
   --font-small: 0.9rem;
   --font-regular: 1rem;
   --font-large: 1.1rem;
+
+  /* Font line height */
+  --line-height-small: 1.2rem;
+  --line-height-regular: 1.5rem;
+  --line-height-large: 1.8rem;
+  --line-height-xlarge: 2.2rem;
 }
