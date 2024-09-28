@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
-import { assistantMessage, Prompt, sectionMessages, siteCategoriesMessage, systemMessage, wordCountMessage } from "../constants/messageConstants";
+import { assistantMessage, Prompt, siteCategoriesMessage, systemMessage, wordCountMessage } from "../constants/messageConstants";
 import AiResponseText from "../components/atoms/AiResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
@@ -40,6 +40,8 @@ export async function* streamOpenAI(
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
   
+  console.log(prompt.content);
+
   // 1. Add system messages.
   if (prompt.type === "text" || prompt.type === "section") { 
     messages.push({
@@ -98,7 +100,7 @@ export async function* streamOpenAI(
       messages: [...messages, 
         {
           role: "user", 
-          content: prompt.type === "text" ? prompt.content : sectionMessages[prompt.content]
+          content: prompt.content
         }],
       model: "gpt-4o-mini",
       stream: true,
@@ -157,7 +159,7 @@ export async function* streamOpenAI(
 }
 
 /**
- * Fetch openAI response at once. It is not tracking the conversation context.
+ * Fetch openAI response at once. It is not tracking the conversation history.
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @returns openAI response.
  */
@@ -166,7 +168,7 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
 
   // Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
-    const content: string = prompt.type === "text" ? prompt.content : sectionMessages[prompt.content];
+    const content = prompt.content;
     completion = await openai.chat.completions.create({
       messages: [
         {

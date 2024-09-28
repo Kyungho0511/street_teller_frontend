@@ -4,15 +4,19 @@ import DraggableList from "../components/molecules/DraggableList";
 import LegendSection from "../components/organisms/LegendSection";
 import SelectableList from "../components/molecules/SelectableList";
 import { SurveyContext } from "../context/SurveyContext";
-import { initialPreferenceList, Preference } from "../constants/surveyConstants";
+import { initialPreferenceList, Preference, Section } from "../constants/surveyConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
+import { MessageContext } from "../context/MessageContext";
+import { getInstructionPrompt, Prompt } from "../constants/messageConstants";
+import { pathToSection } from "../utils/utils";
 // import CheckboxList from "../components/CheckboxList";
 
 
 export default function HomePage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { addMessage, updatePrompt } = useContext(MessageContext);
 
   // Currently selected preference.
   const [preference, setPreference] = useState<Preference>(initialPreferenceList.list[0]);
@@ -27,6 +31,14 @@ export default function HomePage() {
     const selectedPreference = survey.preferenceList.list.find((item) => item.selected);
     selectedPreference && setPreference(selectedPreference);
   }, [survey]);
+
+  // Get openAI instructions on the current page.
+  useEffect(() => {
+    addMessage({ user: "", ai: "", type: "section" });
+    const section: Section = pathToSection(location.pathname);
+    const prompt: Prompt = { type: "section", content: getInstructionPrompt(section) };
+    section && updatePrompt(prompt);
+  }, [location.pathname]);
 
   return (
     <>

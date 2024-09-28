@@ -16,7 +16,7 @@ import MarkdownRenderer from "../atoms/MarkdownRenderer";
 // efficient to store it in a more complex data structure or consider using
 // the _useReducer_ hook for more sophisticated state management.
 export default function MessageBox() {
-  const { messages } = useContext(MessageContext);
+  const { messages  } = useContext(MessageContext);
 
   // Get messages with text type only.
   const [texts, setTexts] = useState<Message[]>([]);
@@ -72,6 +72,8 @@ export default function MessageBox() {
         )}
         <div className={styles.message}>
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
+          {/* AiResponse displays streaming response with typing animation, 
+           whereas MarkdownRenderer shows fully fetched AI response */}
           {texts.length > 0 && texts[textIndex].ai && <MarkdownRenderer content={texts[textIndex].ai} />}
           <AiReponse />
         </div>

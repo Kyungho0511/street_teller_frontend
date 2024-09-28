@@ -6,7 +6,7 @@ import { MessageContext } from "../../context/MessageContext";
 
 export default function PromptBox() {
   const [text, setText] = useState<string>("");
-  const { addMessage, updatePromptText } = useContext(MessageContext);
+  const { addMessage, updatePrompt: updatePrompt } = useContext(MessageContext);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Handle MessageContext and prompt on form submission.
@@ -18,7 +18,7 @@ export default function PromptBox() {
 
     // Update MessageContext.
     addMessage({ user: text, ai: "", type: "text" });
-    updatePromptText(text);
+    updatePrompt({ type: "text", content: text });
 
     // Empty prompt box.
     if (text.trim()) {

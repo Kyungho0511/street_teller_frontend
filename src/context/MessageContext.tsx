@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { Prompt } from "../constants/messageConstants";
 
 export type Message = {
   user: string;
@@ -10,8 +11,8 @@ type MessageContextProps = {
   messages: Message[] | [];
   addMessage: (newMessage: Message) => void;
   updateResponse: (newResponse: string) => void;
-  promptText: string;
-  updatePromptText: (newPrompt: string) => void;
+  prompt?: Prompt;
+  updatePrompt: (newPrompt: Prompt) => void;
 };
 
 /**
@@ -27,7 +28,7 @@ export const MessageContext = createContext<MessageContextProps>(
  */
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [promptText, setPromptText] = useState<string>("");
+  const [prompt, setPrompt] = useState<Prompt>();
 
   const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
@@ -42,12 +43,15 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
   };
 
   // Update the last message's prompt (user)
-  const updatePromptText = (newPrompt: string) => {
-    setPromptText(newPrompt);
-    setMessages((prev) => [
-      ...prev.slice(0, prev.length - 1),
-      { ...prev[prev.length - 1], user: newPrompt },
-    ]);
+  const updatePrompt = (newPrompt: Prompt) => {
+    setPrompt(newPrompt);
+
+    if (newPrompt.type === "text") {
+      setMessages((prev) => [
+        ...prev.slice(0, prev.length - 1),
+        { ...prev[prev.length - 1], user: newPrompt.content as string },
+      ]);
+    }
   };
 
   return (
@@ -56,8 +60,8 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
         messages,
         addMessage,
         updateResponse,
-        promptText,
-        updatePromptText,
+        prompt,
+        updatePrompt,
       }}
     >
       {children}

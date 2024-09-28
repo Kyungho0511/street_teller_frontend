@@ -16,11 +16,12 @@ import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
-import { Cluster, ClusterList } from "../constants/surveyConstants";
+import { Cluster, ClusterList, Section, SiteCategory } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
 import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
 import { MessageContext } from "../context/MessageContext";
+import { getInstructionPrompt, Prompt } from "../constants/messageConstants";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -29,7 +30,7 @@ export default function ClusterPage() {
 
   // Global states
   const { survey, setSurveyContext } = useContext(SurveyContext);
-  const { messages, addMessage } = useContext(MessageContext);
+  const { messages, addMessage, updatePrompt } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   // Local states
@@ -44,8 +45,24 @@ export default function ClusterPage() {
     features: [],
   });
 
+  // Get openAI instructions on the current page.
   useEffect(() => {
-    // Initial fetch of GeoJson data.
+    addMessage({ user: "", ai: "", type: "section" });
+    const section: Section = pathToSection(location.pathname);
+    const selectedCategories: SiteCategory[] = [
+      `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
+      `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
+    ];
+    const prompt: Prompt = {
+      type: "section",
+      content: getInstructionPrompt(section, selectedCategories),
+    };
+    section && updatePrompt(prompt);
+  }, [location.pathname]);
+
+
+  // Initial fetch of GeoJson data.
+  useEffect(() => {
     if (geoJson.features.length === 0)
     {
       const fetchData = async () => {
@@ -193,16 +210,7 @@ export default function ClusterPage() {
   return (
     <>
       <SidebarSection
-        title={"select target clusters on"}
-        subtitles={[
-          `${clusterIndex * CLUSTERING_SIZE + 1} - ${
-            survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category
-          }`,
-          `${clusterIndex * CLUSTERING_SIZE + 2} - ${
-            survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1]
-              .category
-          }`,
-        ]}
+        title={"select target clusters"}
       >
         <CheckboxList
           name={clusterName}
