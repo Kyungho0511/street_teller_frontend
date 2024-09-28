@@ -39,7 +39,7 @@ export async function* streamOpenAI(
 ): AsyncGenerator<string | OpenAiResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
-  
+
   console.log(prompt.content);
 
   // 1. Add system messages.

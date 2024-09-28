@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { BoroughList, PreferenceList, ClusterList, initialPreferenceList, initialClusterLists, initialBoroughList } from "../constants/surveyConstants";
+import { parseString } from "../utils/utils";
 
 export type Survey = {
   boroughList : BoroughList,
@@ -38,7 +39,7 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
         ...prev,
         preferenceList: { name: "preferences", list: newSurveyElement.list },
       }));
-    } else if (["cluster1", "cluster2", "cluster3"].includes(newSurveyElement.name)) {
+    } else if (parseString(newSurveyElement.name) === "cluster") {
       setSurvey((prev) => ({
         ...prev,
         clusterLists: prev.clusterLists.map((list) =>

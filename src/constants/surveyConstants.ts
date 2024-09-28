@@ -12,7 +12,7 @@ import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 
-export type Section = "home" | "cluster1" | "cluster2" | "cluster3";
+export type Section = "home" | `cluster${number}`;
 
 /**
  * Preference categories for the survey.
@@ -171,7 +171,7 @@ export type Cluster = {
 export type ClusterCheckboxItem = CheckboxItem & Cluster;
 
 export type ClusterList = {
-  name: "cluster1" | "cluster2" | "cluster3";
+  name: `cluster${number}`;
   list: ClusterCheckboxItem[];
 };
 

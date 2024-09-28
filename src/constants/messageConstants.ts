@@ -1,4 +1,6 @@
 import { Section, Cluster, siteCategories, SiteCategory } from "./surveyConstants";
+import { parseString } from "../utils/utils";
+import { CLUSTERING_SIZE } from "../services/kmeans";
 
 type textPrompt = { type: "text"; content: string };
 type sectionPrompt = { type: "section"; content: string };
@@ -20,35 +22,26 @@ export const wordCountMessage = `When you are asked about a single category and 
 /**
  * Get instruction prompt for each page to request to openAI.
  * @param section section name of the current page.
+ * @param sectionId section id number of the current page in case of multiple sub-sections.
  * @param categories name of the selected preference categories for current clustering analysis.
  */
 export function getInstructionPrompt(
   section: Section,
+  sectionId?: number,
   selectedCategories?: SiteCategory[],
 ): string {
-
-  console.log(section);
   
   // Instruction prompt prefix.
   let instructionPrompt = "Instruct users with the following sentence: ";
   
   if (section === "home") {
     instructionPrompt += `Hi, I am a site analysis agent to recommend site clusters based on your site preferences. Tell me about your healthcare site preferences by sorting the categories below in order of importance for your new healthcare site. I will tell you about NYC site clusters that suit your need the best. Try not to mention the category names as it is redundant, unless you are asked for it.`;
-  } else if (section === "cluster1" && selectedCategories) {
-    instructionPrompt += `These are cluster groups based on the first and the second preference categories you chose in priority.  
-      1. **${selectedCategories[0]}** 
-      2. **${selectedCategories[1]}**
+  } else if (parseString(section) === "cluster" && sectionId && selectedCategories) {
+    const categoryNumber = CLUSTERING_SIZE * (sectionId - 1) + 1;
+    instructionPrompt += `These are cluster groups based on the preference categories ranked at ${categoryNumber} and ${categoryNumber + 1} in your priority.  
+      ${categoryNumber}. **${selectedCategories[0]}** 
+      ${categoryNumber + 1}. **${selectedCategories[1]}**
       Review my interpretation of the clustering analysis below. If you want me to re-explain clustering analysis, press the "retry analysis" button below. When you are ready, select clusters you're targeting, and continue.`;
-  } else if (section === "cluster2" && selectedCategories) {
-    instructionPrompt += `This is the first clustering analysis on the first and the second preference categories you chose in priority.  
-      3. **${selectedCategories[0]}** 
-      4. **${selectedCategories[1]}** 
-      Review my interpretation of the clustering analysis. If you want me to re-explain clustering analysis, press the "retry analysis" button below. When you are ready, select clusters you're targeting, and continue.`;
-  } else if (section === "cluster3" && selectedCategories) {
-    instructionPrompt += `This is the first clustering analysis on the first and the second preference categories you chose in priority.  
-      5. **${selectedCategories[0]}**   
-      6. **${selectedCategories[1]}** 
-      Review my interpretation of the clustering analysis. If you want me to re-explain clustering analysis, press the "retry analysis" button below. When you are ready, select clusters you're targeting, and continue.`;
   }
 
   return instructionPrompt;

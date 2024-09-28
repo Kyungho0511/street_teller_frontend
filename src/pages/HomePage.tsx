@@ -47,7 +47,7 @@ export default function HomePage() {
           <CheckboxList name="boroughs" list={survey.boroughList} setSurveyContext={setSurveyContext} />
         </SidebarSection> */}
 
-      <SidebarSection title="rank site categories in priority to expand healthcare in shortage areas">
+      <SidebarSection title="rank site conditions in priority to expand healthcare in shortage areas">
         <DraggableList
           list={survey.preferenceList.list}
           setSurveyContext={setSurveyContext}

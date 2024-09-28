@@ -9,14 +9,14 @@ import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
-import { pathToSection } from "../utils/utils";
+import { getSeriesNumber, pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
 import {
   geoJsonfilePath,
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
-import { Cluster, ClusterList, Section, SiteCategory } from "../constants/surveyConstants";
+import { Cluster, ClusterList, SiteCategory } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
 import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
@@ -48,16 +48,15 @@ export default function ClusterPage() {
   // Get openAI instructions on the current page.
   useEffect(() => {
     addMessage({ user: "", ai: "", type: "section" });
-    const section: Section = pathToSection(location.pathname);
     const selectedCategories: SiteCategory[] = [
       `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
       `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
     ];
     const prompt: Prompt = {
       type: "section",
-      content: getInstructionPrompt(section, selectedCategories),
+      content: getInstructionPrompt(clusterName, parseInt(clusterId!), selectedCategories),
     };
-    section && updatePrompt(prompt);
+    updatePrompt(prompt);
   }, [location.pathname]);
 
 
@@ -228,7 +227,7 @@ export default function ClusterPage() {
 
       <LegendSection
         title={`Clustering Step`}
-        steps={[1, 2, 3]}
+        steps={getSeriesNumber(survey.clusterLists.length)}
         currentStep={parseInt(clusterId!)}
       >
         <DropdownManager

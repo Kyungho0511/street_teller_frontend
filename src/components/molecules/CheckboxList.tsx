@@ -27,8 +27,8 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
   // switching between borough and cluster type should be restructured,
   // as JSX element is not referencing the correct type of the list. 
   const [type] = useState<"cluster" | "borough">(() => {
-    if (name === "boroughs") return "borough";
-    if ([ "cluster1", "cluster2", "cluster3" ].includes(name)) return "cluster";
+    if (name === "borough") return "borough";
+    if (name as ClusterList["name"] != null) return "cluster";
     throw new Error("Invalid name");
   });
 
@@ -46,7 +46,7 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
       // Update ClusterList in the survey context
       if (type === "cluster") {
         const newCluster: ClusterList = {
-          name: name as "cluster1" | "cluster2" | "cluster3",
+          name: name as ClusterList["name"],
           list: updatedList as ClusterCheckboxItem[],
         };
         setSurveyContext(newCluster);

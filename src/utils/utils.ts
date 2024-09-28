@@ -2,25 +2,19 @@ import { HealthcarePropertyName } from '../constants/geoJsonConstants';
 import { Section } from "../constants/surveyConstants";
 import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
 
-
 /**
- * Returns the section corresponding to the path.
+ * Returns the section name corresponding to the path.
  * @param path Url path name.
- * @returns Section name associated with the url path.
  */
 export function pathToSection(path: string): Section {
-  switch (path) {
-    case "/":
-      return "home";
-    case "/cluster/1":
-      return "cluster1";
-    case "/cluster/2":
-      return "cluster2";
-    case "/cluster/3":
-      return "cluster3";
-    default:
-      return "home";
+  if (path === "/") {
+    return "home";
   }
+  const clusterMatch = path.match(/^\/cluster\/(\d+)$/);
+  if (clusterMatch) {
+    return `cluster${clusterMatch[1]}` as Section;
+  }
+  return "home";
 }
 
 /**
@@ -43,7 +37,6 @@ export function getUnit(attribute: HealthcarePropertyName): UnitType | undefined
  * Format the number based on the unit type.
  * @param num number to be formatted.
  * @param unit unit type to be used for formatting.
- * @returns formatted string with the unit.
  */
 export function formatUnit(num: number, unit: UnitType): string {
   switch (unit) {
@@ -66,8 +59,27 @@ export function formatUnit(num: number, unit: UnitType): string {
  * Restore original value of the normalized number(0-1)
  * @param value value to be restored.
  * @param bound bound of the original value. 
- * @returns restored value.
  */
 export function unNormalize(value: number, bound: MapBound): number {
   return (bound.max - bound.min) * value;
+}
+
+/**
+ * Get the series of numbers from 1 to value.
+ * @param count number of series to be generated.
+ */
+export function getSeriesNumber(count: number) {
+  const series = [];
+  for (let i = 1; i < count + 1; i++) {
+    series.push(i);
+  }
+  return series;
+}
+
+/**
+ * Parse characters from the string.
+ * @param value value to be parsed.
+ */
+export function parseString(value: string): string {
+  return value.match(/[a-zA-Z]+/)![0];
 }
