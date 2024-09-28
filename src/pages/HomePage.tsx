@@ -9,8 +9,9 @@ import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
-import { getInstructionPrompt, Prompt } from "../constants/messageConstants";
+import { Prompt } from "../constants/messageConstants";
 import { pathToSection } from "../utils/utils";
+import { getInstructionPrompt } from "../services/openai";
 // import CheckboxList from "../components/CheckboxList";
 
 

@@ -11,17 +11,14 @@ import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
-import {
-  geoJsonfilePath,
-  HealthcareFeatureCollection,
-  HealthcarePropertyName,
-} from "../constants/geoJsonConstants";
+import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { Cluster, ClusterList, SiteCategory } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
-import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
+import { getInstructionPrompt, OpenAiResponseJSON, streamOpenAI } from "../services/openai";
 import { MessageContext } from "../context/MessageContext";
-import { getInstructionPrompt, Prompt } from "../constants/messageConstants";
+import { Prompt } from "../constants/messageConstants";
+import useGeoJson from "../hooks/useGeoJson";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -40,10 +37,8 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname)
   const clusterList = survey.clusterLists[clusterIndex];
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
-  const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>({
-    type: "FeatureCollection",
-    features: [],
-  });
+  const [loading, error, geoJson, setGeoJson] = useGeoJson({ filePath: geoJsonFilePath});
+
 
   // Get openAI instructions on the current page.
   useEffect(() => {
@@ -60,29 +55,9 @@ export default function ClusterPage() {
   }, [location.pathname]);
 
 
-  // Initial fetch of GeoJson data.
+  // Filter the geoJson data based on the selected clusters from the previous cluster page.
   useEffect(() => {
-    if (geoJson.features.length === 0)
-    {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(geoJsonfilePath);
-          if (!response.ok) {
-            throw new Error("Network error: " + response.statusText);
-          }
-          const data = await response.json();
-          setGeoJson(data);
-        } catch (error) {
-          if (error instanceof Error) {
-            console.error(error.message);
-          }
-        }
-      };
-      fetchData();
-    }
-
-    // Filter the geoJson data based on the selected clusters from the previous cluster page.
-    if (clusterIndex > 0) {
+    if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
       const selection: boolean[] = survey.clusterLists[
         clusterIndex - 1
       ].list.map((cluster) => cluster.checked);
@@ -94,7 +69,7 @@ export default function ClusterPage() {
 
   // Set KMeansLayer on loading a new clustering page.
   useEffect(() => {
-    if (geoJson.features.length === 0) return;
+    if (!geoJson) return;
 
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
@@ -204,6 +179,14 @@ export default function ClusterPage() {
     } catch (error) {
       console.error("Failed to fetch openAI response:", error);
     }
+  }
+
+  // Display data loading or error status
+  if (loading) {
+    return <SidebarSection><p>Loading GeoJson Data...</p></SidebarSection>
+  }
+  if (error) {
+    return <SidebarSection><p>{error}</p></SidebarSection>
   }
 
   return (

@@ -4,8 +4,9 @@ import { assistantMessage, Prompt, siteCategoriesMessage, systemMessage, wordCou
 import AiResponseText from "../components/atoms/AiResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
-import { Preference } from "../constants/surveyConstants";
+import { Preference, Section, SiteCategory } from "../constants/surveyConstants";
 import { CLUSTERING_SIZE } from "./kmeans";
+import { parseString } from "../utils/utils";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
@@ -24,6 +25,33 @@ type OpenAiMessage = {
 }
 
 /**
+ * Get instruction prompt for each page to request to openAI.
+ * @param section section name of the current page.
+ * @param sectionId section id number of the current page in case of multiple sub-sections.
+ * @param categories name of the selected preference categories for current clustering analysis.
+ */
+export function getInstructionPrompt(
+  section: Section,
+  sectionId?: number,
+  selectedCategories?: SiteCategory[],
+): string {
+  
+  // Instruction prompt prefix.
+  let instructionPrompt = "Instruct users with the following sentence: ";
+  
+  if (section === "home") {
+    instructionPrompt += `Hi, I am a site analysis agent to recommend site clusters based on your site preferences. Tell me about your healthcare site preferences by sorting the categories below in order of importance for your new healthcare site. I will tell you about NYC site clusters that suit your need the best. Try not to mention the category names as it is redundant, unless you are asked for it.`;
+  } else if (parseString(section) === "cluster" && sectionId && selectedCategories) {
+    const categoryNumber = CLUSTERING_SIZE * (sectionId - 1) + 1;
+    instructionPrompt += `These are cluster groups based on the preference categories ranked at ${categoryNumber} and ${categoryNumber + 1} in your priority.  
+      ${categoryNumber}. **${selectedCategories[0]}** 
+      ${categoryNumber + 1}. **${selectedCategories[1]}**
+      Review my interpretation of the clustering analysis below. If you want me to re-explain clustering analysis, press the "retry analysis" button below. When you are ready, select clusters you're targeting, and continue.`;
+  }
+  return instructionPrompt;
+}
+
+/**
  * Stream chunks of openAI response. It's meant to be rendered with typing animation
  * in the {@link AiResponseText} as soon as it gets the first chunk of the response.
  * @param prompt takes three types of prompts: text, section, and cluster.
@@ -39,8 +67,6 @@ export async function* streamOpenAI(
 ): AsyncGenerator<string | OpenAiResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
-
-  console.log(prompt.content);
 
   // 1. Add system messages.
   if (prompt.type === "text" || prompt.type === "section") { 
