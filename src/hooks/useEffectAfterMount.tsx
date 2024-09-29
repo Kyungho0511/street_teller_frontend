@@ -10,7 +10,7 @@ export default function useEffectAfterMount(callbackFn: EffectCallback, dependen
 
   useEffect(() => {
     if (hasMounted.current) {
-      callbackFn();
+      return callbackFn();
     } else {
       hasMounted.current = true;
     }

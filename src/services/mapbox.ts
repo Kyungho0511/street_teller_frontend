@@ -129,12 +129,19 @@ export function updateLayerAttribute(
 
 /**
  * Add a k-means cluster layer to the mapbox map.
+ * @param kMeansLayer Layer to be added.
+ * @param map Map to which the layer is added.
  */
 export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
+
+  // Remove the layer if it already exists.
+  map.getLayer(kMeansLayer.title) && map.removeLayer(kMeansLayer.title);
+
   map.addSource(kMeansLayer.title, {
       type: "geojson",
       data: kMeansLayer.geoJson,
     });
+    
   map.addLayer(
     {
       id: kMeansLayer.title,
@@ -163,6 +170,8 @@ export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
 
 /**
  * Remove a k-means cluster layer from the mapbox map.
+ * @param kMeansLayer Layer to be removed.
+ * @param map Map from which the layer is removed.
  */
 export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
   map.removeLayer(kMeansLayer.title);
@@ -172,6 +181,7 @@ export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) 
 /**
  * Update a k-means cluster layer color style on the mapbox map.
  * @param clusterList Informs which clusters are selected.
+ * @param map Map to which the layer is updated.
  */
 export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map) {
   if (map && map.getLayer(clusterList.name)) {
@@ -193,6 +203,7 @@ export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map)
 
 /**
  * Turn off all layers by setting opacity to 0.
+ * @param map Map to which the layers are turned off.
  */
 function offLayers(map: mapboxgl.Map) {
   mapSections.forEach((sec) => {

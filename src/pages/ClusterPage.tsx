@@ -15,11 +15,11 @@ import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonCon
 import { Cluster, ClusterList, SiteCategory } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
 import Button from "../components/atoms/Button";
-import { getInstructionPrompt, OpenAiResponseJSON, streamOpenAI } from "../services/openai";
+import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
 import { MessageContext } from "../context/MessageContext";
-import { Prompt } from "../constants/messageConstants";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
+import useOpenAiInstruction from "../hooks/useOpenAiInstruction";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -40,21 +40,12 @@ export default function ClusterPage() {
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
   const [loading, error, geoJson, setGeoJson] = useGeoJson(geoJsonFilePath);
 
-
   // Get openAI instructions on the current page.
-  useEffect(() => {
-    addMessage({ user: "", ai: "", type: "section" });
-    const selectedCategories: SiteCategory[] = [
-      `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
-      `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
-    ];
-    const prompt: Prompt = {
-      type: "section",
-      content: getInstructionPrompt(clusterName, parseInt(clusterId!), selectedCategories),
-    };
-    updatePrompt(prompt);
-  }, [location.pathname]);
-
+  const selectedCategories: SiteCategory[] = [
+    `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
+    `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
+  ];
+  useOpenAiInstruction(addMessage, updatePrompt, parseInt(clusterId!), selectedCategories);
 
   // Filter the geoJson data based on the selected clusters from the previous cluster page.
   useEffect(() => {
@@ -134,6 +125,7 @@ export default function ClusterPage() {
           })),
         } as Cluster)
     );
+    
     try {
       // Start OpenAI JSON response streaming.
       let response: OpenAiResponseJSON = {clusters:[{name:"",reasoning:""}]};
