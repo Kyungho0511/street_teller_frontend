@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { HealthcareFeatureCollection } from "../constants/geoJsonConstants";
 
-export default function useGeoJson({ filePath }: { filePath: string }) {
+/**
+ * Custom hook to fetch geoJson data from the file path.
+ * @param filePath File path of the geoJson data
+ */
+export default function useGeoJson(filePath: string) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>();
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection | undefined>();
@@ -15,7 +19,7 @@ export default function useGeoJson({ filePath }: { filePath: string }) {
           try {
             const response = await fetch(filePath);
             if (!response.ok) {
-              throw new Error("Network error: " + response.statusText);
+              throw new Error("Failed to fetch GeoJson data: " + response.statusText);
             }
             const data = await response.json();
             setGeoJson(data);
@@ -23,7 +27,7 @@ export default function useGeoJson({ filePath }: { filePath: string }) {
           catch (error) {
             if (error instanceof Error) {
               setError(error.message);
-              console.error(error.message);
+              console.error("Failed to fetch GeoJson data: " + error.message);
             }
           } 
           finally {

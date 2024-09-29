@@ -19,6 +19,7 @@ import { getInstructionPrompt, OpenAiResponseJSON, streamOpenAI } from "../servi
 import { MessageContext } from "../context/MessageContext";
 import { Prompt } from "../constants/messageConstants";
 import useGeoJson from "../hooks/useGeoJson";
+import useEffectAfterMount from "../hooks/useEffectAfterMount";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -37,7 +38,7 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname)
   const clusterList = survey.clusterLists[clusterIndex];
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
-  const [loading, error, geoJson, setGeoJson] = useGeoJson({ filePath: geoJsonFilePath});
+  const [loading, error, geoJson, setGeoJson] = useGeoJson(geoJsonFilePath);
 
 
   // Get openAI instructions on the current page.
@@ -68,9 +69,7 @@ export default function ClusterPage() {
 
 
   // Set KMeansLayer on loading a new clustering page.
-  useEffect(() => {
-    if (!geoJson) return;
-
+  useEffectAfterMount(() => {
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
     const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);
@@ -84,13 +83,13 @@ export default function ClusterPage() {
     }
 
     // Set KMeansLayer based on the selected attributes.
-    const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
+    const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
     const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
     setKMeansLayers((prev) => {
       const kMeansLayer = kmeans.setLayer(
         kMeansResult,
-        geoJson,
+        geoJson!,
         clusterName,
         color.categorized,
         selectedAttributes
@@ -103,19 +102,17 @@ export default function ClusterPage() {
 
 
   // Fetch and display OpenAI reasoning on setting kMeansLayer.
-  useEffect(() => {
-    if (!kMeansLayers[clusterIndex]) return;
+  useEffectAfterMount(() => {
     startOpenAIReport();
   }, [kMeansLayers])
 
 
   // Add KMeansLayer to the map.
-  useEffect(() => {
-    if (!kMeansLayers[clusterIndex] || !map) return;
-    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map);
+  useEffectAfterMount(() => {
+    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map!);
 
     // Remove KMeansLayer from mapbox when on unmount.
-    return () => mapbox.removeClusterLayer(kMeansLayers[clusterIndex], map)
+    return () => mapbox.removeClusterLayer(kMeansLayers[clusterIndex], map!)
   }, [kMeansLayers, map]);
 
 
