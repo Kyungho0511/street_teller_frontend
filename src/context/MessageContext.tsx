@@ -43,7 +43,7 @@ export const MessageContext = createContext<MessageContextProps>(
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState<Prompt>();
-  const [loadingMessage, setLoadingMessage] = useState<LoadingMessage>({text: false, json: false});
+  const [loadingMessage, setLoadingMessage] = useState<LoadingMessage>({text: true, json: true});
   const [errorMessage, setErrorMessage] = useState<ErrorMessage>({text: undefined, json: undefined});
 
   const addMessage = (newMessage: Message) => {

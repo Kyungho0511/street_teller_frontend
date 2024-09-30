@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import DropdownList from './DropdownList';
 import { ClusterCheckboxItem } from '../../constants/surveyConstants';
+import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 
 type DropdownManagerProps = {
   lists: ClusterCheckboxItem[];
@@ -22,6 +23,11 @@ export default function DropdownManager({
     if (expandFirstList) expandedLists[0] = true;
     return expandedLists;
   });
+
+  useEffectAfterMount(() => {
+    if (expandFirstList)
+      setExpandedLists((list) => list.map((_, i) => (i === 0 ? true : false)));
+  }, [expandFirstList]);
 
   const toggleList = (index: number) => {
     if (autoCollapse) {

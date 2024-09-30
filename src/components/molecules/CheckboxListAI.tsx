@@ -33,14 +33,22 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
   } = useContext(MessageContext);
 
   // Local states
-  const [streaming, setStreaming] = useState<ClusterCheckboxItem[] | undefined>();
-
+  const [streaming, setStreaming] = useState<ClusterCheckboxItem[]>([]);
   const listToDisplay = loadingMessage.json && streaming ? streaming : list;
 
   // Fetch and display OpenAI reasoning on setting kMeansLayer.
   useEffectAfterMount(() => {
     startTypingAnimation();
   }, [kMeansLayers]);
+
+  // Update the cluster list context whenever a new cluster is added.
+  const reasonings: string[] = streaming
+    .map((cluster) => cluster.reasoning)
+    .filter((reasoning) => reasoning !== "" && reasoning !== undefined);
+
+  useEffectAfterMount(() => {
+    setSurveyContext({ name, list: streaming } as ClusterList);
+  }, [reasonings.length]);
 
   /**
    * Start the typing animation for the OpenAI streaming response.
@@ -66,7 +74,8 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
     let response: OpenAiResponseJSON = {
       clusters: [{ name: "", reasoning: "" }],
     };
-    
+    let newList: ClusterCheckboxItem[] = [...list];
+
     try {
       // Start OpenAI JSON response streaming.
       for await (const chunk of streamOpenAI(
@@ -77,8 +86,8 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
       )) {
         response = chunk as OpenAiResponseJSON;
 
-        // Update the survey context with parsed data.
-        const newList: ClusterCheckboxItem[] = [...list];
+        // Update streaming with parsed data.
+        newList = [...list];
         response?.clusters?.forEach((cluster, i) => {
           newList[i] = {
             ...newList[i],
@@ -106,8 +115,8 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
         ai: JSON.stringify(response),
         type: "cluster",
       });
-      setSurveyContext({ name, list: streaming } as ClusterList);
       setLoadingMessage(({ ...loadingMessage, json: false }));
+      setSurveyContext({ name, list: newList } as ClusterList);
     }
   };
 

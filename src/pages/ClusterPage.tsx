@@ -25,7 +25,7 @@ export default function ClusterPage() {
 
   // Global states
   const { survey } = useContext(SurveyContext);
-  const { addMessage, updatePrompt } = useContext(MessageContext);
+  const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   // Local states
@@ -42,7 +42,6 @@ export default function ClusterPage() {
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
-
 
   // Filter the geoJson data based on the selected clusters from the previous cluster page.
   useEffect(() => {
@@ -116,6 +115,8 @@ export default function ClusterPage() {
     return <SidebarSection><p>{errorGeoJson}</p></SidebarSection>
   }
 
+  console.log(!loadingMessage.json);
+
   return (
     <>
       <SidebarSection title={"select target clusters"}>
@@ -136,7 +137,7 @@ export default function ClusterPage() {
           lists={clusterList.list}
           displayChart
           displayColorbox
-          expandFirstList
+          expandFirstList={!loadingMessage.json}
           autoCollapse
         />
       </LegendSection>
