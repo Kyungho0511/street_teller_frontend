@@ -1,7 +1,7 @@
 import styles from "./MessageBox.module.css";
 import { useContext, useEffect, useState } from "react";
 import Logo from "../atoms/Logo";
-import AiReponse from "../atoms/AiResponseText";
+import AiReponse from "../atoms/AiResponse";
 import { Message, MessageContext } from "../../context/MessageContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
@@ -77,7 +77,6 @@ export default function MessageBox() {
           {texts.length > 0 && texts[textIndex].ai && <MarkdownRenderer content={texts[textIndex].ai} />}
           <AiReponse />
         </div>
-        
       </div>
 
     </div>

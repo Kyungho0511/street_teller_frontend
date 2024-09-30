@@ -7,12 +7,26 @@ export type Message = {
   type: "text" | "section" | "cluster";
 };
 
+type LoadingMessage = {
+  text: boolean;
+  json: boolean;
+}
+
+type ErrorMessage = {
+  text: string | undefined;
+  json: string | undefined;
+}
+
 type MessageContextProps = {
   messages: Message[] | [];
   addMessage: (newMessage: Message) => void;
   updateResponse: (newResponse: string) => void;
   prompt?: Prompt;
   updatePrompt: (newPrompt: Prompt) => void;
+  loadingMessage: LoadingMessage;
+  setLoadingMessage: (loadingMessage: LoadingMessage) => void;
+  errorMessage: ErrorMessage;
+  setErrorMessage: (errorMessage: ErrorMessage) => void;
 };
 
 /**
@@ -29,6 +43,8 @@ export const MessageContext = createContext<MessageContextProps>(
 export function MessageContextProvider({children} : {children: React.ReactNode;}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState<Prompt>();
+  const [loadingMessage, setLoadingMessage] = useState<LoadingMessage>({text: false, json: false});
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({text: undefined, json: undefined});
 
   const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
@@ -62,6 +78,10 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
         updateResponse,
         prompt,
         updatePrompt,
+        loadingMessage,
+        setLoadingMessage,
+        errorMessage,
+        setErrorMessage
       }}
     >
       {children}

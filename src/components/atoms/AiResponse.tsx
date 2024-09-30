@@ -7,7 +7,7 @@ import MarkdownRenderer from "./MarkdownRenderer";
 /**
  * Response component with typing animation for the text response from OpenAI.
  */
-export default function AiResponseText() {
+export default function AiResponse() {
   const { prompt, messages, updateResponse } = useContext(MessageContext); 
   const [text, setText] = useState<string>("");
 

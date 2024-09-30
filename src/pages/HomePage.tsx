@@ -9,7 +9,7 @@ import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
-import useOpenAiInstruction from "../hooks/useOpenAiInstruction";
+import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 // import CheckboxList from "../components/CheckboxList";
 
 /**
@@ -28,7 +28,7 @@ export default function HomePage() {
   );
 
   // Get openAI instructions on the current page.
-  useOpenAiInstruction(addMessage, updatePrompt);
+  useOpenaiInstruction(addMessage, updatePrompt);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {

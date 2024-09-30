@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import CheckboxList from "../components/molecules/CheckboxList";
+import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
@@ -12,14 +12,11 @@ import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
 import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
-import { Cluster, ClusterList, SiteCategory } from "../constants/surveyConstants";
 import * as mapbox from "../services/mapbox";
-import Button from "../components/atoms/Button";
-import { OpenAiResponseJSON, streamOpenAI } from "../services/openai";
 import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
-import useOpenAiInstruction from "../hooks/useOpenAiInstruction";
+import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -27,8 +24,8 @@ import useOpenAiInstruction from "../hooks/useOpenAiInstruction";
 export default function ClusterPage() {
 
   // Global states
-  const { survey, setSurveyContext } = useContext(SurveyContext);
-  const { messages, addMessage, updatePrompt } = useContext(MessageContext);
+  const { survey } = useContext(SurveyContext);
+  const { addMessage, updatePrompt } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   // Local states
@@ -38,14 +35,14 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname)
   const clusterList = survey.clusterLists[clusterIndex];
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
-  const [loading, error, geoJson, setGeoJson] = useGeoJson(geoJsonFilePath);
+  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(geoJsonFilePath);
 
   // Get openAI instructions on the current page.
-  const selectedCategories: SiteCategory[] = [
+  useOpenaiInstruction(addMessage, updatePrompt, parseInt(clusterId!), [
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
-  ];
-  useOpenAiInstruction(addMessage, updatePrompt, parseInt(clusterId!), selectedCategories);
+  ]);
+
 
   // Filter the geoJson data based on the selected clusters from the previous cluster page.
   useEffect(() => {
@@ -53,7 +50,10 @@ export default function ClusterPage() {
       const selection: boolean[] = survey.clusterLists[
         clusterIndex - 1
       ].list.map((cluster) => cluster.checked);
-      const filteredGeoJson = kmeans.getFilteredGeoJson(selection, kMeansLayers[clusterIndex - 1].geoJson);
+      const filteredGeoJson = kmeans.getFilteredGeoJson(
+        selection,
+        kMeansLayers[clusterIndex - 1].geoJson
+      );
       setGeoJson(filteredGeoJson);
     }
   }, [location.pathname]);
@@ -92,14 +92,9 @@ export default function ClusterPage() {
   }, [survey.preferenceList.list, geoJson]);
 
 
-  // Fetch and display OpenAI reasoning on setting kMeansLayer.
-  useEffectAfterMount(() => {
-    startOpenAIReport();
-  }, [kMeansLayers])
-
-
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
+    if (!map || !kMeansLayers[clusterIndex]) return;
     mapbox.addClusterLayer(kMeansLayers[clusterIndex], map!);
 
     // Remove KMeansLayer from mapbox when on unmount.
@@ -113,87 +108,22 @@ export default function ClusterPage() {
   }, [clusterList, map]);
 
 
-  const startOpenAIReport = async () => {
-    // Construct prompt JSON for OpenAI.
-    const promptJson: Cluster[] = clusterList.list.map(
-      (_, i) =>
-        ({
-          name: "",
-          centroids: kMeansLayers[clusterIndex]?.attributes.map((attr, j) => ({
-            name: attr,
-            value: kMeansLayers[clusterIndex]?.centroids[i][j],
-          })),
-        } as Cluster)
-    );
-    
-    try {
-      // Start OpenAI JSON response streaming.
-      let response: OpenAiResponseJSON = {clusters:[{name:"",reasoning:""}]};
-      for await (const chunk of streamOpenAI(
-        { type: "cluster", content: promptJson },
-        messages,
-        survey.preferenceList.list,
-        clusterIndex
-      )) {
-        response = chunk as OpenAiResponseJSON;
-
-        // Update the survey context with parsed data.
-        // Performance optimization needed here!!!!!!!
-        // Performance optimization needed here!!!!!!!
-        const newList = [...clusterList.list];
-        response?.clusters?.forEach((cluster, i) => {
-          newList[i] = {
-            ...newList[i],
-            name: cluster?.name,
-            reasoning: cluster?.reasoning,
-            centroids: kMeansLayers[clusterIndex]!.attributes.map(
-              (attr, j) => ({
-                name: attr,
-                value: kMeansLayers[clusterIndex]!.centroids[i][j],
-              })
-            ),
-            color: kMeansLayers[clusterIndex]!.colors[i],
-          };
-        });
-        setSurveyContext({ name: clusterName, list: newList } as ClusterList);
-      }
-
-      // Update the message context when the response is fully fetched.
-      addMessage({
-        user: JSON.stringify(promptJson),
-        ai: JSON.stringify(response),
-        type: "cluster",
-      });
-
-    } catch (error) {
-      console.error("Failed to fetch openAI response:", error);
-    }
-  }
-
-  // Display data loading or error status
-  if (loading) {
+  // Display GeoJson data loading or error status
+  if (loadingGeoJson) {
     return <SidebarSection><p>Loading GeoJson Data...</p></SidebarSection>
   }
-  if (error) {
-    return <SidebarSection><p>{error}</p></SidebarSection>
+  if (errorGeoJson) {
+    return <SidebarSection><p>{errorGeoJson}</p></SidebarSection>
   }
 
   return (
     <>
-      <SidebarSection
-        title={"select target clusters"}
-      >
-        <CheckboxList
+      <SidebarSection title={"select target clusters"}>
+        <CheckboxListAI
           name={clusterName}
           list={clusterList.list}
-          colorbox
-          setSurveyContext={setSurveyContext}
-        />
-        <Button
-          text={"retry analysis"}
-          color={"grey"}
-          location={"sidebar"}
-          handleClick={startOpenAIReport}
+          index={clusterIndex}
+          kMeansLayers={kMeansLayers}
         />
       </SidebarSection>
 

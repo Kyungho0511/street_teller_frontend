@@ -1,14 +1,11 @@
 import styles from "./CheckboxList.module.css";
-import { BoroughList, ClusterCheckboxItem, ClusterList } from "../../constants/surveyConstants";
-import Colorbox from "../atoms/Colorbox";
+import { BoroughList } from "../../constants/surveyConstants";
 import { Hex } from "../../constants/mapConstants";
-import { useState } from "react";
 
 type CheckboxListProps = {
   name: string;
   list: CheckboxItem[];
-  colorbox?: boolean;
-  setSurveyContext: (newSurveyElement: BoroughList | ClusterList) => void;
+  setSurveyContext?: (newSurveyElement: BoroughList) => void;
 };
 
 export type CheckboxItem = {
@@ -16,41 +13,20 @@ export type CheckboxItem = {
   checked: boolean;
   id: string;
   color?: Hex;
-  reasoning?: string; // Need to be cleaned up!!
+  reasoning?: string;
 }
 
 /**
  * Checkbox list component for clusters and broughs selections.
  */
-export default function CheckboxList({ name, list, colorbox, setSurveyContext }: CheckboxListProps) {
-  // Local state for the type of the list
-  // switching between borough and cluster type should be restructured,
-  // as JSX element is not referencing the correct type of the list. 
-  const [type] = useState<"cluster" | "borough">(() => {
-    if (name === "borough") return "borough";
-    if (name as ClusterList["name"] != null) return "cluster";
-    throw new Error("Invalid name");
-  });
+export default function CheckboxList({ name, list, setSurveyContext }: CheckboxListProps) {
 
   // Handle uncontrolled checkbox change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
       const updatedList = [...list];
       updatedList[index] = { ...updatedList[index], checked: event.target.checked };
 
-      // Update Boroughs in the survey context
-      if (type === "borough") {
-        const newBoroughs: BoroughList = { name: "boroughs", list: updatedList};
-        setSurveyContext(newBoroughs);
-      } 
-      
-      // Update ClusterList in the survey context
-      if (type === "cluster") {
-        const newCluster: ClusterList = {
-          name: name as ClusterList["name"],
-          list: updatedList as ClusterCheckboxItem[],
-        };
-        setSurveyContext(newCluster);
-      }
+      setSurveyContext &&  setSurveyContext({ name: "boroughs", list: updatedList});
   }
 
   return (
@@ -67,13 +43,8 @@ export default function CheckboxList({ name, list, colorbox, setSurveyContext }:
               onChange={(event) => handleChange(event, index)}
             />
             <span className={styles.indicator}></span>
-            {colorbox ? (
-              <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
-            ) : (
               <p>{item.name}</p>
-            )}
           </label>
-          {type === "cluster" && <div className={styles.text}>{item.reasoning}</div>}
         </li>
       ))}
     </ul>
