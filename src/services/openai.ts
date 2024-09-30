@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
 import { assistantMessage, Prompt, siteCategoriesMessage, systemMessage, wordCountMessage } from "../constants/messageConstants";
-import AiResponseText from "../components/atoms/AiResponseText";
+import AiResponse from "../components/atoms/AiResponse";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
 import { Preference } from "../constants/surveyConstants";
@@ -25,7 +25,7 @@ type OpenAiMessage = {
 
 /**
  * Stream chunks of openAI response. It's meant to be rendered with typing animation
- * in the {@link AiResponseText} as soon as it gets the first chunk of the response.
+ * in the {@link AiResponse} as soon as it gets the first chunk of the response.
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @param history an array of messages representing the conversation history so far.
  * @returns a generator that yields each chunk of the openAI response.
