@@ -107,15 +107,13 @@ export default function ClusterPage() {
   }, [clusterList, map]);
 
 
-  // Display GeoJson data loading or error status
+  // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
     return <SidebarSection><p>Loading GeoJson Data...</p></SidebarSection>
   }
   if (errorGeoJson) {
     return <SidebarSection><p>{errorGeoJson}</p></SidebarSection>
   }
-
-  console.log(!loadingMessage.json);
 
   return (
     <>

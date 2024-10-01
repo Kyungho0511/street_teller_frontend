@@ -3,11 +3,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useRef, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 export default function PromptBox() {
+  // Global states
+  const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
+
+  // Local states
   const [text, setText] = useState<string>("");
-  const { addMessage, updatePrompt: updatePrompt } = useContext(MessageContext);
+  const [disabled, setDisabled] = useState<boolean>(
+    () => loadingMessage.text || loadingMessage.json
+  );
+  
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffectAfterMount(() => {
+    setDisabled(loadingMessage.text || loadingMessage.json);
+  }, [loadingMessage]);
 
   // Handle MessageContext and prompt on form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -41,7 +53,11 @@ export default function PromptBox() {
           value={text}
           onChange={handleChange}
         />
-        <button ref={buttonRef} className={`${styles.button} ${text.trim() && styles.active}`}>
+        <button
+          ref={buttonRef}
+          disabled={disabled}
+          className={`${styles.button} ${text.trim() && styles.active}`}
+        >
           <FontAwesomeIcon icon={faArrowUp} className={styles.icon} />
         </button>
       </div>

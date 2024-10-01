@@ -1,8 +1,11 @@
 @import '../../styles/variables.css';
 
+.button {
+  font-weight: var(--font-bold);
+}
+
 .footbar_button {
   font-size: 1.3rem;
-  font-weight: var(--font-bold);
   margin-right: 0.7rem;
   width: 240px;
   height: 60px;
@@ -10,33 +13,32 @@
 
 .sidebar_button {
   font-size: 1rem;
-  font-weight: var(--font-bold);
   margin-top: 0.8rem;
   width: 100%;
 }
 
-.grey {
+.button.grey {
   color: var(--color-white);
   padding: 1rem 2rem;
   border: none;
   background-color: var(--color-grey);
   border-radius: 0.5rem;
   text-transform: uppercase;
-  cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled) {
+    cursor: pointer;
     color: var(--color-white);
     background-color: var(--color-dark-grey);
   }
 
   &:disabled {
-    color: var(--color-grey);
+    color: var(--color-white);
     background-color: var(--color-light-grey);
-    cursor: not-allowed;
+    cursor: default;
   }
 }
 
-.blue {
+.button.blue {
   color: var(--color-white);
   font-size: 1.4rem;
   font-weight: var(--font-bold);
@@ -45,9 +47,9 @@
   background-color: var(--color-blue-transparent);
   border-radius: 0.5rem;
   text-transform: uppercase;
-  cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled) {
+    cursor: pointer;
     color: var(--color-white);
     background-color: var(--color-blue);
   }
@@ -55,6 +57,6 @@
   &:disabled {
     color: var(--color-grey);
     background-color: var(--color-light-grey);
-    cursor: not-allowed;
+    cursor: default;
   }
 }

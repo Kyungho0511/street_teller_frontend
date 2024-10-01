@@ -42,9 +42,15 @@
   height: 2.5rem;
   border-radius: 50%;
   border: none;
+
+  &:disabled {
+    color: var(--color-grey);
+    background-color: var(--color-light-grey);
+    cursor: default;
+  }
 }
 
-.button.active {
+.button.active:not(:disabled) {
   background-color: var(--color-grey);
   cursor: pointer;
 

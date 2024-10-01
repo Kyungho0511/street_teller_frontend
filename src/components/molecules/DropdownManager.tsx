@@ -18,11 +18,9 @@ export default function DropdownManager({
   expandFirstList,
   autoCollapse,
 }: DropdownManagerProps) {
-  const [expandedLists, setExpandedLists] = useState<boolean[]>(() => {
-    const expandedLists = new Array(lists.length).fill(false);
-    if (expandFirstList) expandedLists[0] = true;
-    return expandedLists;
-  });
+  const [expandedLists, setExpandedLists] = useState<boolean[]>(() =>
+    new Array(lists.length).fill(false)
+  );
 
   useEffectAfterMount(() => {
     if (expandFirstList)

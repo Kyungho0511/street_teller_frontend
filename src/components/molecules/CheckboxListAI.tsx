@@ -56,8 +56,8 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
   const startTypingAnimation = async () => {
 
     // Reset the loading and error status.
-    setLoadingMessage(({ ...loadingMessage, json: true }));
-    setErrorMessage(({...errorMessage, json: undefined}));
+    setLoadingMessage((prev) => ({ ...prev, json: true }));
+    setErrorMessage((prev) => ({...prev, json: undefined}));
 
     // Construct prompt JSON for OpenAI.
     const promptJson: Cluster[] = list.map(
@@ -105,7 +105,7 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
         setStreaming(newList);
       }
     } catch {
-      const error = "Failed to fetch openAI response.";
+      const error = "Failed to fetch openAI JSON response.";
       setErrorMessage(({...errorMessage, json: error}));
       console.error(error);
     } finally {
@@ -115,7 +115,7 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
         ai: JSON.stringify(response),
         type: "cluster",
       });
-      setLoadingMessage(({ ...loadingMessage, json: false }));
+      setLoadingMessage((prev) => ({ ...prev, json: false }));
       setSurveyContext({ name, list: newList } as ClusterList);
     }
   };
@@ -136,6 +136,11 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
       list: updatedList as ClusterCheckboxItem[],
     });
   };
+
+  // Display error status of fetching openai response.
+  if (errorMessage.json) {
+    return <p>{errorMessage.json}</p>
+  }
 
   return (
     <>
