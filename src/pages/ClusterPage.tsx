@@ -43,9 +43,17 @@ export default function ClusterPage() {
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
 
-  // Filter the geoJson data based on the selected clusters from the previous cluster page.
+  // Filter geoJson data based on the selected clusters from the previous page.
+  // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
+    // Clean up mapbox layers before starting a new clustering page.
+    mapbox.removeAllClusterLayers(kMeansLayers, map!);
+
+
+    if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
+      setGeoJson(kMeansLayers[0].geoJson);
+    } 
+    else if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
       const selection: boolean[] = survey.clusterLists[
         clusterIndex - 1
       ].list.map((cluster) => cluster.checked);
@@ -71,7 +79,6 @@ export default function ClusterPage() {
         selectedAttributes.push(subCategory.name);
       });
     }
-
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
@@ -94,15 +101,15 @@ export default function ClusterPage() {
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
     if (!map || !kMeansLayers[clusterIndex]) return;
-    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map!);
+    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map!, false);
 
     // Remove KMeansLayer from mapbox when on unmount.
-    return () => mapbox.removeClusterLayer(kMeansLayers[clusterIndex], map!)
+    return () => mapbox.removeAllClusterLayers(kMeansLayers, map!);
   }, [kMeansLayers, map]);
 
 
   // Update mapping on selected clusterList change
-  useEffect(() => {
+  useEffectAfterMount(() => {
     mapbox.updateClusterLayer(clusterList, map);
   }, [clusterList, map]);
 

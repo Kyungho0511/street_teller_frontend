@@ -73,6 +73,8 @@ export function getLayerPaintType(layer: MapLayer, map: mapboxgl.Map): string[] 
 
 /**
  * Set the opacity of the mapbox layer.
+ * @param layer mapbox layer to set opacity.
+ * @param map Map in which layer opacity is set.
  */
 export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
   const paintProps: string[] | undefined = getLayerPaintType(layer, map);
@@ -83,6 +85,8 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
 
 /**
  * Turn on layers based on the section.
+ * @param section Each url path corresponds to a section.
+ * @param map Map in which layers are set.
  */
 export function setLayers(section: Section, map: mapboxgl.Map): void {
   
@@ -128,57 +132,6 @@ export function updateLayerAttribute(
 }
 
 /**
- * Add a k-means cluster layer to the mapbox map.
- * @param kMeansLayer Layer to be added.
- * @param map Map to which the layer is added.
- */
-export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
-
-  // Remove the layer if it already exists.
-  map.getLayer(kMeansLayer.title) && map.removeLayer(kMeansLayer.title);
-
-  map.addSource(kMeansLayer.title, {
-      type: "geojson",
-      data: kMeansLayer.geoJson,
-    });
-    
-  map.addLayer(
-    {
-      id: kMeansLayer.title,
-      type: "fill",
-      source: kMeansLayer.title,
-      paint: {
-        "fill-color": [
-          "case",
-          ["==", ["get", "cluster"], 0],
-          kMeansLayer.colors[0],
-          ["==", ["get", "cluster"], 1],
-          kMeansLayer.colors[1],
-          ["==", ["get", "cluster"], 2],
-          kMeansLayer.colors[2],
-          ["==", ["get", "cluster"], 3],
-          kMeansLayer.colors[3],
-          "#ffffff",
-        ],
-        "fill-opacity": 1,
-        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
-      },
-    },
-    "road-simple"
-  );
-}
-
-/**
- * Remove a k-means cluster layer from the mapbox map.
- * @param kMeansLayer Layer to be removed.
- * @param map Map from which the layer is removed.
- */
-export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
-  map.removeLayer(kMeansLayer.title);
-  map.removeSource(kMeansLayer.title);
-}
-
-/**
  * Update a k-means cluster layer color style on the mapbox map.
  * @param clusterList Informs which clusters are selected.
  * @param map Map to which the layer is updated.
@@ -199,6 +152,67 @@ export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map)
       "#ffffff",
     ])
   }
+}
+
+/**
+ * Add a k-means cluster layer to the mapbox map.
+ * @param kMeansLayer Layer to be added.
+ * @param map Map to which the layer is added.
+ * @param color If true, the layer is colored.
+ */
+export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, color?: boolean) {
+  map.addSource(kMeansLayer.title, {
+      type: "geojson",
+      data: kMeansLayer.geoJson,
+    });
+    
+  map.addLayer(
+    {
+      id: kMeansLayer.title,
+      type: "fill",
+      source: kMeansLayer.title,
+      paint: {
+        "fill-color": [
+          "case",
+          ["==", ["get", "cluster"], 0],
+          color ? kMeansLayer.colors[0] : "#ffffff",
+          ["==", ["get", "cluster"], 1],
+          color ? kMeansLayer.colors[1] : "#ffffff",
+          ["==", ["get", "cluster"], 2],
+          color ? kMeansLayer.colors[2] : "#ffffff",
+          ["==", ["get", "cluster"], 3],
+          color? kMeansLayer.colors[3] : "#ffffff",
+          "#ffffff",
+        ],
+        "fill-opacity": 1,
+        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+      },
+    },
+    "road-simple"
+  );
+}
+
+/**
+ * Remove a k-means cluster layer from the mapbox map.
+ * @param kMeansLayer Layer to be removed.
+ * @param map Map from which the layer is removed.
+ */
+export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
+  if (map.getLayer(kMeansLayer.title)) {
+    map.removeLayer(kMeansLayer.title);
+    map.removeSource(kMeansLayer.title);
+  }
+}
+
+/**
+ * Remove all k-means cluster layers from the mapbox map.
+ * @param kMeansLayers Layers to be removed.
+ * @param map Map from which the layers are removed.
+ */
+export function removeAllClusterLayers(kMeansLayers: KMeansLayer[], map: mapboxgl.Map) {
+  kMeansLayers.forEach((kMeansLayer) => {
+    removeClusterLayer(kMeansLayer, map);
+  });
 }
 
 /**

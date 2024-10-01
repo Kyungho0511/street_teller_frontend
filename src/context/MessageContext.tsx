@@ -29,7 +29,7 @@ type MessageContextProps = {
   setErrorMessage: React.Dispatch<React.SetStateAction<ErrorMessage>>;
 };
 
-/**
+/**np
  * Message context to manage the message state between the user and the AI.
  * The context is updated when the openAI response streaming finishes,
  * and when the user submits a new prompt through the PromptBox.

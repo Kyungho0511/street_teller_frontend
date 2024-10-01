@@ -3,11 +3,11 @@ import { Color } from "../constants/mapConstants";
 
 type MapContextProps = {
   map: mapboxgl.Map | undefined;
-  setMap: (map: mapboxgl.Map | undefined) => void;
+  setMap: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
   parentLayer: string | undefined;
-  setParentLayer: (layer: string | undefined) => void;
+  setParentLayer: React.Dispatch<React.SetStateAction<string | undefined>>;
   color: Color | undefined;
-  setColor: (color: Color | undefined) => void;
+  setColor: React.Dispatch<React.SetStateAction<Color | undefined>>;
 }
 
 export const MapContext = createContext<MapContextProps>({} as MapContextProps);
