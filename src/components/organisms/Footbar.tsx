@@ -3,8 +3,9 @@ import Button from '../atoms/Button'
 import styles from './Footbar.module.css'
 import PromptBox from '../molecules/PromptBox';
 
-export default function Footbar() {
+export const FOOTBAR_HEIGHT = 84;
 
+export default function Footbar() {
   // router navigation logic
   const location = useLocation();
   let nextPath = "/";
@@ -25,7 +26,7 @@ export default function Footbar() {
 }
 
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} style={{height: FOOTBAR_HEIGHT}}>
       <PromptBox />
       <Link to={nextPath}> 
         <Button text="continue" color="grey" location="footbar" />

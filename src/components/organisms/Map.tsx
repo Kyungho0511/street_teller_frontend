@@ -49,8 +49,6 @@ export default function Map() {
   
   useEffectAfterMount(() => {
     if (!map) return;
-
-    // Add event listeners.
     const mouseEnterHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
       mapbox.mouseEnterHandler(event, map);
     }
@@ -60,6 +58,8 @@ export default function Map() {
     const mouseMoveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
       mapbox.mouseMoveHandler(event, map);
     }
+    
+    // Add event listeners.
     map.on("mouseenter", parentLayer, mouseEnterHandlerWrapper);
     map.on("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
     map.on("mousemove", parentLayer, mouseMoveHandlerWrapper);

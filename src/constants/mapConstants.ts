@@ -12,6 +12,13 @@ export const configs = {
   },
 };
 
+export const POPUP = {
+  width: 200,
+  maxWidth: 300,
+  height: 180,
+  offset: 30,
+}
+
 export type Hex = `#${string}`;
 
 export type Color = {
@@ -268,3 +275,4 @@ export const mapSections: MapSection[] = [
     color: color.green
   },
 ];
+
