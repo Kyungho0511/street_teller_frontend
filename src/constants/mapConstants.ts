@@ -250,7 +250,6 @@ export const mapSections: MapSection[] = [
     id: "cluster1",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "counties-others", opacity: 1 },
     ],
     color: color.yellow
   },
@@ -258,7 +257,6 @@ export const mapSections: MapSection[] = [
     id: "cluster2",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "counties-others", opacity: 1 },
     ],
     color: color.blue
   },
@@ -266,7 +264,6 @@ export const mapSections: MapSection[] = [
     id: "cluster3",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "counties-others", opacity: 1 },
     ],
     color: color.green
   },

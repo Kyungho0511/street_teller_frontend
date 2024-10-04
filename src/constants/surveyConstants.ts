@@ -12,10 +12,13 @@ import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 
+/**
+ * Sections of the website.
+ */
 export type Section = "home" | `cluster${number}`;
 
 /**
- * Preference categories for the survey.
+ * Site preference categories of the user survey.
  */
 export type SiteCategory =
   | "Unserved Population Density"
@@ -141,13 +144,16 @@ export const siteCategories = initialPreferenceList.list.map(
 );
 
 /**
- * Boroughs for the survey.
+ * Borough list of the user survey.
  */
 export type BoroughList = {
   name: "boroughs";
   list: CheckboxItem[];
 };
 
+/**
+ * Borough list to load initially.
+ */
 export const initialBoroughList: BoroughList = {
   name: "boroughs",
   list: [
@@ -175,7 +181,9 @@ export type ClusterList = {
   list: ClusterCheckboxItem[];
 };
 
-// Cluster center values for Testing!!!!!!!!!
+/**
+ * Cluster lists to load initially.
+ */
 export const initialClusterLists: ClusterList[] = [
   {
     name: "cluster1",

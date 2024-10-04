@@ -8,7 +8,7 @@ type LegendSectionProps = {
   currentStep?: number;
 }
 
-export default function LegendSection({children, title, steps, currentStep}: LegendSectionProps) {
+export default function LegendSection({ children, title, steps, currentStep }: LegendSectionProps) {
 
   return (
     <div className={styles.container}>

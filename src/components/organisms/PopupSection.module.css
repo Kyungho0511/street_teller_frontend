@@ -1,0 +1,10 @@
+@import '../../styles/variables.css';
+
+.container {
+  position: fixed;
+  padding: 1rem;
+  font-size: 0.9rem;
+  line-height: var(--line-height-small);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px var(--color-box-shadow);
+}

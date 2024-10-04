@@ -28,7 +28,6 @@ export function CreateMap(): mapboxgl.Map {
     attributionControl: false,
     logoPosition: "top-left"
   });
-
   // Disable rotation using touch and mouse
   map.dragRotate.disable();
   map.touchZoomRotate.disableRotation();
@@ -38,6 +37,7 @@ export function CreateMap(): mapboxgl.Map {
 
 /**
  * Remove the mapbox map instance.
+ * @param map Map to remove.
  */
 export function RemoveMap(map: mapboxgl.Map): void {
   map.remove();
@@ -191,7 +191,6 @@ export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, col
     "road-simple"
   );
 }
-
 /**
  * Remove a k-means cluster layer from the mapbox map.
  * @param kMeansLayer Layer to be removed.
@@ -203,7 +202,6 @@ export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) 
     map.removeSource(kMeansLayer.title);
   }
 }
-
 /**
  * Remove all k-means cluster layers from the mapbox map.
  * @param kMeansLayers Layers to be removed.
@@ -217,12 +215,26 @@ export function removeAllClusterLayers(kMeansLayers: KMeansLayer[], map: mapboxg
 
 /**
  * Turn off all layers by setting opacity to 0.
- * @param map Map to which the layers are turned off.
+ * @param map Map in which the layers are turned off.
  */
-function offLayers(map: mapboxgl.Map) {
+export function offLayers(map: mapboxgl.Map) {
   mapSections.forEach((sec) => {
     sec.layers.forEach((layer) => {
       setLayerOpacity({ name: layer.name, opacity: 0 }, map);
     });
   });
+}
+
+export function mouseEnterHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
+  map.getCanvas().style.cursor = "pointer";
+  console.log("mouse enter");
+}
+
+export function mouseLeaveHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
+  map.getCanvas().style.cursor = "grab";
+  console.log("mouse leave");
+}
+
+export function mouseMoveHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
+  console.log("mouse move");
 }
