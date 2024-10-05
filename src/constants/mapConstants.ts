@@ -3,7 +3,7 @@ import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 
 export const configs = {
-  style: "mapbox://styles/klee0511/clv0xyqe0016v01pe0ogo6xre",
+  style: "mapbox://styles/klee0511/cm1wosqq100o001pgdz5601uv",
   location: {
     center: [-73.860766, 40.713326],
     zoom: 11,
@@ -11,6 +11,10 @@ export const configs = {
     bearing: 0,
   },
 };
+
+export const GEOID = "GEOID";
+export const OUTLINE_LAYER_SUFFX = "-outline";
+export const THICK_LINE_WEIGHT = 4;
 
 export const POPUP = {
   width: 240,
@@ -230,7 +234,9 @@ export type MapSection = {
   id: Section;
   layers: MapLayer[];
   // Parent layer containing attributes
-  attributeParentLayer?: string;
+  parentLayer: string;
+  // Source layer name on the mapbox studio.
+  sourceLayer: string;
   // Attribute in parent layer to be visualized.
   attribute?: MapAttribute;
   // Color for attributes
@@ -249,7 +255,8 @@ export const mapSections: MapSection[] = [
       bound: utils.getBound("unserved population / km2")!,
       unit: "population density",
     },
-    attributeParentLayer: "tracts-features-nyc",
+    parentLayer: "tracts-features-nyc",
+    sourceLayer: "tracts_features_nyc-1v56vi",
     color: color.blue,
   },
   {
@@ -257,6 +264,8 @@ export const mapSections: MapSection[] = [
     layers: [
       { name: "tracts", opacity: 0.9 },
     ],
+    parentLayer: "cluster1",
+    sourceLayer: "cluster1",
     color: color.yellow
   },
   {
@@ -264,6 +273,8 @@ export const mapSections: MapSection[] = [
     layers: [
       { name: "tracts", opacity: 0.9 },
     ],
+    parentLayer: "cluster2",
+    sourceLayer: "cluster2",
     color: color.blue
   },
   {
@@ -271,6 +282,8 @@ export const mapSections: MapSection[] = [
     layers: [
       { name: "tracts", opacity: 0.9 },
     ],
+    parentLayer: "cluster3",
+    sourceLayer: "cluster3",
     color: color.green
   },
 ];

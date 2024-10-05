@@ -1,6 +1,6 @@
 import { KMeansLayer } from './kmeans';
 import mapboxgl from "mapbox-gl";
-import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
+import { Color, configs, GEOID, MapBound, MapLayer, mapSections, OUTLINE_LAYER_SUFFX } from "../constants/mapConstants";
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from '../constants/geoJsonConstants';
@@ -102,7 +102,7 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   if (section === "home") {
     const name = mapSection.attribute!.name;
     updateLayerAttribute(
-      mapSection.attributeParentLayer!,
+      mapSection.parentLayer!,
       name,
       mapSection.color!,
       map
@@ -225,13 +225,34 @@ export function offLayers(map: mapboxgl.Map) {
   });
 }
 
-export function mouseEnterHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
-  map.getCanvas().style.cursor = "pointer";
+/**
+ * Set the line weight of the mapbox layer conditionally.
+ * @param layer Name of the layer to select a feature from.
+ * @param keyId Name of the layer property id.
+ * @param valueId Value of layer property id to compare.
+ * @param lineWeight Line weight of the outline.
+ */
+export function setLineWidthConditional(
+  layer: string,
+  keyId: string,
+  valueId: number,
+  lineWeight: number,
+  map: mapboxgl.Map
+) {
+  const outlineLayer = layer + OUTLINE_LAYER_SUFFX;
+  map.setPaintProperty(outlineLayer, "line-width", [
+    "case",
+    ["==", ["get", keyId], valueId],
+    lineWeight,
+    0,
+  ]);
 }
 
-export function mouseLeaveHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
-  map.getCanvas().style.cursor = "grab";
-}
-
-export function mouseMoveHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
+/**
+ * Hide the line width of the mapbox layer.
+ * @param layer Name of the layer to hide.
+ */
+export function hideLineWidth(layer: string, map: mapboxgl.Map) {
+  const outlineLayer = layer + OUTLINE_LAYER_SUFFX;
+  map.setPaintProperty(outlineLayer, "line-width", 0);
 }

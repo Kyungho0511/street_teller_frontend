@@ -14,14 +14,14 @@ import PopupSection from './PopupSection';
  * Mapbox map component.
  */
 export default function Map() {
-  const { map, setMap, parentLayer, setParentLayer, setColor } = useContext(MapContext);
-    
+  const { map, setMap, setParentLayer, setColor } = useContext(MapContext);
   const location = useLocation();
 
   // Create a map instance on component mount.
   useEffect(() => {
     const temp = mapbox.CreateMap();
     temp.on("load", () => {
+
       setMap(temp);
     });
 
@@ -41,36 +41,10 @@ export default function Map() {
 
       // Update the map parent layer and color of the current page.
       const mapSection = mapSections.find((sec) => sec.id === section)!;
-      mapSection.attributeParentLayer && setParentLayer(mapSection.attributeParentLayer);
+      setParentLayer(mapSection.parentLayer);
       setColor(mapSection.color);
     }
   }, [location.pathname, map, setColor, setParentLayer])
-
-  
-  useEffectAfterMount(() => {
-    if (!map) return;
-    const mouseEnterHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
-      mapbox.mouseEnterHandler(event, map);
-    }
-    const mouseLeaveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
-      mapbox.mouseLeaveHandler(event, map);
-    }
-    const mouseMoveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
-      mapbox.mouseMoveHandler(event, map);
-    }
-    
-    // Add event listeners.
-    map.on("mouseenter", parentLayer, mouseEnterHandlerWrapper);
-    map.on("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
-    map.on("mousemove", parentLayer, mouseMoveHandlerWrapper);
-
-    // Cleanup event listeners on component unmount.
-    return () => {
-      map.off("mouseenter", parentLayer, mouseEnterHandlerWrapper);
-      map.off("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
-      map.off("mousemove", parentLayer, mouseMoveHandlerWrapper);
-    }
-  }, [parentLayer]);
 
   return (
     <>
@@ -84,6 +58,5 @@ export default function Map() {
         <p>Contents</p>
       </PopupSection>
     </>
-
   );
 }

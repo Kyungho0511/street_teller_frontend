@@ -19,7 +19,14 @@ export function MapContextProvider({children}: {children: React.ReactNode}) {
 
   return (
     <MapContext.Provider
-      value={{ map, setMap, parentLayer, setParentLayer, color, setColor }}
+      value={{
+        map,
+        setMap,
+        parentLayer,
+        setParentLayer,
+        color,
+        setColor,
+      }}
     >
       {children}
     </MapContext.Provider>
