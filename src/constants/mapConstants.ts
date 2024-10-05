@@ -13,8 +13,7 @@ export const configs = {
 };
 
 export const POPUP = {
-  width: 200,
-  maxWidth: 300,
+  width: 240,
   height: 180,
   offset: 30,
 }

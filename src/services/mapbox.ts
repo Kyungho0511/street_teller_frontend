@@ -227,14 +227,11 @@ export function offLayers(map: mapboxgl.Map) {
 
 export function mouseEnterHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
   map.getCanvas().style.cursor = "pointer";
-  console.log("mouse enter");
 }
 
 export function mouseLeaveHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
   map.getCanvas().style.cursor = "grab";
-  console.log("mouse leave");
 }
 
 export function mouseMoveHandler(event: mapboxgl.MapMouseEvent, map: mapboxgl.Map) {
-  console.log("mouse move");
 }

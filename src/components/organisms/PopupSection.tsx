@@ -5,7 +5,7 @@ import { SIDEBAR_WIDTH } from './Sidebar';
 import { FOOTBAR_HEIGHT } from './Footbar';
 import { POPUP } from '../../constants/mapConstants';
 
-type PopupPosition = {
+type Coordinate = {
   x: number;
   y: number;
 }
@@ -19,7 +19,8 @@ type PopupSectionProps = {
  */
 export default function PopupSection({ children }: PopupSectionProps) {
   const { map, parentLayer } = useContext(MapContext);
-  const [position, setPosition] = useState<PopupPosition>({ x: 0, y: 0 });
+  const [mapOrigin] = useState<Coordinate>({ x: SIDEBAR_WIDTH, y: 0 });
+  const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const popupRef = useRef<HTMLDivElement>(null);
 
   // Set popup status based on the map mouse event.
@@ -31,8 +32,8 @@ export default function PopupSection({ children }: PopupSectionProps) {
       const translate = {x: 0, y: 0};
 
       // Set X position of the popup.
-      if (event.point.x + POPUP.maxWidth + POPUP.offset > mapWidth) {
-        translate.x = event.point.x - POPUP.maxWidth - POPUP.offset;
+      if (event.point.x + POPUP.width + POPUP.offset > mapWidth) {
+        translate.x = event.point.x - POPUP.width - POPUP.offset;
       } else {
         translate.x = event.point.x + POPUP.offset;
       }
@@ -42,7 +43,7 @@ export default function PopupSection({ children }: PopupSectionProps) {
       } else {
         translate.y = event.point.y - POPUP.offset;
       } 
-      setPosition({ x: translate.x, y: translate.y });
+      setPosition({ x: translate.x + mapOrigin.x, y: translate.y + mapOrigin.y });
     }
 
     const showPopup = () => {
@@ -71,7 +72,6 @@ export default function PopupSection({ children }: PopupSectionProps) {
       className={styles.container}
       style={{
         width: POPUP.width,
-        maxWidth: POPUP.maxWidth,
         height: POPUP.height,
         left: position.x,
         top: position.y,
