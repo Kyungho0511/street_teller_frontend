@@ -32,6 +32,13 @@ export type Color = {
   max: Hex;
 };
 
+export type FillColor = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
 export const color: { [key in string]: Color } = {
   blue: {
     categorized: ["#cdecd0", "#7ed7dd", "#2b9ded", "#0f4bee"],

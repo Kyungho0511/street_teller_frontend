@@ -1,6 +1,7 @@
-import { GEOID, OUTLINE_LAYER, THICK_LINE_WEIGHT } from '../constants/mapConstants';
+import { FillColor, GEOID, OUTLINE_LAYER, THICK_LINE_WEIGHT } from '../constants/mapConstants';
 import useEffectAfterMount from './useEffectAfterMount';
-import { setLineWidth, hideLineWidth } from '../services/mapbox';
+import * as mapbox from '../services/mapbox';
+import { isWhiteFillColor } from '../utils/utils';
 
 /**
  * Add selection effect to the map's selected features.
@@ -17,13 +18,18 @@ export default function useMapSelectEffect(layer: string, map?: mapboxgl.Map) {
     }
     const mouseLeaveHandler = () => {
       map.getCanvas().style.cursor = "grab";
-      hideLineWidth(OUTLINE_LAYER, map);
+      mapbox.hideLineWidth(OUTLINE_LAYER, map);
     }
     const mouseMoveHandler = (event: mapboxgl.MapMouseEvent) => {
       const feature = map.queryRenderedFeatures(event.point, {layers: [layer]})[0];
-      setLineWidth(OUTLINE_LAYER, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
+      const fillColor = (feature.layer!.paint as { "fill-color": FillColor })["fill-color"];
+
+      // Skip features with white fill color (non-selected features).
+      if (!isWhiteFillColor(fillColor)) {
+        mapbox.setLineWidth(OUTLINE_LAYER, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
+      }
     }
-    
+
     // Add event listeners.
     map.on("mouseenter", layer, mouseEnterHandler);
     map.on("mouseleave", layer, mouseLeaveHandler);

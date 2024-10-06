@@ -226,7 +226,7 @@ export function offLayers(map: mapboxgl.Map) {
 }
 
 /**
- * Set the line weight of the mapbox layer.
+ * Set the line weight of the selected feature.
  * @param layer Name of the layer.
  * @param keyId Name of the layer property id.
  * @param valueId Value of layer property id to compare.

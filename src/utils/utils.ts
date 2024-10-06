@@ -1,6 +1,6 @@
 import { HealthcarePropertyName } from '../constants/geoJsonConstants';
 import { Section } from "../constants/surveyConstants";
-import { MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
+import { FillColor, MapBound, UnitType, mapAttributes } from "../constants/mapConstants";
 
 /**
  * Returns the section name corresponding to the path.
@@ -82,4 +82,12 @@ export function getSeriesNumber(count: number) {
  */
 export function parseString(value: string): string {
   return value.match(/[a-zA-Z]+/)![0];
+}
+
+/**
+ * Check if the fill color is white.
+ * @param fillColor Fill color to check.
+ */
+export function isWhiteFillColor(fillColor: FillColor): boolean {
+  return fillColor.r == 1 && fillColor.g == 1 && fillColor.b == 1 && fillColor.a == 1;
 }

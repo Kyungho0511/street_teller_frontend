@@ -28,8 +28,6 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
   useEffectAfterMount(() => {
     // Update Mapping with the selected item.
     if (map && mappable && parentLayer && color) {
-
-      console.log(parentLayer);
       mapbox.updateLayerAttribute(parentLayer, selectedItem, color, map);
     }
     // Update the attribute for map legned.
