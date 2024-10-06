@@ -10,13 +10,14 @@ import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
-import { Color, GEOID, mapSections, OUTLINE_LAYER, THICK_LINE_WEIGHT } from "../constants/mapConstants";
+import { Color, mapSections } from "../constants/mapConstants";
 import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
 import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
+import useMapSelectEffect from "../hooks/useMapSelectEffect";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -43,27 +44,8 @@ export default function ClusterPage() {
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
 
-  // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
-  // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
-  useEffectAfterMount(() => {
-    if (!map) return;
-    const mouseLeaveHandlerWrapper = () => {
-      mapbox.hideLineWidth(OUTLINE_LAYER, map);
-    }
-    const mouseMoveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
-      const feature = map.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
-      mapbox.setLineWidth(OUTLINE_LAYER, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
-    }
-    // Add event listeners.
-    map.on("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
-    map.on("mousemove", parentLayer, mouseMoveHandlerWrapper);
-
-    // Cleanup event listeners on component unmount.
-    return () => {
-      map.off("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
-      map.off("mousemove", parentLayer, mouseMoveHandlerWrapper);
-    }
-  }, [parentLayer]);
+  // Add selection effect to the map's selected features.
+  useMapSelectEffect(parentLayer, map);
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.

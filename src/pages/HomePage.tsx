@@ -7,12 +7,11 @@ import { SurveyContext } from "../context/SurveyContext";
 import { initialPreferenceList, Preference } from "../constants/surveyConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
-import { GEOID, MapAttribute, mapSections, OUTLINE_LAYER, THICK_LINE_WEIGHT } from "../constants/mapConstants";
+import { MapAttribute, mapSections } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
-import * as mapbox from "../services/mapbox";
 import { MapContext } from "../context/MapContext";
-import useEffectAfterMount from "../hooks/useEffectAfterMount";
+import useMapSelectEffect from "../hooks/useMapSelectEffect";
 // import CheckboxList from "../components/CheckboxList";
 
 /**
@@ -34,28 +33,8 @@ export default function HomePage() {
   // Get openAI instructions on the current page.
   useOpenaiInstruction(addMessage, updatePrompt);
 
-  // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
-  // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
-  useEffectAfterMount(() => {
-    if (!map) return;
-    const mouseLeaveHandlerWrapper = () => {
-      mapbox.hideLineWidth(OUTLINE_LAYER, map);
-    }
-    const mouseMoveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
-      const feature = map.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
-      mapbox.setLineWidth(OUTLINE_LAYER, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
-    }
-    // Add event listeners.
-    map.on("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
-    map.on("mousemove", parentLayer, mouseMoveHandlerWrapper);
-
-    // Cleanup event listeners on component unmount.
-    return () => {
-      map.off("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
-      map.off("mousemove", parentLayer, mouseMoveHandlerWrapper);
-    }
-  }, [parentLayer]);
-
+  // Add selection effect to the map's selected features.
+  useMapSelectEffect(parentLayer, map);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { KMeansLayer } from './kmeans';
 import mapboxgl from "mapbox-gl";
-import { Color, configs, GEOID, MapBound, MapLayer, mapSections, OUTLINE_LAYER_SUFFX } from "../constants/mapConstants";
+import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from '../constants/geoJsonConstants';
@@ -161,9 +161,6 @@ export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map)
  * @param color If true, the layer is colored.
  */
 export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, color?: boolean) {
-  
-  console.log(kMeansLayer.title);
-
   map.addSource(kMeansLayer.title, {
       type: "geojson",
       data: kMeansLayer.geoJson,
