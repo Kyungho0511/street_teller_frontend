@@ -13,13 +13,11 @@ export const configs = {
 };
 
 export const GEOID = "GEOID";
-
 export const OUTLINE_LAYER = "tracts-features-nyc-outline";
-
 export const THICK_LINE_WEIGHT = 4;
 
 export const POPUP = {
-  width: 240,
+  width: 250,
   height: 180,
   offset: 30,
 }

@@ -1,0 +1,25 @@
+@import '../../styles/variables.css';
+
+.title {
+  margin: 0;
+  font-size: var(--font-regular);
+  text-transform: uppercase;
+}
+
+.body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.text,
+.value {
+  font-size: var(--font-small);
+  line-height: var(--line-height-small);
+  text-transform: capitalize;
+}
+
+.text {
+  margin-right: 1rem;
+}

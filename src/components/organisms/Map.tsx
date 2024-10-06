@@ -8,7 +8,6 @@ import { mapSections } from '../../constants/mapConstants';
 import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 import { SIDEBAR_WIDTH } from './Sidebar';
-import PopupSection from './PopupSection';
 
 /**
  * Mapbox map component.
@@ -21,7 +20,6 @@ export default function Map() {
   useEffect(() => {
     const temp = mapbox.CreateMap();
     temp.on("load", () => {
-
       setMap(temp);
     });
 
@@ -30,8 +28,7 @@ export default function Map() {
       map && mapbox.RemoveMap(map);
       setMap(undefined);
     };
-  }, [])
-  
+  }, []);
 
   useEffectAfterMount(() => {
     if (map) {
@@ -44,19 +41,13 @@ export default function Map() {
       setParentLayer(mapSection.parentLayer);
       setColor(mapSection.color);
     }
-  }, [location.pathname, map, setColor, setParentLayer])
+  }, [location.pathname, map, setColor, setParentLayer]);
 
   return (
-    <>
-      <div
-        id="map"
-        className={styles.map}
-        style={{ left: SIDEBAR_WIDTH, width: `calc(100% - ${SIDEBAR_WIDTH}px)` }}
-      ></div>
-      <PopupSection>
-        <h1>Popup</h1>
-        <p>Contents</p>
-      </PopupSection>
-    </>
+    <div
+      id="map"
+      className={styles.map}
+      style={{ left: SIDEBAR_WIDTH, width: `calc(100% - ${SIDEBAR_WIDTH}px)` }}
+    ></div>
   );
 }

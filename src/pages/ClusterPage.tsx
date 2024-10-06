@@ -17,7 +17,8 @@ import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
-import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import PopupSection from "../components/organisms/PopupSection";
+import PopupText from "../components/atoms/PopupText";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -27,7 +28,7 @@ export default function ClusterPage() {
   // Global states
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
-  const { map, parentLayer } = useContext(MapContext);
+  const { map } = useContext(MapContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -43,9 +44,6 @@ export default function ClusterPage() {
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
-
-  // Add selection effect to the map's selected features.
-  useMapSelectEffect(parentLayer, map);
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
@@ -149,6 +147,10 @@ export default function ClusterPage() {
           autoCollapse
         />
       </LegendSection>
+
+      <PopupSection enableSelectEffect>
+        <PopupText />
+      </PopupSection>
     </>
   );
 }

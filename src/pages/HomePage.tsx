@@ -10,8 +10,8 @@ import Colorbox from "../components/atoms/Colorbox";
 import { MapAttribute, mapSections } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
-import { MapContext } from "../context/MapContext";
-import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import PopupSection from "../components/organisms/PopupSection";
+import PopupText from "../components/atoms/PopupText";
 // import CheckboxList from "../components/CheckboxList";
 
 /**
@@ -20,7 +20,6 @@ import useMapSelectEffect from "../hooks/useMapSelectEffect";
 export default function HomePage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
-  const { map, parentLayer } = useContext(MapContext);
 
   // Currently selected preference.
   const [preference, setPreference] = useState<Preference>(initialPreferenceList.list[0]);
@@ -32,9 +31,6 @@ export default function HomePage() {
 
   // Get openAI instructions on the current page.
   useOpenaiInstruction(addMessage, updatePrompt);
-
-  // Add selection effect to the map's selected features.
-  useMapSelectEffect(parentLayer, map);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
@@ -68,6 +64,10 @@ export default function HomePage() {
         <GradientBar bound={attribute.bound} unit={attribute.unit} />
         <Colorbox label={"non-shortage areas"} />
       </LegendSection>
+
+      <PopupSection enableSelectEffect>
+        <PopupText selectedAttribute={attribute} />
+      </PopupSection>
     </>
   );
 }
