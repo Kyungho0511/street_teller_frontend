@@ -6,6 +6,8 @@ import { FOOTBAR_HEIGHT } from './Footbar';
 import { FillColor, POPUP } from '../../constants/mapConstants';
 import { isWhiteFillColor } from '../../utils/utils';
 import useMapSelectEffect from '../../hooks/useMapSelectEffect';
+import { PopupContext } from '../../context/PopupContext';
+import { HealthcareProperties } from '../../constants/geoJsonConstants';
 
 type Coordinate = {
   x: number;
@@ -21,11 +23,28 @@ type PopupSectionProps = {
  */
 export default function PopupSection({ enableSelectEffect, children }: PopupSectionProps) {
   const { map, parentLayer } = useContext(MapContext);
+  const { setProperties } = useContext(PopupContext);
+
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
 
   // Add selection effect to the map's selected features.
   useMapSelectEffect(parentLayer, map, enableSelectEffect);
+
+  // Set properties based on the map mouse event.
+  useEffect(() => {
+    if (!map) return;
+    const updateProperties = (event: mapboxgl.MapMouseEvent) => {
+      const feature = map.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
+      setProperties(feature.properties as HealthcareProperties);
+    }
+    map.on("mousemove", parentLayer, updateProperties);
+
+    // Cleanup event listeners on component unmount.
+    return () => {
+      map.off("mousemove", parentLayer, updateProperties);
+    }
+  }, [map, parentLayer, setProperties]);
 
   // Set popup status based on the map mouse event.
   useEffect(() => {

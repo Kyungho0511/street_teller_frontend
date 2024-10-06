@@ -11,7 +11,8 @@ import { MapAttribute, mapSections } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import PopupSection from "../components/organisms/PopupSection";
-import PopupText from "../components/atoms/PopupText";
+import PopupTextHome from "../components/atoms/PopupTextHome";
+import { PopupContextProvider } from "../context/PopupContext";
 // import CheckboxList from "../components/CheckboxList";
 
 /**
@@ -65,9 +66,11 @@ export default function HomePage() {
         <Colorbox label={"non-shortage areas"} />
       </LegendSection>
 
-      <PopupSection enableSelectEffect>
-        <PopupText selectedAttribute={attribute} />
-      </PopupSection>
+      <PopupContextProvider>
+        <PopupSection enableSelectEffect>
+          <PopupTextHome selectedAttribute={attribute} />
+        </PopupSection>
+      </PopupContextProvider>
     </>
   );
 }

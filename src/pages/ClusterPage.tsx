@@ -18,7 +18,8 @@ import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import PopupSection from "../components/organisms/PopupSection";
-import PopupText from "../components/atoms/PopupText";
+import PopupTextCluster from "../components/atoms/PopupTextCluster";
+import { PopupContextProvider } from "../context/PopupContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -148,9 +149,11 @@ export default function ClusterPage() {
         />
       </LegendSection>
 
-      <PopupSection enableSelectEffect>
-        <PopupText />
-      </PopupSection>
+      <PopupContextProvider>
+        <PopupSection enableSelectEffect>
+          <PopupTextCluster text="cluster" />
+        </PopupSection>
+      </PopupContextProvider>
     </>
   );
 }
