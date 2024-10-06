@@ -161,6 +161,9 @@ export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map)
  * @param color If true, the layer is colored.
  */
 export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, color?: boolean) {
+  
+  console.log(kMeansLayer.title);
+
   map.addSource(kMeansLayer.title, {
       type: "geojson",
       data: kMeansLayer.geoJson,
@@ -226,21 +229,20 @@ export function offLayers(map: mapboxgl.Map) {
 }
 
 /**
- * Set the line weight of the mapbox layer conditionally.
- * @param layer Name of the layer to select a feature from.
+ * Set the line weight of the mapbox layer.
+ * @param layer Name of the layer.
  * @param keyId Name of the layer property id.
  * @param valueId Value of layer property id to compare.
  * @param lineWeight Line weight of the outline.
  */
-export function setLineWidthConditional(
+export function setLineWidth(
   layer: string,
   keyId: string,
   valueId: number,
   lineWeight: number,
   map: mapboxgl.Map
 ) {
-  const outlineLayer = layer + OUTLINE_LAYER_SUFFX;
-  map.setPaintProperty(outlineLayer, "line-width", [
+  map.setPaintProperty(layer, "line-width", [
     "case",
     ["==", ["get", keyId], valueId],
     lineWeight,
@@ -253,6 +255,5 @@ export function setLineWidthConditional(
  * @param layer Name of the layer to hide.
  */
 export function hideLineWidth(layer: string, map: mapboxgl.Map) {
-  const outlineLayer = layer + OUTLINE_LAYER_SUFFX;
-  map.setPaintProperty(outlineLayer, "line-width", 0);
+  map.setPaintProperty(layer, "line-width", 0);
 }

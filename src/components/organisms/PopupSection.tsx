@@ -19,9 +19,8 @@ type PopupSectionProps = {
  */
 export default function PopupSection({ children }: PopupSectionProps) {
   const { map, parentLayer } = useContext(MapContext);
-  const [mapOrigin] = useState<Coordinate>({ x: SIDEBAR_WIDTH, y: 0 });
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
-  const popupRef = useRef<HTMLDivElement>(null);
+  const [display, setDisplay] = useState<"block" | "none">("none");
 
   // Set popup status based on the map mouse event.
   useEffect(() => {
@@ -29,6 +28,7 @@ export default function PopupSection({ children }: PopupSectionProps) {
 
     const updatePopupPosition = (event: mapboxgl.MapMouseEvent) => {
       const mapWidth = window.innerWidth - SIDEBAR_WIDTH;
+      const mapOrigin = { x: SIDEBAR_WIDTH, y: 0 };
       const translate = {x: 0, y: 0};
 
       // Set X position of the popup.
@@ -47,11 +47,11 @@ export default function PopupSection({ children }: PopupSectionProps) {
     }
 
     const showPopup = () => {
-      popupRef.current!.style.display = "block";
+      setDisplay("block");
     }
 
     const hidePopup = () => {
-      popupRef.current!.style.display = "none";
+      setDisplay("none");
     }
 
     map.on("mousemove", parentLayer, updatePopupPosition);
@@ -64,13 +64,13 @@ export default function PopupSection({ children }: PopupSectionProps) {
       map.off("mouseenter", parentLayer, showPopup);
       map.off("mouseleave", parentLayer, hidePopup);
     }
-  }, [parentLayer]);
+  }, [map, parentLayer]);
 
   return (
     <div
-      ref={popupRef}
       className={styles.container}
       style={{
+        display: display,
         width: POPUP.width,
         height: POPUP.height,
         left: position.x,

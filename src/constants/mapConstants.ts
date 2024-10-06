@@ -13,7 +13,9 @@ export const configs = {
 };
 
 export const GEOID = "GEOID";
-export const OUTLINE_LAYER_SUFFX = "-outline";
+
+export const OUTLINE_LAYER = "tracts-features-nyc-outline";
+
 export const THICK_LINE_WEIGHT = 4;
 
 export const POPUP = {
@@ -235,8 +237,6 @@ export type MapSection = {
   layers: MapLayer[];
   // Parent layer containing attributes
   parentLayer: string;
-  // Source layer name on the mapbox studio.
-  sourceLayer: string;
   // Attribute in parent layer to be visualized.
   attribute?: MapAttribute;
   // Color for attributes
@@ -256,7 +256,6 @@ export const mapSections: MapSection[] = [
       unit: "population density",
     },
     parentLayer: "tracts-features-nyc",
-    sourceLayer: "tracts_features_nyc-1v56vi",
     color: color.blue,
   },
   {
@@ -265,7 +264,6 @@ export const mapSections: MapSection[] = [
       { name: "tracts", opacity: 0.9 },
     ],
     parentLayer: "cluster1",
-    sourceLayer: "cluster1",
     color: color.yellow
   },
   {
@@ -274,7 +272,6 @@ export const mapSections: MapSection[] = [
       { name: "tracts", opacity: 0.9 },
     ],
     parentLayer: "cluster2",
-    sourceLayer: "cluster2",
     color: color.blue
   },
   {
@@ -283,7 +280,6 @@ export const mapSections: MapSection[] = [
       { name: "tracts", opacity: 0.9 },
     ],
     parentLayer: "cluster3",
-    sourceLayer: "cluster3",
     color: color.green
   },
 ];

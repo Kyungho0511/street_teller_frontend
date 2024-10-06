@@ -7,7 +7,7 @@ import { SurveyContext } from "../context/SurveyContext";
 import { initialPreferenceList, Preference } from "../constants/surveyConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
-import { GEOID, MapAttribute, mapSections, THICK_LINE_WEIGHT } from "../constants/mapConstants";
+import { GEOID, MapAttribute, mapSections, OUTLINE_LAYER, THICK_LINE_WEIGHT } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import * as mapbox from "../services/mapbox";
@@ -38,12 +38,12 @@ export default function HomePage() {
   // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
   useEffectAfterMount(() => {
     if (!map) return;
-    const mouseLeaveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
-      mapbox.hideLineWidth(parentLayer, map);
+    const mouseLeaveHandlerWrapper = () => {
+      mapbox.hideLineWidth(OUTLINE_LAYER, map);
     }
     const mouseMoveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
       const feature = map.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
-      mapbox.setLineWidthConditional(parentLayer, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
+      mapbox.setLineWidth(OUTLINE_LAYER, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
     }
     // Add event listeners.
     map.on("mouseleave", parentLayer, mouseLeaveHandlerWrapper);

@@ -4,6 +4,7 @@ import { MapContext } from "../../context/MapContext";
 import { MapAttribute, mapAttributes } from "../../constants/mapConstants";
 import * as mapbox from "../../services/mapbox";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 type SelectableListProps = {
   list: ListItem[];
@@ -24,9 +25,11 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
     setSelectedItem(list[0].name);
   }, [list])
 
-  useEffect(() => {
+  useEffectAfterMount(() => {
     // Update Mapping with the selected item.
     if (map && mappable && parentLayer && color) {
+
+      console.log(parentLayer);
       mapbox.updateLayerAttribute(parentLayer, selectedItem, color, map);
     }
     // Update the attribute for map legned.

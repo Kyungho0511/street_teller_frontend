@@ -10,7 +10,7 @@ import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
-import { Color, mapSections } from "../constants/mapConstants";
+import { Color, GEOID, mapSections, OUTLINE_LAYER, THICK_LINE_WEIGHT } from "../constants/mapConstants";
 import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
 import { MessageContext } from "../context/MessageContext";
@@ -26,7 +26,7 @@ export default function ClusterPage() {
   // Global states
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
-  const { map } = useContext(MapContext);
+  const { map, parentLayer } = useContext(MapContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -43,12 +43,33 @@ export default function ClusterPage() {
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
 
+  // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
+  // UseMapboxSelectionEffect!!!!!!!!!!!!!!!!!
+  useEffectAfterMount(() => {
+    if (!map) return;
+    const mouseLeaveHandlerWrapper = () => {
+      mapbox.hideLineWidth(OUTLINE_LAYER, map);
+    }
+    const mouseMoveHandlerWrapper = (event: mapboxgl.MapMouseEvent) => {
+      const feature = map.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
+      mapbox.setLineWidth(OUTLINE_LAYER, GEOID, feature.properties![GEOID], THICK_LINE_WEIGHT, map);
+    }
+    // Add event listeners.
+    map.on("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
+    map.on("mousemove", parentLayer, mouseMoveHandlerWrapper);
+
+    // Cleanup event listeners on component unmount.
+    return () => {
+      map.off("mouseleave", parentLayer, mouseLeaveHandlerWrapper);
+      map.off("mousemove", parentLayer, mouseMoveHandlerWrapper);
+    }
+  }, [parentLayer]);
+
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, map!);
-
 
     if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
       setGeoJson(kMeansLayers[0].geoJson);
