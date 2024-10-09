@@ -8,7 +8,7 @@ import { HealthcarePropertyName } from '../constants/geoJsonConstants';
 /**
  * Create a mapbox map instance.
  */
-export function CreateMap(): mapboxgl.Map {
+export function createMap(mapContainerId: string): mapboxgl.Map {
   mapboxgl.accessToken = import.meta.env.VITE_API_KEY_MAPBOX as string;
   const bounds: mapboxgl.LngLatBoundsLike = [
     [-85, 36], // Southwest coordinates
@@ -17,7 +17,7 @@ export function CreateMap(): mapboxgl.Map {
   const [longitude, latitude] = configs.location.center;
 
   const map = new mapboxgl.Map({
-    container: "map",
+    container: mapContainerId,
     style: configs.style,
     center: [longitude, latitude],
     zoom: configs.location.zoom,
@@ -39,7 +39,7 @@ export function CreateMap(): mapboxgl.Map {
  * Remove the mapbox map instance.
  * @param map Map to remove.
  */
-export function RemoveMap(map: mapboxgl.Map): void {
+export function removeMap(map: mapboxgl.Map): void {
   map.remove();
 }
 
