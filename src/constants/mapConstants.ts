@@ -9,6 +9,7 @@ export const configs = {
     zoom: 11,
     pitch: 0,
     bearing: 0,
+    antialias: true
   },
 };
 

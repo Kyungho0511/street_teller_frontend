@@ -6,7 +6,7 @@ import MessageBox from "../components/molecules/MessageBox";
 import Sidebar from "../components/organisms/Sidebar";
 import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
-import Map3DTiles from "../components/organisms/Map3DTiles";
+// import Map3DTiles from "../components/organisms/Map3DTiles";
 
 export default function RootPage() {
   return (

@@ -1,4 +1,5 @@
 import styles from './Map.module.css';
+import * as THREE from 'three';
 import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
 import { useLocation } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { mapSections } from '../../constants/mapConstants';
 import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 import { SIDEBAR_WIDTH } from './Sidebar';
+import { create3DLayer } from '../../services/three';
 
 /**
  * Mapbox map component.
@@ -33,8 +35,10 @@ export default function Map() {
     };
   }, []);
 
+  
   useEffectAfterMount(() => {
-    if (map) {
+    if (!map) return;
+
       // Update the map layers of the current page.
       const section: Section = pathToSection(location.pathname);
       mapbox.setLayers(section, map);
@@ -43,8 +47,17 @@ export default function Map() {
       const mapSection = mapSections.find((sec) => sec.id === section)!;
       setParentLayer(mapSection.parentLayer);
       setColor(mapSection.color);
-    }
+
   }, [location.pathname, map, setColor, setParentLayer]);
+
+
+  useEffectAfterMount(() => {
+    if (!map) return;
+
+    // Create Three.js custom style layer to the map.
+    create3DLayer(map);
+
+  }, [map]);
 
   return (
     <div

@@ -29,8 +29,8 @@ export function createMap(mapContainerId: string): mapboxgl.Map {
     logoPosition: "top-left"
   });
   // Disable rotation using touch and mouse
-  map.dragRotate.disable();
-  map.touchZoomRotate.disableRotation();
+  // map.dragRotate.disable();
+  // map.touchZoomRotate.disableRotation();
 
   return map;
 }
