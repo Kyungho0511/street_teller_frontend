@@ -1,10 +1,7 @@
-import {
-  GLTF,
-  GLTFLoader,
-} from "./../../node_modules/@types/three/examples/jsm/loaders/GLTFLoader.d";
 import * as THREE from "three";
 import mapboxgl from "mapbox-gl";
 import { configs } from "../constants/mapConstants";
+import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 
 export type ModelTransform = {
   translateX: number;
@@ -23,31 +20,47 @@ export type Custom3DLayer = mapboxgl.CustomLayerInterface & {
   map: mapboxgl.Map;
 };
 
-const modelOrigin: [number, number] = [
-  configs.location.center[0],
-  configs.location.center[1],
-];
-const modelAltitude = 0;
-const modelRotate = [Math.PI / 2, 0, 0];
+/**
+ * Create a 3d custom layer on the map.
+ * @param name Name of the 3d layer.
+ * @param scaleModifier Scale modifier of the 3d model.
+ * @param url Url path of the 3d model.
+ * @param map Map in which the 3d layer is created.
+ */
+export function create3DLayer(
+  name: string,
+  scaleModifier: number,
+  url: string,
+  map: mapboxgl.Map
+): Custom3DLayer {
+  // Settings for 3d model object.
+  const modelOrigin: [number, number] = [
+    configs.location.center[0],
+    configs.location.center[1],
+  ];
+  const modelAltitude = 0;
+  const modelRotate = [Math.PI / 2, 0, 0];
 
-const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
-  modelOrigin,
-  modelAltitude
-);
+  const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
+    modelOrigin,
+    modelAltitude
+  );
 
-const modelTransform: ModelTransform = {
-  translateX: modelAsMercatorCoordinate.x,
-  translateY: modelAsMercatorCoordinate.y,
-  translateZ: modelAsMercatorCoordinate.z,
-  rotateX: modelRotate[0],
-  rotateY: modelRotate[1],
-  rotateZ: modelRotate[2],
-  scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits(),
-};
+  const modelTransform: ModelTransform = {
+    translateX: modelAsMercatorCoordinate.x,
+    translateY: modelAsMercatorCoordinate.y,
+    translateZ: modelAsMercatorCoordinate.z,
+    rotateX: modelRotate[0],
+    rotateY: modelRotate[1],
+    rotateZ: modelRotate[2],
+    scale:
+      modelAsMercatorCoordinate.meterInMercatorCoordinateUnits() *
+      scaleModifier,
+  };
 
-export function create3DLayer(map: mapboxgl.Map) {
+  // Create a custom 3D layer.
   const custom3DLayer: Custom3DLayer = {
-    id: "3d-nyc",
+    id: name,
     type: "custom",
     renderingMode: "3d",
     onAdd: function (map: mapboxgl.Map, gl: WebGLRenderingContext) {
@@ -65,13 +78,9 @@ export function create3DLayer(map: mapboxgl.Map) {
 
       // use the three.js GLTF loader to add the 3D model to the three.js scene
       const loader = new GLTFLoader();
-      loader.load(
-        "https://docs.mapbox.com/mapbox-gl-js/assets/34M_17/34M_17.gltf",
-        (gltf: GLTF) => {
-          gltf.scene.scale.set(100, 100, 100);
-          this.scene.add(gltf.scene);
-        }
-      );
+      loader.load(url, (gltf: GLTF) => {
+        this.scene.add(gltf.scene);
+      });
       this.map = map;
 
       // Use the Mapbox GL JS map canvas for three.js
@@ -122,5 +131,5 @@ export function create3DLayer(map: mapboxgl.Map) {
     },
   };
 
-  map.addLayer(custom3DLayer, "tracts-features-nyc-outline");
+  return custom3DLayer;
 }

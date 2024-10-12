@@ -5,11 +5,12 @@ import * as mapbox from "../../services/mapbox";
 import { useLocation } from 'react-router-dom';
 import { pathToSection } from '../../utils/utils';
 import { MapContext } from '../../context/MapContext';
-import { mapSections } from '../../constants/mapConstants';
+import { mapSections, OUTLINE_LAYER } from '../../constants/mapConstants';
 import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 import { SIDEBAR_WIDTH } from './Sidebar';
 import { create3DLayer } from '../../services/three';
+import { MODEL_URL } from '../../constants/map3DConstants';
 
 /**
  * Mapbox map component.
@@ -48,15 +49,23 @@ export default function Map() {
       setParentLayer(mapSection.parentLayer);
       setColor(mapSection.color);
 
+      return () => {
+        setParentLayer("");
+        setColor(undefined);
+      }
   }, [location.pathname, map, setColor, setParentLayer]);
 
 
   useEffectAfterMount(() => {
     if (!map) return;
 
-    // Create Three.js custom style layer to the map.
-    create3DLayer(map);
-
+    // Add Three.js custom layer to the map.
+    const custom3DLayer = create3DLayer("3d-layer", 100, MODEL_URL, map);
+    map.addLayer(custom3DLayer, OUTLINE_LAYER);
+    
+    return () => {
+      map.removeLayer("3d-layer");
+    }
   }, [map]);
 
   return (
