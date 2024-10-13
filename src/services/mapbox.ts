@@ -24,7 +24,7 @@ export function createMap(mapContainerId: string): mapboxgl.Map {
     bearing: configs.location.bearing,
     pitch: configs.location.pitch,
     scrollZoom: true,
-    maxBounds: bounds,
+    // maxBounds: bounds,
     attributionControl: false,
     logoPosition: "top-left",
     projection: "globe"

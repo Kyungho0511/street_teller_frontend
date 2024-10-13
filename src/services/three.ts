@@ -1,8 +1,9 @@
+import { label } from './../../node_modules/@types/three/src/nodes/core/ContextNode.d';
 import * as THREE from "three";
 import mapboxgl from "mapbox-gl";
 import { configs } from "../constants/mapConstants";
 import { DRACOLoader, GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { TilesRenderer } from "3d-tiles-renderer";
+import { GooglePhotorealisticTilesRenderer, TilesRenderer } from "3d-tiles-renderer";
 
 const apiKeyGoogle = import.meta.env.VITE_API_KEY_GOOGLE as string;
 
@@ -20,7 +21,7 @@ export type Custom3DLayer = mapboxgl.CustomLayerInterface & {
   camera: THREE.Camera;
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
-  tilesRenderer: TilesRenderer;
+  tilesRenderer: GooglePhotorealisticTilesRenderer;
   map: mapboxgl.Map;
 };
 
@@ -44,7 +45,7 @@ export function create3DLayer(
   const modelAltitude = 0;
 
   const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
-    modelOrigin,
+    {lng: modelOrigin[0], lat: modelOrigin[1]},
     modelAltitude
   );
   const modelTransform: ModelTransform = {
@@ -80,7 +81,7 @@ export function create3DLayer(
       // Set up the 3D Tiles renderer. Google photorealistic 
       // 3D Tiles come with textures including baked lighting and 
       // shadows. Therefore, the renderer does not need to use lights.
-      this.tilesRenderer = new TilesRenderer(`https://tile.googleapis.com/v1/3dtiles/root.json?key=${apiKeyGoogle}`);
+      this.tilesRenderer = new GooglePhotorealisticTilesRenderer(`https://tile.googleapis.com/v1/3dtiles/root.json?key=${apiKeyGoogle}`);
       this.tilesRenderer.setCamera(this.camera);
       this.tilesRenderer.setResolutionFromRenderer(this.camera, this.renderer);
 
@@ -106,22 +107,23 @@ export function create3DLayer(
         return url;
       };
 
+      this.tilesRenderer.setLatLonToYUp(modelOrigin[1], modelOrigin[0]);
+
       // Add the tiles renderer group to the scene
       this.scene.add(this.tilesRenderer.group);
 
-      // Transform the model to the correct position
-      this.tilesRenderer.manager.onLoad = () => {
-        console.log("All models loaded");
-        const boundingSphere = new THREE.Sphere();
-        if (this.tilesRenderer.getBoundingSphere(boundingSphere)) {
-          // const centerECEF = boundingSphere.center;
-          // const centerGeographic = ecefToGeographic(centerECEF);
-          // const centerPoint = this.map.project([centerGeographic.longitude, centerGeographic.latitude]);
-          // this.tilesRenderer.group.position.set(centerPoint.x, centerPoint.y, -centerGeographic.altitude);
-
-          console.log(this.tilesRenderer.group.position);
-        }
-      };
+      // // Transform the model to the correct position
+      // this.tilesRenderer.manager.onLoad = () => {
+      //   console.log("All models loaded");
+      //   const boundingSphere = new THREE.Sphere();
+      //   if (this.tilesRenderer.getBoundingSphere(boundingSphere)) {
+      //     const centerECEF = boundingSphere.center;
+      //     const centerGeographic = ecefToGeographic(centerECEF);
+      //     console.log(centerGeographic.longitude)
+      //     const centerPoint = this.map.project([centerGeographic.longitude, centerGeographic.latitude]);
+      //     this.tilesRenderer.group.position.set(0, 0, 10);
+      //   }
+      // };
 
       // Logs for debugging
       this.tilesRenderer.manager.onStart = (url, itemsLoaded, itemsTotal) => {
@@ -132,6 +134,9 @@ export function create3DLayer(
       }
       this.tilesRenderer.manager.onError = (url) => {
         console.log(`Error loading ${url}`);
+      }
+      this.tilesRenderer.manager.onLoad = () => {
+        console.log("All models loaded");
       }
     },
 
