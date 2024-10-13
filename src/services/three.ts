@@ -79,6 +79,7 @@ export function create3DLayer(
     onAdd: function (map: mapboxgl.Map, gl: WebGLRenderingContext) {
       this.camera = new THREE.Camera();
       this.scene = new THREE.Scene();
+      this.map = map;
 
       // create lights to illuminate the model
       const directionalLight = new THREE.DirectionalLight(0xffffff);
@@ -94,7 +95,6 @@ export function create3DLayer(
       // loader.load(url, (gltf: GLTF) => {
       //   this.scene.add(gltf.scene);
       // });
-      // this.map = map;
 
       // Use the Mapbox GL JS map canvas for three.js
       this.renderer = new THREE.WebGLRenderer({
@@ -128,10 +128,12 @@ export function create3DLayer(
           url = session ? url + `${getSeparator(url)}session=${session}` : url;
           url += `${getSeparator(url)}key=${apiKeyGoogle}`;
         }
-
         return url;
       };
 
+      this.scene.add(this.tilesRenderer.group);
+
+      // Logs for debugging
       this.tilesRenderer.manager.onStart = (url, itemsLoaded, itemsTotal) => {
         console.log(`Started loading ${url}, ${itemsLoaded} of ${itemsTotal}`);
       }
@@ -142,9 +144,6 @@ export function create3DLayer(
         console.log(`Error loading ${url}`);
       }
       this.tilesRenderer.manager.onLoad = () => console.log('All items loaded');
-
-
-      this.scene.add(this.tilesRenderer.group);
     },
 
     render: function (gl: WebGLRenderingContext, matrix: number[]) {
@@ -189,7 +188,7 @@ export function create3DLayer(
       this.renderer.render(this.scene, this.camera);
 
       // Request the map to repaint.
-      // this.map.triggerRepaint();
+      this.map.triggerRepaint();
     },
   };
 
