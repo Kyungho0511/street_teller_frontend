@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import mapboxgl from "mapbox-gl";
 import { configs } from "../constants/mapConstants";
-import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import { DRACOLoader, GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import { TilesRenderer } from "3d-tiles-renderer";
+
+const apiKeyGoogle = import.meta.env.VITE_API_KEY_GOOGLE as string;
 
 export type ModelTransform = {
   translateX: number;
@@ -17,6 +20,7 @@ export type Custom3DLayer = mapboxgl.CustomLayerInterface & {
   camera: THREE.Camera;
   scene: THREE.Scene;
   renderer: THREE.WebGLRenderer;
+  tilesRenderer: TilesRenderer;
   map: mapboxgl.Map;
 };
 
@@ -33,6 +37,7 @@ export function create3DLayer(
   url: string,
   map: mapboxgl.Map
 ): Custom3DLayer {
+
   // Settings for 3d model object.
   const modelOrigin: [number, number] = [
     configs.location.center[0],
@@ -45,7 +50,6 @@ export function create3DLayer(
     modelOrigin,
     modelAltitude
   );
-
   const modelTransform: ModelTransform = {
     translateX: modelAsMercatorCoordinate.x,
     translateY: modelAsMercatorCoordinate.y,
@@ -57,6 +61,15 @@ export function create3DLayer(
       modelAsMercatorCoordinate.meterInMercatorCoordinateUnits() *
       scaleModifier,
   };
+
+  // Initialize three.js scene and camera.
+  // const sceneThree = new THREE.Scene();
+  // const cameraThree = new THREE.PerspectiveCamera(
+  //   45,
+  //   window.innerWidth / window.innerHeight,
+  //   0.1,
+  //   2000
+  // );
 
   // Create a custom 3D layer.
   const custom3DLayer: Custom3DLayer = {
@@ -76,12 +89,12 @@ export function create3DLayer(
       directionalLight2.position.set(0, 70, 100).normalize();
       this.scene.add(directionalLight2);
 
-      // use the three.js GLTF loader to add the 3D model to the three.js scene
-      const loader = new GLTFLoader();
-      loader.load(url, (gltf: GLTF) => {
-        this.scene.add(gltf.scene);
-      });
-      this.map = map;
+      // // use the three.js GLTF loader to add the 3D model to the three.js scene
+      // const loader = new GLTFLoader();
+      // loader.load(url, (gltf: GLTF) => {
+      //   this.scene.add(gltf.scene);
+      // });
+      // this.map = map;
 
       // Use the Mapbox GL JS map canvas for three.js
       this.renderer = new THREE.WebGLRenderer({
@@ -90,9 +103,53 @@ export function create3DLayer(
         antialias: true,
       });
       this.renderer.autoClear = false;
+
+      // Set up the 3D Tiles renderer
+      this.tilesRenderer = new TilesRenderer(`https://tile.googleapis.com/v1/3dtiles/root.json?key=${apiKeyGoogle}`);
+      this.tilesRenderer.setCamera(this.camera);
+      this.tilesRenderer.setResolutionFromRenderer(this.camera, this.renderer);
+
+      // DRACO loader is required for loading Google 3D Tiles
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+      dracoLoader.setDecoderConfig({ type: "js" });
+      const loader = new GLTFLoader(this.tilesRenderer.manager);
+      loader.setDRACOLoader(dracoLoader);
+      this.tilesRenderer.manager.addHandler(/\.(gltf|glb)$/g, loader);
+
+      // Process URLs to include the API key and session Id 
+      // for all subsequent requests excep the blob URLs.
+      let session: string | null = null;
+      this.tilesRenderer.preprocessURL = (url) => {
+        url = url as string;
+        if (url.includes('session=')) session = url.split('session=')[1];
+
+        if (!url.includes('blob:')) {
+          url = session ? url + `${getSeparator(url)}session=${session}` : url;
+          url += `${getSeparator(url)}key=${apiKeyGoogle}`;
+        }
+
+        return url;
+      };
+
+      this.tilesRenderer.manager.onStart = (url, itemsLoaded, itemsTotal) => {
+        console.log(`Started loading ${url}, ${itemsLoaded} of ${itemsTotal}`);
+      }
+      this.tilesRenderer.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+        console.log(`Loading ${url}: ${itemsLoaded} of ${itemsTotal}`);
+      }
+      this.tilesRenderer.manager.onError = (url) => {
+        console.log(`Error loading ${url}`);
+      }
+      this.tilesRenderer.manager.onLoad = () => console.log('All items loaded');
+
+
+      this.scene.add(this.tilesRenderer.group);
     },
 
     render: function (gl: WebGLRenderingContext, matrix: number[]) {
+
+      // Update camera matrix to ensure the model is georeferenced
       const rotationX = new THREE.Matrix4().makeRotationAxis(
         new THREE.Vector3(1, 0, 0),
         modelTransform.rotateX
@@ -125,11 +182,24 @@ export function create3DLayer(
         .multiply(rotationZ);
 
       this.camera.projectionMatrix = m.multiply(l);
+      
+      // Render the scene
+      this.tilesRenderer.update();
       this.renderer.resetState();
       this.renderer.render(this.scene, this.camera);
-      this.map.triggerRepaint();
+
+      // Request the map to repaint.
+      // this.map.triggerRepaint();
     },
   };
 
   return custom3DLayer;
+}
+
+/**
+ * 
+ * @param url 
+ */
+function getSeparator(url: string) {
+  return url.includes('?') ? '&' : '?';
 }
