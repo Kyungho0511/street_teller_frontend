@@ -59,8 +59,8 @@ export default function Map() {
   useEffectAfterMount(() => {
     if (!map) return;
 
-    // Add Three.js custom layer to the map.
-    const custom3DLayer = create3DLayer("3d-layer", 100, MODEL_URL, map);
+    // Add three.js custom layer to the map.
+    const custom3DLayer = create3DLayer("3d-layer", 1, MODEL_URL);
     map.addLayer(custom3DLayer, OUTLINE_LAYER);
     
     return () => {

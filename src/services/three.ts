@@ -29,13 +29,11 @@ export type Custom3DLayer = mapboxgl.CustomLayerInterface & {
  * @param name Name of the 3d layer.
  * @param scaleModifier Scale modifier of the 3d model.
  * @param url Url path of the 3d model.
- * @param map Map in which the 3d layer is created.
  */
 export function create3DLayer(
   name: string,
   scaleModifier: number,
   url: string,
-  map: mapboxgl.Map
 ): Custom3DLayer {
 
   // Settings for 3d model object.
@@ -44,7 +42,6 @@ export function create3DLayer(
     configs.location.center[1],
   ];
   const modelAltitude = 0;
-  const modelRotate = [Math.PI / 2, 0, 0];
 
   const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
     modelOrigin,
@@ -54,22 +51,13 @@ export function create3DLayer(
     translateX: modelAsMercatorCoordinate.x,
     translateY: modelAsMercatorCoordinate.y,
     translateZ: modelAsMercatorCoordinate.z,
-    rotateX: modelRotate[0],
-    rotateY: modelRotate[1],
-    rotateZ: modelRotate[2],
+    rotateX: Math.PI / 2,
+    rotateY: 0,
+    rotateZ: 0,
     scale:
       modelAsMercatorCoordinate.meterInMercatorCoordinateUnits() *
       scaleModifier,
   };
-
-  // Initialize three.js scene and camera.
-  // const sceneThree = new THREE.Scene();
-  // const cameraThree = new THREE.PerspectiveCamera(
-  //   45,
-  //   window.innerWidth / window.innerHeight,
-  //   0.1,
-  //   2000
-  // );
 
   // Create a custom 3D layer.
   const custom3DLayer: Custom3DLayer = {
@@ -81,21 +69,6 @@ export function create3DLayer(
       this.scene = new THREE.Scene();
       this.map = map;
 
-      // create lights to illuminate the model
-      const directionalLight = new THREE.DirectionalLight(0xffffff);
-      directionalLight.position.set(0, -70, 100).normalize();
-      this.scene.add(directionalLight);
-
-      const directionalLight2 = new THREE.DirectionalLight(0xffffff);
-      directionalLight2.position.set(0, 70, 100).normalize();
-      this.scene.add(directionalLight2);
-
-      // // use the three.js GLTF loader to add the 3D model to the three.js scene
-      // const loader = new GLTFLoader();
-      // loader.load(url, (gltf: GLTF) => {
-      //   this.scene.add(gltf.scene);
-      // });
-
       // Use the Mapbox GL JS map canvas for three.js
       this.renderer = new THREE.WebGLRenderer({
         canvas: map.getCanvas(),
@@ -104,12 +77,14 @@ export function create3DLayer(
       });
       this.renderer.autoClear = false;
 
-      // Set up the 3D Tiles renderer
+      // Set up the 3D Tiles renderer. Google photorealistic 
+      // 3D Tiles come with textures including baked lighting and 
+      // shadows. Therefore, the renderer does not need to use lights.
       this.tilesRenderer = new TilesRenderer(`https://tile.googleapis.com/v1/3dtiles/root.json?key=${apiKeyGoogle}`);
       this.tilesRenderer.setCamera(this.camera);
       this.tilesRenderer.setResolutionFromRenderer(this.camera, this.renderer);
 
-      // DRACO loader is required for loading Google 3D Tiles
+      // DRACO loader is required for loading Google 3D Tiles for decompression.
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
       dracoLoader.setDecoderConfig({ type: "js" });
@@ -131,7 +106,22 @@ export function create3DLayer(
         return url;
       };
 
+      // Add the tiles renderer group to the scene
       this.scene.add(this.tilesRenderer.group);
+
+      // Transform the model to the correct position
+      this.tilesRenderer.manager.onLoad = () => {
+        console.log("All models loaded");
+        const boundingSphere = new THREE.Sphere();
+        if (this.tilesRenderer.getBoundingSphere(boundingSphere)) {
+          // const centerECEF = boundingSphere.center;
+          // const centerGeographic = ecefToGeographic(centerECEF);
+          // const centerPoint = this.map.project([centerGeographic.longitude, centerGeographic.latitude]);
+          // this.tilesRenderer.group.position.set(centerPoint.x, centerPoint.y, -centerGeographic.altitude);
+
+          console.log(this.tilesRenderer.group.position);
+        }
+      };
 
       // Logs for debugging
       this.tilesRenderer.manager.onStart = (url, itemsLoaded, itemsTotal) => {
@@ -143,7 +133,6 @@ export function create3DLayer(
       this.tilesRenderer.manager.onError = (url) => {
         console.log(`Error loading ${url}`);
       }
-      this.tilesRenderer.manager.onLoad = () => console.log('All items loaded');
     },
 
     render: function (gl: WebGLRenderingContext, matrix: number[]) {
@@ -195,10 +184,35 @@ export function create3DLayer(
   return custom3DLayer;
 }
 
-/**
- * 
- * @param url 
- */
 function getSeparator(url: string) {
   return url.includes('?') ? '&' : '?';
+}
+
+function ecefToGeographic(position: THREE.Vector3): { latitude: number, longitude: number, altitude: number } {
+  const x = position.x;
+  const y = position.y;
+  const z = position.z;
+  const a = 6378137.0; // Earth's semi-major axis in meters
+  const e = 8.1819190842622e-2; // Eccentricity
+
+  const asq = Math.pow(a, 2);
+  const esq = Math.pow(e, 2);
+  const b = Math.sqrt(asq * (1 - esq));
+  const bsq = Math.pow(b, 2);
+  const ep = Math.sqrt((asq - bsq) / bsq);
+  const p = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  const th = Math.atan2(a * z, b * p);
+  const lon = Math.atan2(y, x);
+  const lat = Math.atan2(
+    z + Math.pow(ep, 2) * b * Math.pow(Math.sin(th), 3),
+    p - esq * a * Math.pow(Math.cos(th), 3)
+  );
+  const N = a / Math.sqrt(1 - esq * Math.pow(Math.sin(lat), 2));
+  const alt = p / Math.cos(lat) - N;
+
+  return {
+    latitude: THREE.MathUtils.radToDeg(lat),
+    longitude: THREE.MathUtils.radToDeg(lon),
+    altitude: alt,
+  };
 }
