@@ -4,13 +4,14 @@ import { useContext, useEffect, useRef } from 'react';
 import { MapContext } from '../../context/MapContext';
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { SIDEBAR_WIDTH } from './Sidebar';
+import { GOOGLE_3D_TILES_ID } from '../../constants/map3DConstants';
 
 // type Map3DTilesProps = {
   
 // }
 
 export default function Map3DTiles() {
-  const { map } = useContext(MapContext);
+  const { map, is3DMode } = useContext(MapContext);
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const cesiumViewerRef = useRef<Cesium.Viewer>();
 
@@ -49,9 +50,8 @@ export default function Map3DTiles() {
         }
       });
 
-
       try {
-        const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2275207);
+        const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(GOOGLE_3D_TILES_ID);
         viewer.scene.primitives.add(tileset);
       } catch (error) {
         console.error(error);
@@ -72,7 +72,11 @@ export default function Map3DTiles() {
     <div
       ref={cesiumContainerRef}
       className={styles.container}
-      style={{ left: SIDEBAR_WIDTH, width: `calc(100% - ${SIDEBAR_WIDTH}px)` }}
+      style={{
+        left: SIDEBAR_WIDTH,
+        width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+        display: is3DMode ? 'block' : 'none',
+      }}
     ></div>
   );
 }

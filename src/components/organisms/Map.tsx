@@ -1,22 +1,19 @@
 import styles from './Map.module.css';
-import * as THREE from 'three';
 import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
 import { useLocation } from 'react-router-dom';
 import { pathToSection } from '../../utils/utils';
 import { MapContext } from '../../context/MapContext';
-import { mapSections, OUTLINE_LAYER } from '../../constants/mapConstants';
+import { mapSections } from '../../constants/mapConstants';
 import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 import { SIDEBAR_WIDTH } from './Sidebar';
-import { create3DLayer } from '../../services/three';
-import { MODEL_URL } from '../../constants/map3DConstants';
 
 /**
  * Mapbox map component.
  */
 export default function Map() {
-  const { map, setMap, setParentLayer, setColor } = useContext(MapContext);
+  const { map, setMap, setParentLayer, setColor, is3DMode } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -55,18 +52,23 @@ export default function Map() {
       }
   }, [location.pathname, map, setColor, setParentLayer]);
 
+  /**
+   * Adding Google 3D tiles through mapbox custom three.js layer works.
+   * However, syncing coordinate system between mapbox and Google 3D tiles
+   * is not working. Therefore, this part is disabled. TO be fixed later.
+   */
 
-  useEffectAfterMount(() => {
-    if (!map) return;
+  // useEffectAfterMount(() => {
+  //   if (!map) return;
 
-    // Add three.js custom layer to the map.
-    const custom3DLayer = create3DLayer("3d-layer", 1, MODEL_URL);
-    map.addLayer(custom3DLayer, OUTLINE_LAYER);
+  //   // Add three.js custom layer to the map.
+  //   const custom3DLayer = create3DLayer("3d-layer", 1, MODEL_URL);
+  //   map.addLayer(custom3DLayer, OUTLINE_LAYER);
     
-    return () => {
-      map.removeLayer("3d-layer");
-    }
-  }, [map]);
+  //   return () => {
+  //     map.removeLayer("3d-layer");
+  //   }
+  // }, [map]);
 
   return (
     <div
@@ -76,7 +78,9 @@ export default function Map() {
       style={{
         left: SIDEBAR_WIDTH,
         width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+        display: is3DMode ? 'none' : 'block',
       }}
-    ></div>
+    >
+    </div>
   );
 }

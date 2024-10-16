@@ -8,6 +8,8 @@ type MapContextProps = {
   setParentLayer: React.Dispatch<React.SetStateAction<string>>;
   color: Color | undefined;
   setColor: React.Dispatch<React.SetStateAction<Color | undefined>>;
+  is3DMode: boolean;
+  setIs3DMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const MapContext = createContext<MapContextProps>({} as MapContextProps);
@@ -16,6 +18,7 @@ export function MapContextProvider({children}: {children: React.ReactNode}) {
   const [map, setMap] = useState<mapboxgl.Map>();
   const [parentLayer, setParentLayer] = useState<string>("");
   const [color, setColor] = useState<Color>();
+  const [is3DMode, setIs3DMode] = useState<boolean>(true);
 
   return (
     <MapContext.Provider
@@ -26,6 +29,8 @@ export function MapContextProvider({children}: {children: React.ReactNode}) {
         setParentLayer,
         color,
         setColor,
+        is3DMode,
+        setIs3DMode,
       }}
     >
       {children}

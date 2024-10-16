@@ -11,10 +11,8 @@ type ButtonProps = {
 };
 
 export default function Button({ text, color, location, handleClick }: ButtonProps) {
-  // Global states
   const { loadingMessage } = useContext(MessageContext);
-
-  //Local states
+  
   const [disabled, setDisabled] = useState<boolean>(
     () => loadingMessage.text || loadingMessage.json
   );

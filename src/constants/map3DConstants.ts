@@ -1,1 +1,1 @@
-export const MODEL_URL = 'https://docs.mapbox.com/mapbox-gl-js/assets/34M_17/34M_17.gltf';
+export const GOOGLE_3D_TILES_ID = 2275207;
