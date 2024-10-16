@@ -52,6 +52,12 @@ export default function Map() {
       }
   }, [location.pathname, map, setColor, setParentLayer]);
 
+  // Resize the map when is3DMode changes
+  useEffectAfterMount(() => {
+    if (!map) return;
+    map.resize();
+  }, [is3DMode, map]);
+
   /**
    * Adding Google 3D tiles through mapbox custom three.js layer works.
    * However, syncing coordinate system between mapbox and Google 3D tiles
