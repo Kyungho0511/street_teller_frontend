@@ -2,8 +2,10 @@ import { Link, useLocation } from 'react-router-dom'
 import Button from '../atoms/Button'
 import styles from './Footbar.module.css'
 import PromptBox from '../molecules/PromptBox';
+import MapToggleButton from '../atoms/MapToggleButton';
+import { SIDEBAR_WIDTH } from './Sidebar';
 
-export const FOOTBAR_HEIGHT = 84;
+export const FOOTBAR_HEIGHT = 100;
 
 export default function Footbar() {
   // router navigation logic
@@ -26,11 +28,18 @@ export default function Footbar() {
 }
 
   return (
-    <footer className={styles.footer} style={{height: FOOTBAR_HEIGHT}}>
+    <footer
+      className={styles.footer}
+      style={{
+        height: FOOTBAR_HEIGHT,
+        width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+      }}
+    >
+      <MapToggleButton />
       <PromptBox />
-      <Link to={nextPath}> 
+      <Link to={nextPath}>
         <Button text="continue" color="grey" location="footbar" />
       </Link>
     </footer>
-  )
+  );
 }

@@ -2,11 +2,12 @@
 
 .button {
   font-weight: var(--font-bold);
+  box-shadow: 0 2px 4px var(--color-box-shadow);
 }
 
 .footbar_button {
   font-size: 1.3rem;
-  margin-right: 0.7rem;
+  margin-right: 1rem;
   width: 240px;
   height: 60px;
 }

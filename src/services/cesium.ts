@@ -1,3 +1,3 @@
-export function createMap3DTiles() {
+export function createSatelliteViewer() {
 
 }

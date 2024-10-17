@@ -27,10 +27,12 @@ export default function useMapSelectEffect(
       ];
       return !isWhiteFillColor(fillColor);
     };
+
     const mouseLeaveHandler = () => {
       map.getCanvas().style.cursor = "grab";
       mapbox.hideLineWidth(OUTLINE_LAYER, map);
     };
+
     const mouseMoveHandler = (event: mapboxgl.MapMouseEvent) => {
       if (!isSelectedFeature(event)) {
         map.getCanvas().style.cursor = "grab";
@@ -41,6 +43,7 @@ export default function useMapSelectEffect(
       const feature = map.queryRenderedFeatures(event.point, {
         layers: [layer],
       })[0];
+
       mapbox.setLineWidth(
         OUTLINE_LAYER,
         GEOID,
@@ -50,14 +53,26 @@ export default function useMapSelectEffect(
       );
     };
 
+    const mouseDownHandler = () => {
+      map.getCanvas().style.cursor = "grabbing";
+    };
+
+    const mouseUpHandler = () => {
+      map.getCanvas().style.cursor = "grab";
+    };
+
     // Add event listeners.
     map.on("mouseleave", layer, mouseLeaveHandler);
     map.on("mousemove", layer, mouseMoveHandler);
+    map.on("mousedown", mouseDownHandler);
+    map.on("mouseup", mouseUpHandler);
 
     // Cleanup event listeners on component unmount.
     return () => {
       map.off("mouseleave", layer, mouseLeaveHandler);
       map.off("mousemove", layer, mouseMoveHandler);
+      map.off("mousedown", mouseDownHandler);
+      map.off("mouseup", mouseUpHandler);
     };
   }, [layer, map, enableSelectEffect]);
 }

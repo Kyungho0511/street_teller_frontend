@@ -11,7 +11,7 @@
 .container {
   position: relative;
   flex-grow: 1;
-  max-width: 800px;
+  max-width: 600px;
 }
 
 .input {
@@ -22,6 +22,7 @@
   border-radius: 2rem;
   background-color: var(--color-white);
   border: none;
+  box-shadow: 0 2px 4px var(--color-box-shadow);
 }
 
 .input:focus {

@@ -1,4 +1,4 @@
-import styles from './Map3DTiles.module.css';
+import styles from './SatelliteViewer.module.css';
 import * as Cesium from 'cesium';
 import { useContext, useEffect, useRef } from 'react';
 import { MapContext } from '../../context/MapContext';
@@ -10,8 +10,8 @@ import { GOOGLE_3D_TILES_ID } from '../../constants/map3DConstants';
   
 // }
 
-export default function Map3DTiles() {
-  const { map, is3DMode } = useContext(MapContext);
+export default function SatelliteViewer() {
+  const { map, satelliteMode } = useContext(MapContext);
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const cesiumViewerRef = useRef<Cesium.Viewer>();
 
@@ -75,7 +75,7 @@ export default function Map3DTiles() {
       style={{
         left: SIDEBAR_WIDTH,
         width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
-        display: is3DMode ? 'block' : 'none',
+        display: satelliteMode ? 'block' : 'none',
       }}
     ></div>
   );

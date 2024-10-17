@@ -1,4 +1,4 @@
-import styles from './Map.module.css';
+import styles from './MapViewer.module.css';
 import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
 import { useLocation } from 'react-router-dom';
@@ -12,8 +12,8 @@ import { SIDEBAR_WIDTH } from './Sidebar';
 /**
  * Mapbox map component.
  */
-export default function Map() {
-  const { map, setMap, setParentLayer, setColor, is3DMode } = useContext(MapContext);
+export default function MapViewer() {
+  const { map, setMap, setParentLayer, setColor, satelliteMode } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -52,18 +52,17 @@ export default function Map() {
       }
   }, [location.pathname, map, setColor, setParentLayer]);
 
-  // Resize the map when is3DMode changes
+  // Resize the map when its display mode changes.
   useEffectAfterMount(() => {
     if (!map) return;
     map.resize();
-  }, [is3DMode, map]);
+  }, [satelliteMode, map]);
 
   /**
    * Adding Google 3D tiles through mapbox custom three.js layer works.
    * However, syncing coordinate system between mapbox and Google 3D tiles
    * is not working. Therefore, this part is disabled. TO be fixed later.
    */
-
   // useEffectAfterMount(() => {
   //   if (!map) return;
 
@@ -84,7 +83,7 @@ export default function Map() {
       style={{
         left: SIDEBAR_WIDTH,
         width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
-        display: is3DMode ? 'none' : 'block',
+        display: satelliteMode ? 'none' : 'block',
       }}
     >
     </div>

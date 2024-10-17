@@ -1,13 +1,12 @@
 import { useContext, useState } from "react";
-import styles from "./Map3DButton.module.css";
+import styles from "./MapToggleButton.module.css";
 import { MessageContext } from "../../context/MessageContext";
 import { MapContext } from "../../context/MapContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import { SIDEBAR_WIDTH } from "../organisms/Sidebar";
 
-export default function Map3DButton() {
+export default function MapToggleButton() {
   const { loadingMessage } = useContext(MessageContext);
-  const { is3DMode, setIs3DMode } = useContext(MapContext);
+  const { satelliteMode, setSatelliteMode } = useContext(MapContext);
 
   const [disabled, setDisabled] = useState<boolean>(
     () => loadingMessage.text || loadingMessage.json
@@ -18,14 +17,16 @@ export default function Map3DButton() {
   }, [loadingMessage]);
 
   const handleClick = () => {
-    setIs3DMode(!is3DMode);
+    setSatelliteMode(!satelliteMode);
   };
 
   return (
-    <div className={styles.container} style={{ left: SIDEBAR_WIDTH }}>
-      <button disabled={disabled} className={styles.button} onClick={handleClick}>
-        {is3DMode ? "2D" : "3D"}
-      </button>
-    </div>
+    <button
+      disabled={disabled}
+      className={styles.button}
+      onClick={handleClick}
+    >
+      <p className={styles.text}>{satelliteMode ? "Map" : "Satellite"}</p>
+    </button>
   );
 }

@@ -4,12 +4,16 @@
   margin-top: 2rem;
 }
 
+.container:active {
+  cursor: grabbing;
+}
+
 .item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  cursor: pointer;
+  cursor: grab;
   color: var(--color-grey);
   user-select: none;
 
@@ -17,6 +21,10 @@
     opacity: 0.85;
     font-weight: var(--font-regular);
   }
+}
+
+.item:active {
+  cursor: grabbing;
 }
 
 .item:hover,

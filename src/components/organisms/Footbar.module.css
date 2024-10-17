@@ -2,11 +2,9 @@
 
 .footer {
   display: flex;
-  justify-content: right;
   align-items: center;
+  justify-content: space-between;
   position: fixed;
   bottom: 0;
   right: 0;
-  width: calc(100vw - 380px);
-  padding: 0.7rem 0;
 }

@@ -17,7 +17,7 @@
   --color-yellow-transparent: #f9a200cc;
   --color-red: #e52817;
   --color-red-transparent: #e52817cc;
-  --color-box-shadow: rgba(0, 0, 0, 0.1);
+  --color-box-shadow: rgba(0, 0, 0, 0.12);
 
   /* Font weight */
   --font-thin: 100;
@@ -28,6 +28,7 @@
   --font-bolder: 900;
 
   /* Font size */
+  --font-xsmall: 0.73rem;
   --font-small: 0.9rem;
   --font-regular: 1rem;
   --font-large: 1.1rem;
