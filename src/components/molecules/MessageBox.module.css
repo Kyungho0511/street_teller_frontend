@@ -10,7 +10,7 @@
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
   border-bottom: 1px solid var(--color-light-grey);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 4px var(--color-box-shadow);
 }
 
 .navigate {
@@ -39,7 +39,7 @@
   background-color: var(--color-light-white);
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 4px var(--color-box-shadow);
   overflow: scroll;
   overflow-x: hidden;
 
@@ -64,4 +64,23 @@
   & p {
     display: inline;
   }
+}
+
+/* scrollbar on sidebar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  /* background: var(--color-light-white); */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-light-grey);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(200, 200, 200);
+  border-radius: 10px;
 }

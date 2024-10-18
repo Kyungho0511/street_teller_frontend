@@ -11,7 +11,7 @@
   margin: 0.5rem;
   background-color: var(--color-white);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--color-box-shadow);
+  box-shadow: 2px 2px 4px var(--color-box-shadow);
 }
 
 .header {

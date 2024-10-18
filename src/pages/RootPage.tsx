@@ -7,10 +7,12 @@ import MessageBox from "../components/molecules/MessageBox";
 import Sidebar from "../components/organisms/Sidebar";
 import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
+import { ThemeContextProvider } from "../context/ThemeContext";
 
 export default function RootPage() {
   return (
     <>
+      <ThemeContextProvider>
       <MapContextProvider>
         <MapViewer />
         <SatelliteViewer />
@@ -24,6 +26,7 @@ export default function RootPage() {
           <Footbar />
         </MessageContextProvider>
       </MapContextProvider>
+      </ThemeContextProvider>
     </>
   )
 }

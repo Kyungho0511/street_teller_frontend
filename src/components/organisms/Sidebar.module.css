@@ -5,27 +5,8 @@
   top: 0;
   left: 0;
   height: 100%;
-  background-color: var(--color-white);
+  background-color: var(--color-transparent);
   padding: 0.5rem;
-  overflow: scroll;
-  overflow-x: hidden;
-}
-
-/* scrollbar on sidebar */
-::-webkit-scrollbar {
-  width: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-light-white);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-light-grey);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgb(200, 200, 200);
-  border-radius: 10px;
+  /* overflow: scroll; */
+  /* overflow-x: hidden; */
 }

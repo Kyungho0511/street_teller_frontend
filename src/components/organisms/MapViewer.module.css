@@ -3,8 +3,8 @@
 .map {
   position: fixed;
   top: 0;
-  /* left: 380px; */
+  left: 0;
   height: 100vh;
-  /* width: calc(100% - 380px); */
+  width: 100vw;
   z-index: -5;
 }

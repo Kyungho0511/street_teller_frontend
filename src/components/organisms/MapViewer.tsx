@@ -7,7 +7,6 @@ import { MapContext } from '../../context/MapContext';
 import { mapSections } from '../../constants/mapConstants';
 import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
-import { SIDEBAR_WIDTH } from './Sidebar';
 
 /**
  * Mapbox map component.
@@ -81,8 +80,8 @@ export default function MapViewer() {
       ref={mapContainerRef}
       className={styles.map}
       style={{
-        left: SIDEBAR_WIDTH,
-        width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+        // left: SIDEBAR_WIDTH,
+        // width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
         display: satelliteMode ? 'none' : 'block',
       }}
     >

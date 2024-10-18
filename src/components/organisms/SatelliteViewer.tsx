@@ -4,9 +4,9 @@ import { useContext, useEffect, useRef } from 'react';
 import { MapContext } from '../../context/MapContext';
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { SIDEBAR_WIDTH } from './Sidebar';
-import { GOOGLE_3D_TILES_ID } from '../../constants/map3DConstants';
+import { GOOGLE_3D_TILES_ID } from '../../constants/3DTilesConstants';
 
-// type Map3DTilesProps = {
+// type SatelliteViewerProps = {
   
 // }
 
@@ -73,8 +73,8 @@ export default function SatelliteViewer() {
       ref={cesiumContainerRef}
       className={styles.container}
       style={{
-        left: SIDEBAR_WIDTH,
-        width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+        // left: SIDEBAR_WIDTH,
+        // width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
         display: satelliteMode ? 'block' : 'none',
       }}
     ></div>

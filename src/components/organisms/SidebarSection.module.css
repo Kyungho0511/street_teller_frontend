@@ -5,10 +5,11 @@
   line-height: var(--line-height-small);
   padding: 1rem;
   margin: 0.7rem 0;
-  background-color: var(--color-light-white);
+  background-color: rgba(150, 150, 150, 0.1); /* Semi-transparent white */
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--color-box-shadow);
-
+  box-shadow: 2px 2px 4px var(--color-box-shadow); /* Lighter shadow for subtle effect */
+  backdrop-filter: blur(10px); /* Adds a blur effect to the background */
+  color: black;
   > p {
     margin: 0.5rem 0;
     line-height: var(--line-height-small);

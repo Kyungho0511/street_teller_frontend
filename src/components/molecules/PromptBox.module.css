@@ -22,7 +22,7 @@
   border-radius: 2rem;
   background-color: var(--color-white);
   border: none;
-  box-shadow: 0 2px 4px var(--color-box-shadow);
+  box-shadow: 2px 2px 4px var(--color-box-shadow);
 }
 
 .input:focus {
