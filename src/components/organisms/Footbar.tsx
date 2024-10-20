@@ -38,7 +38,7 @@ export default function Footbar() {
       <MapToggleButton />
       <PromptBox />
       <Link to={nextPath}>
-        <Button text="continue" color="grey" location="footbar" />
+        <Button text="continue" location="footbar" />
       </Link>
     </footer>
   );

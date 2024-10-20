@@ -2,16 +2,17 @@ import { useContext, useState } from "react";
 import styles from "./Button.module.css";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import { MapContext } from "../../context/MapContext";
 
 type ButtonProps = {
   text: string;
-  color: "grey" | "blue";
   location: "sidebar" | "footbar";
   handleClick?: () => void;
 };
 
-export default function Button({ text, color, location, handleClick }: ButtonProps) {
+export default function Button({ text, location, handleClick }: ButtonProps) {
   const { loadingMessage } = useContext(MessageContext);
+  const { mapMode } = useContext(MapContext);
   
   const [disabled, setDisabled] = useState<boolean>(
     () => loadingMessage.text || loadingMessage.json
@@ -26,7 +27,7 @@ export default function Button({ text, color, location, handleClick }: ButtonPro
       disabled={disabled}
       className={`${styles.button} ${
         location === "sidebar" ? styles.sidebar_button : styles.footbar_button
-      } ${color === "grey" && styles.grey} ${color === "blue" && styles.blue}`}
+      } ${mapMode === "map" && styles.grey} ${mapMode === "satellite" && styles.blue}`}
       onClick={handleClick}
     >
       {text}

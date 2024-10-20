@@ -170,7 +170,6 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
 
       <Button
         text={"retry analysis"}
-        color={"grey"}
         location={"sidebar"}
         handleClick={startTypingAnimation}
       />
