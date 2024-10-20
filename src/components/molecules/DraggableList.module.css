@@ -16,7 +16,7 @@
   margin-bottom: 10px;
   cursor: grab;
   user-select: none;
-  border: 0.5px solid var(--color-grey2);
+  border: 1px solid var(--color-grey2);
   border-radius: 1rem;
   margin: 1rem 0;
   padding: 1rem;
@@ -33,7 +33,7 @@
 
 .item:hover,
 .item.selected {
-  border: 0.5px solid var(--color-grey);
+  border: 1px solid var(--color-grey);
 
   & .text {
     opacity: 1;

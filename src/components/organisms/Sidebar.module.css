@@ -2,9 +2,14 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 100%;
+  height: 100vh;
+
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+
   padding-bottom: 2rem;
   background-color: var(--theme-background);
+  backdrop-filter: blur(var(--blur-intensity));
   box-shadow: 2px 0 10px var(--theme-box-shadow);
   overflow-y: auto;
   overflow-x: hidden;
@@ -12,23 +17,26 @@
 
 /* scrollbar on sidebar */
 .sidebar::-webkit-scrollbar {
-  width: 7px;
+  width: 8px;
 }
 
+/* .sidebar:hover::-webkit-scrollbar {
+  width: 8px;
+} */
+
 .sidebar::-webkit-scrollbar-track {
-  /* background: var(--color-light-white); */
+  height: calc(100% - 100rem); /* Shortening the scrollbar height */
+  padding: 5rem 0; /* Adding margin to top and bottom */
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: var(--color-light-grey);
+  background: var(--color-grey2);
   border-radius: 10px;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  height: 100px;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgb(200, 200, 200);
-  border-radius: 10px;
-}
-
-/* Ensure scrollbar is within sidebar */
-.sidebar {
+  background: var(--color-grey);
 }

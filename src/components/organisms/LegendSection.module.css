@@ -10,7 +10,7 @@
   min-width: 250px;
   font-size: 0.9rem;
   padding: 1rem;
-  margin: 1rem;
+  margin: 0.5rem;
   background-color: var(--theme-background);
   backdrop-filter: blur(var(--blur-intensity));
   border-radius: 1rem;

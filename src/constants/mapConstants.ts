@@ -3,7 +3,7 @@ import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 
 export const configs = {
-  style: "mapbox://styles/klee0511/cm1wosqq100o001pgdz5601uv",
+  style: "mapbox://styles/klee0511/cm2hy9ofn00an01pb8q8q8fw8",
   location: {
     center: [-73.860766, 40.713326],
     zoom: 11,
