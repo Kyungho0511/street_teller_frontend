@@ -59,8 +59,7 @@ export default function PopupSection({ enableSelectEffect, children }: PopupSect
     }
 
     const updatePopupPosition = (event: mapboxgl.MapMouseEvent) => {
-      const mapWidth = window.innerWidth - SIDEBAR_WIDTH;
-      const mapOrigin = { x: SIDEBAR_WIDTH, y: 0 };
+      const mapWidth = window.innerWidth;
       const translate = {x: 0, y: 0};
   
       // Skip features with white fill color (non-selected features).
@@ -83,7 +82,7 @@ export default function PopupSection({ enableSelectEffect, children }: PopupSect
       } else {
         translate.y = event.point.y - POPUP.offset;
       } 
-      setPosition({ x: translate.x + mapOrigin.x, y: translate.y + mapOrigin.y });
+      setPosition({ x: translate.x, y: translate.y });
     }
 
     map.on("mousemove", parentLayer, updatePopupPosition);
