@@ -1,4 +1,6 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .container {
   position: fixed;
@@ -9,9 +11,10 @@
   font-size: 0.9rem;
   padding: 1rem;
   margin: 0.5rem;
-  background-color: var(--color-white);
+  background-color: var(--theme-background);
+  backdrop-filter: blur(var(--blur-intensity));
   border-radius: 0.5rem;
-  box-shadow: 2px 2px 4px var(--color-box-shadow);
+  box-shadow: 1px 2px 4px var(--theme-box-shadow);
 }
 
 .header {
@@ -35,10 +38,10 @@
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: var(--color-light-grey);
+  background-color: var(--theme-button-inactive);
   color: var(--color-white);
 
   &.current {
-    background-color: var(--color-dark-grey);
+    background-color: var(--theme-button-hover);
   }
 }

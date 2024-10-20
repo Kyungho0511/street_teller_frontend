@@ -1,4 +1,6 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .button {
   display: flex;
@@ -13,7 +15,7 @@
   border: 2px solid var(--color-white);
   font-size: var(--font-xsmall);
   background-color: var(--color-grey);
-  box-shadow: 2px 2px 4px var(--color-box-shadow);
+  box-shadow: 1px 2px 4px var(--theme-box-shadow);
 }
 
 .button:hover {

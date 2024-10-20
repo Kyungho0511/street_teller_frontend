@@ -1,4 +1,6 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .form {
   display: flex;
@@ -20,9 +22,10 @@
   width: 100%;
   padding: 0 2rem;
   border-radius: 2rem;
-  background-color: var(--color-white);
+  background-color: var(--theme-background);
+  backdrop-filter: blur(var(--blur-intensity));
   border: none;
-  box-shadow: 2px 2px 4px var(--color-box-shadow);
+  box-shadow: 1px 2px 4px var(--theme-box-shadow);
 }
 
 .input:focus {
@@ -30,7 +33,7 @@
 }
 
 .input::placeholder {
-  color: var(--color-grey);
+
 }
 
 .button {
@@ -38,25 +41,25 @@
   top: 50%;
   right: 0.8rem;
   transform: translateY(-50%);
-  background-color: var(--color-light-grey);  
+  background-color: var(--theme-button-inactive);  
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
   border: none;
 
   &:disabled {
-    color: var(--color-grey);
-    background-color: var(--color-light-grey);
+    color: var(--theme-button-active);
+    background-color: var(--theme-button-inactive);
     cursor: default;
   }
 }
 
 .button.active:not(:disabled) {
-  background-color: var(--color-grey);
+  background-color: var(--theme-button-active);
   cursor: pointer;
 
   &:hover {
-    background-color: var(--color-dark-grey);
+    background-color: var(--theme-button-hover);
   }
 }
 

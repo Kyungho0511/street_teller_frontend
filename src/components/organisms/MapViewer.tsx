@@ -9,10 +9,10 @@ import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 
 /**
- * Mapbox map component.
+ * Mapbox map viewer component.
  */
 export default function MapViewer() {
-  const { map, setMap, setParentLayer, setColor, satelliteMode } = useContext(MapContext);
+  const { map, setMap, setParentLayer, setColor, mapMode } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -55,7 +55,7 @@ export default function MapViewer() {
   useEffectAfterMount(() => {
     if (!map) return;
     map.resize();
-  }, [satelliteMode, map]);
+  }, [mapMode, map]);
 
   /**
    * Adding Google 3D tiles through mapbox custom three.js layer works.
@@ -80,9 +80,7 @@ export default function MapViewer() {
       ref={mapContainerRef}
       className={styles.map}
       style={{
-        // left: SIDEBAR_WIDTH,
-        // width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
-        display: satelliteMode ? 'none' : 'block',
+        display: mapMode == "map" ? 'block' : 'none',
       }}
     >
     </div>

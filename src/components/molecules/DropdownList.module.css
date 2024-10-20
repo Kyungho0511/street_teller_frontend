@@ -1,7 +1,9 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .container {
-  padding: 0.3rem
+  padding: 0.3rem;
 }
 
 .list_button {
@@ -15,7 +17,7 @@
   font-weight: var(--font-medium);
   border: none;
   cursor: pointer;
-  background-color: var(--color-white);
+  background-color: transparent;
 
   & p {
     font-weight: var(--font-regular);

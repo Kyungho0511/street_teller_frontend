@@ -144,7 +144,7 @@ export default function ClusterPage() {
           lists={clusterList.list}
           displayChart
           displayColorbox
-          expandFirstList={!loadingMessage.json}
+          // expandFirstList={!loadingMessage.json}
           autoCollapse
         />
       </LegendSection>

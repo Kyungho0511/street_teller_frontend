@@ -1,8 +1,10 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .button {
   font-weight: var(--font-bold);
-  box-shadow: 2px 2px 4px var(--color-box-shadow);
+  box-shadow: 1px 2px 4px var(--theme-box-shadow);
 }
 
 .footbar_button {
@@ -22,19 +24,19 @@
   color: var(--color-white);
   padding: 1rem 2rem;
   border: none;
-  background-color: var(--color-grey);
+  background-color: var(--theme-button-active);
   border-radius: 0.5rem;
   text-transform: uppercase;
 
   &:hover:not(:disabled) {
     cursor: pointer;
     color: var(--color-white);
-    background-color: var(--color-dark-grey);
+    background-color: var(--theme-button-hover);
   }
 
   &:disabled {
     color: var(--color-white);
-    background-color: var(--color-light-grey);
+    background-color: var(--theme-button-inactive);
     cursor: default;
   }
 }
@@ -45,7 +47,7 @@
   font-weight: var(--font-bold);
   padding: 1rem 2rem;
   border: none;
-  background-color: var(--color-blue-transparent);
+  background-color: var(--color-light-blue);
   border-radius: 0.5rem;
   text-transform: uppercase;
 

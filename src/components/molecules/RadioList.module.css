@@ -1,4 +1,6 @@
-@import '../variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .form {
   display: flex;
