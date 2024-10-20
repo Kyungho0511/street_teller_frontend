@@ -3,7 +3,6 @@
 @import '../../styles/theme.css';
 
 .container {
-  margin-top: 2rem;
 }
 
 .container:active {
@@ -17,6 +16,10 @@
   margin-bottom: 10px;
   cursor: grab;
   user-select: none;
+  border: 0.5px solid var(--color-grey2);
+  border-radius: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
 
   & .text {
     opacity: 0.85;
@@ -30,6 +33,8 @@
 
 .item:hover,
 .item.selected {
+  border: 0.5px solid var(--color-grey);
+
   & .text {
     opacity: 1;
     text-shadow: 0px 0px 1px black;

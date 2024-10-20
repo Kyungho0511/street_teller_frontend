@@ -13,6 +13,9 @@ import PopupSection from "../components/organisms/PopupSection";
 import PopupTextHome from "../components/atoms/PopupTextHome";
 import { PopupContextProvider } from "../context/PopupContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
+import Sidebar from "../components/organisms/Sidebar";
+import MessageBox from "../components/molecules/MessageBox";
+import Spacer from "../components/atoms/Spacer";
 // import CheckboxList from "../components/CheckboxList";
 
 /**
@@ -45,16 +48,18 @@ export default function HomePage() {
       {/* <SidebarSection title="choose boroughs to discover">
           <CheckboxList name="boroughs" list={survey.boroughList} setSurveyContext={setSurveyContext} />
         </SidebarSection> */}
-
-      <SidebarSection title="rank site conditions in priority to expand healthcare in shortage areas">
-        <DraggableList
-          list={survey.preferenceList.list}
-          setSurveyContext={setSurveyContext}
-          displayIcon={false}
-          displayRanking
-          selectable
-        />
-      </SidebarSection>
+      <Sidebar>
+        <MessageBox />
+        <SidebarSection>
+          <DraggableList
+            list={survey.preferenceList.list}
+            setSurveyContext={setSurveyContext}
+            displayIcon={false}
+            displayRanking
+            selectable
+          />
+        </SidebarSection>
+      </Sidebar>
 
       <LegendSection title={preference.category as string}>
         <SelectableList

@@ -51,18 +51,25 @@ export default function MessageBox() {
 
   return (
     <div className={styles.container}>
-
       <div className={styles.header}>
         <Logo width="160px" color="black" />
         <div className={styles.navigate}>
-          <FontAwesomeIcon icon={faChevronLeft} className={styles.icon} onClick={handleClick}/>
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            className={styles.icon}
+            onClick={handleClick}
+          />
           <span>
             {textIndex + 1}/{texts.length}
           </span>
-          <FontAwesomeIcon icon={faChevronRight} className={styles.icon} onClick={handleClick}/>
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            className={styles.icon}
+            onClick={handleClick}
+          />
         </div>
       </div>
-
+      
       <div className={styles.body}>
         {texts.length > 0 && texts[textIndex].user && (
           <div className={styles.message}>
@@ -74,11 +81,12 @@ export default function MessageBox() {
           <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
           {/* AiResponse displays streaming response with typing animation, 
            whereas MarkdownRenderer shows fully fetched AI response */}
-          {texts.length > 0 && texts[textIndex].ai && <MarkdownRenderer content={texts[textIndex].ai} />}
+          {texts.length > 0 && texts[textIndex].ai && (
+            <MarkdownRenderer content={texts[textIndex].ai} />
+          )}
           <AiReponse />
         </div>
       </div>
-
     </div>
   );
 }

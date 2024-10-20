@@ -20,6 +20,8 @@ import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupTextCluster from "../components/atoms/PopupTextCluster";
 import { PopupContextProvider } from "../context/PopupContext";
+import Sidebar from "../components/organisms/Sidebar";
+import MessageBox from "../components/molecules/MessageBox";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -28,7 +30,7 @@ export default function ClusterPage() {
 
   // Global states
   const { survey } = useContext(SurveyContext);
-  const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
+  const { addMessage, updatePrompt } = useContext(MessageContext);
   const { map } = useContext(MapContext);
 
   // Local states
@@ -126,14 +128,17 @@ export default function ClusterPage() {
 
   return (
     <>
-      <SidebarSection title={"select target clusters"}>
-        <CheckboxListAI
-          name={clusterName}
-          list={clusterList.list}
-          index={clusterIndex}
-          kMeansLayers={kMeansLayers}
-        />
-      </SidebarSection>
+      <Sidebar>
+        <MessageBox />
+        <SidebarSection>
+          <CheckboxListAI
+            name={clusterName}
+            list={clusterList.list}
+            index={clusterIndex}
+            kMeansLayers={kMeansLayers}
+          />
+        </SidebarSection>
+      </Sidebar>
 
       <LegendSection
         title={`Clustering Step`}

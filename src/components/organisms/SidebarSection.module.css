@@ -5,12 +5,8 @@
 .section {
   font-size: 0.9rem;
   line-height: var(--line-height-small);
-  padding: 1rem;
-  margin: 0.7rem 0;
-  background-color: var(--theme-background);
-  backdrop-filter: blur(var(--blur-intensity));
+  padding: 0 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 1px 2px 4px var(--theme-box-shadow);
 
   > p {
     margin: 0.5rem 0;

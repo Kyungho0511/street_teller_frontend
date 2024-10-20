@@ -3,5 +3,32 @@
   top: 0;
   left: 0;
   height: 100%;
-  padding: 0.5rem;
+  padding-bottom: 2rem;
+  background-color: var(--theme-background);
+  box-shadow: 2px 0 10px var(--theme-box-shadow);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* scrollbar on sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  /* background: var(--color-light-white); */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-light-grey);
+  border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgb(200, 200, 200);
+  border-radius: 10px;
+}
+
+/* Ensure scrollbar is within sidebar */
+.sidebar {
 }

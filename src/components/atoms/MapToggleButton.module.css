@@ -9,7 +9,7 @@
   justify-content: end;
   min-width: 80px;
   min-height: 80px;
-  margin: 0.5rem;
+  margin-left: 1rem;
   cursor: pointer;
   border-radius: 0.6rem;
   border: 2px solid var(--color-white);
