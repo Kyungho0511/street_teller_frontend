@@ -1,4 +1,3 @@
-import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";
 import React from "react";
 
@@ -30,11 +29,11 @@ export default function LegendSection({ children, title, steps, currentStep }: L
             ))}
         </div>
       </div>
-      <div
-        className={styles.body}
-        style={{ maxHeight: `calc(100vh - ${FOOTBAR_HEIGHT}px - 5rem)` }}
-      >
-        {children}
+      <div className={styles.body}>
+        {/* scroller implements a rounded scrollbar */}
+        <div className={styles.scroller}>
+          {children}
+        </div>
       </div>
     </div>
   );

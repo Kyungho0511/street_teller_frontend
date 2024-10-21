@@ -5,6 +5,7 @@ import styles from './Sidebar.module.css';
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useState } from 'react';
 import { Message, MessageContext } from '../../context/MessageContext';
+import Spacer from '../atoms/Spacer';
 
 export const SIDEBAR_WIDTH = 380;
 
@@ -69,8 +70,11 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
         </div>
       </div>
       <div className={styles.body}>
-        <MessageBox texts={texts} textIndex={textIndex} />
-        {children}
+        {/* scroller implements a rounded scrollbar */}
+        <div className={styles.scroller}>
+          <MessageBox texts={texts} textIndex={textIndex} />
+          {children}
+        </div>
       </div>
     </aside>
   );

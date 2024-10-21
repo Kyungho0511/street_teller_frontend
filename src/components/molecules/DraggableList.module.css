@@ -16,7 +16,7 @@
   margin-bottom: 10px;
   cursor: grab;
   user-select: none;
-  border: 1px solid var(--theme-button-inactive);
+  border: 1px solid var(--theme-light-grey);
   border-radius: 1rem;
   margin: 1rem 0;
   padding: 1rem;
@@ -33,14 +33,14 @@
 
 .item:hover,
 .item.selected {
-  border: 1px solid var(--theme-button-active);
+  border: 1px solid var(--theme-grey);
 
   & .text {
     opacity: 1;
     text-shadow: 0px 0px 0.8px var(--theme-text);
   }
   & .ranking_icon {
-    background-color: var(--theme-button-hover);
+    background-color: var(--theme-dark-grey);
   }
   & .grip {
     opacity: 1;
@@ -65,7 +65,7 @@
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: var(--theme-button-active);
+  background-color: var(---theme-grey);
   color: var(--color-white);
 }
 
