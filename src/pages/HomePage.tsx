@@ -48,7 +48,6 @@ export default function HomePage() {
           <CheckboxList name="boroughs" list={survey.boroughList} setSurveyContext={setSurveyContext} />
         </SidebarSection> */}
       <Sidebar>
-        <MessageBox />
         <SidebarSection>
           <DraggableList
             list={survey.preferenceList.list}

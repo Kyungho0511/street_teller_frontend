@@ -3,35 +3,6 @@
 @import '../../styles/theme.css';
 
 .container {
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
-  padding: 0.8rem;
-  border-bottom: 1px solid var(--color-grey2);
-  background-color: var(--color-light-blue);
-}
-
-.navigate {
-  font-size: 0.9rem;
-  color: var(--color-white);
-  margin: 0 1rem;
-
-  & span {
-    margin: 0 0.5rem;
-    user-select: none;
-  }
-
-  /* fontawesome icons */
-  & .icon { 
-    cursor: pointer;
-  }
-}
-
-.body {
   font-size: 0.9rem;
   line-height: var(--line-height-small);
   padding: 1rem;

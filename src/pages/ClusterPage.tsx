@@ -21,7 +21,6 @@ import PopupSection from "../components/organisms/PopupSection";
 import PopupTextCluster from "../components/atoms/PopupTextCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
-import MessageBox from "../components/molecules/MessageBox";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -129,7 +128,6 @@ export default function ClusterPage() {
   return (
     <>
       <Sidebar>
-        <MessageBox />
         <SidebarSection>
           <CheckboxListAI
             name={clusterName}
