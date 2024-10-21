@@ -40,17 +40,17 @@ export type FillColor = {
 
 export const color: { [key in string]: Color } = {
   blue: {
-    categorized: ["#cdecd0", "#7ed7dd", "#2b9ded", "#0f4bee"],
+    categorized: ["#b3e8eb", "#63c1e7", "#209cea", "#5079ec"],
     min: "#f7faff",
     max: "#006efe",
   },
   yellow: {
-    categorized: ["#d7e317", "#f7e900", "#f9b91b", "#eb6200"],
+    categorized: ["#f7e900", "#ffc800", "#f4894b", "#e26666"],
     min: "#fffaec",
     max: "#f9a200",
   },
   green: {
-    categorized: ["#e3d1ad", "#cedd7e", "#66cd5a", "#2aa9b5"],
+    categorized: ["#d8e373", "#b2e278", "#66cd5a", "#5db6be"],
     min: "#e3d1ad",
     max: "#2aa9b5",
   },

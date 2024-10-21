@@ -20,13 +20,7 @@
   width: 8px;
 }
 
-/* .sidebar:hover::-webkit-scrollbar {
-  width: 8px;
-} */
-
 .sidebar::-webkit-scrollbar-track {
-  height: calc(100% - 100rem); /* Shortening the scrollbar height */
-  padding: 5rem 0; /* Adding margin to top and bottom */
 }
 
 .sidebar::-webkit-scrollbar-thumb {
