@@ -1,9 +1,15 @@
 import { useContext } from "react";
 import styles from "./MapToggleButton.module.css";
-import { MapContext } from "../../context/MapContext";
+import { ViewerContext } from "../../context/ViewerContext";
+import SatelliteViewer from "../organisms/SatelliteViewer";
+import MapViewer from "../organisms/MapViewer";
 
+/**
+ * Map toggle button component to switch between 
+ * a {@link SatelliteViewer} and a {@link MapViewer}.
+ */
 export default function MapToggleButton() {
-  const { mapMode, toggleMapMode } = useContext(MapContext);
+  const { mapMode, toggleMapMode } = useContext(ViewerContext);
 
   const handleClick = () => {
     toggleMapMode();

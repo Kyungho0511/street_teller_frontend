@@ -4,12 +4,15 @@ import MapViewer from "../components/organisms/MapViewer";
 import SatelliteViewer from "../components/organisms/SatelliteViewer";
 import { SurveyContextProvider } from "../context/SurveyContext";
 import { MessageContextProvider } from "../context/MessageContext";
-import { MapContextProvider } from "../context/MapContext";
+import { ViewerContextProvider } from "../context/ViewerContext";
 
+/**
+ * Root component that manages other pages and provides the context.
+ */
 export default function RootPage() {
   return (
     <>
-      <MapContextProvider>
+      <ViewerContextProvider>
         <MapViewer />
         <SatelliteViewer />
         <MessageContextProvider>
@@ -18,7 +21,7 @@ export default function RootPage() {
             </SurveyContextProvider>
           <Footbar />
         </MessageContextProvider>
-      </MapContextProvider>
+      </ViewerContextProvider>
     </>
   )
 }

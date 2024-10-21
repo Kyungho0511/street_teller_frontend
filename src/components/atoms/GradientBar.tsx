@@ -7,6 +7,9 @@ type GradientBarProps = {
   unit: UnitType;
 }
 
+/**
+ * Component to display the gradient scale of the current analysis.
+ */
 export default function GradientBar({ bound, unit }: GradientBarProps) {
   const scaleMin: string = utils.formatUnit(bound.min, unit);
   const scaleMax: string = utils.formatUnit(bound.max, unit);

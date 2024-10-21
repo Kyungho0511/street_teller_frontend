@@ -8,7 +8,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { MapContext } from "../context/MapContext";
+import { ViewerContext } from "../context/ViewerContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
 import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
@@ -31,7 +31,7 @@ export default function ClusterPage() {
   // Global states
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
-  const { map } = useContext(MapContext);
+  const { map } = useContext(ViewerContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;

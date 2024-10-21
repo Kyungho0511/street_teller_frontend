@@ -17,7 +17,7 @@ type CheckboxListAIProps = {
 };
 
 /**
- * Checkbox list component for clusters and broughs selections.
+ * Checkbox list component to display the AI response.
  */
 export default function CheckboxListAI({ name, list, index, kMeansLayers }: CheckboxListAIProps) {
 

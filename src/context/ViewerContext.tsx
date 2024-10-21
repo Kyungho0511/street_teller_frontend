@@ -3,7 +3,7 @@ import { Color } from "../constants/mapConstants";
 
 export type MapMode = "satellite" | "map";
 
-type MapContextProps = {
+type ViewerContextProps = {
   map: mapboxgl.Map | undefined;
   setMap: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
   parentLayer: string;
@@ -14,9 +14,12 @@ type MapContextProps = {
   toggleMapMode: () => void;
 }
 
-export const MapContext = createContext<MapContextProps>({} as MapContextProps);
+export const ViewerContext = createContext<ViewerContextProps>({} as ViewerContextProps);
 
-export function MapContextProvider({children}: {children: React.ReactNode}) {
+/**
+ * Context provider for the viewers (Cesium satellite / Mapbox map).
+ */
+export function ViewerContextProvider({children}: {children: React.ReactNode}) {
   const [map, setMap] = useState<mapboxgl.Map>();
   const [parentLayer, setParentLayer] = useState<string>("");
   const [color, setColor] = useState<Color>();
@@ -36,7 +39,7 @@ export function MapContextProvider({children}: {children: React.ReactNode}) {
   }
 
   return (
-    <MapContext.Provider
+    <ViewerContext.Provider
       value={{
         map,
         setMap,
@@ -49,6 +52,6 @@ export function MapContextProvider({children}: {children: React.ReactNode}) {
       }}
     >
       {children}
-    </MapContext.Provider>
+    </ViewerContext.Provider>
   );
 }

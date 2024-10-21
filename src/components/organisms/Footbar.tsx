@@ -7,6 +7,9 @@ import { SIDEBAR_WIDTH } from './Sidebar';
 
 export const FOOTBAR_HEIGHT = 100;
 
+/**
+ * Footbar component.
+ */
 export default function Footbar() {
   // router navigation logic
   const location = useLocation();

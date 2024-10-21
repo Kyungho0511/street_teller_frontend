@@ -10,6 +10,9 @@ type PopupContextProps = {
 
 export const PopupContext = createContext<PopupContextProps>({} as PopupContextProps);
 
+/**
+ * Context provider for the popup.
+ */
 export function PopupContextProvider({children}: {children: React.ReactNode}) {
   const [properties, setProperties] = useState<HealthcareProperties | undefined>();
 

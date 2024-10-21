@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styles from './PopupSection.module.css';
-import { MapContext } from '../../context/MapContext';
+import { ViewerContext } from '../../context/ViewerContext';
 import { SIDEBAR_WIDTH } from './Sidebar';
 import { FOOTBAR_HEIGHT } from './Footbar';
 import { FillColor, POPUP } from '../../constants/mapConstants';
@@ -19,10 +19,10 @@ type PopupSectionProps = {
 }
 
 /**
- * Popup container component for the map.
+ * Container component for the map popup.
  */
 export default function PopupSection({ enableSelectEffect, children }: PopupSectionProps) {
-  const { map, parentLayer } = useContext(MapContext);
+  const { map, parentLayer } = useContext(ViewerContext);
   const { setProperties } = useContext(PopupContext);
 
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });

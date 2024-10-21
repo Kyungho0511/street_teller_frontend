@@ -4,7 +4,6 @@ import styles from './DraggableList.module.css';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { Reorder } from 'framer-motion';
 import { useRef } from 'react';
-import Spacer from '../atoms/Spacer';
 
 type DraggableListProps = {
   list: Preference[];
@@ -14,6 +13,9 @@ type DraggableListProps = {
   displayRanking?: boolean;
 };
 
+/**
+ * Draggable list component.
+ */
 export default function DraggableList({
   list, 
   setSurveyContext, 
@@ -73,8 +75,6 @@ export default function DraggableList({
               </div>
               <FontAwesomeIcon className={styles.grip} icon={faGripLines} />
             </div>
-            {/* place a spacer between items */}
-            {/* {index !== (list.length -1) && <Spacer />} */}
           </Reorder.Item>
         ))}
       </Reorder.Group>

@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
 import { useLocation } from 'react-router-dom';
 import { pathToSection } from '../../utils/utils';
-import { MapContext } from '../../context/MapContext';
+import { ViewerContext } from '../../context/ViewerContext';
 import { mapSections } from '../../constants/mapConstants';
 import { Section } from '../../constants/surveyConstants';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
@@ -12,7 +12,7 @@ import useEffectAfterMount from '../../hooks/useEffectAfterMount';
  * Mapbox map viewer component.
  */
 export default function MapViewer() {
-  const { map, setMap, setParentLayer, setColor, mapMode } = useContext(MapContext);
+  const { map, setMap, setParentLayer, setColor, mapMode } = useContext(ViewerContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 

@@ -1,7 +1,7 @@
 import styles from './SatelliteViewer.module.css';
 import * as Cesium from 'cesium';
 import { useContext, useEffect, useRef } from 'react';
-import { MapContext } from '../../context/MapContext';
+import { ViewerContext } from '../../context/ViewerContext';
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { GOOGLE_3D_TILES_ID } from '../../constants/3DTilesConstants';
 
@@ -9,7 +9,7 @@ import { GOOGLE_3D_TILES_ID } from '../../constants/3DTilesConstants';
  * Cesium satellite viewer component.
  */
 export default function SatelliteViewer() {
-  const { map, mapMode } = useContext(MapContext);
+  const { map, mapMode } = useContext(ViewerContext);
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const cesiumViewerRef = useRef<Cesium.Viewer>();
 

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./SelectableList.module.css";
-import { MapContext } from "../../context/MapContext";
+import { ViewerContext } from "../../context/ViewerContext";
 import { MapAttribute, mapAttributes } from "../../constants/mapConstants";
 import * as mapbox from "../../services/mapbox";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
@@ -17,9 +17,12 @@ export type ListItem = {
   id: string;
 }
 
+/**
+ * List component with selectable items.
+ */
 export default function SelectableList({list, setAttribute, mappable}: SelectableListProps) {
   const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(list[0].name);
-  const { map, parentLayer, color } = useContext(MapContext);
+  const { map, parentLayer, color } = useContext(ViewerContext);
 
   useEffect(() => {
     setSelectedItem(list[0].name);

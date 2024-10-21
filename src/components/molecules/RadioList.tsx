@@ -6,8 +6,11 @@ type RadioListProps = {
   list: string[];
 };
 
+/**
+ * List component with radio buttons and labels.
+ */
 export default function RadioList({ name, list }: RadioListProps) {
-const [checked, setChecked] = useState<boolean[]>(() => new Array(list.length).fill(false));
+  const [checked, setChecked] = useState<boolean[]>(() => new Array(list.length).fill(false));
 
   // Handle uncontrolled radio change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {

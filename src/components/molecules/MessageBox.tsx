@@ -12,9 +12,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MarkdownRenderer from "../atoms/MarkdownRenderer";
 
-// Performance Issue: If the text history becomes large, it might be more
-// efficient to store it in a more complex data structure or consider using
-// the _useReducer_ hook for more sophisticated state management.
+/**
+ * MessageBox component to display the chat history.
+ * Performance Issue: If the text history becomes large, it might be more
+ * efficient to store it in a more complex data structure or consider using
+ * the _useReducer_ hook for more sophisticated state management.
+ */
 export default function MessageBox() {
   const { messages  } = useContext(MessageContext);
 

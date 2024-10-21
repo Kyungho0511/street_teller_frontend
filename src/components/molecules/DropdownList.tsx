@@ -4,6 +4,7 @@ import { ClusterCheckboxItem } from '../../constants/surveyConstants';
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
 import Colorbox from "../atoms/Colorbox";
+import DropdownManager from "./DropdownManager";
 
 type DropdownListProps = {
   list: ClusterCheckboxItem;
@@ -14,6 +15,9 @@ type DropdownListProps = {
   displayColorbox?: boolean; // display a color box for each list item.
 }
 
+/**
+ * Dropdown list component. It should be used within a {@link DropdownManager}.
+ */
 export default function DropdownList({
   list,
   index,
