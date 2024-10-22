@@ -1,24 +1,27 @@
 import styles from './SatelliteViewer.module.css';
 import * as Cesium from 'cesium';
 import { useContext, useEffect, useRef } from 'react';
+import { CameraContext, CameraState } from '../../context/CameraContext';
 import { ViewerContext } from '../../context/ViewerContext';
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { GOOGLE_3D_TILES_ID } from '../../constants/3DTilesConstants';
+import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 
 /**
  * Cesium satellite viewer component.
  */
 export default function SatelliteViewer() {
-  const { map, mapMode } = useContext(ViewerContext);
-  const cesiumContainerRef = useRef<HTMLDivElement>(null);
-  const cesiumViewerRef = useRef<Cesium.Viewer>();
+  const { mapViewer, mapMode, satelliteViewer, setSatelliteViewer } = useContext(ViewerContext);
+  const { cameraState, setCameraState, syncMapCamera } = useContext(CameraContext);
+  const satelliteContainerRef = useRef<HTMLDivElement>(null);
+  const satelliteViewerRef = useRef<Cesium.Viewer>();
 
+  // Initialize the Cesium viewer.
   useEffect(() => {
-    if (!cesiumContainerRef.current || !map) return;
-
+    if (!satelliteContainerRef.current) return;
     const initializeCesium = async () => {
       Cesium.Ion.defaultAccessToken = import.meta.env.VITE_API_KEY_CESIUM as string;
-      cesiumViewerRef.current = new Cesium.Viewer(cesiumContainerRef.current as Element, {
+      satelliteViewerRef.current = new Cesium.Viewer(satelliteContainerRef.current as Element, {
         skyAtmosphere: new Cesium.SkyAtmosphere(),
         scene3DOnly: true,
         globe: false,
@@ -36,17 +39,9 @@ export default function SatelliteViewer() {
         targetFrameRate: 60,
         showRenderLoopErrors: false,
       });
-      const viewer = cesiumViewerRef.current;
+      const viewer = satelliteViewerRef.current;
+      setSatelliteViewer(viewer);
       viewer.scene.backgroundColor = Cesium.Color.TRANSPARENT;
-
-      viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(-73.860766, 40.713326, 15000.0),
-        orientation: {
-          heading: 90,
-          pitch: 180,
-          roll: 0.0,
-        }
-      });
 
       try {
         const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(GOOGLE_3D_TILES_ID);
@@ -60,15 +55,40 @@ export default function SatelliteViewer() {
     initializeCesium();
 
     return () => {
-      if (cesiumViewerRef.current) {
-        cesiumViewerRef.current.destroy();
+      if (satelliteViewerRef.current) {
+        satelliteViewerRef.current.destroy();
       }
     }
-  }, [map]);
+  }, []);
+
+  // Update the camera state when the map ends moving.
+  useEffectAfterMount(() => {
+    if (!satelliteViewer) return;
+
+    const onMoveEnd = () => {
+      const cartographic = satelliteViewer.camera.positionCartographic;
+      setCameraState({
+        center: [cartographic.longitude, cartographic.latitude],
+        zoom: Math.log2(40075016.686 / cartographic.height) - 1,
+        bearing: satelliteViewer.camera.heading,
+        pitch: satelliteViewer.camera.pitch,
+      } as CameraState);
+    }
+    satelliteViewer.camera.moveEnd.addEventListener(onMoveEnd);
+    
+    return () => {
+      satelliteViewer.camera.moveEnd.removeEventListener(onMoveEnd);
+    }
+  }, [satelliteViewer, setCameraState]);
+
+  // useEffectAfterMount(() => {
+  //   if (!mapViewer) return;
+  //   syncMapCamera(mapViewer, cameraState);
+  // }, [mapViewer, syncMapCamera, cameraState]);
 
   return (
     <div
-      ref={cesiumContainerRef}
+      ref={satelliteContainerRef}
       className={styles.container}
       style={{
         display: mapMode == "satellite" ? 'block' : 'none',

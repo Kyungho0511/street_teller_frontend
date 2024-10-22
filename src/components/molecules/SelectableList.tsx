@@ -22,7 +22,7 @@ export type ListItem = {
  */
 export default function SelectableList({list, setAttribute, mappable}: SelectableListProps) {
   const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(list[0].name);
-  const { map, parentLayer, color } = useContext(ViewerContext);
+  const { mapViewer, parentLayer, color } = useContext(ViewerContext);
 
   useEffect(() => {
     setSelectedItem(list[0].name);
@@ -30,15 +30,15 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
 
   useEffectAfterMount(() => {
     // Update Mapping with the selected item.
-    if (map && mappable && parentLayer && color) {
-      mapbox.updateLayerAttribute(parentLayer, selectedItem, color, map);
+    if (mapViewer && mappable && parentLayer && color) {
+      mapbox.updateLayerAttribute(parentLayer, selectedItem, color, mapViewer);
     }
     // Update the attribute for map legned.
     if (setAttribute) {
       const newAttribute = mapAttributes.find((attribute) => attribute.name === selectedItem);
       newAttribute ? setAttribute(newAttribute) : console.error("Attribute not found.");
     }
-  }, [selectedItem, map, mappable ,parentLayer, color, setAttribute]);
+  }, [selectedItem, mapViewer, mappable ,parentLayer, color, setAttribute]);
 
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 

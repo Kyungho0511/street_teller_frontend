@@ -5,23 +5,23 @@ import SatelliteViewer from "../components/organisms/SatelliteViewer";
 import { SurveyContextProvider } from "../context/SurveyContext";
 import { MessageContextProvider } from "../context/MessageContext";
 import { ViewerContextProvider } from "../context/ViewerContext";
+import { CameraContextProvider } from "../context/CameraContext";
+import MapToggleButton from "../components/atoms/MapToggleButton";
 
-/**
- * Root component that manages other pages and provides the context.
- */
 export default function RootPage() {
   return (
-    <>
-      <ViewerContextProvider>
+    <ViewerContextProvider>
+      <CameraContextProvider>
         <MapViewer />
         <SatelliteViewer />
-        <MessageContextProvider>
-            <SurveyContextProvider>
-              <Outlet />
-            </SurveyContextProvider>
-          <Footbar />
-        </MessageContextProvider>
-      </ViewerContextProvider>
-    </>
-  )
+        <MapToggleButton />
+      </CameraContextProvider>
+      <MessageContextProvider>
+        <SurveyContextProvider>
+          <Outlet />
+        </SurveyContextProvider>
+        <Footbar />
+      </MessageContextProvider>
+    </ViewerContextProvider>
+  );
 }

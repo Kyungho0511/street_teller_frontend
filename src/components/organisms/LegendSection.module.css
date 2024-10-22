@@ -51,12 +51,6 @@
 
 .body {
   border-bottom-right-radius: 1rem;
-  height: calc(100vh - 100px - 5rem);
-  overflow: hidden;
-
-  & .scroller {
-    height: 100%;
-    padding: 1rem;
-    overflow-y: auto;
-  }
+  overflow-y: auto;
+  padding: 1rem;
 }

@@ -1,11 +1,14 @@
 import { createContext, useEffect, useState } from "react";
 import { Color } from "../constants/mapConstants";
+import * as Cesium from 'cesium';
 
 export type MapMode = "satellite" | "map";
 
 type ViewerContextProps = {
-  map: mapboxgl.Map | undefined;
-  setMap: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
+  mapViewer: mapboxgl.Map | undefined;
+  setMapViewer: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
+  satelliteViewer: Cesium.Viewer | undefined;
+  setSatelliteViewer: React.Dispatch<React.SetStateAction<Cesium.Viewer | undefined>>;
   parentLayer: string;
   setParentLayer: React.Dispatch<React.SetStateAction<string>>;
   color: Color | undefined;
@@ -15,12 +18,9 @@ type ViewerContextProps = {
 }
 
 export const ViewerContext = createContext<ViewerContextProps>({} as ViewerContextProps);
-
-/**
- * Context provider for the viewers (Cesium satellite / Mapbox map).
- */
 export function ViewerContextProvider({children}: {children: React.ReactNode}) {
-  const [map, setMap] = useState<mapboxgl.Map>();
+  const [mapViewer, setMapViewer] = useState<mapboxgl.Map>();
+  const [satelliteViewer, setSatelliteViewer] = useState<Cesium.Viewer>();
   const [parentLayer, setParentLayer] = useState<string>("");
   const [color, setColor] = useState<Color>();
   const [mapMode, setMapMode] = useState<MapMode>(() => {
@@ -29,7 +29,6 @@ export function ViewerContextProvider({children}: {children: React.ReactNode}) {
   });
 
   useEffect(() => {
-    // Modify UI theme according to the map mode.
     document.documentElement.setAttribute('map-mode', mapMode);
     localStorage.setItem("mapMode", mapMode);
   }, [mapMode]);
@@ -41,8 +40,10 @@ export function ViewerContextProvider({children}: {children: React.ReactNode}) {
   return (
     <ViewerContext.Provider
       value={{
-        map,
-        setMap,
+        mapViewer,
+        setMapViewer,
+        satelliteViewer,
+        setSatelliteViewer,
         parentLayer,
         setParentLayer,
         color,

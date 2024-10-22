@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styles from './PopupSection.module.css';
 import { ViewerContext } from '../../context/ViewerContext';
-import { SIDEBAR_WIDTH } from './Sidebar';
 import { FOOTBAR_HEIGHT } from './Footbar';
 import { FillColor, POPUP } from '../../constants/mapConstants';
 import { isWhiteFillColor } from '../../utils/utils';
@@ -22,33 +21,33 @@ type PopupSectionProps = {
  * Container component for the map popup.
  */
 export default function PopupSection({ enableSelectEffect, children }: PopupSectionProps) {
-  const { map, parentLayer } = useContext(ViewerContext);
+  const { mapViewer, parentLayer } = useContext(ViewerContext);
   const { setProperties } = useContext(PopupContext);
 
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
 
   // Add selection effect to the map's selected features.
-  useMapSelectEffect(parentLayer, map, enableSelectEffect);
+  useMapSelectEffect(parentLayer, mapViewer, enableSelectEffect);
 
   // Set properties based on the map mouse event.
   useEffect(() => {
-    if (!map) return;
+    if (!mapViewer) return;
     const updateProperties = (event: mapboxgl.MapMouseEvent) => {
-      const feature = map.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
+      const feature = mapViewer.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
       setProperties(feature.properties as HealthcareProperties);
     }
-    map.on("mousemove", parentLayer, updateProperties);
+    mapViewer.on("mousemove", parentLayer, updateProperties);
 
     // Cleanup event listeners on component unmount.
     return () => {
-      map.off("mousemove", parentLayer, updateProperties);
+      mapViewer.off("mousemove", parentLayer, updateProperties);
     }
-  }, [map, parentLayer, setProperties]);
+  }, [mapViewer, parentLayer, setProperties]);
 
   // Set popup status based on the map mouse event.
   useEffect(() => {
-    if (!map) return;
+    if (!mapViewer) return;
 
     const showPopup = () => {
       setDisplay("block");
@@ -63,7 +62,7 @@ export default function PopupSection({ enableSelectEffect, children }: PopupSect
       const translate = {x: 0, y: 0};
   
       // Skip features with white fill color (non-selected features).
-      const feature = map!.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
+      const feature = mapViewer!.queryRenderedFeatures(event.point, {layers: [parentLayer]})[0];
       const fillColor = (feature.layer!.paint as { "fill-color": FillColor })["fill-color"];
       if (isWhiteFillColor(fillColor)) {
         hidePopup();
@@ -85,15 +84,15 @@ export default function PopupSection({ enableSelectEffect, children }: PopupSect
       setPosition({ x: translate.x, y: translate.y });
     }
 
-    map.on("mousemove", parentLayer, updatePopupPosition);
-    map.on("mouseleave", parentLayer, hidePopup);
+    mapViewer.on("mousemove", parentLayer, updatePopupPosition);
+    mapViewer.on("mouseleave", parentLayer, hidePopup);
 
     // Cleanup event listeners on component unmount.
     return () => {
-      map.off("mousemove", parentLayer, updatePopupPosition);
-      map.off("mouseleave", parentLayer, hidePopup);
+      mapViewer.off("mousemove", parentLayer, updatePopupPosition);
+      mapViewer.off("mouseleave", parentLayer, hidePopup);
     }
-  }, [map, parentLayer]);
+  }, [mapViewer, parentLayer]);
 
   return (
     <div

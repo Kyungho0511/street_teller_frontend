@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import styles from "./MapToggleButton.module.css";
 import { ViewerContext } from "../../context/ViewerContext";
+import styles from "./MapToggleButton.module.css";
+import { useContext } from "react";
 import SatelliteViewer from "../organisms/SatelliteViewer";
 import MapViewer from "../organisms/MapViewer";
 
@@ -20,7 +20,7 @@ export default function MapToggleButton() {
       className={styles.button}
       onClick={handleClick}
     >
-      <p className={styles.text}>{mapMode == "map" ? "Satellite" : "Map"}</p>
+      <p className={styles.text}>{mapMode === "map" ? "Satellite" : "Map"}</p>
     </button>
   );
 }

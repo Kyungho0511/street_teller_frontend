@@ -30,7 +30,7 @@ export default function ClusterPage() {
   // Global states
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
-  const { map } = useContext(ViewerContext);
+  const { mapViewer } = useContext(ViewerContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -51,7 +51,7 @@ export default function ClusterPage() {
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
     // Clean up mapbox layers before starting a new clustering page.
-    mapbox.removeAllClusterLayers(kMeansLayers, map!);
+    mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
 
     if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
       setGeoJson(kMeansLayers[0].geoJson);
@@ -103,18 +103,18 @@ export default function ClusterPage() {
 
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
-    if (!map || !kMeansLayers[clusterIndex]) return;
-    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map!, false);
+    if (!mapViewer || !kMeansLayers[clusterIndex]) return;
+    mapbox.addClusterLayer(kMeansLayers[clusterIndex], mapViewer!, false);
 
     // Remove KMeansLayer from mapbox when on unmount.
-    return () => mapbox.removeAllClusterLayers(kMeansLayers, map!);
-  }, [kMeansLayers, map]);
+    return () => mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+  }, [kMeansLayers, mapViewer]);
 
 
   // Update mapping on selected clusterList change
   useEffectAfterMount(() => {
-    mapbox.updateClusterLayer(clusterList, map);
-  }, [clusterList, map]);
+    mapbox.updateClusterLayer(clusterList, mapViewer);
+  }, [clusterList, mapViewer]);
 
 
   // Display loading & error status of fetching geoJson data.

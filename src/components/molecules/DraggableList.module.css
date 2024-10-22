@@ -65,7 +65,7 @@
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: var(---theme-grey);
+  background-color: var(--theme-grey);
   color: var(--color-white);
 }
 
