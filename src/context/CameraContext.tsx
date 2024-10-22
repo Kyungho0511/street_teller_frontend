@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import * as Cesium from 'cesium';
 import { configs } from '../constants/mapConstants';
 
@@ -26,8 +26,6 @@ export function CameraContextProvider({children}: {children: React.ReactNode}) {
     pitch: configs.location.pitch,
   });
 
-  console.log(cameraState.center[0]);
-
   const syncMapCamera = (mapViewer: mapboxgl.Map, cameraState: CameraState) => {
     if (mapViewer) {
       mapViewer.jumpTo({
@@ -40,20 +38,26 @@ export function CameraContextProvider({children}: {children: React.ReactNode}) {
   }
 
   const syncSatelliteCamera = (satelliteViewer: Cesium.Viewer, cameraState: CameraState) => {
-    if (satelliteViewer) {
-      const { center, zoom, bearing, pitch } = cameraState;
-      const altitude = 40075016.686 / Math.pow(2, zoom + 1);
-      
-      satelliteViewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(center[0], center[1], altitude),
-        orientation: {
-          heading: Cesium.Math.toRadians(bearing),
-          pitch: Cesium.Math.toRadians(pitch - 90),
-          roll: 0,
-        },
-      });
-    }
+    const { center, zoom, bearing, pitch } = cameraState;
+    const altitude = 40075016.686 / Math.pow(2, zoom + 1);
+    
+    const cartographic = new Cesium.Cartographic(
+      Cesium.Math.toRadians(center[0]),  // longitude
+      Cesium.Math.toRadians(center[1]),  // latitude
+      altitude
+    );
+
+    satelliteViewer.camera.setView({
+      destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(cartographic),
+      orientation: {
+        heading: Cesium.Math.toRadians(bearing),
+        pitch: Cesium.Math.toRadians(pitch - 90),
+        roll: 0,
+      },
+    });
   }
+
+
 
   return (
     <CameraContext.Provider

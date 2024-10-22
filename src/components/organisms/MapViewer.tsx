@@ -13,25 +13,25 @@ import useEffectAfterMount from '../../hooks/useEffectAfterMount';
  * Mapbox map viewer component.
  */
 export default function MapViewer() {
-  const { mapViewer, setMapViewer, setParentLayer, setColor, mapMode, satelliteViewer } = useContext(ViewerContext);
-  const { cameraState, setCameraState, syncSatelliteCamera } = useContext(CameraContext);
+  const { mapViewer, setMapViewer, setParentLayer, setColor, mapMode } = useContext(ViewerContext);
+  const { cameraState, setCameraState } = useContext(CameraContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   // Create a map instance on component mount.
   useEffect(() => {
     if (!mapContainerRef.current) return;
-
     const temp = mapbox.createMap(mapContainerRef.current.id);
     temp.on("load", () => {
       setMapViewer(temp);
     });
-    // Cleanup function to remove the map instance on component unmount
+
     return () => {
       mapViewer && mapbox.removeMap(mapViewer);
       setMapViewer(undefined);
     };
   }, []);
+
 
   // Update the camera state when the map ends moving.
   useEffectAfterMount(() => {
@@ -45,16 +45,15 @@ export default function MapViewer() {
         pitch: mapViewer.getPitch(),
       } as CameraState);
 
-      // if (!satelliteViewer) return;
-      // syncSatelliteCamera(satelliteViewer, cameraState)
+      console.log("cameraState: ", cameraState.center[0], cameraState.center[1]);
     };
-
     mapViewer.on('moveend', onMoveEnd);
 
     return () => {
       mapViewer.off('moveend', onMoveEnd);
     };
   }, [mapViewer, setCameraState]);
+
 
 
   useEffectAfterMount(() => {
@@ -75,28 +74,12 @@ export default function MapViewer() {
       }
   }, [location.pathname, mapViewer, setColor, setParentLayer]);
 
+
   // Resize the map when its display mode changes.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
     mapViewer.resize();
   }, [mapMode, mapViewer]);
-
-  /**
-   * Adding Google 3D tiles through mapbox custom three.js layer works.
-   * However, syncing coordinate system between mapbox and Google 3D tiles
-   * is not working. Therefore, this part is disabled. TO be fixed later.
-   */
-  // useEffectAfterMount(() => {
-  //   if (!map) return;
-
-  //   // Add three.js custom layer to the map.
-  //   const custom3DLayer = create3DLayer("3d-layer", 1, MODEL_URL);
-  //   map.addLayer(custom3DLayer, OUTLINE_LAYER);
-    
-  //   return () => {
-  //     map.removeLayer("3d-layer");
-  //   }
-  // }, [map]);
 
   return (
     <div

@@ -11,8 +11,8 @@ import useEffectAfterMount from '../../hooks/useEffectAfterMount';
  * Cesium satellite viewer component.
  */
 export default function SatelliteViewer() {
-  const { mapViewer, mapMode, satelliteViewer, setSatelliteViewer } = useContext(ViewerContext);
-  const { cameraState, setCameraState, syncMapCamera } = useContext(CameraContext);
+  const { mapMode, satelliteViewer, setSatelliteViewer } = useContext(ViewerContext);
+  const { cameraState, setCameraState, syncSatelliteCamera } = useContext(CameraContext);
   const satelliteContainerRef = useRef<HTMLDivElement>(null);
   const satelliteViewerRef = useRef<Cesium.Viewer>();
 
@@ -61,30 +61,31 @@ export default function SatelliteViewer() {
     }
   }, []);
 
-  // Update the camera state when the map ends moving.
+  // // Update the camera state when the map ends moving.
+  // useEffectAfterMount(() => {
+  //   if (!satelliteViewer) return;
+
+  //   const onMoveEnd = () => {
+  //     const cartographic = satelliteViewer.camera.positionCartographic;
+  //     setCameraState({
+  //       center: [cartographic.longitude, cartographic.latitude],
+  //       zoom: Math.log2(40075016.686 / cartographic.height) - 1,
+  //       bearing: satelliteViewer.camera.heading,
+  //       pitch: satelliteViewer.camera.pitch,
+  //     } as CameraState);
+  //   }
+  //   satelliteViewer.camera.moveEnd.addEventListener(onMoveEnd);
+    
+  //   return () => {
+  //     satelliteViewer.camera.moveEnd.removeEventListener(onMoveEnd);
+  //   }
+  // }, [satelliteViewer, setCameraState]);
+
+  // Sync the camera states between map and satellite viewers.
   useEffectAfterMount(() => {
     if (!satelliteViewer) return;
-
-    const onMoveEnd = () => {
-      const cartographic = satelliteViewer.camera.positionCartographic;
-      setCameraState({
-        center: [cartographic.longitude, cartographic.latitude],
-        zoom: Math.log2(40075016.686 / cartographic.height) - 1,
-        bearing: satelliteViewer.camera.heading,
-        pitch: satelliteViewer.camera.pitch,
-      } as CameraState);
-    }
-    satelliteViewer.camera.moveEnd.addEventListener(onMoveEnd);
-    
-    return () => {
-      satelliteViewer.camera.moveEnd.removeEventListener(onMoveEnd);
-    }
-  }, [satelliteViewer, setCameraState]);
-
-  // useEffectAfterMount(() => {
-  //   if (!mapViewer) return;
-  //   syncMapCamera(mapViewer, cameraState);
-  // }, [mapViewer, syncMapCamera, cameraState]);
+    syncSatelliteCamera(satelliteViewer, cameraState);
+  }, [cameraState]);
 
   return (
     <div
