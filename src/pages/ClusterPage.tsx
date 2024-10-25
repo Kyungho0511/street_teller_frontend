@@ -16,11 +16,11 @@ import * as mapbox from "../services/mapbox";
 import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
-import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupTextCluster from "../components/atoms/PopupTextCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
+import useOpenai from "../hooks/useOpenai";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -42,7 +42,7 @@ export default function ClusterPage() {
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(geoJsonFilePath);
 
   // Get openAI instructions on the current page.
-  useOpenaiInstruction(addMessage, updatePrompt, parseInt(clusterId!), [
+  useOpenai(addMessage, updatePrompt, parseInt(clusterId!), [
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);

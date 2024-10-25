@@ -13,7 +13,7 @@ import PopupSection from "../components/organisms/PopupSection";
 import PopupTextHome from "../components/atoms/PopupTextHome";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
-import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
+import useOpenai from "../hooks/useOpenai";
 // import CheckboxList from "../components/CheckboxList";
 
 /**
@@ -32,7 +32,7 @@ export default function HomePage() {
   );
 
   // Get openAI instructions on the current page.
-  useOpenaiInstruction(addMessage, updatePrompt);
+  useOpenai(addMessage, updatePrompt);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {

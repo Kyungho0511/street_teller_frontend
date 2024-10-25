@@ -9,7 +9,7 @@ import { CLUSTERING_SIZE } from "../services/kmeans";
 /**
  * Get openAI instructions on the current page.
  */
-export default function useOpenaiInstruction(
+export default function useOpenai(
   addMessage: (newMessage: Message) => void,
   updatePrompt: (newPrompt: Prompt) => void,
   sectionId?: number,
