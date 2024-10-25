@@ -1,5 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { Color } from "../constants/mapConstants";
+import MapViewer from "../components/organisms/MapViewer";
+import SatelliteViewer from "../components/organisms/SatelliteViewer";
 import * as Cesium from 'cesium';
 
 export type MapMode = "satellite" | "map";
@@ -17,7 +19,14 @@ type ViewerContextProps = {
   toggleMapMode: () => void;
 }
 
+/**
+ * Context that stores states of {@link SatelliteViewer} and {@link MapViewer}.
+ */
 export const ViewerContext = createContext<ViewerContextProps>({} as ViewerContextProps);
+
+/**
+ * Context provider that stores states of {@link SatelliteViewer} and {@link MapViewer}.
+ */
 export function ViewerContextProvider({children}: {children: React.ReactNode}) {
   const [mapViewer, setMapViewer] = useState<mapboxgl.Map>();
   const [satelliteViewer, setSatelliteViewer] = useState<Cesium.Viewer>();
@@ -25,7 +34,7 @@ export function ViewerContextProvider({children}: {children: React.ReactNode}) {
   const [color, setColor] = useState<Color>();
   const [mapMode, setMapMode] = useState<MapMode>(() => {
     const savedMapMode = localStorage.getItem("mapMode") as MapMode;
-    return savedMapMode || "satellite";
+    return savedMapMode || "map";
   });
 
   useEffect(() => {

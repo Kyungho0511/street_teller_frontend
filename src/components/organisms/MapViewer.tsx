@@ -23,8 +23,7 @@ export default function MapViewer() {
     if (!mapContainerRef.current) return;
     const temp = mapbox.createMap(mapContainerRef.current.id);
     temp.on("load", () => {
-      setMapViewer(temp);
-    });
+      setMapViewer(temp);    });
 
     return () => {
       mapViewer && mapbox.removeMap(mapViewer);
@@ -33,9 +32,14 @@ export default function MapViewer() {
   }, []);
 
 
+  useEffectAfterMount(() => {
+    console.log("center: ", `${mapViewer!.getCenter().lat}, ${mapViewer!.getCenter().lng}`);
+  }, [cameraState])
+
   // Update the camera state when the map ends moving.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
+
     const onMoveEnd = () => {
       const center = mapViewer.getCenter();
       setCameraState({
@@ -44,8 +48,6 @@ export default function MapViewer() {
         bearing: mapViewer.getBearing(),
         pitch: mapViewer.getPitch(),
       } as CameraState);
-
-      console.log("cameraState: ", cameraState.center[0], cameraState.center[1]);
     };
     mapViewer.on('moveend', onMoveEnd);
 

@@ -14,7 +14,6 @@ import PopupTextHome from "../components/atoms/PopupTextHome";
 import { PopupContextProvider } from "../context/PopupContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import Sidebar from "../components/organisms/Sidebar";
-import MessageBox from "../components/molecules/MessageBox";
 // import CheckboxList from "../components/CheckboxList";
 
 /**

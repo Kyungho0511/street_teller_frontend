@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import * as Cesium from 'cesium';
 import { configs } from '../constants/mapConstants';
+import { ViewerContext } from './ViewerContext';
 
 export type CameraState = {
   center: [number, number];
@@ -12,13 +13,20 @@ export type CameraState = {
 type CameraContextProps = {
   cameraState: CameraState;
   setCameraState: React.Dispatch<React.SetStateAction<CameraState>>;
-  syncMapCamera: (mapViewer: mapboxgl.Map, cameraState: CameraState) => void;
-  syncSatelliteCamera: (satelliteViewer: Cesium.Viewer, cameraState: CameraState) => void;
+  syncMapCamera: (cameraState: CameraState) => void;
+  syncSatelliteCamera: (cameraState: CameraState) => void;
 }
 
+/**
+ * Context that stores the camera state in cartographic coordinates.
+ */
 export const CameraContext = createContext<CameraContextProps>({} as CameraContextProps);
 
+/**
+ * Context provider that stores the camera state in cartographic coordinates.
+ */
 export function CameraContextProvider({children}: {children: React.ReactNode}) {
+  const { mapViewer, satelliteViewer } = useContext(ViewerContext);
   const [cameraState, setCameraState] = useState<CameraState>({
     center: configs.location.center as [number, number],
     zoom: configs.location.zoom,
@@ -26,21 +34,28 @@ export function CameraContextProvider({children}: {children: React.ReactNode}) {
     pitch: configs.location.pitch,
   });
 
-  const syncMapCamera = (mapViewer: mapboxgl.Map, cameraState: CameraState) => {
-    if (mapViewer) {
-      mapViewer.jumpTo({
-        center: cameraState.center,
-        zoom: cameraState.zoom,
-        bearing: cameraState.bearing,
-        pitch: cameraState.pitch,
-      });
-    }
+  const syncMapCamera = (cameraState: CameraState) => {
+    if (!mapViewer) return;
+
+    mapViewer.jumpTo({
+      center: cameraState.center,
+      zoom: cameraState.zoom,
+      bearing: cameraState.bearing,
+      pitch: cameraState.pitch,
+    });
   }
 
-  const syncSatelliteCamera = (satelliteViewer: Cesium.Viewer, cameraState: CameraState) => {
+  const syncSatelliteCamera = (cameraState: CameraState) => {
+    if (!satelliteViewer) return;
+
     const { center, zoom, bearing, pitch } = cameraState;
-    const altitude = 40075016.686 / Math.pow(2, zoom + 1);
     
+    // Calculate altitude based on zoom level
+    const earthCircumference = 40075016.686; // in meters
+    const groundResolution = earthCircumference * Math.cos(Cesium.Math.toRadians(center[1])) / (256 * Math.pow(2, zoom));
+    const modifier = 0.785;
+    const altitude = modifier * groundResolution * (satelliteViewer.canvas.clientHeight / 2) / Math.tan(Cesium.Math.toRadians(30));
+
     const cartographic = new Cesium.Cartographic(
       Cesium.Math.toRadians(center[0]),  // longitude
       Cesium.Math.toRadians(center[1]),  // latitude
@@ -57,8 +72,6 @@ export function CameraContextProvider({children}: {children: React.ReactNode}) {
     });
   }
 
-
-
   return (
     <CameraContext.Provider
       value={{
@@ -71,4 +84,4 @@ export function CameraContextProvider({children}: {children: React.ReactNode}) {
       {children}
     </CameraContext.Provider>
   );
-};
+}

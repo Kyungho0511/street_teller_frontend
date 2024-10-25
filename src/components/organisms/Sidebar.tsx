@@ -5,7 +5,6 @@ import styles from './Sidebar.module.css';
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useState } from 'react';
 import { Message, MessageContext } from '../../context/MessageContext';
-import Spacer from '../atoms/Spacer';
 
 export const SIDEBAR_WIDTH = 380;
 

@@ -1,7 +1,7 @@
 import styles from './SatelliteViewer.module.css';
 import * as Cesium from 'cesium';
 import { useContext, useEffect, useRef } from 'react';
-import { CameraContext, CameraState } from '../../context/CameraContext';
+import { CameraContext } from '../../context/CameraContext';
 import { ViewerContext } from '../../context/ViewerContext';
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { GOOGLE_3D_TILES_ID } from '../../constants/3DTilesConstants';
@@ -12,7 +12,8 @@ import useEffectAfterMount from '../../hooks/useEffectAfterMount';
  */
 export default function SatelliteViewer() {
   const { mapMode, satelliteViewer, setSatelliteViewer } = useContext(ViewerContext);
-  const { cameraState, setCameraState, syncSatelliteCamera } = useContext(CameraContext);
+  const { cameraState, syncSatelliteCamera } = useContext(CameraContext);
+  
   const satelliteContainerRef = useRef<HTMLDivElement>(null);
   const satelliteViewerRef = useRef<Cesium.Viewer>();
 
@@ -80,11 +81,18 @@ export default function SatelliteViewer() {
   //     satelliteViewer.camera.moveEnd.removeEventListener(onMoveEnd);
   //   }
   // }, [satelliteViewer, setCameraState]);
+  
+
+  useEffectAfterMount(() => {
+    const cartographic = satelliteViewer!.camera.positionCartographic;
+    console.log(satelliteViewer!.canvas.clientHeight);
+    console.log("center: ", `${Cesium.Math.toDegrees(cartographic.latitude)}, ${Cesium.Math.toDegrees(cartographic.longitude)}`);
+  }, [cameraState])
 
   // Sync the camera states between map and satellite viewers.
   useEffectAfterMount(() => {
     if (!satelliteViewer) return;
-    syncSatelliteCamera(satelliteViewer, cameraState);
+    syncSatelliteCamera(cameraState);
   }, [cameraState]);
 
   return (
