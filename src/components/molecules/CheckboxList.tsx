@@ -17,7 +17,7 @@ export type CheckboxItem = {
 }
 
 /**
- * Checkbox list component for clusters and broughs selections.
+ * Checkbox list component.
  */
 export default function CheckboxList({ name, list, setSurveyContext }: CheckboxListProps) {
 

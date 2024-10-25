@@ -8,7 +8,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { MapContext } from "../context/MapContext";
+import { ViewerContext } from "../context/ViewerContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
 import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
@@ -20,6 +20,7 @@ import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupTextCluster from "../components/atoms/PopupTextCluster";
 import { PopupContextProvider } from "../context/PopupContext";
+import Sidebar from "../components/organisms/Sidebar";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -28,8 +29,8 @@ export default function ClusterPage() {
 
   // Global states
   const { survey } = useContext(SurveyContext);
-  const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
-  const { map } = useContext(MapContext);
+  const { addMessage, updatePrompt } = useContext(MessageContext);
+  const { mapViewer } = useContext(ViewerContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -50,7 +51,7 @@ export default function ClusterPage() {
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
     // Clean up mapbox layers before starting a new clustering page.
-    mapbox.removeAllClusterLayers(kMeansLayers, map!);
+    mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
 
     if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
       setGeoJson(kMeansLayers[0].geoJson);
@@ -102,18 +103,18 @@ export default function ClusterPage() {
 
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
-    if (!map || !kMeansLayers[clusterIndex]) return;
-    mapbox.addClusterLayer(kMeansLayers[clusterIndex], map!, false);
+    if (!mapViewer || !kMeansLayers[clusterIndex]) return;
+    mapbox.addClusterLayer(kMeansLayers[clusterIndex], mapViewer!, false);
 
     // Remove KMeansLayer from mapbox when on unmount.
-    return () => mapbox.removeAllClusterLayers(kMeansLayers, map!);
-  }, [kMeansLayers, map]);
+    return () => mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+  }, [kMeansLayers, mapViewer]);
 
 
   // Update mapping on selected clusterList change
   useEffectAfterMount(() => {
-    mapbox.updateClusterLayer(clusterList, map);
-  }, [clusterList, map]);
+    mapbox.updateClusterLayer(clusterList, mapViewer);
+  }, [clusterList, mapViewer]);
 
 
   // Display loading & error status of fetching geoJson data.
@@ -126,14 +127,16 @@ export default function ClusterPage() {
 
   return (
     <>
-      <SidebarSection title={"select target clusters"}>
-        <CheckboxListAI
-          name={clusterName}
-          list={clusterList.list}
-          index={clusterIndex}
-          kMeansLayers={kMeansLayers}
-        />
-      </SidebarSection>
+      <Sidebar>
+        <SidebarSection>
+          <CheckboxListAI
+            name={clusterName}
+            list={clusterList.list}
+            index={clusterIndex}
+            kMeansLayers={kMeansLayers}
+          />
+        </SidebarSection>
+      </Sidebar>
 
       <LegendSection
         title={`Clustering Step`}
@@ -144,7 +147,7 @@ export default function ClusterPage() {
           lists={clusterList.list}
           displayChart
           displayColorbox
-          expandFirstList={!loadingMessage.json}
+          // expandFirstList={!loadingMessage.json}
           autoCollapse
         />
       </LegendSection>

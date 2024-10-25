@@ -1,0 +1,9 @@
+@import '../../styles/color.css';
+
+.container {
+  margin: 1rem 0;
+}
+
+.spacer {
+  border: 0.5px solid var(--color-grey2);
+}

@@ -11,6 +11,9 @@ type DropdownManagerProps = {
   autoCollapse?: boolean; // only one list can be expanded at a time.
 }
 
+/**
+ * Dropdown manager component to manage {@link DropdownList} components.
+ */
 export default function DropdownManager({
   lists,
   displayChart,

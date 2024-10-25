@@ -1,4 +1,6 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .container {
   width: 100%;
@@ -8,7 +10,7 @@
   position: relative;
   width: 100%;
   height: 8px;
-  background-color: var(--color-light-grey);
+  background-color: var(--theme-light-grey);
   border-radius: 0.3rem;
 }
 
@@ -17,7 +19,7 @@
   top: 0;
   left: 0;
   height: 8px;
-  background-color: var(--color-grey);
+  background-color: var(--theme-grey);
   border-radius: 0.3rem;
 }
 

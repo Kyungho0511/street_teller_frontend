@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./SelectableList.module.css";
-import { MapContext } from "../../context/MapContext";
+import { ViewerContext } from "../../context/ViewerContext";
 import { MapAttribute, mapAttributes } from "../../constants/mapConstants";
 import * as mapbox from "../../services/mapbox";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
@@ -17,9 +17,12 @@ export type ListItem = {
   id: string;
 }
 
+/**
+ * List component with selectable items.
+ */
 export default function SelectableList({list, setAttribute, mappable}: SelectableListProps) {
   const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(list[0].name);
-  const { map, parentLayer, color } = useContext(MapContext);
+  const { mapViewer, parentLayer, color } = useContext(ViewerContext);
 
   useEffect(() => {
     setSelectedItem(list[0].name);
@@ -27,15 +30,15 @@ export default function SelectableList({list, setAttribute, mappable}: Selectabl
 
   useEffectAfterMount(() => {
     // Update Mapping with the selected item.
-    if (map && mappable && parentLayer && color) {
-      mapbox.updateLayerAttribute(parentLayer, selectedItem, color, map);
+    if (mapViewer && mappable && parentLayer && color) {
+      mapbox.updateLayerAttribute(parentLayer, selectedItem, color, mapViewer);
     }
     // Update the attribute for map legned.
     if (setAttribute) {
       const newAttribute = mapAttributes.find((attribute) => attribute.name === selectedItem);
       newAttribute ? setAttribute(newAttribute) : console.error("Attribute not found.");
     }
-  }, [selectedItem, map, mappable ,parentLayer, color, setAttribute]);
+  }, [selectedItem, mapViewer, mappable ,parentLayer, color, setAttribute]);
 
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 

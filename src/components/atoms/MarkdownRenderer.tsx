@@ -1,6 +1,9 @@
 import DOMPurify from "dompurify";
 import ReactMarkdown from "react-markdown";
 
+/**
+ * Renderer component for Markdown content.
+ */
 export default function MarkdownRenderer({ content }: { content: string }) {
   
   // Sanitize HTML generated from Markdown for security.

@@ -1,4 +1,6 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .container {
   position: fixed;
@@ -7,18 +9,22 @@
   max-width: 400px;
   min-width: 250px;
   font-size: 0.9rem;
-  padding: 1rem;
   margin: 0.5rem;
-  background-color: var(--color-white);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--color-box-shadow);
+  background-color: var(--theme-background);
+  backdrop-filter: blur(var(--blur-intensity));
+  border-radius: 1rem;
+  box-shadow: 1px 2px 4px var(--theme-box-shadow);
 }
 
 .header {
+  border-bottom: 0.5px solid var(--theme-light-grey);
+}
+
+.header_content {
   display: flex;
   justify-content: start;
   align-items: center;
-  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
 }
 
 .title {
@@ -35,10 +41,16 @@
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: var(--color-light-grey);
+  background-color: var(--theme-light-grey);
   color: var(--color-white);
 
   &.current {
-    background-color: var(--color-dark-grey);
+    background-color: var(--theme-dark-grey);
   }
+}
+
+.body {
+  border-bottom-right-radius: 1rem;
+  overflow-y: auto;
+  padding: 1rem;
 }

@@ -2,13 +2,14 @@ import styles from "./PopupText.module.css";
 import { useContext } from "react";
 import { GEOID } from "../../constants/mapConstants";
 import { PopupContext } from "../../context/PopupContext";
+import ClusterPage from "../../pages/ClusterPage";
 
 type PopupTextClusterProps = {
   text: string;
 };
 
 /**
- * Text component for the popup section.
+ * Popup text component for the {@link ClusterPage}
  */
 export default function PopupTextCluster({ text }: PopupTextClusterProps) {
   const { properties } = useContext(PopupContext);

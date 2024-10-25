@@ -3,17 +3,20 @@ import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 
 export const configs = {
-  style: "mapbox://styles/klee0511/cm1wosqq100o001pgdz5601uv",
+  style: "mapbox://styles/klee0511/cm2hy9ofn00an01pb8q8q8fw8",
   location: {
     center: [-73.860766, 40.713326],
     zoom: 11,
     pitch: 0,
     bearing: 0,
+    antialias: true
   },
 };
 
 export const GEOID = "GEOID";
+
 export const OUTLINE_LAYER = "tracts-features-nyc-outline";
+
 export const THICK_LINE_WEIGHT = 4;
 
 export const POPUP = {
@@ -39,17 +42,17 @@ export type FillColor = {
 
 export const color: { [key in string]: Color } = {
   blue: {
-    categorized: ["#cdecd0", "#7ed7dd", "#2b9ded", "#0f4bee"],
+    categorized: ["#b3e8eb", "#63c1e7", "#209cea", "#5079ec"],
     min: "#f7faff",
     max: "#006efe",
   },
   yellow: {
-    categorized: ["#d7e317", "#f7e900", "#f9b91b", "#eb6200"],
+    categorized: ["#f7e900", "#ffc800", "#f4894b", "#e26666"],
     min: "#fffaec",
     max: "#f9a200",
   },
   green: {
-    categorized: ["#e3d1ad", "#cedd7e", "#66cd5a", "#2aa9b5"],
+    categorized: ["#d8e373", "#b2e278", "#66cd5a", "#5db6be"],
     min: "#e3d1ad",
     max: "#2aa9b5",
   },

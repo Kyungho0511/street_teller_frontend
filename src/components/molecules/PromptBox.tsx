@@ -5,6 +5,9 @@ import { useContext, useRef, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
+/**
+ * Prompt box component to send user messages to the AI.
+ */
 export default function PromptBox() {
   // Global states
   const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);

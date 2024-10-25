@@ -4,13 +4,14 @@ import { GEOID, MapAttribute } from "../../constants/mapConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import * as utils from "../../utils/utils";
 import { PopupContext } from "../../context/PopupContext";
+import HomePage from "../../pages/HomePage";
 
 type PopupTextHomeProps = {
   selectedAttribute: MapAttribute;
 };
 
 /**
- * Text component for the popup section.
+ * Popup text component for the {@link HomePage}
  */
 export default function PopupTextHome({ selectedAttribute }: PopupTextHomeProps) {
   const { properties } = useContext(PopupContext);

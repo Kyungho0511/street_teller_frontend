@@ -7,6 +7,9 @@ type SidebarSectionProps = {
   subtitles?: string[];
 };
 
+/**
+ * Container component to display the sidebar section.
+ */
 export default function SidebarSection({ children, title, subtitles }: SidebarSectionProps) {
   return (
     <div className={styles.section}>

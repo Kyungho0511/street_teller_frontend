@@ -1,0 +1,22 @@
+/* Map viewer theme variables */
+[map-mode="map"] {
+  --theme-background: rgb(255, 255, 255, 1);
+  --theme-light-grey: var(--color-light-grey);
+  --theme-grey: var(--color-grey);
+  --theme-dark-grey: var(--color-dark-grey);
+  --theme-box-shadow: rgba(0, 0, 0, 0.12);
+  --theme-text: var(--color-light-black);
+  --theme-map-button: var(--color-white);
+}
+
+/* Satellite viewer theme variables */
+[map-mode="satellite"] {
+  --theme-background: rgb(255, 255, 255, 0.85);
+  --blur-intensity: 20px;
+  --theme-light-grey: rgb(190, 190, 190);
+  --theme-grey: rgb(135, 135, 135);
+  --theme-dark-grey: rgb(75, 75, 75);
+  --theme-box-shadow: rgba(0, 0, 0, 0.35);
+  --theme-text: var(--color-black);
+  --theme-map-button: var(--color-black);
+}

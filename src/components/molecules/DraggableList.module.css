@@ -1,7 +1,12 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .container {
-  margin-top: 2rem;
+}
+
+.container:active {
+  cursor: grabbing;
 }
 
 .item {
@@ -9,9 +14,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  cursor: pointer;
-  color: var(--color-grey);
+  cursor: grab;
   user-select: none;
+  border: 1px solid var(--theme-light-grey);
+  border-radius: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
 
   & .text {
     opacity: 0.85;
@@ -19,18 +27,28 @@
   }
 }
 
+.item:active {
+  cursor: grabbing;
+}
+
 .item:hover,
 .item.selected {
-  color: var(--color-black);
+  border: 1px solid var(--theme-grey);
 
   & .text {
     opacity: 1;
-    text-shadow: 0px 0px 1px black;
+    text-shadow: 0px 0px 0.8px var(--theme-text);
   }
-
   & .ranking_icon {
-    background-color: var(--color-dark-grey);
+    background-color: var(--theme-dark-grey);
   }
+  & .grip {
+    opacity: 1;
+  }
+}
+
+.grip {
+  opacity: 0.5;
 }
 
 .icon {
@@ -47,7 +65,7 @@
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: var(--color-grey);
+  background-color: var(--theme-grey);
   color: var(--color-white);
 }
 
@@ -56,7 +74,6 @@
 }
 
 .text {
-  color: var(--color-black);
 }
 
 .item.dragging {

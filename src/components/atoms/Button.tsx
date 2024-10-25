@@ -2,19 +2,21 @@ import { useContext, useState } from "react";
 import styles from "./Button.module.css";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import { ViewerContext } from "../../context/ViewerContext";
 
 type ButtonProps = {
   text: string;
-  color: "grey" | "blue";
   location: "sidebar" | "footbar";
   handleClick?: () => void;
 };
 
-export default function Button({ text, color, location, handleClick }: ButtonProps) {
-  // Global states
+/**
+ * Button component with bold text.
+ */
+export default function Button({ text, location, handleClick }: ButtonProps) {
   const { loadingMessage } = useContext(MessageContext);
-
-  //Local states
+  const { mapMode } = useContext(ViewerContext);
+  
   const [disabled, setDisabled] = useState<boolean>(
     () => loadingMessage.text || loadingMessage.json
   );
@@ -26,9 +28,10 @@ export default function Button({ text, color, location, handleClick }: ButtonPro
   return (
     <button
       disabled={disabled}
+      // TODO: refactor conditional styles with theme.css variables.
       className={`${styles.button} ${
         location === "sidebar" ? styles.sidebar_button : styles.footbar_button
-      } ${color === "grey" && styles.grey} ${color === "blue" && styles.blue}`}
+      } ${mapMode === "satellite" && location === "footbar" ? styles.blue : styles.grey}`}
       onClick={handleClick}
     >
       {text}

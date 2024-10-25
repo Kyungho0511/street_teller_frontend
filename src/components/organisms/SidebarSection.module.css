@@ -1,13 +1,12 @@
-@import '../../styles/variables.css';
+@import '../../styles/font.css';
+@import '../../styles/color.css';
+@import '../../styles/theme.css';
 
 .section {
   font-size: 0.9rem;
   line-height: var(--line-height-small);
-  padding: 1rem;
-  margin: 0.7rem 0;
-  background-color: var(--color-light-white);
+  padding: 0 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--color-box-shadow);
 
   > p {
     margin: 0.5rem 0;

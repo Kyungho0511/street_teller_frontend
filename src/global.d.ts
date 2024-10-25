@@ -6,6 +6,8 @@ declare module '*.module.css' {
 interface ImportMetaEnv {
   readonly VITE_API_KEY_OPENAI: string
   readonly VITE_API_KEY_MAPBOX: string
+  readonly VITE_API_KEY_CESIUM: string
+  readonly VITE_API_KEY_GOOGLE: string
 }
 
 interface ImportMeta {

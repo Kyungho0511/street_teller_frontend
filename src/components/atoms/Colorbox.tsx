@@ -7,6 +7,9 @@ type ColorboxProps = {
   fontSize?: string;
 }
 
+/**
+ * Colorbox component to display the color and label of clusters.
+ */
 export default function Colorbox({ label, color, fontSize }: ColorboxProps) {
   return (
     <div className={styles.container}>

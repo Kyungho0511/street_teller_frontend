@@ -13,6 +13,9 @@ type DraggableListProps = {
   displayRanking?: boolean;
 };
 
+/**
+ * Draggable list component.
+ */
 export default function DraggableList({
   list, 
   setSurveyContext, 
@@ -72,8 +75,6 @@ export default function DraggableList({
               </div>
               <FontAwesomeIcon className={styles.grip} icon={faGripLines} />
             </div>
-            {/* place a spacer between items */}
-            {index !== (list.length -1) && <hr className='spacer' />}
           </Reorder.Item>
         ))}
       </Reorder.Group>
