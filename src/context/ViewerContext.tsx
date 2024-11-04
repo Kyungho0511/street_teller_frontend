@@ -33,8 +33,9 @@ export function ViewerContextProvider({children}: {children: React.ReactNode}) {
   const [parentLayer, setParentLayer] = useState<string>("");
   const [color, setColor] = useState<Color>();
   const [mapMode, setMapMode] = useState<MapMode>(() => {
-    const savedMapMode = localStorage.getItem("mapMode") as MapMode;
-    return savedMapMode || "map";
+    // const savedMapMode = localStorage.getItem("mapMode") as MapMode;
+    // return savedMapMode || "map";
+    return "map";
   });
 
   useEffect(() => {
