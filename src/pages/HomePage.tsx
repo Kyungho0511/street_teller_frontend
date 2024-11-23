@@ -4,17 +4,23 @@ import DraggableList from "../components/molecules/DraggableList";
 import LegendSection from "../components/organisms/LegendSection";
 import SelectableList from "../components/molecules/SelectableList";
 import { SurveyContext } from "../context/SurveyContext";
-import { initialPreferenceList, Preference } from "../constants/surveyConstants";
+import {
+  initialPreferenceList,
+  Preference,
+  Section,
+} from "../constants/surveyConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
-import { MapAttribute, mapSections } from "../constants/mapConstants";
 import { MessageContext } from "../context/MessageContext";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupTextHome from "../components/atoms/PopupTextHome";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
-// import CheckboxList from "../components/CheckboxList";
+import { MapContext } from "../context/MapContext";
+import useEffectAfterMount from "../hooks/useEffectAfterMount";
+import { pathToSection } from "../utils/utils";
+import * as mapbox from "../services/mapbox";
 
 /**
  * Home page component where users select their preferences.
@@ -22,13 +28,12 @@ import useOpenai from "../hooks/useOpenai";
 export default function HomePage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
+  const { mapViewer, mapMode, parentLayer, attribute, color } =
+    useContext(MapContext);
 
   // Currently selected preference.
-  const [preference, setPreference] = useState<Preference>(initialPreferenceList.list[0]);
-
-  // Currently selected mapbox layer attribute. 
-  const [attribute, setAttribute] = useState<MapAttribute>(
-    () => mapSections.find((sec) => sec.id === "home")!.attribute!
+  const [preference, setPreference] = useState<Preference>(
+    initialPreferenceList.list[0]
   );
 
   // Get openAI instructions on the current page.
@@ -36,16 +41,31 @@ export default function HomePage() {
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
-    const selectedPreference = survey.preferenceList.list.find((item) => item.selected);
+    const selectedPreference = survey.preferenceList.list.find(
+      (item) => item.selected
+    );
     selectedPreference && setPreference(selectedPreference);
   }, [survey]);
 
+  // Restore mapping on mapMode change
+  useEffectAfterMount(() => {
+    if (!mapViewer) return;
+
+    mapViewer.on("style.load", () => {
+      // Restore current layers and attributes.
+      const section: Section = pathToSection(location.pathname);
+      mapbox.setLayers(section, mapViewer);
+      mapbox.updateLayerAttribute(
+        parentLayer,
+        attribute.name,
+        color!,
+        mapViewer
+      );
+    });
+  }, [mapMode]);
+
   return (
     <>
-      {/* Site choice */}
-      {/* <SidebarSection title="choose boroughs to discover">
-          <CheckboxList name="boroughs" list={survey.boroughList} setSurveyContext={setSurveyContext} />
-        </SidebarSection> */}
       <Sidebar>
         <SidebarSection>
           <DraggableList
@@ -59,11 +79,7 @@ export default function HomePage() {
       </Sidebar>
 
       <LegendSection title={preference.category as string}>
-        <SelectableList
-          list={preference.subCategories}
-          setAttribute={setAttribute}
-          mappable
-        />
+        <SelectableList list={preference.subCategories} mappable />
         <GradientBar bound={attribute.bound} unit={attribute.unit} />
         <Colorbox label={"non-shortage areas"} />
       </LegendSection>

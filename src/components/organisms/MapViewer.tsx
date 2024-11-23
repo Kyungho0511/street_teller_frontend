@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
-import { ViewerContext } from "../../context/ViewerContext";
+import { MapContext } from "../../context/MapContext";
 import { configs, mapSections } from "../../constants/mapConstants";
 import { Section } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
@@ -13,14 +13,14 @@ import useEffectAfterMount from "../../hooks/useEffectAfterMount";
  */
 export default function MapViewer() {
   const { mapViewer, setMapViewer, setParentLayer, setColor, mapMode } =
-    useContext(ViewerContext);
+    useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   // Create a map instance on component mount.
   useEffect(() => {
     if (!mapContainerRef.current) return;
-    const temp = mapbox.createMap(mapContainerRef.current.id);
+    const temp = mapbox.createMap(mapContainerRef.current.id, mapMode);
     temp.on("load", () => {
       setMapViewer(temp);
     });
@@ -53,31 +53,9 @@ export default function MapViewer() {
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const currentLayers = mapViewer.getStyle()?.layers;
-    const currentSources = mapViewer.getStyle()?.sources;
-
-    if (!currentLayers || !currentSources) {
-      console.error("Current layers or sources are not found.");
-      return;
-    }
     const styleUrl =
       mapMode === "satellite" ? configs.style.satellite : configs.style.map;
     mapViewer.setStyle(styleUrl);
-
-    mapViewer.on("style.load", () => {
-      Object.entries(currentSources).forEach(([id, source]) => {
-        if (!mapViewer.getSource(id)) {
-          mapViewer.addSource(id, source);
-        }
-      });
-      currentLayers.forEach((layer) => {
-        if (!mapViewer.getLayer(layer.id)) {
-          mapViewer.addLayer(layer);
-        }
-      });
-      const section: Section = pathToSection(location.pathname);
-      mapbox.setLayers(section, mapViewer);
-    });
   }, [mapMode]);
 
   return <div id="map" ref={mapContainerRef} className={styles.map}></div>;

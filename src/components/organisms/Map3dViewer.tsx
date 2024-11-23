@@ -1,7 +1,7 @@
 import styles from "./Map3dViewer.module.css";
 import * as Cesium from "cesium";
 import { useContext, useEffect, useRef } from "react";
-import { ViewerContext } from "../../context/ViewerContext";
+import { MapContext } from "../../context/MapContext";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { GOOGLE_3D_TILES_ID } from "../../constants/3DTilesConstants";
 
@@ -9,7 +9,7 @@ import { GOOGLE_3D_TILES_ID } from "../../constants/3DTilesConstants";
  * Cesium 3d viewer component.
  */
 export default function Map3dViewer() {
-  const { setMap3dViewer } = useContext(ViewerContext);
+  const { setMap3dViewer } = useContext(MapContext);
 
   const map3dViewerContainerRef = useRef<HTMLDivElement>(null);
   const map3dViewerRef = useRef<Cesium.Viewer>();

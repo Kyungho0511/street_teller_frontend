@@ -10,21 +10,26 @@ import {
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import { MapMode } from "../context/MapContext";
 
 /**
  * Create a mapbox map instance.
  */
-export function createMap(mapContainerId: string): mapboxgl.Map {
+export function createMap(
+  mapContainerId: string,
+  mapMode: MapMode
+): mapboxgl.Map {
   mapboxgl.accessToken = import.meta.env.VITE_API_KEY_MAPBOX as string;
   const bounds: mapboxgl.LngLatBoundsLike = [
     [-85, 36], // Southwest coordinates
     [-65, 48], // Northeast coordinates
   ];
   const [longitude, latitude] = configs.location.center;
+  const style = mapMode === "map" ? configs.style.map : configs.style.satellite;
 
   const map = new mapboxgl.Map({
     container: mapContainerId,
-    style: configs.style.map,
+    style,
     center: [longitude, latitude],
     zoom: configs.location.zoom,
     bearing: configs.location.bearing,
@@ -212,7 +217,6 @@ export function removeClusterLayer(
 ) {
   if (map.getLayer(kMeansLayer.title)) {
     map.removeLayer(kMeansLayer.title);
-    map.removeSource(kMeansLayer.title);
   }
 }
 /**

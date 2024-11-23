@@ -1,12 +1,12 @@
 import { createContext, useEffect, useState } from "react";
-import { Color } from "../constants/mapConstants";
+import { Color, MapAttribute, mapSections } from "../constants/mapConstants";
 import MapViewer from "../components/organisms/MapViewer";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import * as Cesium from "cesium";
 
 export type MapMode = "satellite" | "map";
 
-type ViewerContextProps = {
+type MapContextProps = {
   mapViewer: mapboxgl.Map | undefined;
   setMapViewer: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
   map3dViewer: Cesium.Viewer | undefined;
@@ -15,6 +15,8 @@ type ViewerContextProps = {
   >;
   parentLayer: string;
   setParentLayer: React.Dispatch<React.SetStateAction<string>>;
+  attribute: MapAttribute;
+  setAttribute: React.Dispatch<React.SetStateAction<MapAttribute>>;
   color: Color | undefined;
   setColor: React.Dispatch<React.SetStateAction<Color | undefined>>;
   mapMode: MapMode;
@@ -24,14 +26,12 @@ type ViewerContextProps = {
 /**
  * Context that stores states of {@link Map3dViewer} and {@link MapViewer}.
  */
-export const ViewerContext = createContext<ViewerContextProps>(
-  {} as ViewerContextProps
-);
+export const MapContext = createContext<MapContextProps>({} as MapContextProps);
 
 /**
  * Context provider that stores states of {@link Map3dViewer} and {@link MapViewer}.
  */
-export function ViewerContextProvider({
+export function MapContextProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -39,8 +39,14 @@ export function ViewerContextProvider({
   const [mapViewer, setMapViewer] = useState<mapboxgl.Map>();
   const [satelliteViewer, setSatelliteViewer] = useState<Cesium.Viewer>();
   const [parentLayer, setParentLayer] = useState<string>("");
+  const [attribute, setAttribute] = useState<MapAttribute>(
+    () => mapSections.find((sec) => sec.id === "home")!.attribute!
+  );
   const [color, setColor] = useState<Color>();
-  const [mapMode, setMapMode] = useState<MapMode>("map");
+  const [mapMode, setMapMode] = useState<MapMode>(() => {
+    const mode = localStorage.getItem("mapMode") as MapMode | null;
+    return mode ? mode : "map";
+  });
 
   useEffect(() => {
     document.documentElement.setAttribute("map-mode", mapMode);
@@ -52,7 +58,7 @@ export function ViewerContextProvider({
   };
 
   return (
-    <ViewerContext.Provider
+    <MapContext.Provider
       value={{
         mapViewer,
         setMapViewer,
@@ -60,6 +66,8 @@ export function ViewerContextProvider({
         setMap3dViewer: setSatelliteViewer,
         parentLayer,
         setParentLayer,
+        attribute,
+        setAttribute,
         color,
         setColor,
         mapMode,
@@ -67,6 +75,6 @@ export function ViewerContextProvider({
       }}
     >
       {children}
-    </ViewerContext.Provider>
+    </MapContext.Provider>
   );
 }

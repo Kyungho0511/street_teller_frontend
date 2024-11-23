@@ -8,10 +8,13 @@ import { useLocation, useParams } from "react-router-dom";
 import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { ViewerContext } from "../context/ViewerContext";
+import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
 import { Color, mapSections } from "../constants/mapConstants";
-import { geoJsonFilePath, HealthcarePropertyName } from "../constants/geoJsonConstants";
+import {
+  geoJsonFilePath,
+  HealthcarePropertyName,
+} from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
 import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
@@ -21,30 +24,33 @@ import PopupTextCluster from "../components/atoms/PopupTextCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
+import { Section } from "../constants/surveyConstants";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
-
   // Global states
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
-  const { mapViewer } = useContext(ViewerContext);
+  const { mapViewer, mapMode } = useContext(MapContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
-  const clusterName = pathToSection(location.pathname)
+  const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
-  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(geoJsonFilePath);
+  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
+    useGeoJson(geoJsonFilePath);
 
   // Get openAI instructions on the current page.
   useOpenai(addMessage, updatePrompt, parseInt(clusterId!), [
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
-    `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
+    `${
+      survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category
+    }`,
   ]);
 
   // Filter geoJson data based on the selected clusters from the previous page.
@@ -55,8 +61,7 @@ export default function ClusterPage() {
 
     if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
       setGeoJson(kMeansLayers[0].geoJson);
-    } 
-    else if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
+    } else if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
       const selection: boolean[] = survey.clusterLists[
         clusterIndex - 1
       ].list.map((cluster) => cluster.checked);
@@ -67,7 +72,6 @@ export default function ClusterPage() {
       setGeoJson(filteredGeoJson);
     }
   }, [location.pathname]);
-
 
   // Set KMeansLayer on loading a new clustering page.
   useEffectAfterMount(() => {
@@ -85,7 +89,8 @@ export default function ClusterPage() {
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    const color: Color = mapSections.find((sec) => sec.id === clusterName)!.color!;
+    const color: Color = mapSections.find((sec) => sec.id === clusterName)!
+      .color!;
     setKMeansLayers((prev) => {
       const kMeansLayer = kmeans.setLayer(
         kMeansResult,
@@ -100,7 +105,6 @@ export default function ClusterPage() {
     });
   }, [survey.preferenceList.list, geoJson]);
 
-
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
     if (!mapViewer || !kMeansLayers[clusterIndex]) return;
@@ -110,19 +114,52 @@ export default function ClusterPage() {
     return () => mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
   }, [kMeansLayers, mapViewer]);
 
-
   // Update mapping on selected clusterList change
   useEffectAfterMount(() => {
     mapbox.updateClusterLayer(clusterList, mapViewer);
   }, [clusterList, mapViewer]);
 
+  // Restore mapping on mapMode change
+  useEffectAfterMount(() => {
+    if (!mapViewer) return;
+
+    const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
+    const currentSources = mapViewer.getStyle()!.sources;
+
+    mapViewer.on("style.load", () => {
+      mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+
+      // Restore sources
+      Object.entries(currentSources).forEach(([id, source]) => {
+        if (!mapViewer.getSource(id)) {
+          mapViewer.addSource(id, source);
+        }
+      });
+
+      // Restore current cluster layer.
+      if (!mapViewer.getLayer(clusterList.name)) {
+        mapViewer.addLayer(currentClusterLayer);
+      }
+      const section: Section = pathToSection(location.pathname);
+      mapbox.setLayers(section, mapViewer);
+      mapbox.updateClusterLayer(clusterList, mapViewer);
+    });
+  }, [mapMode]);
 
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
-    return <SidebarSection><p>Loading GeoJson Data...</p></SidebarSection>
+    return (
+      <SidebarSection>
+        <p>Loading GeoJson Data...</p>
+      </SidebarSection>
+    );
   }
   if (errorGeoJson) {
-    return <SidebarSection><p>{errorGeoJson}</p></SidebarSection>
+    return (
+      <SidebarSection>
+        <p>{errorGeoJson}</p>
+      </SidebarSection>
+    );
   }
 
   return (
