@@ -3,7 +3,7 @@ import styles from "./PopupSection.module.css";
 import { MapContext } from "../../context/MapContext";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import { FillColor, POPUP } from "../../constants/mapConstants";
-import { isWhiteFillColor } from "../../utils/utils";
+import { isTransparent } from "../../utils/utils";
 import useMapSelectEffect from "../../hooks/useMapSelectEffect";
 import { PopupContext } from "../../context/PopupContext";
 import { HealthcareProperties } from "../../constants/geoJsonConstants";
@@ -73,7 +73,7 @@ export default function PopupSection({
       const fillColor = (feature.layer!.paint as { "fill-color": FillColor })[
         "fill-color"
       ];
-      if (isWhiteFillColor(fillColor)) {
+      if (isTransparent(fillColor)) {
         hidePopup();
         return;
       }

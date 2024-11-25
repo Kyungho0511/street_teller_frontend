@@ -6,6 +6,7 @@ import {
   MapBound,
   MapLayer,
   mapSections,
+  transparent,
 } from "../constants/mapConstants";
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
@@ -149,7 +150,6 @@ export function updateClusterLayer(
 ) {
   if (map && map.getLayer(clusterList.name)) {
     const list = clusterList.list;
-    const transparent = "rgba(255,255,255,0)";
     map.setPaintProperty(clusterList.name, "fill-color", [
       "case",
       ["==", ["get", "cluster"], 0],
@@ -190,14 +190,14 @@ export function addClusterLayer(
         "fill-color": [
           "case",
           ["==", ["get", "cluster"], 0],
-          color ? kMeansLayer.colors[0] : "#ffffff",
+          color ? kMeansLayer.colors[0] : transparent,
           ["==", ["get", "cluster"], 1],
-          color ? kMeansLayer.colors[1] : "#ffffff",
+          color ? kMeansLayer.colors[1] : transparent,
           ["==", ["get", "cluster"], 2],
-          color ? kMeansLayer.colors[2] : "#ffffff",
+          color ? kMeansLayer.colors[2] : transparent,
           ["==", ["get", "cluster"], 3],
-          color ? kMeansLayer.colors[3] : "#ffffff",
-          "#ffffff",
+          color ? kMeansLayer.colors[3] : transparent,
+          transparent,
         ],
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
@@ -248,20 +248,20 @@ export function offLayers(map: mapboxgl.Map) {
 /**
  * Set the line weight of the selected feature.
  * @param layer Name of the layer.
- * @param keyId Name of the layer property id.
- * @param valueId Value of layer property id to compare.
+ * @param key Name of the layer property id.
+ * @param value Value of layer property id to compare.
  * @param lineWeight Line weight of the outline.
  */
 export function setLineWidth(
   layer: string,
-  keyId: string,
-  valueId: number,
+  key: string,
+  value: number,
   lineWeight: number,
   map: mapboxgl.Map
 ) {
   map.setPaintProperty(layer, "line-width", [
     "case",
-    ["==", ["get", keyId], valueId],
+    ["==", ["get", key], value],
     lineWeight,
     0,
   ]);

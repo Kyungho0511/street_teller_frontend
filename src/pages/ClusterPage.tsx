@@ -122,7 +122,6 @@ export default function ClusterPage() {
   // Restore mapping on mapMode change
   useEffectAfterMount(() => {
     if (!mapViewer) return;
-
     const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
     const currentSources = mapViewer.getStyle()!.sources;
 
@@ -138,7 +137,7 @@ export default function ClusterPage() {
 
       // Restore current cluster layer.
       if (!mapViewer.getLayer(clusterList.name)) {
-        mapViewer.addLayer(currentClusterLayer);
+        mapViewer.addLayer(currentClusterLayer, "road-simple");
       }
       const section: Section = pathToSection(location.pathname);
       mapbox.setLayers(section, mapViewer);

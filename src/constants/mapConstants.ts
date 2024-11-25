@@ -28,12 +28,16 @@ export const POPUP = {
   offset: 30,
 };
 
+export const transparent = "rgba(255,255,255,0)";
+
 export type Hex = `#${string}`;
 
+export type RGBA = `rgba(${number},${number},${number},${number})`;
+
 export type Color = {
-  categorized: Hex[];
-  min: Hex;
-  max: Hex;
+  categorized: RGBA[];
+  min: RGBA;
+  max: RGBA;
 };
 
 export type FillColor = {
@@ -42,22 +46,37 @@ export type FillColor = {
   b: number;
   a: number;
 };
-
+const opacity = 0.75;
 export const color: { [key in string]: Color } = {
   blue: {
-    categorized: ["#b3e8eb", "#63c1e7", "#209cea", "#5079ec"],
-    min: "#f7faff",
-    max: "#006efe",
+    categorized: [
+      `rgba(179,232,235,${opacity})`,
+      `rgba(99,193,231,${opacity})`,
+      `rgba(32,157,234,${opacity})`,
+      `rgba(80,122,236,${opacity})`,
+    ],
+    min: `rgba(247,250,255,${opacity})`,
+    max: `rgba(0,110,254,${opacity})`,
   },
   yellow: {
-    categorized: ["#f7e900", "#ffc800", "#f4894b", "#e26666"],
-    min: "#fffaec",
-    max: "#f9a200",
+    categorized: [
+      `rgba(247,233,0,${opacity})`,
+      `rgba(255,200,0,${opacity})`,
+      `rgba(244,137,75,${opacity})`,
+      `rgba(226,102,102,${opacity})`,
+    ],
+    min: `rgba(255,250,236,${opacity})`,
+    max: `rgba(249,162,0,${opacity})`,
   },
   green: {
-    categorized: ["#d8e373", "#b2e278", "#66cd5a", "#5db6be"],
-    min: "#e3d1ad",
-    max: "#2aa9b5",
+    categorized: [
+      `rgba(216,227,115,${opacity})`,
+      `rgba(178,226,120,${opacity})`,
+      `rgba(102,205,90,${opacity})`,
+      `rgba(93,182,190,${opacity})`,
+    ],
+    min: `rgba(227,209,173,${opacity})`,
+    max: `rgba(42,169,181,${opacity})`,
   },
 };
 
