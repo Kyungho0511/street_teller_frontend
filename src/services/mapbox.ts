@@ -25,6 +25,7 @@ export function createMap(
     [-85, 36], // Southwest coordinates
     [-65, 48], // Northeast coordinates
   ];
+
   const [longitude, latitude] = configs.location.center;
   const style = mapMode === "map" ? configs.style.map : configs.style.satellite;
 

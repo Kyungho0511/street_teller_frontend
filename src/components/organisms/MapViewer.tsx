@@ -49,7 +49,7 @@ export default function MapViewer() {
     };
   }, [location.pathname, mapViewer, setColor, setParentLayer]);
 
-  // Toggle map style between satellite and map.
+  // Toggle map viewer between satellite and map.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 

@@ -46,7 +46,7 @@ export type FillColor = {
   b: number;
   a: number;
 };
-const opacity = 0.75;
+const opacity = 0.8;
 export const color: { [key in string]: Color } = {
   blue: {
     categorized: [

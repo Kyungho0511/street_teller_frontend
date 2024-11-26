@@ -1,21 +1,25 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .button {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: end;
-  min-width: 80px;
-  min-height: 80px;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: end;
+  width: 80px;
+  height: 80px;
   margin-left: 1.2rem;
   cursor: pointer;
-  border-radius: 0.8rem;
+  border-radius: 0.5rem;
   border: 2px solid var(--theme-map-button);
   font-size: var(--font-xsmall);
-  background-color: var(--color-grey);
   box-shadow: 1px 2px 4px var(--theme-box-shadow);
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
 }
 
 .button:hover {
@@ -23,6 +27,7 @@
 }
 
 .text {
-  margin: 0 0 0rem 0;
+  margin: 0.4rem 0;
   color: var(--color-white);
+  user-select: none;
 }

@@ -1,9 +1,9 @@
-import { Link, useLocation } from 'react-router-dom'
-import Button from '../atoms/Button'
-import styles from './Footbar.module.css'
-import PromptBox from '../molecules/PromptBox';
-import MapToggleButton from '../atoms/MapToggleButton';
-import { SIDEBAR_WIDTH } from './Sidebar';
+import { Link, useLocation } from "react-router-dom";
+import Button from "../atoms/Button";
+import styles from "./Footbar.module.css";
+import PromptBox from "../molecules/PromptBox";
+import MapToggleButton from "../atoms/MapToggleButton";
+import { SIDEBAR_WIDTH } from "./Sidebar";
 
 export const FOOTBAR_HEIGHT = 100;
 
@@ -28,7 +28,7 @@ export default function Footbar() {
     case "/cluster/3":
       nextPath = "/cluster/3";
       break;
-}
+  }
 
   return (
     <footer

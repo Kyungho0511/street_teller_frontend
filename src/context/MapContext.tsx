@@ -9,6 +9,8 @@ export type MapMode = "satellite" | "map";
 type MapContextProps = {
   mapViewer: mapboxgl.Map | undefined;
   setMapViewer: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
+  mapPreview: mapboxgl.Map | undefined;
+  setMapPreview: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
   map3dViewer: Cesium.Viewer | undefined;
   setMap3dViewer: React.Dispatch<
     React.SetStateAction<Cesium.Viewer | undefined>
@@ -21,6 +23,7 @@ type MapContextProps = {
   setColor: React.Dispatch<React.SetStateAction<Color | undefined>>;
   mapMode: MapMode;
   toggleMapMode: () => void;
+  previewMode: MapMode;
 };
 
 /**
@@ -37,7 +40,8 @@ export function MapContextProvider({
   children: React.ReactNode;
 }) {
   const [mapViewer, setMapViewer] = useState<mapboxgl.Map>();
-  const [satelliteViewer, setSatelliteViewer] = useState<Cesium.Viewer>();
+  const [mapPreview, setMapPreview] = useState<mapboxgl.Map>();
+  const [map3dViewer, setMap3dViewer] = useState<Cesium.Viewer>();
   const [parentLayer, setParentLayer] = useState<string>("");
   const [attribute, setAttribute] = useState<MapAttribute>(
     () => mapSections.find((sec) => sec.id === "home")!.attribute!
@@ -47,6 +51,9 @@ export function MapContextProvider({
     const mode = localStorage.getItem("mapMode") as MapMode | null;
     return mode ? mode : "map";
   });
+  const [previewMode, setPreviewMode] = useState<MapMode>(() =>
+    mapMode === "satellite" ? "map" : "satellite"
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute("map-mode", mapMode);
@@ -55,6 +62,9 @@ export function MapContextProvider({
 
   const toggleMapMode = () => {
     setMapMode((prevMode) => (prevMode === "satellite" ? "map" : "satellite"));
+    setPreviewMode((prevMode) =>
+      prevMode === "satellite" ? "map" : "satellite"
+    );
   };
 
   return (
@@ -62,8 +72,10 @@ export function MapContextProvider({
       value={{
         mapViewer,
         setMapViewer,
-        map3dViewer: satelliteViewer,
-        setMap3dViewer: setSatelliteViewer,
+        mapPreview,
+        setMapPreview,
+        map3dViewer,
+        setMap3dViewer,
         parentLayer,
         setParentLayer,
         attribute,
@@ -72,6 +84,7 @@ export function MapContextProvider({
         setColor,
         mapMode,
         toggleMapMode,
+        previewMode,
       }}
     >
       {children}
