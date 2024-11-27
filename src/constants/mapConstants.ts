@@ -43,8 +43,6 @@ export const POPUP = {
 
 export const transparent = "rgba(255,255,255,0)";
 
-export type Hex = `#${string}`;
-
 export type RGBA = `rgba(${number},${number},${number},${number})`;
 
 export type Color = {
