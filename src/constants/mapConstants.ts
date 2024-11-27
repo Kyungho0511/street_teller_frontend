@@ -2,18 +2,29 @@ import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./surveyConstants";
 
-export const configs = {
+export type Location = {
+  center: mapboxgl.LngLat;
+  zoom: number;
+  pitch: number;
+  bearing: number;
+};
+
+export const mapConfigs = {
   style: {
     map: "mapbox://styles/klee0511/cm2hy9ofn00an01pb8q8q8fw8",
+    mapSimple: "mapbox://styles/klee0511/cm3zccrck00hq01s05gfkacue",
     satellite: "mapbox://styles/klee0511/cm3nx3g9o00mj01r22uldc1ib",
+    satelliteSimple: "mapbox://styles/klee0511/cm3zcek8m00g301qr7x9d80h2",
   },
   location: {
-    center: [-73.860766, 40.713326],
+    center: {
+      lng: -73.860766,
+      lat: 40.713326,
+    },
     zoom: 11,
     pitch: 0,
     bearing: 0,
-    antialias: true,
-  },
+  } as Location,
 };
 
 export const GEOID = "GEOID";
@@ -21,6 +32,8 @@ export const GEOID = "GEOID";
 export const OUTLINE_LAYER = "tracts-features-nyc-outline";
 
 export const THICK_LINE_WEIGHT = 4;
+
+export const ZOOM_MODIFIER = 3; // zoom level modifier for map preview.
 
 export const POPUP = {
   width: 250,

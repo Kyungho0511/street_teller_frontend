@@ -2,11 +2,12 @@ import { KMeansLayer } from "./kmeans";
 import mapboxgl from "mapbox-gl";
 import {
   Color,
-  configs,
+  mapConfigs,
   MapBound,
   MapLayer,
   mapSections,
   transparent,
+  ZOOM_MODIFIER,
 } from "../constants/mapConstants";
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
@@ -18,7 +19,8 @@ import { MapMode } from "../context/MapContext";
  */
 export function createMap(
   mapContainerId: string,
-  mapMode: MapMode
+  mapMode: MapMode,
+  simple: boolean
 ): mapboxgl.Map {
   mapboxgl.accessToken = import.meta.env.VITE_API_KEY_MAPBOX as string;
   const bounds: mapboxgl.LngLatBoundsLike = [
@@ -26,22 +28,34 @@ export function createMap(
     [-65, 48], // Northeast coordinates
   ];
 
-  const [longitude, latitude] = configs.location.center;
-  const style = mapMode === "map" ? configs.style.map : configs.style.satellite;
+  let style;
+  if (simple) {
+    style =
+      mapMode === "map"
+        ? mapConfigs.style.mapSimple
+        : mapConfigs.style.satelliteSimple;
+  } else {
+    style =
+      mapMode === "map" ? mapConfigs.style.map : mapConfigs.style.satellite;
+  }
 
   const map = new mapboxgl.Map({
     container: mapContainerId,
     style,
-    center: [longitude, latitude],
-    zoom: configs.location.zoom,
-    bearing: configs.location.bearing,
-    pitch: configs.location.pitch,
+    center: mapConfigs.location.center,
+    zoom: simple
+      ? mapConfigs.location.zoom - ZOOM_MODIFIER
+      : mapConfigs.location.zoom,
+    bearing: mapConfigs.location.bearing,
+    pitch: mapConfigs.location.pitch,
     scrollZoom: true,
     maxBounds: bounds,
     attributionControl: false,
     logoPosition: "top-left",
     projection: "globe",
   });
+  map.dragRotate.disable();
+  map.touchPitch.disable();
 
   return map;
 }

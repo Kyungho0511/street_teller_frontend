@@ -2,14 +2,15 @@ import styles from "./MapPreview.module.css";
 import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
 import { MapContext } from "../../context/MapContext";
-import { configs } from "../../constants/mapConstants";
+import { mapConfigs, ZOOM_MODIFIER } from "../../constants/mapConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 /**
  * Mapbox map viewer component.
  */
 export default function MapPreview() {
-  const { mapPreview, setMapPreview, previewMode } = useContext(MapContext);
+  const { mapPreview, setMapPreview, previewMode, location } =
+    useContext(MapContext);
   const mapPreviewContainerRef = useRef<HTMLDivElement>(null);
 
   // Create a map instance on component mount.
@@ -17,7 +18,8 @@ export default function MapPreview() {
     if (!mapPreviewContainerRef.current) return;
     const temp = mapbox.createMap(
       mapPreviewContainerRef.current.id,
-      previewMode
+      previewMode,
+      true
     );
     temp.on("load", () => {
       setMapPreview(temp);
@@ -34,9 +36,18 @@ export default function MapPreview() {
     if (!mapPreview) return;
 
     const styleUrl =
-      previewMode === "satellite" ? configs.style.satellite : configs.style.map;
+      previewMode === "satellite"
+        ? mapConfigs.style.satelliteSimple
+        : mapConfigs.style.mapSimple;
     mapPreview.setStyle(styleUrl);
   }, [previewMode]);
+
+  // Update the preview location on main map location change.
+  useEffectAfterMount(() => {
+    if (!mapPreview) return;
+    mapPreview.setCenter(location.center);
+    mapPreview.setZoom(location.zoom - ZOOM_MODIFIER);
+  }, [location]);
 
   return (
     <>

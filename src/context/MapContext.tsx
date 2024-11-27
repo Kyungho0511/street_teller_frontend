@@ -1,5 +1,11 @@
 import { createContext, useEffect, useState } from "react";
-import { Color, MapAttribute, mapSections } from "../constants/mapConstants";
+import {
+  Color,
+  mapConfigs,
+  Location,
+  MapAttribute,
+  mapSections,
+} from "../constants/mapConstants";
 import MapViewer from "../components/organisms/MapViewer";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import * as Cesium from "cesium";
@@ -24,6 +30,8 @@ type MapContextProps = {
   mapMode: MapMode;
   toggleMapMode: () => void;
   previewMode: MapMode;
+  location: Location;
+  setLocation: React.Dispatch<React.SetStateAction<Location>>;
 };
 
 /**
@@ -43,14 +51,19 @@ export function MapContextProvider({
   const [mapPreview, setMapPreview] = useState<mapboxgl.Map>();
   const [map3dViewer, setMap3dViewer] = useState<Cesium.Viewer>();
   const [parentLayer, setParentLayer] = useState<string>("");
+  const [location, setLocation] = useState<Location>(
+    mapConfigs.location as Location
+  );
   const [attribute, setAttribute] = useState<MapAttribute>(
     () => mapSections.find((sec) => sec.id === "home")!.attribute!
   );
+
   const [color, setColor] = useState<Color>();
   const [mapMode, setMapMode] = useState<MapMode>(() => {
     const mode = localStorage.getItem("mapMode") as MapMode | null;
     return mode ? mode : "map";
   });
+
   const [previewMode, setPreviewMode] = useState<MapMode>(() =>
     mapMode === "satellite" ? "map" : "satellite"
   );
@@ -85,6 +98,8 @@ export function MapContextProvider({
         mapMode,
         toggleMapMode,
         previewMode,
+        location,
+        setLocation,
       }}
     >
       {children}
