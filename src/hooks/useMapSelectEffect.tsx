@@ -1,7 +1,12 @@
-import { FillColor, GEOID, OUTLINE_LAYER, THICK_LINE_WEIGHT } from '../constants/mapConstants';
-import * as mapbox from '../services/mapbox';
-import { isWhiteFillColor } from '../utils/utils';
-import { useEffect } from 'react';
+import {
+  FillColor,
+  GEOID,
+  OUTLINE_LAYER,
+  THICK_LINE_WEIGHT,
+} from "../constants/mapConstants";
+import * as mapbox from "../services/mapbox";
+import { isTransparent } from "../utils/utils";
+import { useEffect } from "react";
 
 /**
  * Add selection effect to the map's selected features.
@@ -11,9 +16,8 @@ import { useEffect } from 'react';
 export default function useMapSelectEffect(
   layer: string,
   map?: mapboxgl.Map,
-  enableSelectEffect?: boolean,
+  enableSelectEffect?: boolean
 ) {
-
   useEffect(() => {
     if (!map || !enableSelectEffect) return;
 
@@ -25,7 +29,7 @@ export default function useMapSelectEffect(
       const fillColor = (feature?.layer?.paint as { "fill-color": FillColor })[
         "fill-color"
       ];
-      return !isWhiteFillColor(fillColor);
+      return !isTransparent(fillColor);
     };
 
     const mouseLeaveHandler = () => {

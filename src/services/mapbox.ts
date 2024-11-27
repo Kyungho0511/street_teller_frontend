@@ -1,34 +1,61 @@
-import { KMeansLayer } from './kmeans';
+import { KMeansLayer } from "./kmeans";
 import mapboxgl from "mapbox-gl";
-import { Color, configs, MapBound, MapLayer, mapSections } from "../constants/mapConstants";
+import {
+  Color,
+  mapConfigs,
+  MapBound,
+  MapLayer,
+  mapSections,
+  transparent,
+  ZOOM_MODIFIER,
+} from "../constants/mapConstants";
 import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
-import { HealthcarePropertyName } from '../constants/geoJsonConstants';
+import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import { MapMode } from "../context/MapContext";
 
 /**
  * Create a mapbox map instance.
  */
-export function createMap(mapContainerId: string): mapboxgl.Map {
+export function createMap(
+  mapContainerId: string,
+  mapMode: MapMode,
+  simple: boolean
+): mapboxgl.Map {
   mapboxgl.accessToken = import.meta.env.VITE_API_KEY_MAPBOX as string;
   const bounds: mapboxgl.LngLatBoundsLike = [
     [-85, 36], // Southwest coordinates
     [-65, 48], // Northeast coordinates
   ];
-  const [longitude, latitude] = configs.location.center;
+
+  let style;
+  if (simple) {
+    style =
+      mapMode === "map"
+        ? mapConfigs.style.mapSimple
+        : mapConfigs.style.satelliteSimple;
+  } else {
+    style =
+      mapMode === "map" ? mapConfigs.style.map : mapConfigs.style.satellite;
+  }
 
   const map = new mapboxgl.Map({
     container: mapContainerId,
-    style: configs.style,
-    center: [longitude, latitude],
-    zoom: configs.location.zoom,
-    bearing: configs.location.bearing,
-    pitch: configs.location.pitch,
+    style,
+    center: mapConfigs.location.center,
+    zoom: simple
+      ? mapConfigs.location.zoom - ZOOM_MODIFIER
+      : mapConfigs.location.zoom,
+    bearing: mapConfigs.location.bearing,
+    pitch: mapConfigs.location.pitch,
     scrollZoom: true,
     maxBounds: bounds,
     attributionControl: false,
     logoPosition: "top-left",
-    projection: "globe"
+    projection: "globe",
   });
+  map.dragRotate.disable();
+  map.touchPitch.disable();
 
   return map;
 }
@@ -44,7 +71,10 @@ export function removeMap(map: mapboxgl.Map): void {
 /**
  * Get the paint type of the mapbox layer.
  */
-export function getLayerPaintType(layer: MapLayer, map: mapboxgl.Map): string[] | undefined {
+export function getLayerPaintType(
+  layer: MapLayer,
+  map: mapboxgl.Map
+): string[] | undefined {
   // Exit if the layer type is not found.
   const layerType = map.getLayer(layer.name)?.type;
   if (!layerType) return;
@@ -66,7 +96,7 @@ export function getLayerPaintType(layer: MapLayer, map: mapboxgl.Map): string[] 
       return ["fill-extrusion-opacity"];
     default:
       return;
-  }  
+  }
 }
 
 /**
@@ -76,9 +106,10 @@ export function getLayerPaintType(layer: MapLayer, map: mapboxgl.Map): string[] 
  */
 export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
   const paintProps: string[] | undefined = getLayerPaintType(layer, map);
-  paintProps && paintProps.forEach(function (prop) {
-    map.setPaintProperty(layer.name, prop, layer.opacity);
-  });
+  paintProps &&
+    paintProps.forEach(function (prop) {
+      map.setPaintProperty(layer.name, prop, layer.opacity);
+    });
 }
 
 /**
@@ -87,7 +118,6 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
  * @param map Map in which layers are set.
  */
 export function setLayers(section: Section, map: mapboxgl.Map): void {
-  
   // Exit if the section is not found.
   const mapSection = mapSections.find((sec) => sec.id === section);
   if (!mapSection) return;
@@ -99,12 +129,7 @@ export function setLayers(section: Section, map: mapboxgl.Map): void {
   // Home: Update layer style, adjusting the color interpolation.
   if (section === "home") {
     const name = mapSection.attribute!.name;
-    updateLayerAttribute(
-      mapSection.parentLayer!,
-      name,
-      mapSection.color!,
-      map
-    );
+    updateLayerAttribute(mapSection.parentLayer!, name, mapSection.color!, map);
   }
 }
 
@@ -134,21 +159,24 @@ export function updateLayerAttribute(
  * @param clusterList Informs which clusters are selected.
  * @param map Map to which the layer is updated.
  */
-export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map) {
+export function updateClusterLayer(
+  clusterList: ClusterList,
+  map?: mapboxgl.Map
+) {
   if (map && map.getLayer(clusterList.name)) {
     const list = clusterList.list;
     map.setPaintProperty(clusterList.name, "fill-color", [
       "case",
       ["==", ["get", "cluster"], 0],
-      list[0].checked ? list[0].color : "#ffffff",
+      list[0].checked ? list[0].color : transparent,
       ["==", ["get", "cluster"], 1],
-      list[1].checked ? list[1].color : "#ffffff",
+      list[1].checked ? list[1].color : transparent,
       ["==", ["get", "cluster"], 2],
-      list[2].checked ? list[2].color : "#ffffff",
+      list[2].checked ? list[2].color : transparent,
       ["==", ["get", "cluster"], 3],
-      list[3].checked ? list[3].color : "#ffffff",
-      "#ffffff",
-    ])
+      list[3].checked ? list[3].color : transparent,
+      transparent,
+    ]);
   }
 }
 
@@ -158,12 +186,16 @@ export function updateClusterLayer(clusterList: ClusterList, map?: mapboxgl.Map)
  * @param map Map to which the layer is added.
  * @param color If true, the layer is colored.
  */
-export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, color?: boolean) {
+export function addClusterLayer(
+  kMeansLayer: KMeansLayer,
+  map: mapboxgl.Map,
+  color?: boolean
+) {
   map.addSource(kMeansLayer.title, {
-      type: "geojson",
-      data: kMeansLayer.geoJson,
-    });
-    
+    type: "geojson",
+    data: kMeansLayer.geoJson,
+  });
+
   map.addLayer(
     {
       id: kMeansLayer.title,
@@ -173,14 +205,14 @@ export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, col
         "fill-color": [
           "case",
           ["==", ["get", "cluster"], 0],
-          color ? kMeansLayer.colors[0] : "#ffffff",
+          color ? kMeansLayer.colors[0] : transparent,
           ["==", ["get", "cluster"], 1],
-          color ? kMeansLayer.colors[1] : "#ffffff",
+          color ? kMeansLayer.colors[1] : transparent,
           ["==", ["get", "cluster"], 2],
-          color ? kMeansLayer.colors[2] : "#ffffff",
+          color ? kMeansLayer.colors[2] : transparent,
           ["==", ["get", "cluster"], 3],
-          color? kMeansLayer.colors[3] : "#ffffff",
-          "#ffffff",
+          color ? kMeansLayer.colors[3] : transparent,
+          transparent,
         ],
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
@@ -194,10 +226,12 @@ export function addClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map, col
  * @param kMeansLayer Layer to be removed.
  * @param map Map from which the layer is removed.
  */
-export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) {
+export function removeClusterLayer(
+  kMeansLayer: KMeansLayer,
+  map: mapboxgl.Map
+) {
   if (map.getLayer(kMeansLayer.title)) {
     map.removeLayer(kMeansLayer.title);
-    map.removeSource(kMeansLayer.title);
   }
 }
 /**
@@ -205,7 +239,10 @@ export function removeClusterLayer(kMeansLayer: KMeansLayer, map: mapboxgl.Map) 
  * @param kMeansLayers Layers to be removed.
  * @param map Map from which the layers are removed.
  */
-export function removeAllClusterLayers(kMeansLayers: KMeansLayer[], map: mapboxgl.Map) {
+export function removeAllClusterLayers(
+  kMeansLayers: KMeansLayer[],
+  map: mapboxgl.Map
+) {
   kMeansLayers.forEach((kMeansLayer) => {
     removeClusterLayer(kMeansLayer, map);
   });
@@ -226,20 +263,20 @@ export function offLayers(map: mapboxgl.Map) {
 /**
  * Set the line weight of the selected feature.
  * @param layer Name of the layer.
- * @param keyId Name of the layer property id.
- * @param valueId Value of layer property id to compare.
+ * @param key Name of the layer property id.
+ * @param value Value of layer property id to compare.
  * @param lineWeight Line weight of the outline.
  */
 export function setLineWidth(
   layer: string,
-  keyId: string,
-  valueId: number,
+  key: string,
+  value: number,
   lineWeight: number,
   map: mapboxgl.Map
 ) {
   map.setPaintProperty(layer, "line-width", [
     "case",
-    ["==", ["get", keyId], valueId],
+    ["==", ["get", key], value],
     lineWeight,
     0,
   ]);

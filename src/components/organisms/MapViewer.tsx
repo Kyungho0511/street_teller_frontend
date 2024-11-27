@@ -1,29 +1,44 @@
-import styles from './MapViewer.module.css';
+import styles from "./MapViewer.module.css";
 import { useContext, useEffect, useRef } from "react";
 import * as mapbox from "../../services/mapbox";
-import { useLocation } from 'react-router-dom';
-import { pathToSection } from '../../utils/utils';
-import { CameraContext, CameraState } from '../../context/CameraContext';
-import { ViewerContext } from '../../context/ViewerContext';
-import { mapSections } from '../../constants/mapConstants';
-import { Section } from '../../constants/surveyConstants';
-import useEffectAfterMount from '../../hooks/useEffectAfterMount';
+import { useLocation } from "react-router-dom";
+import { pathToSection } from "../../utils/utils";
+import { MapContext } from "../../context/MapContext";
+import { mapConfigs, mapSections } from "../../constants/mapConstants";
+import { Section } from "../../constants/surveyConstants";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 /**
  * Mapbox map viewer component.
  */
 export default function MapViewer() {
-  const { mapViewer, setMapViewer, setParentLayer, setColor, mapMode } = useContext(ViewerContext);
-  const { cameraState, setCameraState } = useContext(CameraContext);
+  const {
+    mapViewer,
+    setMapViewer,
+    mapPreview,
+    setParentLayer,
+    setColor,
+    mapMode,
+    setLocation,
+  } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  // Create a map instance on component mount.
   useEffect(() => {
+    // Create a map instance on component mount.
     if (!mapContainerRef.current) return;
-    const temp = mapbox.createMap(mapContainerRef.current.id);
+    const temp = mapbox.createMap(mapContainerRef.current.id, mapMode, false);
+
+    // Add event listener to update location state.
+    temp.on("moveend", () => {
+      const center = temp.getCenter();
+      const zoom = temp.getZoom();
+      setLocation((prev) => ({ ...prev, center, zoom }));
+    });
+
     temp.on("load", () => {
-      setMapViewer(temp);    });
+      setMapViewer(temp);
+    });
 
     return () => {
       mapViewer && mapbox.removeMap(mapViewer);
@@ -31,67 +46,34 @@ export default function MapViewer() {
     };
   }, []);
 
-
-  useEffectAfterMount(() => {
-    console.log("center: ", `${mapViewer!.getCenter().lat}, ${mapViewer!.getCenter().lng}`);
-  }, [cameraState])
-
-  // Update the camera state when the map ends moving.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const onMoveEnd = () => {
-      const center = mapViewer.getCenter();
-      setCameraState({
-        center: [center.lng, center.lat],
-        zoom: mapViewer.getZoom(),
-        bearing: mapViewer.getBearing(),
-        pitch: mapViewer.getPitch(),
-      } as CameraState);
-    };
-    mapViewer.on('moveend', onMoveEnd);
+    // Update the map layers of the current page.
+    const section: Section = pathToSection(location.pathname);
+    mapbox.setLayers(section, mapViewer);
+
+    // Update the map parent layer and color of the current page.
+    const mapSection = mapSections.find((sec) => sec.id === section)!;
+    setParentLayer(mapSection.parentLayer);
+    setColor(mapSection.color);
 
     return () => {
-      mapViewer.off('moveend', onMoveEnd);
+      setParentLayer("");
+      setColor(undefined);
     };
-  }, [mapViewer, setCameraState]);
-
-
-
-  useEffectAfterMount(() => {
-    if (!mapViewer) return;
-
-      // Update the map layers of the current page.
-      const section: Section = pathToSection(location.pathname);
-      mapbox.setLayers(section, mapViewer);
-
-      // Update the map parent layer and color of the current page.
-      const mapSection = mapSections.find((sec) => sec.id === section)!;
-      setParentLayer(mapSection.parentLayer);
-      setColor(mapSection.color);
-
-      return () => {
-        setParentLayer("");
-        setColor(undefined);
-      }
   }, [location.pathname, mapViewer, setColor, setParentLayer]);
 
-
-  // Resize the map when its display mode changes.
+  // Toggle map viewer between satellite and map.
   useEffectAfterMount(() => {
-    if (!mapViewer) return;
-    mapViewer.resize();
-  }, [mapMode, mapViewer]);
+    if (!mapViewer || !mapPreview) return;
 
-  return (
-    <div
-      id="map"
-      ref={mapContainerRef}
-      className={styles.map}
-      style={{
-        display: mapMode == "map" ? 'block' : 'none',
-      }}
-    >
-    </div>
-  );
+    const styleUrl =
+      mapMode === "satellite"
+        ? mapConfigs.style.satellite
+        : mapConfigs.style.map;
+    mapViewer.setStyle(styleUrl);
+  }, [mapMode]);
+
+  return <div id="map" ref={mapContainerRef} className={styles.map}></div>;
 }

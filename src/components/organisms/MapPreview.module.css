@@ -1,0 +1,8 @@
+.map {
+  position: absolute;
+  margin-left: 1.2rem;
+  width: 80px;
+  height: 80px;
+  border-radius: 0.5rem;
+  z-index: -1;
+}

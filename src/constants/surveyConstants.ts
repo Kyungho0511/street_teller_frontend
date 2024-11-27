@@ -11,6 +11,7 @@ import {
 import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
+import { transparent } from "./mapConstants";
 
 /**
  * Sections of the website.
@@ -134,14 +135,12 @@ export const initialPreferenceList: PreferenceList = {
   ],
 };
 
-export const siteCategories = initialPreferenceList.list.map(
-  (preference) => ({
-    category: preference.category,
-    subCategories: preference.subCategories.map(
-      (subCategory) => subCategory.name
-    ),
-  })
-);
+export const siteCategories = initialPreferenceList.list.map((preference) => ({
+  category: preference.category,
+  subCategories: preference.subCategories.map(
+    (subCategory) => subCategory.name
+  ),
+}));
 
 /**
  * Borough list of the user survey.
@@ -184,39 +183,40 @@ export type ClusterList = {
 /**
  * Cluster lists to load initially.
  */
+
 export const initialClusterLists: ClusterList[] = [
   {
     name: "cluster1",
     list: [
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
@@ -227,33 +227,33 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
@@ -264,33 +264,33 @@ export const initialClusterLists: ClusterList[] = [
     list: [
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },
       {
         name: "",
-        centroids: [{name: "walked percent", value: 0}],
+        centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: "#ffffff",
+        color: transparent,
         checked: true,
         id: uuidv4(),
       },

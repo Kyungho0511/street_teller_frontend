@@ -1,5 +1,9 @@
 import styles from "./CheckboxList.module.css";
-import { Cluster, ClusterCheckboxItem, ClusterList } from "../../constants/surveyConstants";
+import {
+  Cluster,
+  ClusterCheckboxItem,
+  ClusterList,
+} from "../../constants/surveyConstants";
 import Colorbox from "../atoms/Colorbox";
 import { useContext, useState } from "react";
 import Button from "../atoms/Button";
@@ -19,8 +23,12 @@ type CheckboxListAIProps = {
 /**
  * Checkbox list component to display the AI response.
  */
-export default function CheckboxListAI({ name, list, index, kMeansLayers }: CheckboxListAIProps) {
-
+export default function CheckboxListAI({
+  name,
+  list,
+  index,
+  kMeansLayers,
+}: CheckboxListAIProps) {
   // Global states
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const {
@@ -54,10 +62,9 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
    * Start the typing animation for the OpenAI streaming response.
    */
   const startTypingAnimation = async () => {
-
     // Reset the loading and error status.
     setLoadingMessage((prev) => ({ ...prev, json: true }));
-    setErrorMessage((prev) => ({...prev, json: undefined}));
+    setErrorMessage((prev) => ({ ...prev, json: undefined }));
 
     // Construct prompt JSON for OpenAI.
     const promptJson: Cluster[] = list.map(
@@ -70,7 +77,7 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
           })),
         } as Cluster)
     );
-    
+
     let response: OpenAiResponseJSON = {
       clusters: [{ name: "", reasoning: "" }],
     };
@@ -93,12 +100,10 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
             ...newList[i],
             name: cluster?.name,
             reasoning: cluster?.reasoning,
-            centroids: kMeansLayers[index]!.attributes.map(
-              (attr, j) => ({
-                name: attr,
-                value: kMeansLayers[index]!.centroids[i][j],
-              })
-            ),
+            centroids: kMeansLayers[index]!.attributes.map((attr, j) => ({
+              name: attr,
+              value: kMeansLayers[index]!.centroids[i][j],
+            })),
             color: kMeansLayers[index]!.colors[i],
           };
         });
@@ -106,7 +111,7 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
       }
     } catch {
       const error = "Failed to fetch openAI JSON response.";
-      setErrorMessage(({...errorMessage, json: error}));
+      setErrorMessage({ ...errorMessage, json: error });
       console.error(error);
     } finally {
       // Update the message context when the response is fully fetched.
@@ -139,7 +144,7 @@ export default function CheckboxListAI({ name, list, index, kMeansLayers }: Chec
 
   // Display error status of fetching openai response.
   if (errorMessage.json) {
-    return <p>{errorMessage.json}</p>
+    return <p>{errorMessage.json}</p>;
   }
 
   return (
