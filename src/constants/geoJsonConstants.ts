@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import { Feature, FeatureCollection, Polygon } from "geojson";
 
 export const geoJsonFilePath = "/data/tracts_features_nyc_normalized.geojson";
 
@@ -42,8 +42,11 @@ export type HealthcarePropertyName =
 
 export type HealthcareProperties = {
   [key in HealthcarePropertyName]: number;
-}
+};
 
 export type HealthcareFeature = Feature<Polygon, HealthcareProperties>;
 
-export type HealthcareFeatureCollection = FeatureCollection<Polygon, HealthcareProperties>;
+export type HealthcareFeatureCollection = FeatureCollection<
+  Polygon,
+  HealthcareProperties
+>;

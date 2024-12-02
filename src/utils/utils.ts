@@ -6,6 +6,7 @@ import {
   UnitType,
   mapAttributes,
 } from "../constants/mapConstants";
+import census_tract_to_nta from "../assets/data/census_tract_to_nta.json";
 
 /**
  * Returns the section name corresponding to the path.
@@ -97,4 +98,26 @@ export function parseString(value: string): string {
  */
 export function isTransparent(fillColor: FillColor): boolean {
   return fillColor.a == 0;
+}
+
+/**
+ * Get the county name from the geoid.
+ */
+export function getCountyName(geoid: string): string {
+  const dict = census_tract_to_nta as Record<
+    string,
+    { BoroName: string; NTAName: string }
+  >;
+  return dict[geoid].BoroName;
+}
+
+/**
+ * Get the neighborhood name from the geoid.
+ */
+export function getNeighborhoodName(geoid: string): string {
+  const dict = census_tract_to_nta as Record<
+    string,
+    { BoroName: string; NTAName: string }
+  >;
+  return dict[geoid].NTAName;
 }

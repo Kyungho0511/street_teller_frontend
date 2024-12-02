@@ -16,9 +16,7 @@ export default function PopupTextCluster({ text }: PopupTextClusterProps) {
 
   return (
     <>
-      <h4 className={styles.title}>
-        {`${GEOID}: ${properties?.GEOID}`}
-      </h4>
+      <h4 className={styles.title}>{`${GEOID}: ${properties?.GEOID}`}</h4>
       <div className={styles.body}>
         <span className={styles.text}>{text}</span>
         <span className={styles.value}></span>
