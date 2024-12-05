@@ -78,13 +78,17 @@ export default function HomePage() {
         </SidebarSection>
       </Sidebar>
 
-      <LegendSection title={preference.category as string}>
-        <SelectableList list={preference.subCategories} mappable />
-        <GradientBar bound={attribute.bound} unit={attribute.unit} />
-        <Colorbox label={"non-shortage areas"} />
-      </LegendSection>
-
       <PopupContextProvider>
+        <LegendSection title={preference.category as string}>
+          <SelectableList list={preference.subCategories} mappable />
+          <GradientBar
+            bound={attribute.bound}
+            unit={attribute.unit}
+            selectedAttribute={attribute}
+          />
+          <Colorbox label={"non-shortage areas"} />
+        </LegendSection>
+
         <PopupSection enableSelectEffect>
           <PopupContentHome selectedAttribute={attribute} />
         </PopupSection>

@@ -2,8 +2,8 @@ import { createContext, useState } from "react";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
 
 type PopupContextProps = {
-  properties: HealthcareProperties | undefined;
-  setProperties: React.Dispatch<
+  property: HealthcareProperties | undefined;
+  setProperty: React.Dispatch<
     React.SetStateAction<HealthcareProperties | undefined>
   >;
 };
@@ -20,15 +20,13 @@ export function PopupContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [properties, setProperties] = useState<
-    HealthcareProperties | undefined
-  >();
+  const [property, setProperty] = useState<HealthcareProperties | undefined>();
 
   return (
     <PopupContext.Provider
       value={{
-        properties,
-        setProperties,
+        property,
+        setProperty,
       }}
     >
       {children}

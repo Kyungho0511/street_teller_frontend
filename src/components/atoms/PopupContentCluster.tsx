@@ -15,16 +15,16 @@ type PopupContentClusterProps = {
 export default function PopupContentCluster({
   text,
 }: PopupContentClusterProps) {
-  const { properties } = useContext(PopupContext);
+  const { property } = useContext(PopupContext);
   const [countyName, setCountyName] = useState<string>("");
   const [neighborhoodName, setNeighborhoodName] = useState<string>("");
 
   useEffectAfterMount(() => {
-    if (!properties) return;
-    const geoid = properties.GEOID.toString();
+    if (!property) return;
+    const geoid = property.GEOID.toString();
     setCountyName(utils.getCountyName(geoid));
     setNeighborhoodName(utils.getNeighborhoodName(geoid));
-  }, [properties]);
+  }, [property]);
 
   return (
     <>

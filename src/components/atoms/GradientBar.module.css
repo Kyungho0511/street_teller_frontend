@@ -1,22 +1,42 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .container {
   margin: 1rem 0;
 }
 
 .bar {
-  height: 0.7rem;
+  position: relative;
+  height: 12px;
   background: linear-gradient(
     to right,
     var(--color-white) 0%,
     var(--color-blue) 100%
   );
   margin-bottom: 0.5rem;
+  border-radius: 1rem;
 }
 
 .scale {
   display: flex;
   justify-content: space-between;
+  color: var(--color-dark-grey);
+  opacity: 0.8;
+}
+
+.marker {
+  position: absolute;
+  top: -4px;
+  width: 10px;
+  height: 20px;
+  border-radius: 1rem;
+  border: solid 2px var(--color-white);
+  background-color: var(--color-dark-grey);
+  opacity: 0.8;
+}
+
+.value {
+  position: absolute;
+  top: -24px;
 }

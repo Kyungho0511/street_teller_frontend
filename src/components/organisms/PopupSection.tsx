@@ -25,7 +25,7 @@ export default function PopupSection({
   children,
 }: PopupSectionProps) {
   const { mapViewer, parentLayer } = useContext(MapContext);
-  const { setProperties } = useContext(PopupContext);
+  const { setProperty } = useContext(PopupContext);
 
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
@@ -40,7 +40,7 @@ export default function PopupSection({
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-      setProperties(feature.properties as HealthcareProperties);
+      setProperty(feature.properties as HealthcareProperties);
     };
     mapViewer.on("mousemove", parentLayer, updateProperties);
 
@@ -48,7 +48,7 @@ export default function PopupSection({
     return () => {
       mapViewer.off("mousemove", parentLayer, updateProperties);
     };
-  }, [mapViewer, parentLayer, setProperties]);
+  }, [mapViewer, parentLayer, setProperty]);
 
   // Set popup status based on the map mouse event.
   useEffect(() => {
@@ -59,6 +59,7 @@ export default function PopupSection({
     };
 
     const hidePopup = () => {
+      setProperty(undefined);
       setDisplay("none");
     };
 

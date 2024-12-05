@@ -16,20 +16,20 @@ type PopupContentHomeProps = {
 export default function PopupContentHome({
   selectedAttribute,
 }: PopupContentHomeProps) {
-  const { properties } = useContext(PopupContext);
+  const { property } = useContext(PopupContext);
   const [formattedValue, setFormattedValue] = useState<string>("");
   const [countyName, setCountyName] = useState<string>("");
   const [neighborhoodName, setNeighborhoodName] = useState<string>("");
 
   useEffectAfterMount(() => {
-    if (!properties) return;
-    const value = properties[selectedAttribute.name];
+    if (!property) return;
+    const value = property[selectedAttribute.name];
     setFormattedValue(utils.formatUnit(value, selectedAttribute.unit));
 
-    const geoid = properties.GEOID.toString();
+    const geoid = property.GEOID.toString();
     setCountyName(utils.getCountyName(geoid));
     setNeighborhoodName(utils.getNeighborhoodName(geoid));
-  }, [properties]);
+  }, [property]);
 
   return (
     <>

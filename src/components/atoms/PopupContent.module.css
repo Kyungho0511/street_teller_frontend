@@ -27,3 +27,7 @@
   color: var(--color-dark-grey);
   margin-right: 2rem;
 }
+
+.value {
+  flex-shrink: 0;
+}
