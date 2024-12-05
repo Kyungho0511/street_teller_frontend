@@ -112,7 +112,7 @@ export default function PopupSection({
       style={{
         display: display,
         width: POPUP.width,
-        height: POPUP.height,
+        maxHeight: POPUP.height,
         left: position.x,
         top: position.y,
       }}

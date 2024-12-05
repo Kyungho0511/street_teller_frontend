@@ -24,5 +24,6 @@
 }
 
 .text {
-  margin-right: 1rem;
+  color: var(--color-dark-grey);
+  margin-right: 2rem;
 }

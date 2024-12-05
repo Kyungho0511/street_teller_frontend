@@ -36,8 +36,8 @@ export const THICK_LINE_WEIGHT = 4;
 export const ZOOM_MODIFIER = 3; // zoom level modifier for map preview.
 
 export const POPUP = {
-  width: 250,
-  height: 180,
+  width: 280,
+  height: 140,
   offset: 30,
 };
 

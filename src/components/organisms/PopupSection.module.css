@@ -1,6 +1,6 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .container {
   position: fixed;
