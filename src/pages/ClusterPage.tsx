@@ -20,7 +20,7 @@ import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
-import PopupTextCluster from "../components/atoms/PopupTextCluster";
+import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
@@ -190,7 +190,7 @@ export default function ClusterPage() {
 
       <PopupContextProvider>
         <PopupSection enableSelectEffect>
-          <PopupTextCluster text="cluster" />
+          <PopupContentCluster text="cluster" />
         </PopupSection>
       </PopupContextProvider>
     </>

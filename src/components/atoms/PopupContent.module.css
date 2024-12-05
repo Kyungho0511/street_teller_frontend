@@ -1,11 +1,12 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .title {
   margin: 0;
-  font-size: var(--font-regular);
-  text-transform: uppercase;
+  font-size: var(--font-small);
+  font-weight: var(--font-bold);
+  text-transform: capitalize;
 }
 
 .body {

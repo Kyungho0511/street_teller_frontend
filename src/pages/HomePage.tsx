@@ -13,7 +13,7 @@ import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import { MessageContext } from "../context/MessageContext";
 import PopupSection from "../components/organisms/PopupSection";
-import PopupTextHome from "../components/atoms/PopupTextHome";
+import PopupContentHome from "../components/atoms/PopupContentHome";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
@@ -86,7 +86,7 @@ export default function HomePage() {
 
       <PopupContextProvider>
         <PopupSection enableSelectEffect>
-          <PopupTextHome selectedAttribute={attribute} />
+          <PopupContentHome selectedAttribute={attribute} />
         </PopupSection>
       </PopupContextProvider>
     </>
