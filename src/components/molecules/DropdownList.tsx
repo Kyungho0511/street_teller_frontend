@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import styles from './DropdownList.module.css';
-import { ClusterCheckboxItem } from '../../constants/surveyConstants';
+import styles from "./DropdownList.module.css";
+import { ClusterCheckboxItem } from "../../constants/surveyConstants";
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
 import Colorbox from "../atoms/Colorbox";
@@ -13,7 +13,7 @@ type DropdownListProps = {
   expanded: boolean;
   displayChart?: boolean; // display a chart for each list item.
   displayColorbox?: boolean; // display a color box for each list item.
-}
+};
 
 /**
  * Dropdown list component. It should be used within a {@link DropdownManager}.
@@ -26,7 +26,6 @@ export default function DropdownList({
   displayChart,
   displayColorbox,
 }: DropdownListProps) {
-
   return (
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
       <button className={styles.list_button} onClick={() => toggleList(index)}>

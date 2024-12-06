@@ -4,7 +4,9 @@ export const geoJsonFilePath = "/data/tracts_features_nyc_normalized.geojson";
 
 export type HealthcarePropertyName =
   | "GEOID"
-  | "cluster"
+  | "cluster1"
+  | "cluster2"
+  | "cluster3"
   | "medicaid enrollees / km2"
   | "commercial enrollees / km2"
   | "insured population / km2"

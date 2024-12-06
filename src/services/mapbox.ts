@@ -156,10 +156,12 @@ export function updateLayerAttribute(
 
 /**
  * Update a k-means cluster layer color style on the mapbox map.
+ * @param clusterId clustering iteration number.
  * @param clusterList Informs which clusters are selected.
  * @param map Map to which the layer is updated.
  */
 export function updateClusterLayer(
+  clusterId: string,
   clusterList: ClusterList,
   map?: mapboxgl.Map
 ) {
@@ -167,13 +169,13 @@ export function updateClusterLayer(
     const list = clusterList.list;
     map.setPaintProperty(clusterList.name, "fill-color", [
       "case",
-      ["==", ["get", "cluster"], 0],
+      ["==", ["get", "cluster" + clusterId], 0],
       list[0].checked ? list[0].color : transparent,
-      ["==", ["get", "cluster"], 1],
+      ["==", ["get", "cluster" + clusterId], 1],
       list[1].checked ? list[1].color : transparent,
-      ["==", ["get", "cluster"], 2],
+      ["==", ["get", "cluster" + clusterId], 2],
       list[2].checked ? list[2].color : transparent,
-      ["==", ["get", "cluster"], 3],
+      ["==", ["get", "cluster" + clusterId], 3],
       list[3].checked ? list[3].color : transparent,
       transparent,
     ]);
@@ -182,11 +184,13 @@ export function updateClusterLayer(
 
 /**
  * Add a k-means cluster layer to the mapbox map.
+ * @param clusterId clustering iteration number.
  * @param kMeansLayer Layer to be added.
  * @param map Map to which the layer is added.
  * @param color If true, the layer is colored.
  */
 export function addClusterLayer(
+  clusterId: string,
   kMeansLayer: KMeansLayer,
   map: mapboxgl.Map,
   color?: boolean
@@ -204,13 +208,13 @@ export function addClusterLayer(
       paint: {
         "fill-color": [
           "case",
-          ["==", ["get", "cluster"], 0],
+          ["==", ["get", "cluster" + clusterId], 0],
           color ? kMeansLayer.colors[0] : transparent,
-          ["==", ["get", "cluster"], 1],
+          ["==", ["get", "cluster" + clusterId], 1],
           color ? kMeansLayer.colors[1] : transparent,
-          ["==", ["get", "cluster"], 2],
+          ["==", ["get", "cluster" + clusterId], 2],
           color ? kMeansLayer.colors[2] : transparent,
-          ["==", ["get", "cluster"], 3],
+          ["==", ["get", "cluster" + clusterId], 3],
           color ? kMeansLayer.colors[3] : transparent,
           transparent,
         ],

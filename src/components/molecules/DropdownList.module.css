@@ -1,6 +1,6 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .container {
   padding: 0.3rem;
@@ -73,6 +73,7 @@
   & p {
     width: 100%;
     margin: 0;
+    color: var(--color-dark-grey);
   }
 }
 

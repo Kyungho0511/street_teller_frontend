@@ -66,6 +66,7 @@ export default function ClusterPage() {
         clusterIndex - 1
       ].list.map((cluster) => cluster.checked);
       const filteredGeoJson = kmeans.getFilteredGeoJson(
+        clusterIndex.toString(),
         selection,
         kMeansLayers[clusterIndex - 1].geoJson
       );
@@ -86,6 +87,9 @@ export default function ClusterPage() {
         selectedAttributes.push(subCategory.name);
       });
     }
+
+    console.log(geoJson);
+
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
@@ -93,6 +97,7 @@ export default function ClusterPage() {
       .color!;
     setKMeansLayers((prev) => {
       const kMeansLayer = kmeans.setLayer(
+        clusterId!,
         kMeansResult,
         geoJson!,
         clusterName,
@@ -108,7 +113,12 @@ export default function ClusterPage() {
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
     if (!mapViewer || !kMeansLayers[clusterIndex]) return;
-    mapbox.addClusterLayer(kMeansLayers[clusterIndex], mapViewer!, false);
+    mapbox.addClusterLayer(
+      clusterId!,
+      kMeansLayers[clusterIndex],
+      mapViewer!,
+      false
+    );
 
     // Remove KMeansLayer from mapbox when on unmount.
     return () => mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
@@ -116,7 +126,7 @@ export default function ClusterPage() {
 
   // Update mapping on selected clusterList change
   useEffectAfterMount(() => {
-    mapbox.updateClusterLayer(clusterList, mapViewer);
+    mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
   }, [clusterList, mapViewer]);
 
   // Restore mapping on mapMode change
@@ -141,7 +151,7 @@ export default function ClusterPage() {
       }
       const section: Section = pathToSection(location.pathname);
       mapbox.setLayers(section, mapViewer);
-      mapbox.updateClusterLayer(clusterList, mapViewer);
+      mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
     });
   }, [mapMode]);
 

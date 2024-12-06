@@ -14,17 +14,12 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
-}
-
-.text,
-.value {
   font-size: var(--font-small);
   line-height: var(--line-height-small);
   text-transform: capitalize;
 }
 
 .text {
-  color: var(--color-dark-grey);
   margin-right: 2rem;
 }
 

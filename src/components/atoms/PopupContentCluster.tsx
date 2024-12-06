@@ -31,7 +31,7 @@ export default function PopupContentCluster({
       <p className={styles.title}>{`${neighborhoodName}, ${countyName}`}</p>
       <div className={styles.body}>
         <span className={styles.text}>{text}</span>
-        <span className={styles.value}></span>
+        <span className={styles.value}>123123</span>
       </div>
     </>
   );
