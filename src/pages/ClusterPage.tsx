@@ -41,6 +41,7 @@ export default function ClusterPage() {
   const location = useLocation();
   const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
+
   const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
     useGeoJson(geoJsonFilePath);
@@ -87,8 +88,6 @@ export default function ClusterPage() {
         selectedAttributes.push(subCategory.name);
       });
     }
-
-    console.log(geoJson);
 
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
@@ -200,7 +199,7 @@ export default function ClusterPage() {
 
       <PopupContextProvider>
         <PopupSection enableSelectEffect>
-          <PopupContentCluster text="cluster" />
+          <PopupContentCluster clusterId={clusterId!} />
         </PopupSection>
       </PopupContextProvider>
     </>

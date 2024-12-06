@@ -40,9 +40,6 @@ export default function PopupSection({
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-
-      console.log(feature);
-
       setProperty(feature.properties as HealthcareProperties);
     };
     mapViewer.on("mousemove", parentLayer, updateProperties);
