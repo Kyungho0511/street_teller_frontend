@@ -35,8 +35,10 @@ export default function PopupContentHome({
     <>
       <p className={styles.title}>{`${neighborhoodName}, ${countyName}`}</p>
       <div className={styles.body}>
-        <span className={styles.text}>{selectedAttribute.name}</span>
-        <span className={styles.value}>{formattedValue}</span>
+        <div className={styles.item}>
+          <span className={styles.text}>{selectedAttribute.name}</span>
+          <span className={styles.value}>{formattedValue}</span>
+        </div>
       </div>
     </>
   );

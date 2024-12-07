@@ -31,7 +31,7 @@ export default function DropdownList({
       <button className={styles.list_button} onClick={() => toggleList(index)}>
         {displayColorbox && <Colorbox label={list.name} color={list.color} />}
         <div className={styles.spacer}></div>
-        <span className={styles.triangle}></span>
+        <div className={styles.triangle}></div>
       </button>
       <ul className={styles.list}>
         {list.centroids.map((item) => (

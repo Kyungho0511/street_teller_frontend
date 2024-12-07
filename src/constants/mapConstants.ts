@@ -37,7 +37,7 @@ export const ZOOM_MODIFIER = 3; // zoom level modifier for map preview.
 
 export const POPUP = {
   width: 280,
-  height: 140,
+  height: 200,
   offset: 30,
 };
 

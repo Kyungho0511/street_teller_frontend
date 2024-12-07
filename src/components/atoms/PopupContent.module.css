@@ -10,13 +10,15 @@
 }
 
 .body {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-top: 1rem;
   font-size: var(--font-small);
   line-height: var(--line-height-small);
-  text-transform: capitalize;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .text {
