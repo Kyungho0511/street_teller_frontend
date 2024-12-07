@@ -1,0 +1,20 @@
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: var(--theme-grey);
+  color: var(--color-white);
+  font-weight: var(--font-medium);
+}
+
+.icon.selected {
+  background-color: var(--theme-dark-grey);
+}
