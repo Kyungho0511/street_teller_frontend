@@ -1,6 +1,6 @@
 import styles from "./PopupContent.module.css";
 import { v4 as uuidv4 } from "uuid";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PopupContext } from "../../context/PopupContext";
 import ClusterPage from "../../pages/ClusterPage";
 import * as utils from "../../utils/utils";
@@ -9,6 +9,8 @@ import { SurveyContext } from "../../context/SurveyContext";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import { ClusterCheckboxItem } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
+import NumberIcon from "./NumberIcon";
+import { MapContext } from "../../context/MapContext";
 
 type PopupContentClusterProps = {
   clusterId: string;
@@ -20,11 +22,29 @@ type PopupContentClusterProps = {
 export default function PopupContentCluster({
   clusterId,
 }: PopupContentClusterProps) {
+  const { mapViewer, parentLayer } = useContext(MapContext);
   const { survey } = useContext(SurveyContext);
-  const { property } = useContext(PopupContext);
+  const { property, setSelectedCluster } = useContext(PopupContext);
   const [countyName, setCountyName] = useState<string>("");
   const [neighborhoodName, setNeighborhoodName] = useState<string>("");
   const [clusters, setClusters] = useState<ClusterCheckboxItem[]>();
+
+  // Set selected cluster based on the map mouse event.
+  useEffect(() => {
+    if (!mapViewer) return;
+
+    const updateSelectedCluster = (event: mapboxgl.MapMouseEvent) => {
+      const feature = mapViewer.queryRenderedFeatures(event.point, {
+        layers: [parentLayer],
+      })[0];
+      setSelectedCluster(feature.properties!["cluster" + clusterId]);
+    };
+    mapViewer.on("click", parentLayer, updateSelectedCluster);
+
+    return () => {
+      mapViewer.off("click", parentLayer, updateSelectedCluster);
+    };
+  }, []);
 
   useEffectAfterMount(() => {
     if (!property) return;
@@ -52,9 +72,15 @@ export default function PopupContentCluster({
       <p className={styles.title}>{`${neighborhoodName}, ${countyName}`}</p>
       <div className={styles.body}>
         {clusters?.length &&
-          clusters.map((cluster) => (
+          clusters.map((cluster, index) => (
             <div className={styles.item} key={uuidv4()}>
               <Colorbox label={cluster.name} color={cluster.color} />
+              <div style={{ width: "2rem" }}></div> {/* Spacer */}
+              <NumberIcon
+                number={index + 1}
+                selected={index + 1 === parseInt(clusterId)}
+                colorContrast="high"
+              />
             </div>
           ))}
       </div>

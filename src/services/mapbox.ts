@@ -195,11 +195,15 @@ export function addClusterLayer(
   map: mapboxgl.Map,
   color?: boolean
 ) {
+  // Remove the layer if it already exists.
+  map.getSource(kMeansLayer.title) && map.removeSource(kMeansLayer.title);
+  map.getLayer(kMeansLayer.title) && map.removeLayer(kMeansLayer.title);
+
+  // Add source and layer to the map.
   map.addSource(kMeansLayer.title, {
     type: "geojson",
     data: kMeansLayer.geoJson,
   });
-
   map.addLayer(
     {
       id: kMeansLayer.title,

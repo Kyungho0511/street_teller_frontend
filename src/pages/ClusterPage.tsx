@@ -183,21 +183,20 @@ export default function ClusterPage() {
         </SidebarSection>
       </Sidebar>
 
-      <LegendSection
-        title={`Clustering Step`}
-        steps={getSeriesNumber(survey.clusterLists.length)}
-        currentStep={parseInt(clusterId!)}
-      >
-        <DropdownManager
-          lists={clusterList.list}
-          displayChart
-          displayColorbox
-          // expandFirstList={!loadingMessage.json}
-          autoCollapse
-        />
-      </LegendSection>
-
       <PopupContextProvider>
+        <LegendSection
+          title={`Clustering Step`}
+          steps={getSeriesNumber(survey.clusterLists.length)}
+          currentStep={parseInt(clusterId!)}
+        >
+          <DropdownManager
+            lists={clusterList.list}
+            displayChart
+            displayColorbox
+            autoCollapse
+          />
+        </LegendSection>
+
         <PopupSection enableSelectEffect>
           <PopupContentCluster clusterId={clusterId!} />
         </PopupSection>

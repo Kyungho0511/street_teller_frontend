@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import DropdownList from './DropdownList';
-import { ClusterCheckboxItem } from '../../constants/surveyConstants';
-import useEffectAfterMount from '../../hooks/useEffectAfterMount';
+import { useContext, useState } from "react";
+import DropdownList from "./DropdownList";
+import { ClusterCheckboxItem } from "../../constants/surveyConstants";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import { PopupContext } from "../../context/PopupContext";
 
 type DropdownManagerProps = {
   lists: ClusterCheckboxItem[];
@@ -9,7 +10,7 @@ type DropdownManagerProps = {
   displayColorbox?: boolean; // display a color box for each list item.
   expandFirstList?: boolean; // expand the first list item by default.
   autoCollapse?: boolean; // only one list can be expanded at a time.
-}
+};
 
 /**
  * Dropdown manager component to manage {@link DropdownList} components.
@@ -21,6 +22,7 @@ export default function DropdownManager({
   expandFirstList,
   autoCollapse,
 }: DropdownManagerProps) {
+  const { selectedCluster } = useContext(PopupContext);
   const [expandedLists, setExpandedLists] = useState<boolean[]>(() =>
     new Array(lists.length).fill(false)
   );
@@ -42,6 +44,12 @@ export default function DropdownManager({
     }
   };
 
+  // Expand the selected cluster list.
+  useEffectAfterMount(() => {
+    if (selectedCluster == null) return;
+    toggleList(selectedCluster);
+  }, [selectedCluster]);
+
   return (
     <div>
       {lists.map((list, index) => (
@@ -59,4 +67,3 @@ export default function DropdownManager({
     </div>
   );
 }
-

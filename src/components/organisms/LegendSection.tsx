@@ -28,7 +28,11 @@ export default function LegendSection({
           {steps &&
             steps.map((step) => (
               <div key={uuidv4()}>
-                <NumberIcon label={step} selected={step === currentStep} />
+                <NumberIcon
+                  number={step}
+                  selected={step === currentStep}
+                  colorContrast="high"
+                />
               </div>
             ))}
         </div>

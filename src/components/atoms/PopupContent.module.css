@@ -4,7 +4,7 @@
 
 .title {
   margin: 0;
-  font-size: var(--font-small);
+  font-size: var(--font-regular);
   font-weight: var(--font-bold);
   text-transform: capitalize;
 }

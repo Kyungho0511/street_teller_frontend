@@ -43,6 +43,11 @@ export default function DropdownList({
                 unit={utils.getUnit(item.name)}
               />
             )}
+            {!displayChart && (
+              <span className={styles.text}>{`${item.name}: ${
+                Math.round(item.value * 100) / 100
+              }`}</span>
+            )}
           </li>
         ))}
       </ul>

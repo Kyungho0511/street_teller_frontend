@@ -80,7 +80,7 @@ export default function DraggableList({
                   <FontAwesomeIcon icon={item.icon} className={styles.icon} />
                 )}
                 {displayRanking && (
-                  <NumberIcon label={item.ranking} selected={item.selected} />
+                  <NumberIcon number={item.ranking} selected={item.selected} />
                 )}
                 <span className={styles.text}>{item.category}</span>
               </div>

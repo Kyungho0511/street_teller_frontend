@@ -4,15 +4,22 @@
 
 .icon {
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
   align-items: center;
   width: 20px;
   height: 20px;
   margin-right: 10px;
   border-radius: 50%;
-  background-color: var(--theme-grey);
   color: var(--color-white);
-  font-weight: var(--font-medium);
+}
+
+.icon.contrast_high {
+  background-color: var(--theme-light-grey);
+}
+
+.icon.contrast_low {
+  background-color: var(--theme-grey);
 }
 
 .icon.selected {
