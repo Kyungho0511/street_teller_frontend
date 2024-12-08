@@ -1,0 +1,30 @@
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
+
+.title {
+  margin: 0;
+  font-size: var(--font-regular);
+  font-weight: var(--font-bold);
+  text-transform: capitalize;
+}
+
+.body {
+  margin-top: 1rem;
+  font-size: var(--font-small);
+  line-height: var(--line-height-small);
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  margin-right: 2rem;
+}
+
+.value {
+  flex-shrink: 0;
+}

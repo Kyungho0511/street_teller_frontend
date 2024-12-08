@@ -5,7 +5,7 @@ import PromptBox from "../molecules/PromptBox";
 import MapToggleButton from "../atoms/MapToggleButton";
 import { SIDEBAR_WIDTH } from "./Sidebar";
 
-export const FOOTBAR_HEIGHT = 100;
+export const FOOTBAR_HEIGHT = 90;
 
 /**
  * Footbar component.

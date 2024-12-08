@@ -183,7 +183,6 @@ export type ClusterList = {
 /**
  * Cluster lists to load initially.
  */
-
 export const initialClusterLists: ClusterList[] = [
   {
     name: "cluster1",

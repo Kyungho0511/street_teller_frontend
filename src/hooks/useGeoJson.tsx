@@ -8,29 +8,28 @@ import { HealthcareFeatureCollection } from "../constants/geoJsonConstants";
 export default function useGeoJson(filePath: string) {
   const [loadingGeoJson, setLoadingGeoJson] = useState<boolean>(true);
   const [errorGeoJson, setErrorGeoJson] = useState<string | undefined>();
-  const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection | undefined>();
+  const [geoJson, setGeoJson] = useState<
+    HealthcareFeatureCollection | undefined
+  >();
 
   useEffect(() => {
     setLoadingGeoJson(true);
     setErrorGeoJson(undefined);
-    if (!geoJson)
-      {
-        const fetchData = async () => {
-          try {
-            const response = await fetch(filePath);
-            const data = await response.json();
-            setGeoJson(data);
-          } 
-          catch {
-            const errorMessage = "Failed to fetch GeoJson data";
-            setErrorGeoJson(errorMessage);
-            console.error(errorMessage);
-          } 
-          finally {
-            setLoadingGeoJson(false);
-          }
-        };
-        fetchData();
+    if (!geoJson) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(filePath);
+          const data = await response.json();
+          setGeoJson(data);
+        } catch {
+          const errorMessage = "Failed to fetch GeoJson data";
+          setErrorGeoJson(errorMessage);
+          console.error(errorMessage);
+        } finally {
+          setLoadingGeoJson(false);
+        }
+      };
+      fetchData();
     }
   }, []);
 

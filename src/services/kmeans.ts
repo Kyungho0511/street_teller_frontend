@@ -85,6 +85,7 @@ export function processData(
  * Set the kMeans clustering result as a layer object for mapping.
  */
 export function setLayer(
+  clusterId: string,
   kMeans: KMeansResult,
   geoJson: HealthcareFeatureCollection,
   title: string,
@@ -94,7 +95,7 @@ export function setLayer(
   // Deep copy data and set clustering result values.
   const kMeansGeoJson = structuredClone(geoJson);
   kMeansGeoJson.features.forEach((feature: Feature, index) => {
-    feature.properties!.cluster = kMeans.clusters[index];
+    feature.properties!["cluster" + clusterId] = kMeans.clusters[index];
   });
 
   const kMeansLayer: KMeansLayer = {
@@ -110,17 +111,21 @@ export function setLayer(
 
 /**
  * Filter GeoJSON with the selected census tracts based on the user's selection of clusters.
+ * @param prevClusterId previous clustering iteration number.
  * @param selection user's selection of clusters.
  * @param geoJson geoJson that contains the kmeans clustering results.
  */
 export function getFilteredGeoJson(
+  prevClusterId: string,
   selection: boolean[],
   geoJson: HealthcareFeatureCollection
 ): HealthcareFeatureCollection {
   const filteredGeoJson = structuredClone(geoJson);
-  filteredGeoJson.features = geoJson.features.filter(
-    (feature) => selection[feature.properties!.cluster]
-  );
+  filteredGeoJson.features = geoJson.features.filter((feature) => {
+    const clusterKey = ("cluster" + prevClusterId) as HealthcarePropertyName;
+    const cluster = feature.properties![clusterKey];
+    return selection[cluster];
+  });
 
   return filteredGeoJson;
 }

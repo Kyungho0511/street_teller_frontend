@@ -1,3 +1,5 @@
+import NumberIcon from "../atoms/NumberIcon";
+import { v4 as uuidv4 } from "uuid";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";
 import React from "react";
@@ -7,25 +9,30 @@ type LegendSectionProps = {
   title?: string;
   steps?: number[];
   currentStep?: number;
-}
+};
 
 /**
  * Container component to display the legend of the current analysis.
  */
-export default function LegendSection({ children, title, steps, currentStep }: LegendSectionProps) {
-
+export default function LegendSection({
+  children,
+  title,
+  steps,
+  currentStep,
+}: LegendSectionProps) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.header_content}>
           {title && <h4 className={styles.title}>{title}</h4>}
           {steps &&
-            steps.map((step, index) => (
-              <div
-                className={`${styles.step_icon} ${step === currentStep && styles.current}`}
-                key={index}
-              >
-                {step}
+            steps.map((step) => (
+              <div key={uuidv4()}>
+                <NumberIcon
+                  number={step}
+                  selected={step === currentStep}
+                  colorContrast="high"
+                />
               </div>
             ))}
         </div>

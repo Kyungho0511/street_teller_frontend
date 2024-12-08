@@ -25,8 +25,7 @@ export default function PopupSection({
   children,
 }: PopupSectionProps) {
   const { mapViewer, parentLayer } = useContext(MapContext);
-  const { setProperties } = useContext(PopupContext);
-
+  const { setProperty } = useContext(PopupContext);
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
 
@@ -40,17 +39,16 @@ export default function PopupSection({
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-      setProperties(feature.properties as HealthcareProperties);
+      setProperty(feature.properties as HealthcareProperties);
     };
     mapViewer.on("mousemove", parentLayer, updateProperties);
 
-    // Cleanup event listeners on component unmount.
     return () => {
       mapViewer.off("mousemove", parentLayer, updateProperties);
     };
-  }, [mapViewer, parentLayer, setProperties]);
+  }, [mapViewer, parentLayer, setProperty]);
 
-  // Set popup status based on the map mouse event.
+  // Set popup status & position based on the map mouse event.
   useEffect(() => {
     if (!mapViewer) return;
 
@@ -59,6 +57,7 @@ export default function PopupSection({
     };
 
     const hidePopup = () => {
+      setProperty(undefined);
       setDisplay("none");
     };
 
@@ -99,7 +98,6 @@ export default function PopupSection({
     mapViewer.on("mousemove", parentLayer, updatePopupPosition);
     mapViewer.on("mouseleave", parentLayer, hidePopup);
 
-    // Cleanup event listeners on component unmount.
     return () => {
       mapViewer.off("mousemove", parentLayer, updatePopupPosition);
       mapViewer.off("mouseleave", parentLayer, hidePopup);
@@ -111,8 +109,8 @@ export default function PopupSection({
       className={styles.container}
       style={{
         display: display,
-        width: POPUP.width,
-        height: POPUP.height,
+        maxWidth: POPUP.width,
+        maxHeight: POPUP.height,
         left: position.x,
         top: position.y,
       }}

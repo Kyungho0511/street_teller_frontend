@@ -1,6 +1,6 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .container {
   padding: 0.3rem;
@@ -35,9 +35,6 @@
 }
 
 .triangle {
-  display: inline-block;
-  width: 0;
-  height: 0;
   vertical-align: middle;
   border-left: 0.5rem solid var(--color-grey);
   border-top: 0.5rem solid transparent;

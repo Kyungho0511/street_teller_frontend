@@ -1,6 +1,6 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .container {
 }
@@ -39,9 +39,6 @@
     opacity: 1;
     text-shadow: 0px 0px 0.8px var(--theme-text);
   }
-  & .ranking_icon {
-    background-color: var(--theme-dark-grey);
-  }
   & .grip {
     opacity: 1;
   }
@@ -55,18 +52,6 @@
   width: 20px;
   height: 20px;
   margin-right: 10px;
-}
-
-.ranking_icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  border-radius: 50%;
-  background-color: var(--theme-grey);
-  color: var(--color-white);
 }
 
 .category {
