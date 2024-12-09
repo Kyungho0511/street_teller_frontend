@@ -26,7 +26,7 @@ export default function Footbar() {
       nextPath = "/cluster/3";
       break;
     case "/cluster/3":
-      nextPath = "/cluster/3";
+      nextPath = "/select";
       break;
   }
 
@@ -41,7 +41,7 @@ export default function Footbar() {
       <MapToggleButton />
       <PromptBox />
       <Link to={nextPath}>
-        <Button text="continue" location="footbar" />
+        <Button text={"continue"} type="footbar" />
       </Link>
     </footer>
   );

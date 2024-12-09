@@ -330,4 +330,10 @@ export const mapSections: MapSection[] = [
     parentLayer: "cluster3",
     color: color.green,
   },
+  {
+    id: "report",
+    layers: [{ name: "tracts", opacity: 0.9 }],
+    parentLayer: "cluster3",
+    color: color.green,
+  },
 ];

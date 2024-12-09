@@ -175,7 +175,7 @@ export default function CheckboxListAI({
 
       <Button
         text={"retry analysis"}
-        location={"sidebar"}
+        type={"sidebar"}
         handleClick={startTypingAnimation}
       />
     </>
