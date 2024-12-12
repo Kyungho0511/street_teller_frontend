@@ -24,7 +24,8 @@ import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
 import { Section } from "../constants/surveyConstants";
-import { CLUSTERING_SIZE, KMeansLayer } from "../constants/kMeansConstants";
+import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
+import { KMeansContext } from "../context/KMeansContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -34,6 +35,7 @@ export default function ClusterPage() {
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
   const { mapViewer, mapMode } = useContext(MapContext);
+  const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -42,7 +44,6 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
 
-  const [kMeansLayers, setKMeansLayers] = useState<KMeansLayer[]>([]);
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
     useGeoJson(geoJsonFilePath);
 

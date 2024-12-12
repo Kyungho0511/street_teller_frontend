@@ -1,6 +1,10 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
+import { KMeansLayer } from "../constants/kMeansConstants";
 
-type KMeansContextProps = {};
+type KMeansContextProps = {
+  kMeansLayers: KMeansLayer[];
+  setKMeansLayers: React.Dispatch<React.SetStateAction<KMeansLayer[]>>;
+};
 
 export const KMeansContext = createContext<KMeansContextProps>(
   {} as KMeansContextProps
@@ -11,5 +15,16 @@ export function KMeansContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  return <KMeansContext.Provider value={{}}>{children}</KMeansContext.Provider>;
+  const [kMeansLayers, setKMeansLayers] = useState<KMeansLayer[]>([]);
+
+  return (
+    <KMeansContext.Provider
+      value={{
+        kMeansLayers,
+        setKMeansLayers,
+      }}
+    >
+      {children}
+    </KMeansContext.Provider>
+  );
 }
