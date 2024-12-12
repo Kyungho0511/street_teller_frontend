@@ -7,9 +7,9 @@ import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 
 /**
- * Select page component where users select sites to report.
+ * Report page component where users select sites to report.
  */
-export default function SelectPage() {
+export default function ReportPage() {
   const { survey } = useContext(SurveyContext);
   const clusterList = survey.clusterLists[2];
 

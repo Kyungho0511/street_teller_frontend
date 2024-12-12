@@ -4,7 +4,7 @@ import RootPage from "./pages/RootPage";
 import HomePage from "./pages/HomePage";
 import ClusterPage from "./pages/ClusterPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import SelectPage from "./pages/SelectPage";
+import ReportPage from "./pages/ReportPage";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "/cluster/:clusterId", element: <ClusterPage /> },
-      { path: "/select", element: <SelectPage /> },
+      { path: "/report", element: <ReportPage /> },
     ],
   },
 ]);
