@@ -5,7 +5,6 @@ import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
-import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
@@ -25,6 +24,7 @@ import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
 import { Section } from "../constants/surveyConstants";
+import { CLUSTERING_SIZE, KMeansLayer } from "../constants/kMeansConstants";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -42,7 +42,7 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
 
-  const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
+  const [kMeansLayers, setKMeansLayers] = useState<KMeansLayer[]>([]);
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
     useGeoJson(geoJsonFilePath);
 

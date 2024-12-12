@@ -7,29 +7,13 @@ import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
-
-// Number of preferences to be used for each clustering analysis.
-export const CLUSTERING_SIZE = 2;
-
-// Number of clusters to be created per clustering analysis.
-const NUMBER_OF_CLUSTERS = 4;
-
-// Maximum number of iterations for kMeans clustering.
-const MAX_ITERATIONS = 100;
-
-// Seed for KMeans clustering results.
-const SEED = 10;
-
-// Initialization method for KMeans clustering.
-const INITIALIZATION = "kmeans++";
-
-export type KMeansLayer = {
-  geoJson: HealthcareFeatureCollection;
-  centroids: number[][];
-  title: string;
-  colors: RGBA[];
-  attributes: HealthcarePropertyName[];
-};
+import {
+  INITIALIZATION,
+  KMeansLayer,
+  MAX_ITERATIONS,
+  NUMBER_OF_CLUSTERS,
+  SEED,
+} from "../constants/kMeansConstants";
 
 /**
  * Run kmeans clustering analysis.
