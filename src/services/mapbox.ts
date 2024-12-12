@@ -183,9 +183,58 @@ export function updateClusterLayer(
 }
 
 /**
+ * Add a report layer to the mapbox map.
+ * @param kMeansLayers kMeans Layers to be used to create the report layer.
+ * @param map Map to which the layer is added.
+ */
+export function addReportLayer(
+  title: string,
+  kMeansLayers: KMeansLayer[],
+  map: mapboxgl.Map
+) {
+  // Remove the layer if it already exists.
+  map.getSource(title) && map.removeSource(title);
+  map.getLayer(title) && map.removeLayer(title);
+
+  // Add source and layer to the map.
+  const kMeansLayer = kMeansLayers[kMeansLayers.length - 1];
+
+  console.log(kMeansLayer.geoJson);
+
+  map.addSource(title, {
+    type: "geojson",
+    data: kMeansLayer.geoJson,
+  });
+  map.addLayer(
+    {
+      id: title,
+      type: "fill",
+      source: title,
+      paint: {
+        "fill-color": [
+          "case",
+          ["==", ["get", "cluster3"], 0],
+          kMeansLayer.colors[0],
+          ["==", ["get", "cluster3"], 1],
+          kMeansLayer.colors[1],
+          ["==", ["get", "cluster3"], 2],
+          kMeansLayer.colors[2],
+          ["==", ["get", "cluster3"], 3],
+          kMeansLayer.colors[3],
+          transparent,
+        ],
+        "fill-opacity": 1,
+        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+      },
+    },
+    "road-simple"
+  );
+}
+
+/**
  * Add a k-means cluster layer to the mapbox map.
  * @param clusterId clustering iteration number.
- * @param kMeansLayer Layer to be added.
+ * @param kMeansLayer kMeans Layer to be added.
  * @param map Map to which the layer is added.
  * @param color If true, the layer is colored.
  */
@@ -229,6 +278,7 @@ export function addClusterLayer(
     "road-simple"
   );
 }
+
 /**
  * Remove a k-means cluster layer from the mapbox map.
  * @param kMeansLayer Layer to be removed.

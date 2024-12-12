@@ -1,17 +1,34 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import CheckboxList from "../components/molecules/CheckboxList";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import Sidebar from "../components/organisms/Sidebar";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
+import { KMeansContext } from "../context/KMeansContext";
+import { MapContext } from "../context/MapContext";
+import * as mapbox from "../services/mapbox";
 
 /**
  * Report page component where users select sites to report.
  */
 export default function ReportPage() {
   const { survey } = useContext(SurveyContext);
+  const { mapViewer, parentLayer } = useContext(MapContext);
+  const { kMeansLayers } = useContext(KMeansContext);
+
   const clusterList = survey.clusterLists[2];
+
+  // Add the last KMeansLayer to the map.
+  useEffect(() => {
+    if (!mapViewer || !kMeansLayers.length) return;
+    mapbox.addReportLayer(parentLayer, kMeansLayers, mapViewer);
+
+    return () => {
+      mapViewer.removeLayer(parentLayer);
+      mapViewer.removeSource(parentLayer);
+    };
+  }, []);
 
   return (
     <>
