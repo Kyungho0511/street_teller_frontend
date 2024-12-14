@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import {
   BoroughList,
   PreferenceList,
@@ -8,6 +8,7 @@ import {
   initialBoroughList,
 } from "../constants/surveyConstants";
 import { parseString } from "../utils/utils";
+import useSessionStorage from "../hooks/useSessionStorage";
 
 export type Survey = {
   boroughList: BoroughList;
@@ -38,7 +39,10 @@ export function SurveyContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [survey, setSurvey] = useState<Survey>(initialSurvey);
+  const [survey, setSurvey] = useSessionStorage<Survey>(
+    "survey",
+    initialSurvey
+  );
 
   // update survey context differently based on the survey element
   const setSurveyContext = (
@@ -65,19 +69,6 @@ export function SurveyContextProvider({
       console.error("Invalid survey name");
     }
   };
-
-  // // retrieve stored survey from session storage
-  // useEffect(() => {
-  //   const storedSurvey = sessionStorage.getItem("survey");
-  //   if (storedSurvey) {
-  //     setSurvey(JSON.parse(storedSurvey));
-  //   }
-  // }, []);
-
-  // // update session storage when survey changes
-  // useEffect(() => {
-  //   sessionStorage.setItem('survey', JSON.stringify(survey))
-  // }, [survey])
 
   return (
     <SurveyContext.Provider
