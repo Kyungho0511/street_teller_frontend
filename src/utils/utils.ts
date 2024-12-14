@@ -1,12 +1,13 @@
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { Section } from "../constants/surveyConstants";
 import {
-  FillColor,
+  RGBA,
   MapBound,
   UnitType,
   mapAttributes,
 } from "../constants/mapConstants";
 import census_tract_to_nta from "../assets/data/census_tract_to_nta.json";
+import { RGBA } from "../constants/mapConstants";
 
 /**
  * Returns the section name corresponding to the path.
@@ -96,7 +97,7 @@ export function parseString(value: string): string {
  * Check if the fill color is white.
  * @param fillColor Fill color to check.
  */
-export function isTransparent(fillColor: FillColor): boolean {
+export function isTransparent(fillColor: RGBA): boolean {
   return fillColor.a == 0;
 }
 
@@ -120,4 +121,30 @@ export function getNeighborhoodName(geoid: string): string {
     { BoroName: string; NTAName: string }
   >;
   return dict[geoid].NTAName;
+}
+
+export function blendColors(colors: RGBA[]): RGBA {
+  const blendedColor = colors.reduce(
+    (prev, curr) => {
+      return {
+        r: prev.r + curr.r,
+        g: prev.g + curr.g,
+        b: prev.b + curr.b,
+        a: prev.a + curr.a,
+      };
+    },
+    { r: 0, g: 0, b: 0, a: 0 }
+  );
+  const colorCount = colors.length;
+
+  return {
+    r: Math.round(blendedColor.r / colorCount),
+    g: Math.round(blendedColor.g / colorCount),
+    b: Math.round(blendedColor.b / colorCount),
+    a: Math.round(blendedColor.a / colorCount),
+  } as RGBA;
+}
+
+export function rgbaToString(color: RGBA): string {
+  return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
 }

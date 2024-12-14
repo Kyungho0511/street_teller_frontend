@@ -16,13 +16,16 @@ export default function ReportPage() {
   const { survey } = useContext(SurveyContext);
   const { mapViewer, parentLayer } = useContext(MapContext);
   const { kMeansLayers } = useContext(KMeansContext);
-
   const clusterList = survey.clusterLists[2];
 
   // Add the last KMeansLayer to the map.
   useEffect(() => {
     if (!mapViewer || !kMeansLayers.length) return;
-    mapbox.addReportLayer(parentLayer, kMeansLayers, mapViewer);
+    mapbox.addReportLayer(
+      parentLayer,
+      kMeansLayers[kMeansLayers.length - 1],
+      mapViewer
+    );
 
     return () => {
       mapViewer.removeLayer(parentLayer);

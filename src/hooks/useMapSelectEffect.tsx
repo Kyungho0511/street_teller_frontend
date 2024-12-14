@@ -1,5 +1,5 @@
 import {
-  FillColor,
+  RGBA,
   GEOID,
   OUTLINE_LAYER,
   THICK_LINE_WEIGHT,
@@ -26,7 +26,7 @@ export default function useMapSelectEffect(
       const feature = map.queryRenderedFeatures(event.point, {
         layers: [layer],
       })[0];
-      const fillColor = (feature?.layer?.paint as { "fill-color": FillColor })[
+      const fillColor = (feature?.layer?.paint as { "fill-color": RGBA })[
         "fill-color"
       ];
       return !isTransparent(fillColor);
