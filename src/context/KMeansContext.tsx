@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { KMeansLayer } from "../constants/kMeansConstants";
+import useSessionStorage from "../hooks/useSessionStorage";
 
 type KMeansContextProps = {
   kMeansLayers: KMeansLayer[];
@@ -15,7 +16,11 @@ export function KMeansContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [kMeansLayers, setKMeansLayers] = useState<KMeansLayer[]>([]);
+  const [kMeansLayers, setKMeansLayers] = useSessionStorage<KMeansLayer[]>(
+    "kMeansLayers",
+    []
+  );
+  // const [kMeansLayers, setKMeansLayers] = useState<KMeansLayer[]>([]);
 
   return (
     <KMeansContext.Provider

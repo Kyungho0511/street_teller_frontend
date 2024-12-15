@@ -104,6 +104,10 @@ export function getFilteredGeoJson(
   selection: boolean[],
   geoJson: HealthcareFeatureCollection
 ): HealthcareFeatureCollection {
+  console.log("cluster" + prevClusterId);
+  console.log("selection", selection);
+  console.log("geoJson", geoJson.features[0].properties);
+
   const filteredGeoJson = structuredClone(geoJson);
   filteredGeoJson.features = geoJson.features.filter((feature) => {
     const clusterKey = ("cluster" + prevClusterId) as HealthcarePropertyName;

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
@@ -58,6 +58,8 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
+    if (!mapViewer) return;
+
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
 
@@ -74,7 +76,7 @@ export default function ClusterPage() {
       );
       setGeoJson(filteredGeoJson);
     }
-  }, [location.pathname]);
+  }, [location.pathname, mapViewer]);
 
   // Set KMeansLayer on loading a new clustering page.
   useEffectAfterMount(() => {
@@ -132,6 +134,7 @@ export default function ClusterPage() {
   // Restore mapping on mapMode change
   useEffectAfterMount(() => {
     if (!mapViewer) return;
+
     const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
     const currentSources = mapViewer.getStyle()!.sources;
 
