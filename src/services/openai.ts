@@ -1,11 +1,17 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
-import { assistantMessage, Prompt, siteCategoriesMessage, systemMessage, wordCountMessage } from "../constants/messageConstants";
+import {
+  assistantMessage,
+  Prompt,
+  siteCategoriesMessage,
+  systemMessage,
+  wordCountMessage,
+} from "../constants/messageConstants";
 import AiResponse from "../components/atoms/AiResponse";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
 import { Preference } from "../constants/surveyConstants";
-import { CLUSTERING_SIZE } from "./kmeans";
+import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
@@ -15,13 +21,13 @@ const openai = new OpenAI({
 });
 
 export type OpenAiResponseJSON = {
-  clusters: {name: string, reasoning: string}[];
-}
+  clusters: { name: string; reasoning: string }[];
+};
 
 type OpenAiMessage = {
   role: "user" | "assistant" | "system";
   content: string;
-}
+};
 
 /**
  * Stream chunks of openAI response. It's meant to be rendered with typing animation
@@ -35,22 +41,21 @@ export async function* streamOpenAI(
   history: Message[],
   preferences?: Preference[],
   clusterIndex?: number
-
 ): AsyncGenerator<string | OpenAiResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
 
   // 1. Add system messages.
-  if (prompt.type === "text" || prompt.type === "section") { 
+  if (prompt.type === "text" || prompt.type === "section") {
     messages.push({
       role: "system",
-      content: systemMessage.text
-    })
+      content: systemMessage.text,
+    });
   } else if (prompt.type === "cluster") {
     messages.push({
       role: "system",
-      content: systemMessage.cluster
-    })
+      content: systemMessage.cluster,
+    });
   }
 
   // 2-1. Provide the conversation history for context.
@@ -58,14 +63,14 @@ export async function* streamOpenAI(
     if (message.user.length > 0) {
       const user: OpenAiMessage = {
         role: "user",
-        content: message.user
+        content: message.user,
       };
       messages.push(user);
     }
     if (message.ai.length > 0) {
       const ai: OpenAiMessage = {
         role: "assistant",
-        content: message.ai
+        content: message.ai,
       };
       messages.push(ai);
     }
@@ -74,7 +79,7 @@ export async function* streamOpenAI(
   // 2-2. Provide all preference categories for context.
   messages.push({
     role: "user",
-    content: siteCategoriesMessage
+    content: siteCategoriesMessage,
   });
 
   // 2-3. Provide user selection of preferences for context.
@@ -82,24 +87,34 @@ export async function* streamOpenAI(
     const startIndex = CLUSTERING_SIZE * clusterIndex;
     messages.push({
       role: "user",
-      content: `Among the list of site preference categories, the user ranked the categories in the following order: ${preferences.map((pref) => pref.category).join(", ")}. In this clustering analysis session, the user is focusing on the ${preferences[startIndex].category} and ${preferences[startIndex + 1].category} categories. When you are asked questions regarding categories, please refer to the list of subcategories under each category.`
+      content: `Among the list of site preference categories, the user ranked the categories in the following order: ${preferences
+        .map((pref) => pref.category)
+        .join(
+          ", "
+        )}. In this clustering analysis session, the user is focusing on the ${
+        preferences[startIndex].category
+      } and ${
+        preferences[startIndex + 1].category
+      } categories. When you are asked questions regarding categories, please refer to the list of subcategories under each category.`,
     });
   }
 
   // 2-4. Provide the word count instruction.
   messages.push({
     role: "user",
-    content: wordCountMessage
+    content: wordCountMessage,
   });
 
   // 3-1. Run openAI with text or section prompts.
   if (prompt.type === "text" || prompt.type === "section") {
     stream = await openai.chat.completions.create({
-      messages: [...messages, 
+      messages: [
+        ...messages,
         {
-          role: "user", 
-          content: prompt.content
-        }],
+          role: "user",
+          content: prompt.content,
+        },
+      ],
       model: "gpt-4o-mini",
       stream: true,
       response_format: { type: "text" },
@@ -109,9 +124,10 @@ export async function* streamOpenAI(
   // 3-2. Run openAI with cluster prompt.
   if (prompt.type === "cluster") {
     stream = await openai.chat.completions.create({
-      messages: [...messages, 
-        {role: "assistant", content: assistantMessage},
-        {role: "user", content: JSON.stringify(prompt.content)}
+      messages: [
+        ...messages,
+        { role: "assistant", content: assistantMessage },
+        { role: "user", content: JSON.stringify(prompt.content) },
       ],
       model: "gpt-4o-mini",
       stream: true,
@@ -171,9 +187,9 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
       messages: [
         {
           role: "system",
-          content: systemMessage.text
+          content: systemMessage.text,
         },
-        { role: "user", content: content},
+        { role: "user", content: content },
       ],
       model: "gpt-4o-mini",
       stream: false,
@@ -188,11 +204,11 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
       messages: [
         {
           role: "system",
-          content: systemMessage.cluster
+          content: systemMessage.cluster,
         },
         {
           role: "assistant",
-          content: assistantMessage
+          content: assistantMessage,
         },
         { role: "user", content: clustersJSON },
       ],

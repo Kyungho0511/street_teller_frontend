@@ -3,6 +3,7 @@ import DropdownList from "./DropdownList";
 import { ClusterCheckboxItem } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { PopupContext } from "../../context/PopupContext";
+import { useLocation } from "react-router-dom";
 
 type DropdownManagerProps = {
   lists: ClusterCheckboxItem[];
@@ -26,11 +27,24 @@ export default function DropdownManager({
   const [expandedLists, setExpandedLists] = useState<boolean[]>(() =>
     new Array(lists.length).fill(false)
   );
+  const location = useLocation();
 
+  // Expand the first list if requested.
   useEffectAfterMount(() => {
     if (expandFirstList)
       setExpandedLists((list) => list.map((_, i) => (i === 0 ? true : false)));
   }, [expandFirstList]);
+
+  // Collapse all lists when page changes.
+  useEffectAfterMount(() => {
+    setExpandedLists(new Array(lists.length).fill(false));
+  }, [location.pathname]);
+
+  // Expand the selected cluster list.
+  useEffectAfterMount(() => {
+    if (selectedCluster == null) return;
+    toggleList(selectedCluster);
+  }, [selectedCluster]);
 
   const toggleList = (index: number) => {
     if (autoCollapse) {
@@ -43,12 +57,6 @@ export default function DropdownManager({
       );
     }
   };
-
-  // Expand the selected cluster list.
-  useEffectAfterMount(() => {
-    if (selectedCluster == null) return;
-    toggleList(selectedCluster);
-  }, [selectedCluster]);
 
   return (
     <div>

@@ -23,7 +23,7 @@ import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
 
 /**
- * Home page component where users select their preferences.
+ * Home page component where users sort their data preferences.
  */
 export default function HomePage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);

@@ -41,9 +41,12 @@ export const POPUP = {
   offset: 30,
 };
 
-export const transparent = "rgba(255,255,255,0)";
-
-export type RGBA = `rgba(${number},${number},${number},${number})`;
+export const transparent: RGBA = {
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 0,
+};
 
 export type Color = {
   categorized: RGBA[];
@@ -51,43 +54,44 @@ export type Color = {
   max: RGBA;
 };
 
-export type FillColor = {
+export type RGBA = {
   r: number;
   g: number;
   b: number;
   a: number;
 };
-const opacity = 0.8;
+
 export const color: { [key in string]: Color } = {
   blue: {
     categorized: [
-      `rgba(179,232,235,${opacity})`,
-      `rgba(99,193,231,${opacity})`,
-      `rgba(32,157,234,${opacity})`,
-      `rgba(80,122,236,${opacity})`,
+      { r: 179, g: 232, b: 235, a: 0.8 },
+      { r: 99, g: 193, b: 231, a: 0.8 },
+      { r: 32, g: 157, b: 234, a: 0.8 },
+      { r: 80, g: 122, b: 236, a: 0.8 },
     ],
-    min: `rgba(247,250,255,${opacity})`,
-    max: `rgba(0,110,254,${opacity})`,
+    min: { r: 247, g: 250, b: 255, a: 0.8 },
+    max: { r: 0, g: 110, b: 254, a: 0.8 },
   },
   yellow: {
     categorized: [
-      `rgba(247,233,0,${opacity})`,
-      `rgba(255,200,0,${opacity})`,
-      `rgba(244,137,75,${opacity})`,
-      `rgba(226,102,102,${opacity})`,
+      { r: 247, g: 233, b: 0, a: 0.8 },
+      { r: 255, g: 200, b: 0, a: 0.8 },
+      { r: 244, g: 137, b: 75, a: 0.8 },
+      { r: 226, g: 102, b: 102, a: 0.8 },
     ],
-    min: `rgba(255,250,236,${opacity})`,
-    max: `rgba(249,162,0,${opacity})`,
+
+    min: { r: 255, g: 250, b: 236, a: 0.8 },
+    max: { r: 249, g: 162, b: 0, a: 0.8 },
   },
   green: {
     categorized: [
-      `rgba(216,227,115,${opacity})`,
-      `rgba(178,226,120,${opacity})`,
-      `rgba(102,205,90,${opacity})`,
-      `rgba(93,182,190,${opacity})`,
+      { r: 216, g: 227, b: 115, a: 0.8 },
+      { r: 178, g: 226, b: 120, a: 0.8 },
+      { r: 102, g: 205, b: 90, a: 0.8 },
+      { r: 93, g: 182, b: 190, a: 0.8 },
     ],
-    min: `rgba(227,209,173,${opacity})`,
-    max: `rgba(42,169,181,${opacity})`,
+    min: { r: 227, g: 209, b: 173, a: 0.8 },
+    max: { r: 42, g: 169, b: 181, a: 0.8 },
   },
 };
 
@@ -329,5 +333,10 @@ export const mapSections: MapSection[] = [
     layers: [{ name: "tracts", opacity: 0.9 }],
     parentLayer: "cluster3",
     color: color.green,
+  },
+  {
+    id: "report",
+    layers: [{ name: "tracts", opacity: 0.9 }],
+    parentLayer: "report",
   },
 ];

@@ -39,12 +39,13 @@ export default function PopupContentCluster({
       })[0];
       setSelectedCluster(feature.properties!["cluster" + clusterId]);
     };
+    mapViewer.off("click", updateSelectedCluster);
     mapViewer.on("click", parentLayer, updateSelectedCluster);
 
     return () => {
-      mapViewer.off("click", parentLayer, updateSelectedCluster);
+      mapViewer.off("click", updateSelectedCluster);
     };
-  }, []);
+  }, [mapViewer, parentLayer, clusterId]);
 
   useEffectAfterMount(() => {
     if (!property) return;

@@ -1,33 +1,52 @@
-import { createContext, useState } from "react";
-import { BoroughList, PreferenceList, ClusterList, initialPreferenceList, initialClusterLists, initialBoroughList } from "../constants/surveyConstants";
+import { createContext } from "react";
+import {
+  BoroughList,
+  PreferenceList,
+  ClusterList,
+  initialPreferenceList,
+  initialClusterLists,
+  initialBoroughList,
+} from "../constants/surveyConstants";
 import { parseString } from "../utils/utils";
+import useSessionStorage from "../hooks/useSessionStorage";
 
 export type Survey = {
-  boroughList : BoroughList,
-  preferenceList: PreferenceList,
-  clusterLists: ClusterList[]
+  boroughList: BoroughList;
+  preferenceList: PreferenceList;
+  clusterLists: ClusterList[];
 };
 
 type SurveyContextProps = {
   survey: Survey;
-  setSurveyContext: (newSurveyElement: BoroughList | PreferenceList | ClusterList) => void;
+  setSurveyContext: (
+    newSurveyElement: BoroughList | PreferenceList | ClusterList
+  ) => void;
 };
 
 /**
- * Survey context to manage the survey state from users on 
+ * Survey context to manage the survey state from users on
  * questionnaire regarding preferences, boroughs, and clusters.
  */
-export const SurveyContext = createContext<SurveyContextProps>({} as SurveyContextProps);
+export const SurveyContext = createContext<SurveyContextProps>(
+  {} as SurveyContextProps
+);
 
 /**
  * Survey context provider to manage the survey state.
  */
-export function SurveyContextProvider({children} : {children: React.ReactNode;}) {
-  const [survey, setSurvey] = useState<Survey>(initialSurvey);
+export function SurveyContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [survey, setSurvey] = useSessionStorage<Survey>(
+    "survey",
+    initialSurvey
+  );
 
   // update survey context differently based on the survey element
   const setSurveyContext = (
-    newSurveyElement: BoroughList | PreferenceList | ClusterList,
+    newSurveyElement: BoroughList | PreferenceList | ClusterList
   ) => {
     if (newSurveyElement.name === "boroughs") {
       setSurvey((prev) => ({
@@ -50,19 +69,6 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
       console.error("Invalid survey name");
     }
   };
-  
-  // // retrieve stored survey from session storage
-  // useEffect(() => { 
-  //   const storedSurvey = sessionStorage.getItem("survey"); 
-  //   if (storedSurvey) {
-  //     setSurvey(JSON.parse(storedSurvey));
-  //   }
-  // }, []);
-
-  // // update session storage when survey changes
-  // useEffect(() => {
-  //   sessionStorage.setItem('survey', JSON.stringify(survey))
-  // }, [survey])
 
   return (
     <SurveyContext.Provider
@@ -79,5 +85,5 @@ export function SurveyContextProvider({children} : {children: React.ReactNode;})
 const initialSurvey: Survey = {
   boroughList: initialBoroughList,
   preferenceList: initialPreferenceList,
-  clusterLists: initialClusterLists
+  clusterLists: initialClusterLists,
 };

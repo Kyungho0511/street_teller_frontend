@@ -9,6 +9,7 @@ import {
 import MapViewer from "../components/organisms/MapViewer";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import * as Cesium from "cesium";
+import useSessionStorage from "../hooks/useSessionStorage";
 
 export type MapMode = "satellite" | "map";
 
@@ -57,20 +58,15 @@ export function MapContextProvider({
   const [attribute, setAttribute] = useState<MapAttribute>(
     () => mapSections.find((sec) => sec.id === "home")!.attribute!
   );
-
   const [color, setColor] = useState<Color>();
-  const [mapMode, setMapMode] = useState<MapMode>(() => {
-    const mode = localStorage.getItem("mapMode") as MapMode | null;
-    return mode ? mode : "map";
-  });
-
+  const [mapMode, setMapMode] = useSessionStorage<MapMode>("mapMode", "map");
   const [previewMode, setPreviewMode] = useState<MapMode>(() =>
     mapMode === "satellite" ? "map" : "satellite"
   );
 
+  // UI theme is changed based on the map mode.
   useEffect(() => {
     document.documentElement.setAttribute("map-mode", mapMode);
-    localStorage.setItem("mapMode", mapMode);
   }, [mapMode]);
 
   const toggleMapMode = () => {

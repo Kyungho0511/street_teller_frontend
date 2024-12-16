@@ -16,7 +16,7 @@ import { transparent } from "./mapConstants";
 /**
  * Sections of the website.
  */
-export type Section = "home" | `cluster${number}`;
+export type Section = "home" | `cluster${number}` | "report";
 
 /**
  * Site preference categories of the user survey.

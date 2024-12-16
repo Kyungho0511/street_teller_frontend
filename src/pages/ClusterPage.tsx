@@ -1,11 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
-import { CLUSTERING_SIZE } from "../services/kmeans";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
@@ -25,6 +24,8 @@ import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
 import { Section } from "../constants/surveyConstants";
+import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
+import { KMeansContext } from "../context/KMeansContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -34,6 +35,7 @@ export default function ClusterPage() {
   const { survey } = useContext(SurveyContext);
   const { addMessage, updatePrompt } = useContext(MessageContext);
   const { mapViewer, mapMode } = useContext(MapContext);
+  const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -42,7 +44,6 @@ export default function ClusterPage() {
   const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
 
-  const [kMeansLayers, setKMeansLayers] = useState<kmeans.KMeansLayer[]>([]);
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
     useGeoJson(geoJsonFilePath);
 
@@ -57,6 +58,8 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
+    if (!mapViewer) return;
+
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
 
@@ -73,7 +76,7 @@ export default function ClusterPage() {
       );
       setGeoJson(filteredGeoJson);
     }
-  }, [location.pathname]);
+  }, [location.pathname, mapViewer]);
 
   // Set KMeansLayer on loading a new clustering page.
   useEffectAfterMount(() => {
@@ -131,6 +134,7 @@ export default function ClusterPage() {
   // Restore mapping on mapMode change
   useEffectAfterMount(() => {
     if (!mapViewer) return;
+
     const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
     const currentSources = mapViewer.getStyle()!.sources;
 

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./PopupSection.module.css";
 import { MapContext } from "../../context/MapContext";
 import { FOOTBAR_HEIGHT } from "./Footbar";
-import { FillColor, POPUP } from "../../constants/mapConstants";
+import { RGBA, POPUP } from "../../constants/mapConstants";
 import { isTransparent } from "../../utils/utils";
 import useMapSelectEffect from "../../hooks/useMapSelectEffect";
 import { PopupContext } from "../../context/PopupContext";
@@ -69,7 +69,7 @@ export default function PopupSection({
       const feature = mapViewer!.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-      const fillColor = (feature.layer!.paint as { "fill-color": FillColor })[
+      const fillColor = (feature.layer!.paint as { "fill-color": RGBA })[
         "fill-color"
       ];
       if (isTransparent(fillColor)) {

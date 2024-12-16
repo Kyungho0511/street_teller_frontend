@@ -6,14 +6,14 @@ import { MapContext } from "../../context/MapContext";
 
 type ButtonProps = {
   text: string;
-  location: "sidebar" | "footbar";
+  type: "sidebar" | "footbar";
   handleClick?: () => void;
 };
 
 /**
  * Button component with bold text.
  */
-export default function Button({ text, location, handleClick }: ButtonProps) {
+export default function Button({ text, type, handleClick }: ButtonProps) {
   const { loadingMessage } = useContext(MessageContext);
   const { mapMode } = useContext(MapContext);
 
@@ -30,9 +30,9 @@ export default function Button({ text, location, handleClick }: ButtonProps) {
       disabled={disabled}
       // TODO: refactor conditional styles with theme.css variables.
       className={`${styles.button} ${
-        location === "sidebar" ? styles.sidebar_button : styles.footbar_button
+        type === "sidebar" ? styles.sidebar_button : styles.footbar_button
       } ${
-        mapMode === "satellite" && location === "footbar"
+        mapMode === "satellite" && type === "footbar"
           ? styles.blue
           : styles.grey
       }`}

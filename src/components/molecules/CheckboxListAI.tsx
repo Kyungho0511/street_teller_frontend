@@ -9,9 +9,9 @@ import { useContext, useState } from "react";
 import Button from "../atoms/Button";
 import { SurveyContext } from "../../context/SurveyContext";
 import { MessageContext } from "../../context/MessageContext";
-import { KMeansLayer } from "../../services/kmeans";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { OpenAiResponseJSON, streamOpenAI } from "../../services/openai";
+import { KMeansLayer } from "../../constants/kMeansConstants";
 
 type CheckboxListAIProps = {
   name: string;
@@ -175,7 +175,7 @@ export default function CheckboxListAI({
 
       <Button
         text={"retry analysis"}
-        location={"sidebar"}
+        type={"sidebar"}
         handleClick={startTypingAnimation}
       />
     </>

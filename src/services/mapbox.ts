@@ -1,4 +1,3 @@
-import { KMeansLayer } from "./kmeans";
 import mapboxgl from "mapbox-gl";
 import {
   Color,
@@ -13,6 +12,7 @@ import { ClusterList, Section } from "../constants/surveyConstants";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
+import { KMeansLayer } from "../constants/kMeansConstants";
 
 /**
  * Create a mapbox map instance.
@@ -148,9 +148,9 @@ export function updateLayerAttribute(
     bound.rateOfChange,
     ["get", attribute],
     bound.min,
-    color.min,
+    utils.rgbaToString(color.min),
     bound.max,
-    color.max,
+    utils.rgbaToString(color.max),
   ]);
 }
 
@@ -170,30 +170,77 @@ export function updateClusterLayer(
     map.setPaintProperty(clusterList.name, "fill-color", [
       "case",
       ["==", ["get", "cluster" + clusterId], 0],
-      list[0].checked ? list[0].color : transparent,
+      list[0].checked ? utils.rgbaToString(list[0].color!) : transparent,
       ["==", ["get", "cluster" + clusterId], 1],
-      list[1].checked ? list[1].color : transparent,
+      list[1].checked ? utils.rgbaToString(list[1].color!) : transparent,
       ["==", ["get", "cluster" + clusterId], 2],
-      list[2].checked ? list[2].color : transparent,
+      list[2].checked ? utils.rgbaToString(list[2].color!) : transparent,
       ["==", ["get", "cluster" + clusterId], 3],
-      list[3].checked ? list[3].color : transparent,
+      list[3].checked ? utils.rgbaToString(list[3].color!) : transparent,
       transparent,
     ]);
   }
 }
 
 /**
+ * Add a report layer to the mapbox map.
+ * @param kMeansLayers kMeans Layers to be used to create the report layer.
+ * @param map Map to which the layer is added.
+ */
+export function addReportLayer(
+  title: string,
+  kMeansLayer: KMeansLayer,
+  map: mapboxgl.Map
+) {
+  // Remove the layer if it already exists.
+  map.getSource(title) && map.removeSource(title);
+  map.getLayer(title) && map.removeLayer(title);
+
+  // Add source and layer to the map.
+  console.log(kMeansLayer.geoJson);
+
+  map.addSource(title, {
+    type: "geojson",
+    data: kMeansLayer.geoJson,
+  });
+  map.addLayer(
+    {
+      id: title,
+      type: "fill",
+      source: title,
+      paint: {
+        "fill-color": [
+          "case",
+          ["==", ["get", "cluster3"], 0],
+          utils.rgbaToString(kMeansLayer.colors[0]),
+          ["==", ["get", "cluster3"], 1],
+          utils.rgbaToString(kMeansLayer.colors[1]),
+          ["==", ["get", "cluster3"], 2],
+          utils.rgbaToString(kMeansLayer.colors[2]),
+          ["==", ["get", "cluster3"], 3],
+          utils.rgbaToString(kMeansLayer.colors[3]),
+          transparent,
+        ],
+        "fill-opacity": 1,
+        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+      },
+    },
+    "road-simple"
+  );
+}
+
+/**
  * Add a k-means cluster layer to the mapbox map.
  * @param clusterId clustering iteration number.
- * @param kMeansLayer Layer to be added.
+ * @param kMeansLayer kMeans Layer to be added.
  * @param map Map to which the layer is added.
- * @param color If true, the layer is colored.
+ * @param useColor If true, the layer is colored.
  */
 export function addClusterLayer(
   clusterId: string,
   kMeansLayer: KMeansLayer,
   map: mapboxgl.Map,
-  color?: boolean
+  useColor?: boolean
 ) {
   // Remove the layer if it already exists.
   map.getSource(kMeansLayer.title) && map.removeSource(kMeansLayer.title);
@@ -213,13 +260,13 @@ export function addClusterLayer(
         "fill-color": [
           "case",
           ["==", ["get", "cluster" + clusterId], 0],
-          color ? kMeansLayer.colors[0] : transparent,
+          useColor ? utils.rgbaToString(kMeansLayer.colors[0]) : transparent,
           ["==", ["get", "cluster" + clusterId], 1],
-          color ? kMeansLayer.colors[1] : transparent,
+          useColor ? utils.rgbaToString(kMeansLayer.colors[1]) : transparent,
           ["==", ["get", "cluster" + clusterId], 2],
-          color ? kMeansLayer.colors[2] : transparent,
+          useColor ? utils.rgbaToString(kMeansLayer.colors[2]) : transparent,
           ["==", ["get", "cluster" + clusterId], 3],
-          color ? kMeansLayer.colors[3] : transparent,
+          useColor ? utils.rgbaToString(kMeansLayer.colors[3]) : transparent,
           transparent,
         ],
         "fill-opacity": 1,
@@ -229,6 +276,7 @@ export function addClusterLayer(
     "road-simple"
   );
 }
+
 /**
  * Remove a k-means cluster layer from the mapbox map.
  * @param kMeansLayer Layer to be removed.

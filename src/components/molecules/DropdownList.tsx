@@ -16,7 +16,7 @@ type DropdownListProps = {
 };
 
 /**
- * Dropdown list component. It should be used within a {@link DropdownManager}.
+ * Dropdown list component to be used within a {@link DropdownManager}.
  */
 export default function DropdownList({
   list,
