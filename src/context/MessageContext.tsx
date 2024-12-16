@@ -10,12 +10,12 @@ export type Message = {
 export type LoadingMessage = {
   text: boolean;
   json: boolean;
-}
+};
 
 export type ErrorMessage = {
   text: string | undefined;
   json: string | undefined;
-}
+};
 
 type MessageContextProps = {
   messages: Message[] | [];
@@ -35,16 +35,27 @@ type MessageContextProps = {
  * and when the user submits a new prompt through the PromptBox.
  */
 export const MessageContext = createContext<MessageContextProps>(
-  {} as MessageContextProps);
+  {} as MessageContextProps
+);
 
 /**
  * Message context provider to manage the message state between the user and the AI.
  */
-export function MessageContextProvider({children} : {children: React.ReactNode;}) {
+export function MessageContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState<Prompt>();
-  const [loadingMessage, setLoadingMessage] = useState<LoadingMessage>({text: false, json: false});
-  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({text: undefined, json: undefined});
+  const [loadingMessage, setLoadingMessage] = useState<LoadingMessage>({
+    text: false,
+    json: false,
+  });
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({
+    text: undefined,
+    json: undefined,
+  });
 
   const addMessage = (newMessage: Message) => {
     setMessages((prev) => [...prev, newMessage]);
@@ -81,7 +92,7 @@ export function MessageContextProvider({children} : {children: React.ReactNode;}
         loadingMessage,
         setLoadingMessage,
         errorMessage,
-        setErrorMessage
+        setErrorMessage,
       }}
     >
       {children}

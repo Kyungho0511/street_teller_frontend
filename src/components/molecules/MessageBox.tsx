@@ -9,13 +9,12 @@ import MarkdownRenderer from "../atoms/MarkdownRenderer";
 type MessageBoxProps = {
   texts: Message[];
   textIndex: number;
-}
+};
 
 /**
  * Message box component to display the chat history between user and AI.
  */
 export default function MessageBox({ texts, textIndex }: MessageBoxProps) {
-
   return (
     <div className={styles.container}>
       {texts.length > 0 && texts[textIndex].user && (

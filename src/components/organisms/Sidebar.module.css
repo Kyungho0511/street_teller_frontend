@@ -22,20 +22,44 @@
   background-color: var(--color-light-blue);
 }
 
-.navigate {
+.btn_container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin: 0 0.5rem;
+}
+
+.refresh_btn {
+  font-size: 1.1rem;
+  margin: 0 1rem;
+}
+
+.navigate_container {
+  display: flex;
+  align-items: center;
   font-size: 0.9rem;
   color: var(--color-white);
-  margin: 0 1rem;
+  /* margin: 0 1rem; */
 
   & span {
-    margin: 0 0.5rem;
+    margin: 0 0.2rem;
     user-select: none;
   }
+}
 
-  /* fontawesome icons */
-  & .icon { 
-    cursor: pointer;
-  }
+.icon {
+  display: flex;
+  color: var(--color-white);
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.icon:hover {
+  background-color: var(--color-black-transparent);
 }
 
 .body {

@@ -1,5 +1,6 @@
 :root {
   --color-black: rgb(0, 0, 0);
+  --color-black-transparent: rgba(0, 0, 0, 0.15);
   --color-light-black: rgb(40, 40, 40);
   --color-dark-grey: rgb(87, 87, 87);
   --color-grey: rgb(150, 150, 150);
@@ -11,7 +12,7 @@
   --color-light-white2: rgb(252, 252, 252);
   --color-white: white;
   --color-white-transparent: rgba(255, 255, 255, 0.5);
-  --color-blue: #005FFF;
+  --color-blue: #005fff;
   --color-light-blue: #327dff;
   --color: #63c1e7;
 }

@@ -3,6 +3,7 @@ import Logo from "../atoms/Logo";
 import MessageBox from "../molecules/MessageBox";
 import styles from "./Sidebar.module.css";
 import {
+  faArrowRotateRight,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
@@ -45,34 +46,51 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     setTextIndex((prev) => (prev === 0 ? 0 : prev - 1));
   };
 
-  const handleClick = (event: React.MouseEvent) => {
+  const handleNavigate = (event: React.MouseEvent) => {
     const target = event.currentTarget as HTMLElement;
 
-    if (target.dataset.icon === "chevron-right") {
+    if (target.dataset.icon === "right") {
       nextMessageIndex();
-    } else if (target.dataset.icon === "chevron-left") {
+    } else if (target.dataset.icon === "left") {
       prevMessageIndex();
     }
+  };
+
+  const handleRefresh = () => {
+    sessionStorage.clear();
   };
 
   return (
     <aside className={styles.sidebar} style={{ width: SIDEBAR_WIDTH }}>
       <div className={styles.header}>
         <Logo width="160px" color="black" />
-        <div className={styles.navigate}>
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            className={styles.icon}
-            onClick={handleClick}
-          />
-          <span>
-            {textIndex + 1}/{texts.length}
-          </span>
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            className={styles.icon}
-            onClick={handleClick}
-          />
+
+        <div className={styles.btn_container}>
+          <div className={`${styles.refresh_btn} ${styles.icon}`}>
+            <FontAwesomeIcon
+              icon={faArrowRotateRight}
+              onClick={handleRefresh}
+            />
+          </div>
+          <div className={styles.navigate_container}>
+            <div
+              className={styles.icon}
+              onClick={handleNavigate}
+              data-icon={"left"}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </div>
+            <span>
+              {textIndex + 1}/{texts.length}
+            </span>
+            <div
+              className={styles.icon}
+              onClick={handleNavigate}
+              data-icon={"right"}
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </div>
+          </div>
         </div>
       </div>
       <div className={styles.body}>

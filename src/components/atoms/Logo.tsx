@@ -9,17 +9,19 @@ type LogoProps = {
 
 /**
  * Logo component to display the site teller brand image.
- * 
+ *
  */
 export default function Logo({ width }: LogoProps) {
   return (
     <Link to="/" draggable={false}>
-      <img
-        src={logo}
-        alt="logo_image"
-        className={styles.logo}
-        style={{ width: width }}
-      />
+      <div className={styles.container}>
+        <img
+          src={logo}
+          alt="logo_image"
+          className={styles.logo}
+          style={{ width: width }}
+        />
+      </div>
     </Link>
   );
 }
