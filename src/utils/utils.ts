@@ -7,7 +7,6 @@ import {
   mapAttributes,
 } from "../constants/mapConstants";
 import census_tract_to_nta from "../assets/data/census_tract_to_nta.json";
-import { RGBA } from "../constants/mapConstants";
 
 /**
  * Returns the section name corresponding to the path.

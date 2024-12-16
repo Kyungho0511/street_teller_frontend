@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import { KMeansLayer } from "../constants/kMeansConstants";
 import useSessionStorage from "../hooks/useSessionStorage";
 

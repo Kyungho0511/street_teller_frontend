@@ -41,7 +41,12 @@ export const POPUP = {
   offset: 30,
 };
 
-export const transparent = "rgba(255,255,255,0)";
+export const transparent: RGBA = {
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 0,
+};
 
 export type Color = {
   categorized: RGBA[];

@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { MapContext } from "../../context/MapContext";
 import { mapConfigs, mapSections } from "../../constants/mapConstants";
-import { Section } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 /**
