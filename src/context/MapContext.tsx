@@ -9,6 +9,7 @@ import {
 import MapViewer from "../components/organisms/MapViewer";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import * as Cesium from "cesium";
+import useSessionStorage from "../hooks/useSessionStorage";
 
 export type MapMode = "satellite" | "map";
 

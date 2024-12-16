@@ -34,17 +34,19 @@ export default function PopupContentCluster({
     if (!mapViewer) return;
 
     const updateSelectedCluster = (event: mapboxgl.MapMouseEvent) => {
+      console.log("updating selected cluster");
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
       setSelectedCluster(feature.properties!["cluster" + clusterId]);
     };
+    console.log("parentLayer:", parentLayer);
     mapViewer.on("click", parentLayer, updateSelectedCluster);
 
     return () => {
       mapViewer.off("click", parentLayer, updateSelectedCluster);
     };
-  }, []);
+  }, [mapViewer]);
 
   useEffectAfterMount(() => {
     if (!property) return;

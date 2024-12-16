@@ -38,6 +38,7 @@ export default function MapViewer() {
 
     temp.on("load", () => {
       setMapViewer(temp);
+      setMapSettings();
     });
 
     return () => {
@@ -49,14 +50,9 @@ export default function MapViewer() {
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    // Update the map layers of the current page.
-    const section: Section = pathToSection(location.pathname);
+    const section = pathToSection(location.pathname);
     mapbox.setLayers(section, mapViewer);
-
-    // Update the map parent layer and color of the current page.
-    const mapSection = mapSections.find((sec) => sec.id === section)!;
-    setParentLayer(mapSection.parentLayer);
-    setColor(mapSection.color);
+    setMapSettings();
 
     return () => {
       setParentLayer("");
@@ -74,6 +70,14 @@ export default function MapViewer() {
         : mapConfigs.style.map;
     mapViewer.setStyle(styleUrl);
   }, [mapMode]);
+
+  const setMapSettings = () => {
+    // Update the map parent layer and color of the current page.
+    const section = pathToSection(location.pathname);
+    const mapSec = mapSections.find((sec) => sec.id === section)!;
+    setParentLayer(mapSec.parentLayer);
+    setColor(mapSec.color);
+  };
 
   return <div id="map" ref={mapContainerRef} className={styles.map}></div>;
 }
