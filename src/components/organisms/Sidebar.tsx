@@ -6,11 +6,12 @@ import {
   faArrowRotateRight,
   faChevronLeft,
   faChevronRight,
+  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Message, MessageContext } from "../../context/MessageContext";
 
-export const SIDEBAR_WIDTH = 450;
+export const SIDEBAR_WIDTH = 480;
 
 /**
  * Sidebar component that displays AI conversation and its children components.
@@ -24,6 +25,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   // Get messages with text type only.
   const [texts, setTexts] = useState<Message[]>([]);
   const [textIndex, setTextIndex] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setTexts(
@@ -60,21 +63,24 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     sessionStorage.clear();
   };
 
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    const input = inputRef.current;
+    if (input) {
+      input.focus();
+      input.classList.add(styles.active);
+    }
+    console.log("Search:", searchQuery);
+  };
+
   return (
     <aside className={styles.sidebar} style={{ width: SIDEBAR_WIDTH }}>
       <div className={styles.header}>
-        <Logo width="160px" color="black" />
-
-        <div className={styles.btn_container}>
-          <div className={`${styles.refresh_btn} ${styles.icon}`}>
-            <FontAwesomeIcon
-              icon={faArrowRotateRight}
-              onClick={handleRefresh}
-            />
-          </div>
+        <div className={styles.logo_container}>
+          <Logo width="148px" color="black" />
           <div className={styles.navigate_container}>
             <div
-              className={styles.icon}
+              className={`${styles.icon} ${styles.small}`}
               onClick={handleNavigate}
               data-icon={"left"}
             >
@@ -84,12 +90,36 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               {textIndex + 1}/{texts.length}
             </span>
             <div
-              className={styles.icon}
+              className={`${styles.icon} ${styles.small}`}
               onClick={handleNavigate}
               data-icon={"right"}
             >
               <FontAwesomeIcon icon={faChevronRight} />
             </div>
+          </div>
+        </div>
+
+        <div className={styles.btn_container}>
+          <form onSubmit={handleSearch} className={styles.search_container}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search sites"
+              className={styles.search_input}
+              ref={inputRef}
+              onBlur={() => inputRef.current?.classList.remove(styles.active)}
+            />
+            <button type="submit" className={styles.search_btn}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+          </form>
+
+          <div className={styles.icon}>
+            <FontAwesomeIcon
+              icon={faArrowRotateRight}
+              onClick={handleRefresh}
+            />
           </div>
         </div>
       </div>
