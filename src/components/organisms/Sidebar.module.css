@@ -53,8 +53,8 @@
   font-size: 1.2rem;
   justify-content: center;
   align-items: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 0.5rem;
   cursor: pointer;
 }
@@ -93,8 +93,8 @@
   color: var(--color-white);
   font-size: 1.2rem;
   background-color: var(--color-white-transparent);
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 0.5rem;
   border: none;
   outline: none;
@@ -106,6 +106,10 @@
 
 .search_btn:hover {
   background-color: var(--color-black-transparent);
+}
+
+.tooltip {
+  position: relative;
 }
 
 .body {

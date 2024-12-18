@@ -1,7 +1,7 @@
+import styles from "./Sidebar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Logo from "../atoms/Logo";
 import MessageBox from "../molecules/MessageBox";
-import styles from "./Sidebar.module.css";
 import {
   faArrowRotateRight,
   faChevronLeft,
@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Message, MessageContext } from "../../context/MessageContext";
+import Tooltip from "../atoms/Tooltip";
 
 export const SIDEBAR_WIDTH = 480;
 
@@ -27,6 +28,14 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [textIndex, setTextIndex] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const searchBtnRef = useRef<HTMLButtonElement>(null);
+  const [displaySearchTooltip, setDisplaySearchTooltip] =
+    useState<boolean>(false);
+
+  const restartBtnRef = useRef<HTMLDivElement>(null);
+  const [displayRestartTooltip, setDisplayRestartTooltip] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setTexts(
@@ -59,7 +68,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleRefresh = () => {
+  const handleRestart = () => {
     sessionStorage.clear();
   };
 
@@ -110,16 +119,29 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               ref={inputRef}
               onBlur={() => inputRef.current?.classList.remove(styles.active)}
             />
-            <button type="submit" className={styles.search_btn}>
+            <button
+              ref={searchBtnRef}
+              type="submit"
+              className={`${styles.search_btn} ${styles.tooltip}`}
+              onMouseEnter={() => setDisplaySearchTooltip(true)}
+              onMouseLeave={() => setDisplaySearchTooltip(false)}
+            >
               <FontAwesomeIcon icon={faMagnifyingGlass} />
+              {displaySearchTooltip && <Tooltip text="Search" />}
             </button>
           </form>
 
-          <div className={styles.icon}>
+          <div
+            ref={restartBtnRef}
+            className={`${styles.icon} ${styles.tooltip}`}
+            onMouseEnter={() => setDisplayRestartTooltip(true)}
+            onMouseLeave={() => setDisplayRestartTooltip(false)}
+          >
             <FontAwesomeIcon
               icon={faArrowRotateRight}
-              onClick={handleRefresh}
+              onClick={handleRestart}
             />
+            {displayRestartTooltip && <Tooltip text="Restart" />}
           </div>
         </div>
       </div>
