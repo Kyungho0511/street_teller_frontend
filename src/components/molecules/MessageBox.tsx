@@ -17,7 +17,7 @@ type MessageBoxProps = {
 export default function MessageBox({ texts, textIndex }: MessageBoxProps) {
   return (
     <div className={styles.container}>
-      {texts.length > 0 && texts[textIndex].user && (
+      {texts.length > textIndex && texts[textIndex].user && (
         <div className={styles.message}>
           <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
           {texts[textIndex].user}
@@ -27,7 +27,7 @@ export default function MessageBox({ texts, textIndex }: MessageBoxProps) {
         <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
         {/* AiResponse displays streaming response with typing animation, 
           whereas MarkdownRenderer shows fully fetched AI response */}
-        {texts.length > 0 && texts[textIndex].ai && (
+        {texts.length > textIndex && texts[textIndex].ai && (
           <MarkdownRenderer content={texts[textIndex].ai} />
         )}
         <AiReponse />

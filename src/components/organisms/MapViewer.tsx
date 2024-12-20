@@ -4,7 +4,8 @@ import * as mapbox from "../../services/mapbox";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { MapContext } from "../../context/MapContext";
-import { mapConfigs, mapSections } from "../../constants/mapConstants";
+import { mapConfigs } from "../../constants/mapConstants";
+import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 /**
@@ -73,7 +74,7 @@ export default function MapViewer() {
   const setMapSettings = () => {
     // Update the map parent layer and color of the current page.
     const section = pathToSection(location.pathname);
-    const mapSec = mapSections.find((sec) => sec.id === section)!;
+    const mapSec = sectionMapConfigs.find((sec) => sec.id === section)!;
     setParentLayer(mapSec.parentLayer);
     setColor(mapSec.color);
   };

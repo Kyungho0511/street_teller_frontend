@@ -1,5 +1,5 @@
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
-import { Section } from "../constants/surveyConstants";
+import { Section } from "../constants/sectionConstants";
 import {
   RGBA,
   MapBound,
@@ -16,10 +16,16 @@ export function pathToSection(path: string): Section {
   if (path === "/") {
     return "home";
   }
+
   const clusterMatch = path.match(/^\/cluster\/(\d+)$/);
   if (clusterMatch) {
     return `cluster${clusterMatch[1]}` as Section;
   }
+
+  if (path === "/report") {
+    return "report";
+  }
+
   return "home";
 }
 

@@ -72,11 +72,13 @@ export default function PopupSection({
       const fillColor = (feature.layer!.paint as { "fill-color": RGBA })[
         "fill-color"
       ];
+
       if (isTransparent(fillColor)) {
         hidePopup();
         return;
       }
       showPopup();
+
       // Set X position of the popup.
       if (event.point.x + POPUP.width + POPUP.offset > mapWidth) {
         translate.x = event.point.x - POPUP.width - POPUP.offset;

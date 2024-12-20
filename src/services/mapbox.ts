@@ -4,11 +4,12 @@ import {
   mapConfigs,
   MapBound,
   MapLayer,
-  mapSections,
   transparent,
   ZOOM_MODIFIER,
 } from "../constants/mapConstants";
-import { ClusterList, Section } from "../constants/surveyConstants";
+import { sectionMapConfigs } from "../constants/sectionConstants";
+import { ClusterList } from "../constants/surveyConstants";
+import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
@@ -119,7 +120,7 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
  */
 export function setLayers(section: Section, map: mapboxgl.Map): void {
   // Exit if the section is not found.
-  const mapSection = mapSections.find((sec) => sec.id === section);
+  const mapSection = sectionMapConfigs.find((sec) => sec.id === section);
   if (!mapSection) return;
 
   // Update layer opacity.
@@ -309,7 +310,7 @@ export function removeAllClusterLayers(
  * @param map Map in which the layers are turned off.
  */
 export function offLayers(map: mapboxgl.Map) {
-  mapSections.forEach((sec) => {
+  sectionMapConfigs.forEach((sec) => {
     sec.layers.forEach((layer) => {
       setLayerOpacity({ name: layer.name, opacity: 0 }, map);
     });

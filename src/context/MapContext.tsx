@@ -4,8 +4,8 @@ import {
   mapConfigs,
   Location,
   MapAttribute,
-  mapSections,
 } from "../constants/mapConstants";
+import { sectionMapConfigs } from "../constants/sectionConstants";
 import MapViewer from "../components/organisms/MapViewer";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import * as Cesium from "cesium";
@@ -56,7 +56,7 @@ export function MapContextProvider({
     mapConfigs.location as Location
   );
   const [attribute, setAttribute] = useState<MapAttribute>(
-    () => mapSections.find((sec) => sec.id === "home")!.attribute!
+    () => sectionMapConfigs.find((sec) => sec.id === "home")!.attribute!
   );
   const [color, setColor] = useState<Color>();
   const [mapMode, setMapMode] = useSessionStorage<MapMode>("mapMode", "map");

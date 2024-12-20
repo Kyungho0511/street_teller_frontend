@@ -11,6 +11,8 @@ import {
 import { useContext, useEffect, useRef, useState } from "react";
 import { Message, MessageContext } from "../../context/MessageContext";
 import Tooltip from "../atoms/Tooltip";
+import { useLocation } from "react-router-dom";
+import { pathToSection } from "../../utils/utils";
 
 export const SIDEBAR_WIDTH = 480;
 
@@ -26,6 +28,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   // Get messages with text type only.
   const [texts, setTexts] = useState<Message[]>([]);
   const [textIndex, setTextIndex] = useState<number>(0);
+
   const [searchQuery, setSearchQuery] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,18 +40,21 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [displayRestartTooltip, setDisplayRestartTooltip] =
     useState<boolean>(false);
 
+  const location = useLocation();
+  const section = pathToSection(location.pathname);
+
   useEffect(() => {
     setTexts(
-      messages.filter(
+      messages[section].filter(
         (message) => message.type === "text" || message.type === "section"
       )
     );
-  }, [messages]);
+  }, [messages, section]);
 
-  // Updates messageIndex when a new message is added.
+  // Updates messageIndex when a new message is added or page changes.
   useEffect(() => {
     texts.length > 1 && setTextIndex(texts.length - 1);
-  }, [texts.length]);
+  }, [texts.length, section]);
 
   const nextMessageIndex = () => {
     setTextIndex((prev) => (prev === texts.length - 1 ? prev : prev + 1));
@@ -79,7 +85,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       input.focus();
       input.classList.add(styles.active);
     }
-    console.log("Search:", searchQuery);
   };
 
   return (

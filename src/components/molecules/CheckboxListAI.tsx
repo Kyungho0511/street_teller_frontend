@@ -12,6 +12,8 @@ import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { OpenAiResponseJSON, streamOpenAI } from "../../services/openai";
 import { KMeansLayer } from "../../constants/kMeansConstants";
+import { useLocation } from "react-router-dom";
+import { pathToSection } from "../../utils/utils";
 
 type CheckboxListAIProps = {
   name: string;
@@ -29,7 +31,6 @@ export default function CheckboxListAI({
   index,
   kMeansLayers,
 }: CheckboxListAIProps) {
-  // Global states
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const {
     messages,
@@ -40,9 +41,11 @@ export default function CheckboxListAI({
     setErrorMessage,
   } = useContext(MessageContext);
 
-  // Local states
   const [streaming, setStreaming] = useState<ClusterCheckboxItem[]>([]);
   const listToDisplay = loadingMessage.json && streaming ? streaming : list;
+
+  const location = useLocation();
+  const section = pathToSection(location.pathname);
 
   // Fetch and display OpenAI reasoning on setting kMeansLayer.
   useEffectAfterMount(() => {
@@ -64,7 +67,7 @@ export default function CheckboxListAI({
   const startTypingAnimation = async () => {
     // Reset the loading and error status.
     setLoadingMessage((prev) => ({ ...prev, json: true }));
-    setErrorMessage((prev) => ({ ...prev, json: undefined }));
+    setErrorMessage((prev) => ({ ...prev, json: "" }));
 
     // Construct prompt JSON for OpenAI.
     const promptJson: Cluster[] = list.map(
@@ -87,7 +90,7 @@ export default function CheckboxListAI({
       // Start OpenAI JSON response streaming.
       for await (const chunk of streamOpenAI(
         { type: "cluster", content: promptJson },
-        messages,
+        messages[section],
         survey.preferenceList.list,
         index
       )) {
@@ -115,7 +118,7 @@ export default function CheckboxListAI({
       console.error(error);
     } finally {
       // Update the message context when the response is fully fetched.
-      addMessage({
+      addMessage(section, {
         user: JSON.stringify(promptJson),
         ai: JSON.stringify(response),
         type: "cluster",

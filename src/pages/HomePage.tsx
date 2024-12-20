@@ -7,8 +7,8 @@ import { SurveyContext } from "../context/SurveyContext";
 import {
   initialPreferenceList,
   Preference,
-  Section,
 } from "../constants/surveyConstants";
+import { Section } from "../constants/sectionConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import { MessageContext } from "../context/MessageContext";
