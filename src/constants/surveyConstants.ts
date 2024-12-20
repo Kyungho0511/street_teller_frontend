@@ -11,12 +11,7 @@ import {
 import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
-import { transparent } from "./mapConstants";
-
-/**
- * Sections of the website.
- */
-export type Section = "home" | `cluster${number}` | "report";
+import { defaultColor } from "./mapConstants";
 
 /**
  * Site preference categories of the user survey.
@@ -191,7 +186,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -199,7 +194,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -207,7 +202,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -215,7 +210,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -228,7 +223,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -236,7 +231,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -244,7 +239,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -252,7 +247,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -265,7 +260,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -273,7 +268,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -281,7 +276,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },
@@ -289,7 +284,7 @@ export const initialClusterLists: ClusterList[] = [
         name: "",
         centroids: [{ name: "walked percent", value: 0 }],
         reasoning: "",
-        color: transparent,
+        color: defaultColor,
         checked: true,
         id: uuidv4(),
       },

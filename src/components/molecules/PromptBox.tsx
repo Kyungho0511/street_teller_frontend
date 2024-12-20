@@ -4,21 +4,27 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useRef, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import { useLocation } from "react-router-dom";
+import { pathToSection } from "../../utils/utils";
 
 /**
  * Prompt box component to send user messages to the AI.
  */
 export default function PromptBox() {
   // Global states
-  const { addMessage, updatePrompt, loadingMessage } = useContext(MessageContext);
+  const { addMessage, updatePrompt, loadingMessage } =
+    useContext(MessageContext);
 
   // Local states
   const [text, setText] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(
     () => loadingMessage.text || loadingMessage.json
   );
-  
+
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const location = useLocation();
+  const section = pathToSection(location.pathname);
 
   useEffectAfterMount(() => {
     setDisabled(loadingMessage.text || loadingMessage.json);
@@ -32,8 +38,8 @@ export default function PromptBox() {
     if (!buttonRef.current?.classList.contains(styles.active)) return;
 
     // Update MessageContext.
-    addMessage({ user: text, ai: "", type: "text" });
-    updatePrompt({ type: "text", content: text });
+    addMessage(section, { user: text, ai: "", type: "text" });
+    updatePrompt(section, { type: "text", content: text });
 
     // Empty prompt box.
     if (text.trim()) {

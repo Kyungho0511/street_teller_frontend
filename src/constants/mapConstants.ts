@@ -1,6 +1,6 @@
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "./geoJsonConstants";
-import { Section } from "./surveyConstants";
+import { Section } from "./sectionConstants";
 
 export type Location = {
   center: mapboxgl.LngLat;
@@ -41,11 +41,18 @@ export const POPUP = {
   offset: 30,
 };
 
-export const transparent: RGBA = {
+export const transparent = utils.rgbaToString({
   r: 255,
   g: 255,
   b: 255,
   a: 0,
+});
+
+export const defaultColor: RGBA = {
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 255,
 };
 
 export type Color = {
@@ -300,43 +307,3 @@ export type MapSection = {
   // Color for attributes
   color?: Color;
 };
-
-export const mapSections: MapSection[] = [
-  {
-    id: "home",
-    layers: [
-      { name: "tracts", opacity: 0.9 },
-      { name: "tracts-features-nyc", opacity: 1 },
-    ],
-    attribute: {
-      name: "unserved population / km2",
-      bound: utils.getBound("unserved population / km2")!,
-      unit: "population density",
-    },
-    parentLayer: "tracts-features-nyc",
-    color: color.blue,
-  },
-  {
-    id: "cluster1",
-    layers: [{ name: "tracts", opacity: 0.9 }],
-    parentLayer: "cluster1",
-    color: color.yellow,
-  },
-  {
-    id: "cluster2",
-    layers: [{ name: "tracts", opacity: 0.9 }],
-    parentLayer: "cluster2",
-    color: color.blue,
-  },
-  {
-    id: "cluster3",
-    layers: [{ name: "tracts", opacity: 0.9 }],
-    parentLayer: "cluster3",
-    color: color.green,
-  },
-  {
-    id: "report",
-    layers: [{ name: "tracts", opacity: 0.9 }],
-    parentLayer: "report",
-  },
-];

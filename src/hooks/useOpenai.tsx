@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { parseString, pathToSection } from "../utils/utils";
 import { Prompt } from "../constants/messageConstants";
-import { Section, SiteCategory } from "../constants/surveyConstants";
+import { SiteCategory } from "../constants/surveyConstants";
+import { Section } from "../constants/sectionConstants";
 import { useLocation } from "react-router-dom";
 import { Message } from "../context/MessageContext";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
@@ -10,21 +11,21 @@ import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
  * Get openAI instructions on the current page.
  */
 export default function useOpenai(
-  addMessage: (newMessage: Message) => void,
-  updatePrompt: (newPrompt: Prompt) => void,
+  addMessage: (section: Section, message: Message) => void,
+  updatePrompt: (section: Section, prompt: Prompt) => void,
   sectionId?: number,
   selectedCategories?: SiteCategory[]
 ) {
   const location = useLocation();
+  const section = pathToSection(location.pathname);
 
   useEffect(() => {
-    addMessage({ user: "", ai: "", type: "section" });
-    const section: Section = pathToSection(location.pathname);
+    addMessage(section, { user: "", ai: "", type: "section" });
     const prompt: Prompt = {
       type: "section",
       content: getInstructionPrompt(section, sectionId, selectedCategories),
     };
-    section && updatePrompt(prompt);
+    updatePrompt(section, prompt);
   }, [location.pathname]);
 }
 

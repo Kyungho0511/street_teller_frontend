@@ -9,7 +9,8 @@ import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
-import { Color, mapSections } from "../constants/mapConstants";
+import { Color } from "../constants/mapConstants";
+import { sectionMapConfigs } from "../constants/sectionConstants";
 import {
   geoJsonFilePath,
   HealthcarePropertyName,
@@ -23,7 +24,7 @@ import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenai from "../hooks/useOpenai";
-import { Section } from "../constants/surveyConstants";
+import { Section } from "../constants/sectionConstants";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
 
@@ -95,8 +96,9 @@ export default function ClusterPage() {
     // Set KMeansLayer based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    const color: Color = mapSections.find((sec) => sec.id === clusterName)!
-      .color!;
+    const color: Color = sectionMapConfigs.find(
+      (sec) => sec.id === clusterName
+    )!.color!;
     setKMeansLayers((prev) => {
       const kMeansLayer = kmeans.setLayer(
         clusterId!,
