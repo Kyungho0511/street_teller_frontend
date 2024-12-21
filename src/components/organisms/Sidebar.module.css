@@ -70,42 +70,55 @@
 }
 
 .search_container {
-  display: flex;
+  position: relative;
+  width: 36px;
+  height: 36px;
 }
 
 .search_input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 36px;
   border: none;
   outline: none;
-  width: 0;
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
   opacity: 0;
-  background-color: var(--color-white-transparent);
-  animation: all 0.3s ease-in-out;
+  background-color: var(--color-white);
+  /* animation: all 0.3s ease-in-out; */
 
   &.active {
-    width: 100px;
+    width: 160px;
     opacity: 1;
     padding: 0.5rem;
   }
 }
 
 .search_btn {
+  position: absolute;
+  top: 0;
+  right: 0;
   color: var(--color-white);
-  font-size: 1.2rem;
-  background-color: var(--color-white-transparent);
+  font-size: 1.1rem;
   width: 36px;
   height: 36px;
-  border-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
   border: none;
   outline: none;
   padding: 0;
   margin: 0;
   background: none;
   cursor: pointer;
+
+  &.active {
+    background-color: var(--color-light-grey);
+  }
 }
 
 .search_btn:hover {
-  background-color: var(--color-black-transparent);
+  background-color: var(--color-grey2);
 }
 
 .tooltip {

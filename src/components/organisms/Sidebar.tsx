@@ -14,7 +14,7 @@ import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 
-export const SIDEBAR_WIDTH = 480;
+export const SIDEBAR_WIDTH = 500;
 
 /**
  * Sidebar component that displays AI conversation and its children components.
@@ -24,19 +24,13 @@ export const SIDEBAR_WIDTH = 480;
  */
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const { messages } = useContext(MessageContext);
-
-  // Get messages with text type only.
-  const [texts, setTexts] = useState<Message[]>([]);
-  const [textIndex, setTextIndex] = useState<number>(0);
+  const [currentMessage, setCurrentMessage] = useState<Message[]>([]);
+  const [messageIndex, setMessageIndex] = useState<number>(0);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
-
   const searchBtnRef = useRef<HTMLButtonElement>(null);
-  const [displaySearchTooltip, setDisplaySearchTooltip] =
-    useState<boolean>(false);
 
-  const restartBtnRef = useRef<HTMLDivElement>(null);
   const [displayRestartTooltip, setDisplayRestartTooltip] =
     useState<boolean>(false);
 
@@ -44,7 +38,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const section = pathToSection(location.pathname);
 
   useEffect(() => {
-    setTexts(
+    setCurrentMessage(
       messages[section].filter(
         (message) => message.type === "text" || message.type === "section"
       )
@@ -53,15 +47,17 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   // Updates messageIndex when a new message is added or page changes.
   useEffect(() => {
-    texts.length > 1 && setTextIndex(texts.length - 1);
-  }, [texts.length, section]);
+    currentMessage.length > 0 && setMessageIndex(currentMessage.length - 1);
+  }, [currentMessage.length, section]);
 
   const nextMessageIndex = () => {
-    setTextIndex((prev) => (prev === texts.length - 1 ? prev : prev + 1));
+    setMessageIndex((prev) =>
+      prev === currentMessage.length - 1 ? prev : prev + 1
+    );
   };
 
   const prevMessageIndex = () => {
-    setTextIndex((prev) => (prev === 0 ? 0 : prev - 1));
+    setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
   };
 
   const handleNavigate = (event: React.MouseEvent) => {
@@ -80,10 +76,21 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-    const input = inputRef.current;
-    if (input) {
+    console.log(searchQuery);
+  };
+
+  const displaySearch = (display: boolean) => {
+    const input = inputRef.current!;
+    const searchBtn = searchBtnRef.current!;
+
+    if (display) {
       input.focus();
       input.classList.add(styles.active);
+      searchBtn.classList.add(styles.active);
+      return;
+    } else {
+      input.classList.remove(styles.active);
+      searchBtn.classList.remove(styles.active);
     }
   };
 
@@ -101,7 +108,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               <FontAwesomeIcon icon={faChevronLeft} />
             </div>
             <span>
-              {textIndex + 1}/{texts.length}
+              {messageIndex + 1}/{currentMessage.length}
             </span>
             <div
               className={`${styles.icon} ${styles.small}`}
@@ -114,30 +121,30 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles.btn_container}>
-          <form onSubmit={handleSearch} className={styles.search_container}>
+          <form
+            className={styles.search_container}
+            onSubmit={handleSearch}
+            onMouseEnter={() => displaySearch(true)}
+            onMouseLeave={() => displaySearch(false)}
+          >
             <input
+              className={styles.search_input}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search sites"
-              className={styles.search_input}
+              placeholder="Search address"
               ref={inputRef}
-              onBlur={() => inputRef.current?.classList.remove(styles.active)}
             />
             <button
-              ref={searchBtnRef}
               type="submit"
-              className={`${styles.search_btn} ${styles.tooltip}`}
-              onMouseEnter={() => setDisplaySearchTooltip(true)}
-              onMouseLeave={() => setDisplaySearchTooltip(false)}
+              className={styles.search_btn}
+              ref={searchBtnRef}
             >
               <FontAwesomeIcon icon={faMagnifyingGlass} />
-              {displaySearchTooltip && <Tooltip text="Search" />}
             </button>
           </form>
 
           <div
-            ref={restartBtnRef}
             className={`${styles.icon} ${styles.tooltip}`}
             onMouseEnter={() => setDisplayRestartTooltip(true)}
             onMouseLeave={() => setDisplayRestartTooltip(false)}
@@ -153,7 +160,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       <div className={styles.body}>
         {/* scroller implements a rounded scrollbar */}
         <div className={styles.scroller}>
-          <MessageBox texts={texts} textIndex={textIndex} />
+          <MessageBox texts={currentMessage} textIndex={messageIndex} />
           {children}
         </div>
       </div>
