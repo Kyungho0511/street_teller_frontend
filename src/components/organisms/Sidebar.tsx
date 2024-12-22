@@ -13,6 +13,7 @@ import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import SidebarIcon from "../atoms/icons/SidebarIcon";
+import WarningModal from "./WarningModal";
 
 export const SIDEBAR_WIDTH = 480;
 
@@ -31,6 +32,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     useState<boolean>(false);
   const [displaySidebarTooltip, setDisplaySidebarTooltip] =
     useState<boolean>(false);
+  const [displayModal, setDisplayModal] = useState<boolean>(false);
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -58,7 +60,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
   };
 
-  const handleNavigate = (event: React.MouseEvent) => {
+  const navigateMessage = (event: React.MouseEvent) => {
     const target = event.currentTarget as HTMLElement;
 
     if (target.dataset.icon === "right") {
@@ -68,9 +70,17 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleRestart = () => {
+  const confirmRestart = () => {
     sessionStorage.clear();
+    window.location.href = "/";
+    setDisplayModal(false);
   };
+
+  const cancelRestart = () => {
+    setDisplayModal(false);
+  };
+
+  const toggleSidebar = () => {};
 
   return (
     <aside className={styles.sidebar} style={{ width: SIDEBAR_WIDTH }}>
@@ -80,7 +90,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           <div className={styles.navigate_container}>
             <div
               className={`${styles.icon} ${styles.small}`}
-              onClick={handleNavigate}
+              onClick={navigateMessage}
               data-icon={"left"}
             >
               <FontAwesomeIcon icon={faChevronLeft} />
@@ -90,7 +100,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             </span>
             <div
               className={`${styles.icon} ${styles.small}`}
-              onClick={handleNavigate}
+              onClick={navigateMessage}
               data-icon={"right"}
             >
               <FontAwesomeIcon icon={faChevronRight} />
@@ -103,6 +113,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             className={`${styles.icon} ${styles.tooltip}`}
             onMouseEnter={() => setDisplaySidebarTooltip(true)}
             onMouseLeave={() => setDisplaySidebarTooltip(false)}
+            onClick={toggleSidebar}
           >
             <SidebarIcon />
             {displaySidebarTooltip && <Tooltip text="Close sidebar" />}
@@ -111,7 +122,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             className={`${styles.icon} ${styles.tooltip}`}
             onMouseEnter={() => setDisplayRestartTooltip(true)}
             onMouseLeave={() => setDisplayRestartTooltip(false)}
-            onClick={handleRestart}
+            onClick={() => setDisplayModal(true)}
           >
             <FontAwesomeIcon icon={faArrowRotateRight} />
             {displayRestartTooltip && <Tooltip text="Restart" />}
@@ -125,6 +136,14 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </div>
+      {displayModal && (
+        <WarningModal
+          title="Restart Application"
+          message="Your progress will be deleted. Do you want to restart?"
+          onClickYes={confirmRestart}
+          onClickNo={cancelRestart}
+        />
+      )}
     </aside>
   );
 }
