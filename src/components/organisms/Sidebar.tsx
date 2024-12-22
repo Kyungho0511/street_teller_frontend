@@ -13,6 +13,7 @@ import { Message, MessageContext } from "../../context/MessageContext";
 import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
+import LocationSearchBar from "../molecules/LocationSearchBar";
 
 export const SIDEBAR_WIDTH = 500;
 
@@ -77,6 +78,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     console.log(searchQuery);
+
+    // Using the searchQuery, I want to find the location on mapbox map and smoothly zoom into it.
   };
 
   const displaySearch = (display: boolean) => {
@@ -98,7 +101,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     <aside className={styles.sidebar} style={{ width: SIDEBAR_WIDTH }}>
       <div className={styles.header}>
         <div className={styles.logo_container}>
-          <Logo width="148px" color="black" />
+          <Logo width="146px" color="black" />
           <div className={styles.navigate_container}>
             <div
               className={`${styles.icon} ${styles.small}`}
@@ -121,7 +124,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles.btn_container}>
-          <form
+          <LocationSearchBar />
+          {/* <form
             className={styles.search_container}
             onSubmit={handleSearch}
             onMouseEnter={() => displaySearch(true)}
@@ -154,7 +158,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               onClick={handleRestart}
             />
             {displayRestartTooltip && <Tooltip text="Restart" />}
-          </div>
+          </div> */}
         </div>
       </div>
       <div className={styles.body}>

@@ -86,7 +86,6 @@
   border-radius: 0.6rem;
   opacity: 0;
   background-color: var(--color-white);
-  /* animation: all 0.3s ease-in-out; */
 
   &.active {
     width: 160px;
