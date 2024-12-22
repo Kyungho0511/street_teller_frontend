@@ -3,6 +3,7 @@
 .tooltip {
   position: absolute;
   text-align: center;
+  white-space: nowrap;
   color: var(--color-light-black);
   font-size: var(--font-small);
   top: 44px;

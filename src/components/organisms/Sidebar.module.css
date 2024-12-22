@@ -24,6 +24,7 @@
 
 .logo_container {
   display: flex;
+  gap: 0.5rem;
 }
 
 .btn_container {
@@ -67,57 +68,6 @@
   font-size: 0.9rem;
   width: 24px;
   height: 24px;
-}
-
-.search_container {
-  position: relative;
-  width: 36px;
-  height: 36px;
-}
-
-.search_input {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 36px;
-  border: none;
-  outline: none;
-  border-radius: 0.6rem;
-  opacity: 0;
-  background-color: var(--color-white);
-
-  &.active {
-    width: 160px;
-    opacity: 1;
-    padding: 0.5rem;
-  }
-}
-
-.search_btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: var(--color-white);
-  font-size: 1.1rem;
-  width: 36px;
-  height: 36px;
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  background: none;
-  cursor: pointer;
-
-  &.active {
-    background-color: var(--color-light-grey);
-  }
-}
-
-.search_btn:hover {
-  background-color: var(--color-grey2);
 }
 
 .tooltip {

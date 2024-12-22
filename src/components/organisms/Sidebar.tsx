@@ -6,16 +6,15 @@ import {
   faArrowRotateRight,
   faChevronLeft,
   faChevronRight,
-  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Message, MessageContext } from "../../context/MessageContext";
 import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
-import LocationSearchBar from "../molecules/LocationSearchBar";
+import SidebarIcon from "../atoms/icons/SidebarIcon";
 
-export const SIDEBAR_WIDTH = 500;
+export const SIDEBAR_WIDTH = 480;
 
 /**
  * Sidebar component that displays AI conversation and its children components.
@@ -28,11 +27,9 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [currentMessage, setCurrentMessage] = useState<Message[]>([]);
   const [messageIndex, setMessageIndex] = useState<number>(0);
 
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const searchBtnRef = useRef<HTMLButtonElement>(null);
-
   const [displayRestartTooltip, setDisplayRestartTooltip] =
+    useState<boolean>(false);
+  const [displaySidebarTooltip, setDisplaySidebarTooltip] =
     useState<boolean>(false);
 
   const location = useLocation();
@@ -75,33 +72,11 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     sessionStorage.clear();
   };
 
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log(searchQuery);
-
-    // Using the searchQuery, I want to find the location on mapbox map and smoothly zoom into it.
-  };
-
-  const displaySearch = (display: boolean) => {
-    const input = inputRef.current!;
-    const searchBtn = searchBtnRef.current!;
-
-    if (display) {
-      input.focus();
-      input.classList.add(styles.active);
-      searchBtn.classList.add(styles.active);
-      return;
-    } else {
-      input.classList.remove(styles.active);
-      searchBtn.classList.remove(styles.active);
-    }
-  };
-
   return (
     <aside className={styles.sidebar} style={{ width: SIDEBAR_WIDTH }}>
       <div className={styles.header}>
         <div className={styles.logo_container}>
-          <Logo width="146px" color="black" />
+          <Logo width="150px" color="black" />
           <div className={styles.navigate_container}>
             <div
               className={`${styles.icon} ${styles.small}`}
@@ -124,41 +99,23 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles.btn_container}>
-          <LocationSearchBar />
-          {/* <form
-            className={styles.search_container}
-            onSubmit={handleSearch}
-            onMouseEnter={() => displaySearch(true)}
-            onMouseLeave={() => displaySearch(false)}
+          <div
+            className={`${styles.icon} ${styles.tooltip}`}
+            onMouseEnter={() => setDisplaySidebarTooltip(true)}
+            onMouseLeave={() => setDisplaySidebarTooltip(false)}
           >
-            <input
-              className={styles.search_input}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search address"
-              ref={inputRef}
-            />
-            <button
-              type="submit"
-              className={styles.search_btn}
-              ref={searchBtnRef}
-            >
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </button>
-          </form>
-
+            <SidebarIcon />
+            {displaySidebarTooltip && <Tooltip text="Close sidebar" />}
+          </div>
           <div
             className={`${styles.icon} ${styles.tooltip}`}
             onMouseEnter={() => setDisplayRestartTooltip(true)}
             onMouseLeave={() => setDisplayRestartTooltip(false)}
+            onClick={handleRestart}
           >
-            <FontAwesomeIcon
-              icon={faArrowRotateRight}
-              onClick={handleRestart}
-            />
+            <FontAwesomeIcon icon={faArrowRotateRight} />
             {displayRestartTooltip && <Tooltip text="Restart" />}
-          </div> */}
+          </div>
         </div>
       </div>
       <div className={styles.body}>
