@@ -138,10 +138,19 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       </div>
       {displayModal && (
         <WarningModal
-          title="Restart Application"
+          title="Restart"
           message="Your progress will be deleted. Do you want to restart?"
-          onClickYes={confirmRestart}
-          onClickNo={cancelRestart}
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
+          onConfirm={confirmRestart}
+          onCancel={cancelRestart}
+          icon={
+            <FontAwesomeIcon
+              icon={faArrowRotateRight}
+              className="fa-xl"
+              style={{ color: "var(--color-dark-grey)" }}
+            />
+          }
         />
       )}
     </aside>

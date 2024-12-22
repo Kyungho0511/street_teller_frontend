@@ -1,10 +1,15 @@
 import styles from "./WarningModal.module.css";
+import ReactDOM from "react-dom";
+import CloseIcon from "../atoms/icons/CloseIcon";
 
 type WarningModalProps = {
   title: string;
   message: string;
-  onClickYes: () => void;
-  onClickNo: () => void;
+  confirmLabel: string;
+  cancelLabel: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  icon?: React.ReactNode;
 };
 
 /**
@@ -13,23 +18,34 @@ type WarningModalProps = {
 export default function WarningModal({
   title,
   message,
-  onClickYes,
-  onClickNo,
+  confirmLabel,
+  cancelLabel,
+  onConfirm,
+  onCancel,
+  icon,
 }: WarningModalProps) {
-  return (
+  return ReactDOM.createPortal(
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <p>{title}</p>
-        <p>{message}</p>
-        <div className={styles.buttons}>
-          <button onClick={onClickYes} className={styles.yesButton}>
-            Yes
+        <div className={styles.titleContainer}>
+          {icon}
+          <p className={styles.title}>{title}</p>
+        </div>
+        <p className={styles.message}>{message}</p>
+        <div className={styles.buttonContainer}>
+          <button onClick={onConfirm} className={styles.confirmButton}>
+            {confirmLabel}
           </button>
-          <button onClick={onClickNo} className={styles.noButton}>
-            No
+          <button onClick={onCancel} className={styles.cancelButton}>
+            {cancelLabel}
           </button>
         </div>
+
+        <div className={styles.closeButton} onClick={onCancel}>
+          <CloseIcon color="#444444" />
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

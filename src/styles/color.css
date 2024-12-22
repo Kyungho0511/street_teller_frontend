@@ -1,6 +1,7 @@
 :root {
   --color-black: rgb(0, 0, 0);
   --color-black-transparent: rgba(0, 0, 0, 0.15);
+  --color-black-overlay: rgba(0, 0, 0, 0.5);
   --color-light-black: rgb(40, 40, 40);
   --color-dark-grey: rgb(87, 87, 87);
   --color-grey: rgb(150, 150, 150);
@@ -14,5 +15,7 @@
   --color-white-transparent: rgba(255, 255, 255, 0.5);
   --color-blue: #005fff;
   --color-light-blue: #327dff;
-  --color: #63c1e7;
+  --color-dark-blue: #0041b1;
+  --color-red: #c9190b;
+  --color-dark-red: #a91b11;
 }
