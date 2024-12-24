@@ -7,7 +7,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Message, MessageContext } from "../../context/MessageContext";
 import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
@@ -33,6 +33,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [displaySidebarTooltip, setDisplaySidebarTooltip] =
     useState<boolean>(false);
   const [displayModal, setDisplayModal] = useState<boolean>(false);
+
+  const sidebarRef = useRef<HTMLElement>(null);
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -80,10 +82,17 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     setDisplayModal(false);
   };
 
-  const toggleSidebar = () => {};
+  const toggleSidebar = () => {
+    const sidebar = sidebarRef.current;
+    sidebar?.classList.toggle(styles.hidden);
+  };
 
   return (
-    <aside className={styles.sidebar} style={{ width: SIDEBAR_WIDTH }}>
+    <aside
+      ref={sidebarRef}
+      className={styles.sidebar}
+      style={{ width: SIDEBAR_WIDTH }}
+    >
       <div className={styles.header}>
         <div className={styles.logo_container}>
           <Logo width="150px" color="black" />

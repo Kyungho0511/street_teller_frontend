@@ -9,6 +9,12 @@
   background-color: var(--theme-background);
   backdrop-filter: blur(var(--blur-intensity));
   box-shadow: 2px 0 10px var(--theme-box-shadow);
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
 }
 
 .header {
