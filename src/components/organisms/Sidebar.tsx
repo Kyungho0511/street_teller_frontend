@@ -13,7 +13,8 @@ import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import SidebarIcon from "../atoms/icons/SidebarIcon";
-import WarningModal from "./WarningModal";
+import { NavbarContext } from "../../context/NavbarContext";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 export const SIDEBAR_WIDTH = 480;
 
@@ -24,21 +25,26 @@ export const SIDEBAR_WIDTH = 480;
  * the _useReducer_ hook for more sophisticated state management.
  */
 export default function Sidebar({ children }: { children: React.ReactNode }) {
+  const {
+    setSidebarRef,
+    isSidebarOpen,
+    openSidebar,
+    isRestartTooltipOpen,
+    setIsRestartTooltipOpen,
+    isSidebarTooltipOpen,
+    setIsSidebarTooltipOpen,
+    setIsModalOpen,
+  } = useContext(NavbarContext);
   const { messages } = useContext(MessageContext);
   const [currentMessage, setCurrentMessage] = useState<Message[]>([]);
   const [messageIndex, setMessageIndex] = useState<number>(0);
-
-  const [displayRestartTooltip, setDisplayRestartTooltip] =
-    useState<boolean>(false);
-  const [displaySidebarTooltip, setDisplaySidebarTooltip] =
-    useState<boolean>(false);
-  const [displayModal, setDisplayModal] = useState<boolean>(false);
 
   const sidebarRef = useRef<HTMLElement>(null);
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
 
+  // Update currentMessage.
   useEffect(() => {
     setCurrentMessage(
       messages[section].filter(
@@ -52,12 +58,16 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     currentMessage.length > 0 && setMessageIndex(currentMessage.length - 1);
   }, [currentMessage.length, section]);
 
+  // Set sidebar reference.
+  useEffectAfterMount(() => {
+    setSidebarRef(sidebarRef);
+  }, [sidebarRef.current]);
+
   const nextMessageIndex = () => {
     setMessageIndex((prev) =>
       prev === currentMessage.length - 1 ? prev : prev + 1
     );
   };
-
   const prevMessageIndex = () => {
     setMessageIndex((prev) => (prev === 0 ? 0 : prev - 1));
   };
@@ -72,21 +82,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const confirmRestart = () => {
-    sessionStorage.clear();
-    window.location.href = "/";
-    setDisplayModal(false);
-  };
-
-  const cancelRestart = () => {
-    setDisplayModal(false);
-  };
-
-  const toggleSidebar = () => {
-    const sidebar = sidebarRef.current;
-    sidebar?.classList.toggle(styles.hidden);
-  };
-
   return (
     <aside
       ref={sidebarRef}
@@ -95,7 +90,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     >
       <div className={styles.header}>
         <div className={styles.logo_container}>
-          <Logo width="150px" color="black" />
+          <Logo width="150px" color="white" />
           <div className={styles.navigate_container}>
             <div
               className={`${styles.icon} ${styles.small}`}
@@ -120,21 +115,25 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         <div className={styles.btn_container}>
           <div
             className={`${styles.icon} ${styles.tooltip}`}
-            onMouseEnter={() => setDisplaySidebarTooltip(true)}
-            onMouseLeave={() => setDisplaySidebarTooltip(false)}
-            onClick={toggleSidebar}
+            onMouseEnter={() => setIsSidebarTooltipOpen(true)}
+            onMouseLeave={() => setIsSidebarTooltipOpen(false)}
+            onClick={() => openSidebar(false, sidebarRef)}
           >
             <SidebarIcon />
-            {displaySidebarTooltip && <Tooltip text="Close sidebar" />}
+            {isSidebarTooltipOpen && isSidebarOpen && (
+              <Tooltip text="Close sidebar" />
+            )}
           </div>
           <div
             className={`${styles.icon} ${styles.tooltip}`}
-            onMouseEnter={() => setDisplayRestartTooltip(true)}
-            onMouseLeave={() => setDisplayRestartTooltip(false)}
-            onClick={() => setDisplayModal(true)}
+            onMouseEnter={() => setIsRestartTooltipOpen(true)}
+            onMouseLeave={() => setIsRestartTooltipOpen(false)}
+            onClick={() => setIsModalOpen(true)}
           >
             <FontAwesomeIcon icon={faArrowRotateRight} />
-            {displayRestartTooltip && <Tooltip text="Restart" />}
+            {isRestartTooltipOpen && isSidebarOpen && (
+              <Tooltip text="Restart" />
+            )}
           </div>
         </div>
       </div>
@@ -145,23 +144,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </div>
-      {displayModal && (
-        <WarningModal
-          title="Restart"
-          message="Your progress will be deleted. Do you want to restart?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={confirmRestart}
-          onCancel={cancelRestart}
-          icon={
-            <FontAwesomeIcon
-              icon={faArrowRotateRight}
-              className="fa-xl"
-              style={{ color: "var(--color-dark-grey)" }}
-            />
-          }
-        />
-      )}
     </aside>
   );
 }

@@ -5,6 +5,8 @@ import { SurveyContextProvider } from "../context/SurveyContext";
 import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
 import { KMeansContextProvider } from "../context/KMeansContext";
+import Navbar from "../components/organisms/Navbar";
+import { NavbarContextProvider } from "../context/NavbarContext";
 
 /**
  * Root component that wraps other pages.
@@ -13,14 +15,17 @@ export default function RootPage() {
   return (
     <MapContextProvider>
       <MapViewer />
-      <MessageContextProvider>
-        <SurveyContextProvider>
-          <KMeansContextProvider>
-            <Outlet />
-          </KMeansContextProvider>
-        </SurveyContextProvider>
-        <Footbar />
-      </MessageContextProvider>
+      <NavbarContextProvider>
+        <Navbar />
+        <MessageContextProvider>
+          <SurveyContextProvider>
+            <KMeansContextProvider>
+              <Outlet />
+            </KMeansContextProvider>
+          </SurveyContextProvider>
+          <Footbar />
+        </MessageContextProvider>
+      </NavbarContextProvider>
     </MapContextProvider>
   );
 }

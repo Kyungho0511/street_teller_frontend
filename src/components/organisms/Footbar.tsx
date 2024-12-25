@@ -1,9 +1,8 @@
+import styles from "./Footbar.module.css";
 import { Link, useLocation } from "react-router-dom";
 import Button from "../atoms/Button";
-import styles from "./Footbar.module.css";
 import PromptBox from "../molecules/PromptBox";
 import MapToggleButton from "../atoms/MapToggleButton";
-import { SIDEBAR_WIDTH } from "./Sidebar";
 
 export const FOOTBAR_HEIGHT = 90;
 
@@ -35,7 +34,6 @@ export default function Footbar() {
       className={styles.footer}
       style={{
         height: FOOTBAR_HEIGHT,
-        width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
       }}
     >
       <MapToggleButton />
