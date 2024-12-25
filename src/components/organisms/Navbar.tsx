@@ -1,7 +1,6 @@
 import styles from "./Navbar.module.css";
 import { useContext } from "react";
 import SidebarIcon from "../atoms/icons/SidebarIcon";
-import Logo from "../atoms/Logo";
 import { NavbarContext } from "../../context/NavbarContext";
 import WarningModal from "./WarningModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,28 +37,30 @@ export default function Navbar() {
     <>
       {!isSidebarOpen && (
         <nav className={styles.navbar}>
-          <Logo width="150px" color="black" />
-
           <div className={styles.btn_container}>
             <div
-              className={`${styles.icon} ${styles.tooltip}`}
+              className={`${styles.button} ${styles.tooltip}`}
               onMouseEnter={() => setIsSidebarTooltipOpen(true)}
               onMouseLeave={() => setIsSidebarTooltipOpen(false)}
               onClick={() => openSidebar(true, sidebarRef)}
             >
-              <SidebarIcon />
+              <div className={styles.icon}>
+                <SidebarIcon color="var(--color-dark-grey)" />
+              </div>
               {isSidebarTooltipOpen && !isSidebarOpen && (
-                <Tooltip text="Open sidebar" />
+                <Tooltip text="Open sidebar" offset={{ x: 28, y: 0 }} />
               )}
             </div>
 
             <div
-              className={`${styles.icon} ${styles.tooltip}`}
+              className={`${styles.button} ${styles.tooltip}`}
               onMouseEnter={() => setIsRestartTooltipOpen(true)}
               onMouseLeave={() => setIsRestartTooltipOpen(false)}
               onClick={() => setIsModalOpen(true)}
             >
-              <FontAwesomeIcon icon={faArrowRotateRight} />
+              <div className={styles.icon}>
+                <FontAwesomeIcon icon={faArrowRotateRight} />
+              </div>
               {isRestartTooltipOpen && !isSidebarOpen && (
                 <Tooltip text="Restart" />
               )}

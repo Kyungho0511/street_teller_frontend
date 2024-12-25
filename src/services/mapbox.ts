@@ -346,3 +346,17 @@ export function setLineWidth(
 export function hideLineWidth(layer: string, map: mapboxgl.Map) {
   map.setPaintProperty(layer, "line-width", 0);
 }
+
+/**
+ * Offset position of the mapbox logo
+ */
+export function offsetLogoPosition(offset: { x: number; y: number }) {
+  const logo = document.querySelector(
+    ".mapboxgl-ctrl-top-left"
+  ) as HTMLElement | null;
+  if (logo == null) return;
+
+  console.log(logo);
+
+  logo.style.transform = `translateX(${offset.x}px) translateY(${offset.y}px)`;
+}

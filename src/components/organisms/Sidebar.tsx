@@ -93,7 +93,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           <Logo width="150px" color="white" />
           <div className={styles.navigate_container}>
             <div
-              className={`${styles.icon} ${styles.small}`}
+              className={`${styles.button} ${styles.small}`}
               onClick={navigateMessage}
               data-icon={"left"}
             >
@@ -103,7 +103,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               {messageIndex + 1}/{currentMessage.length}
             </span>
             <div
-              className={`${styles.icon} ${styles.small}`}
+              className={`${styles.button} ${styles.small}`}
               onClick={navigateMessage}
               data-icon={"right"}
             >
@@ -114,18 +114,18 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
         <div className={styles.btn_container}>
           <div
-            className={`${styles.icon} ${styles.tooltip}`}
+            className={`${styles.button} ${styles.tooltip}`}
             onMouseEnter={() => setIsSidebarTooltipOpen(true)}
             onMouseLeave={() => setIsSidebarTooltipOpen(false)}
             onClick={() => openSidebar(false, sidebarRef)}
           >
-            <SidebarIcon />
+            <SidebarIcon color="white" />
             {isSidebarTooltipOpen && isSidebarOpen && (
               <Tooltip text="Close sidebar" />
             )}
           </div>
           <div
-            className={`${styles.icon} ${styles.tooltip}`}
+            className={`${styles.button} ${styles.tooltip}`}
             onMouseEnter={() => setIsRestartTooltipOpen(true)}
             onMouseLeave={() => setIsRestartTooltipOpen(false)}
             onClick={() => setIsModalOpen(true)}

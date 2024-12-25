@@ -7,6 +7,7 @@ import { MapContext } from "../../context/MapContext";
 import { mapConfigs } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import { SIDEBAR_WIDTH } from "./Sidebar";
 
 /**
  * Mapbox map viewer component.
@@ -39,6 +40,7 @@ export default function MapViewer() {
     temp.on("load", () => {
       setMapViewer(temp);
       setMapSettings();
+      mapbox.offsetLogoPosition({ x: SIDEBAR_WIDTH, y: 0 });
     });
 
     return () => {
@@ -47,6 +49,7 @@ export default function MapViewer() {
     };
   }, []);
 
+  // Update map layers and settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 

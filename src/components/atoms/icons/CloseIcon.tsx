@@ -1,8 +1,7 @@
-type CloseIconProps = {
-  color: string;
-};
-
-export default function CloseIcon({ color }: CloseIconProps) {
+/**
+ * Close icon svg component.
+ */
+export default function CloseIcon({ color = "black" }: { color?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

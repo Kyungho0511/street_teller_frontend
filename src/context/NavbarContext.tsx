@@ -29,12 +29,12 @@ export function NavbarContextProvider({
 }) {
   const [sidebarRef, setSidebarRef] = useState<React.RefObject<HTMLElement>>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [displayModal, setDisplayModal] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const [displayRestartTooltip, setDisplayRestartTooltip] =
+  const [isRestartTooltipOpen, setIsRestartTooltipOpen] =
     useState<boolean>(false);
 
-  const [displaySidebarTooltip, setDisplaySidebarTooltip] =
+  const [isSidebarTooltipOpen, setIsSidebarTooltipOpen] =
     useState<boolean>(false);
 
   const openSidebar = (
@@ -42,6 +42,7 @@ export function NavbarContextProvider({
     sidebarRef?: React.RefObject<HTMLElement>
   ) => {
     if (sidebarRef == null || sidebarRef?.current == null) return;
+    setIsSidebarTooltipOpen(false);
 
     const sidebar = sidebarRef.current;
     if (open) {
@@ -60,12 +61,12 @@ export function NavbarContextProvider({
         setSidebarRef,
         isSidebarOpen,
         openSidebar,
-        isRestartTooltipOpen: displayRestartTooltip,
-        setIsRestartTooltipOpen: setDisplayRestartTooltip,
-        isSidebarTooltipOpen: displaySidebarTooltip,
-        setIsSidebarTooltipOpen: setDisplaySidebarTooltip,
-        isModalOpen: displayModal,
-        setIsModalOpen: setDisplayModal,
+        isRestartTooltipOpen,
+        setIsRestartTooltipOpen,
+        isSidebarTooltipOpen,
+        setIsSidebarTooltipOpen,
+        isModalOpen,
+        setIsModalOpen,
       }}
     >
       {children}

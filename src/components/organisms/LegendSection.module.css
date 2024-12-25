@@ -9,7 +9,7 @@
   max-width: 400px;
   min-width: 280px;
   font-size: 0.9rem;
-  margin: 0.5rem;
+  margin: 1rem;
   background-color: var(--theme-background);
   backdrop-filter: blur(var(--blur-intensity));
   border-radius: 1rem;
