@@ -1,5 +1,5 @@
 import styles from "./Navbar.module.css";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import SidebarIcon from "../atoms/icons/SidebarIcon";
 import { NavbarContext } from "../../context/NavbarContext";
 import WarningModal from "./WarningModal";

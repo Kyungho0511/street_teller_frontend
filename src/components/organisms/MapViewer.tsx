@@ -7,7 +7,6 @@ import { MapContext } from "../../context/MapContext";
 import { mapConfigs } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import { SIDEBAR_WIDTH } from "./Sidebar";
 
 /**
  * Mapbox map viewer component.

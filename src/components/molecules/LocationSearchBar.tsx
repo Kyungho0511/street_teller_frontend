@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./LocationSearchBar.module.css";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import mapboxgl from "mapbox-gl";
+import * as mapboxgl from "mapbox-gl";
 import { MapContext } from "../../context/MapContext";
 
 /**

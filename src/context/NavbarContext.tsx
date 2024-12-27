@@ -8,7 +8,7 @@ type NavbarContextProps = {
   isSidebarOpen: boolean;
   openSidebar: (
     open: boolean,
-    sidebarRe?: React.RefObject<HTMLElement>
+    sidebarRef?: React.RefObject<HTMLElement>
   ) => void;
   isRestartTooltipOpen: boolean;
   setIsRestartTooltipOpen: React.Dispatch<React.SetStateAction<boolean>>;
