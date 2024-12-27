@@ -40,7 +40,7 @@ export default function MapViewer() {
     temp.on("load", () => {
       setMapViewer(temp);
       setMapSettings();
-      mapbox.offsetLogoPosition({ x: SIDEBAR_WIDTH, y: 0 });
+      // mapbox.offsetLogoPosition({ x: SIDEBAR_WIDTH, y: 0 });
     });
 
     return () => {

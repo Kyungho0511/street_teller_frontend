@@ -350,13 +350,24 @@ export function hideLineWidth(layer: string, map: mapboxgl.Map) {
 /**
  * Offset position of the mapbox logo
  */
-export function offsetLogoPosition(offset: { x: number; y: number }) {
+export function offsetLogo(offset: { x: number; y: number }) {
   const logo = document.querySelector(
     ".mapboxgl-ctrl-top-left"
   ) as HTMLElement | null;
   if (logo == null) return;
 
-  console.log(logo);
-
   logo.style.transform = `translateX(${offset.x}px) translateY(${offset.y}px)`;
+}
+
+/**
+ * Relocate the mapbox logo element to the input container.
+ */
+export function relocateLogo(container: HTMLDivElement) {
+  const logo = document.querySelector(
+    ".mapboxgl-ctrl-top-left"
+  ) as HTMLElement | null;
+  if (logo == null) return;
+
+  logo.style.position = "static";
+  container.appendChild(logo);
 }

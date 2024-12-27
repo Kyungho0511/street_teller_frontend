@@ -1,11 +1,14 @@
 import styles from "./Navbar.module.css";
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import SidebarIcon from "../atoms/icons/SidebarIcon";
 import { NavbarContext } from "../../context/NavbarContext";
 import WarningModal from "./WarningModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../atoms/Tooltip";
+import { relocateLogo } from "../../services/mapbox";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import { SIDEBAR_WIDTH } from "./Sidebar";
 
 /**
  * Navbar component.
@@ -23,6 +26,14 @@ export default function Navbar() {
     setIsModalOpen,
   } = useContext(NavbarContext);
 
+  const mapboxLogoRef = useRef<HTMLDivElement>(null);
+
+  // Relocate Mapbox logo to navbar
+  useEffectAfterMount(() => {
+    if (!mapboxLogoRef.current) return;
+    relocateLogo(mapboxLogoRef.current);
+  }, [mapboxLogoRef.current]);
+
   const confirmRestart = () => {
     sessionStorage.clear();
     window.location.href = "/";
@@ -35,8 +46,21 @@ export default function Navbar() {
 
   return (
     <>
-      {!isSidebarOpen && (
-        <nav className={styles.navbar}>
+      <nav
+        className={styles.navbar}
+        style={
+          isSidebarOpen
+            ? {
+                width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+                left: SIDEBAR_WIDTH,
+              }
+            : {
+                width: `100%`,
+                left: 0,
+              }
+        }
+      >
+        {!isSidebarOpen && (
           <div className={styles.btn_container}>
             <div
               className={`${styles.button} ${styles.tooltip}`}
@@ -66,8 +90,9 @@ export default function Navbar() {
               )}
             </div>
           </div>
-        </nav>
-      )}
+        )}
+        <div ref={mapboxLogoRef}></div>
+      </nav>
 
       {isModalOpen && (
         <WarningModal
