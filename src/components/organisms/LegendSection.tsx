@@ -1,4 +1,4 @@
-import NumberIcon from "../atoms/NumberIcon";
+import NumberIcon from "../atoms/icons/NumberIcon";
 import { v4 as uuidv4 } from "uuid";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";

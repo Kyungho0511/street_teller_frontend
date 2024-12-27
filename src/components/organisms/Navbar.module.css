@@ -1,0 +1,40 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: start;
+  height: 60px;
+  padding: 0.8rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn_container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 1rem;
+  margin: 0 0.5rem;
+}
+
+.button {
+  display: flex;
+  color: var(--color-dark-grey);
+  background-color: var(--color-white);
+  font-size: 1.2rem;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 1px 2px 4px var(--theme-box-shadow);
+}
+
+.button:hover {
+  background-color: var(--color-light-white);
+}
+
+.tooltip {
+  position: relative;
+}

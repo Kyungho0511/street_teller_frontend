@@ -9,8 +9,8 @@ import { SurveyContext } from "../../context/SurveyContext";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import { ClusterCheckboxItem } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
-import NumberIcon from "./NumberIcon";
 import { MapContext } from "../../context/MapContext";
+import NumberIcon from "./icons/NumberIcon";
 
 type PopupContentClusterProps = {
   clusterId: string;

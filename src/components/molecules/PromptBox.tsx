@@ -6,6 +6,7 @@ import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
+import { NavbarContext } from "../../context/NavbarContext";
 
 /**
  * Prompt box component to send user messages to the AI.
@@ -14,6 +15,7 @@ export default function PromptBox() {
   // Global states
   const { addMessage, updatePrompt, loadingMessage } =
     useContext(MessageContext);
+  const { sidebarRef, isSidebarOpen, openSidebar } = useContext(NavbarContext);
 
   // Local states
   const [text, setText] = useState<string>("");
@@ -44,6 +46,11 @@ export default function PromptBox() {
     // Empty prompt box.
     if (text.trim()) {
       setText("");
+    }
+
+    // Open sidebar if closed.
+    if (!isSidebarOpen) {
+      openSidebar(true, sidebarRef);
     }
   };
 

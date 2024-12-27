@@ -1,9 +1,11 @@
+import styles from "./Footbar.module.css";
 import { Link, useLocation } from "react-router-dom";
 import Button from "../atoms/Button";
-import styles from "./Footbar.module.css";
 import PromptBox from "../molecules/PromptBox";
 import MapToggleButton from "../atoms/MapToggleButton";
 import { SIDEBAR_WIDTH } from "./Sidebar";
+import { useContext } from "react";
+import { NavbarContext } from "../../context/NavbarContext";
 
 export const FOOTBAR_HEIGHT = 90;
 
@@ -11,7 +13,9 @@ export const FOOTBAR_HEIGHT = 90;
  * Footbar component.
  */
 export default function Footbar() {
-  // router navigation logic
+  const { isSidebarOpen } = useContext(NavbarContext);
+
+  // Router navigation logic
   const location = useLocation();
   let nextPath = "/";
 
@@ -33,10 +37,19 @@ export default function Footbar() {
   return (
     <footer
       className={styles.footer}
-      style={{
-        height: FOOTBAR_HEIGHT,
-        width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
-      }}
+      style={
+        isSidebarOpen
+          ? {
+              width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+              height: FOOTBAR_HEIGHT,
+              left: SIDEBAR_WIDTH,
+            }
+          : {
+              width: `100%`,
+              height: FOOTBAR_HEIGHT,
+              left: 0,
+            }
+      }
     >
       <MapToggleButton />
       <PromptBox />

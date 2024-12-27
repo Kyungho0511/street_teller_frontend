@@ -47,6 +47,7 @@ export default function MapViewer() {
     };
   }, []);
 
+  // Update map layers and settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
