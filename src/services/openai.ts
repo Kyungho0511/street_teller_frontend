@@ -46,7 +46,7 @@ export async function* streamOpenAI(
   const messages: OpenAiMessage[] = [];
 
   // 1. Add system messages.
-  if (prompt.type === "text" || prompt.type === "section") {
+  if (prompt.type === "text" || prompt.type === "instruction") {
     messages.push({
       role: "system",
       content: systemMessage.text,
@@ -106,7 +106,7 @@ export async function* streamOpenAI(
   });
 
   // 3-1. Run openAI with text or section prompts.
-  if (prompt.type === "text" || prompt.type === "section") {
+  if (prompt.type === "text" || prompt.type === "instruction") {
     stream = await openai.chat.completions.create({
       messages: [
         ...messages,
@@ -147,7 +147,7 @@ export async function* streamOpenAI(
         accumulatedResponse += content;
 
         // Yield the text type content
-        if (prompt.type === "text" || prompt.type === "section") {
+        if (prompt.type === "text" || prompt.type === "instruction") {
           yield content;
         }
 
@@ -181,7 +181,7 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
   let completion: OpenAI.Chat.Completions.ChatCompletion | null = null;
 
   // Run openAI with text or section prompts.
-  if (prompt.type === "text" || prompt.type === "section") {
+  if (prompt.type === "text" || prompt.type === "instruction") {
     const content = prompt.content;
     completion = await openai.chat.completions.create({
       messages: [

@@ -48,7 +48,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setCurrentMessage(
       messages[section].filter(
-        (message) => message.type === "text" || message.type === "section"
+        (message) => message.type === "text" || message.type === "instruction"
       )
     );
   }, [messages, section]);

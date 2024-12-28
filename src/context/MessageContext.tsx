@@ -6,7 +6,7 @@ import { initialSectionMessages, Section } from "../constants/sectionConstants";
 export type Message = {
   user: string;
   ai: string;
-  type: "text" | "section" | "cluster";
+  type: "text" | "instruction" | "cluster";
 };
 
 export type LoadingMessage = {
@@ -65,7 +65,7 @@ export function MessageContextProvider({
     json: "",
   });
 
-  // Add a new message to the current section
+  // Add a new message to the current section.
   const addMessage = (section: Section, message: Message) => {
     setMessages((prev) => ({
       ...prev,
@@ -73,7 +73,7 @@ export function MessageContextProvider({
     }));
   };
 
-  // Update the last message's response (ai) for the current section
+  // Update response(ai) of the last message for the current section.
   const updateResponse = (section: Section, response: string) => {
     setMessages((prev) => ({
       ...prev,
@@ -84,7 +84,7 @@ export function MessageContextProvider({
     }));
   };
 
-  // Update the last message's prompt (user) for the current section
+  // Update prompt(user) of the last message for the current section.
   const updatePrompt = (section: Section, prompt: Prompt) => {
     setPrompt(prompt);
 

@@ -16,17 +16,16 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
-import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
-import useOpenai from "../hooks/useOpenai";
-import { Section } from "../constants/sectionConstants";
+import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
+import { MessageContext } from "../context/MessageContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -34,9 +33,9 @@ import { KMeansContext } from "../context/KMeansContext";
 export default function ClusterPage() {
   // Global states
   const { survey } = useContext(SurveyContext);
-  const { addMessage, updatePrompt } = useContext(MessageContext);
   const { mapViewer, mapMode } = useContext(MapContext);
   const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
+  const { messages } = useContext(MessageContext);
 
   // Local states
   const { clusterId } = useParams<string>()!;
@@ -44,12 +43,12 @@ export default function ClusterPage() {
   const location = useLocation();
   const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
+  const section = pathToSection(location.pathname);
 
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
     useGeoJson(geoJsonFilePath);
 
-  // Get openAI instructions on the current page.
-  useOpenai(addMessage, updatePrompt, parseInt(clusterId!), [
+  useOpenaiInstruction(parseInt(clusterId!), [
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${
       survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category
@@ -60,6 +59,11 @@ export default function ClusterPage() {
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
     if (!mapViewer) return;
+
+    if (messages[section].find((message) => message.type === "cluster")) {
+      console.log("Cluster message exists");
+      return;
+    }
 
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
@@ -81,6 +85,8 @@ export default function ClusterPage() {
 
   // Set KMeansLayer on loading a new clustering page.
   useEffectAfterMount(() => {
+    console.log("Set KMeansLayer");
+
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
     const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);
@@ -116,6 +122,8 @@ export default function ClusterPage() {
 
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
+    console.log("Add KMeansLayer to the map");
+
     if (!mapViewer || !kMeansLayers[clusterIndex]) return;
     mapbox.addClusterLayer(
       clusterId!,
@@ -154,7 +162,6 @@ export default function ClusterPage() {
       if (!mapViewer.getLayer(clusterList.name)) {
         mapViewer.addLayer(currentClusterLayer, "road-simple");
       }
-      const section: Section = pathToSection(location.pathname);
       mapbox.setLayers(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
     });
