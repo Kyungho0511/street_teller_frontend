@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
@@ -26,18 +26,17 @@ import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
 import { MessageContext } from "../context/MessageContext";
+import { m } from "framer-motion";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
-  // Global states
   const { survey } = useContext(SurveyContext);
   const { mapViewer, mapMode } = useContext(MapContext);
   const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
   const { messages } = useContext(MessageContext);
 
-  // Local states
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
@@ -45,8 +44,11 @@ export default function ClusterPage() {
   const clusterList = survey.clusterLists[clusterIndex];
   const section = pathToSection(location.pathname);
 
-  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
-    useGeoJson(geoJsonFilePath);
+  // Run the clustering logic if a cluster message is not found.
+  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
+    geoJsonFilePath,
+    !messages[section].find((message) => message.type === "cluster")
+  );
 
   useOpenaiInstruction(parseInt(clusterId!), [
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
@@ -58,12 +60,13 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (!mapViewer) return;
-
-    if (messages[section].find((message) => message.type === "cluster")) {
-      console.log("Cluster message exists");
+    if (
+      !mapViewer ||
+      messages[section].find((message) => message.type === "cluster")
+    )
       return;
-    }
+
+    console.log("Running clustering logic");
 
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
@@ -122,8 +125,6 @@ export default function ClusterPage() {
 
   // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
-    console.log("Add KMeansLayer to the map");
-
     if (!mapViewer || !kMeansLayers[clusterIndex]) return;
     mapbox.addClusterLayer(
       clusterId!,
