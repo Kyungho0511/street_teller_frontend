@@ -12,14 +12,15 @@ import { pathToSection } from "../../utils/utils";
 export default function AiResponse() {
   const {
     prompt,
+    setPrompt,
     messages,
-    updateResponse,
-    setLoadingMessage,
+    updateMessageResponse,
+    setIsStreaming,
     errorMessage,
     setErrorMessage,
   } = useContext(MessageContext);
-  const [text, setText] = useState<string>("");
 
+  const [text, setText] = useState<string>("");
   const location = useLocation();
   const section = pathToSection(location.pathname);
 
@@ -32,7 +33,7 @@ export default function AiResponse() {
 
   async function startTypingAnimation(prompt: Prompt): Promise<void> {
     // Reset the loading and error status.
-    setLoadingMessage((prev) => ({ ...prev, text: true }));
+    setIsStreaming((prev) => ({ ...prev, text: true }));
     setErrorMessage((prev) => ({ ...prev, text: "" }));
 
     let accumulatedResponse = "";
@@ -48,9 +49,10 @@ export default function AiResponse() {
       console.error(error);
     } finally {
       // When the response is fully fetched, update states.
-      updateResponse(section, accumulatedResponse);
+      updateMessageResponse(section, accumulatedResponse);
       setText("");
-      setLoadingMessage((prev) => ({ ...prev, text: false }));
+      setIsStreaming((prev) => ({ ...prev, text: false }));
+      setPrompt(undefined);
     }
   }
 

@@ -14,16 +14,16 @@ type ButtonProps = {
  * Button component with bold text.
  */
 export default function Button({ text, type, handleClick }: ButtonProps) {
-  const { loadingMessage } = useContext(MessageContext);
+  const { isStreaming } = useContext(MessageContext);
   const { mapMode } = useContext(MapContext);
 
   const [disabled, setDisabled] = useState<boolean>(
-    () => loadingMessage.text || loadingMessage.json
+    () => isStreaming.text || isStreaming.json
   );
 
   useEffectAfterMount(() => {
-    setDisabled(loadingMessage.text || loadingMessage.json);
-  }, [loadingMessage]);
+    setDisabled(isStreaming.text || isStreaming.json);
+  }, [isStreaming]);
 
   return (
     <button

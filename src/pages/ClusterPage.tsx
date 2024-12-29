@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
@@ -26,7 +26,6 @@ import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
 import { MessageContext } from "../context/MessageContext";
-import { m } from "framer-motion";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -66,8 +65,6 @@ export default function ClusterPage() {
     )
       return;
 
-    console.log("Running clustering logic");
-
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
 
@@ -88,8 +85,6 @@ export default function ClusterPage() {
 
   // Set KMeansLayer on loading a new clustering page.
   useEffectAfterMount(() => {
-    console.log("Set KMeansLayer");
-
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
     const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);

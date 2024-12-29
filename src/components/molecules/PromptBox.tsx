@@ -13,14 +13,14 @@ import { NavbarContext } from "../../context/NavbarContext";
  */
 export default function PromptBox() {
   // Global states
-  const { addMessage, updatePrompt, loadingMessage } =
+  const { addMessage, updateMessagePrompt, isStreaming } =
     useContext(MessageContext);
   const { sidebarRef, isSidebarOpen, openSidebar } = useContext(NavbarContext);
 
   // Local states
   const [text, setText] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(
-    () => loadingMessage.text || loadingMessage.json
+    () => isStreaming.text || isStreaming.json
   );
 
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -29,8 +29,8 @@ export default function PromptBox() {
   const section = pathToSection(location.pathname);
 
   useEffectAfterMount(() => {
-    setDisabled(loadingMessage.text || loadingMessage.json);
-  }, [loadingMessage]);
+    setDisabled(isStreaming.text || isStreaming.json);
+  }, [isStreaming]);
 
   // Handle MessageContext and prompt on form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -41,7 +41,7 @@ export default function PromptBox() {
 
     // Update MessageContext.
     addMessage(section, { user: text, ai: "", type: "text" });
-    updatePrompt(section, { type: "text", content: text });
+    updateMessagePrompt(section, { type: "text", content: text });
 
     // Empty prompt box.
     if (text.trim()) {

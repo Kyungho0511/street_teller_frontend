@@ -14,7 +14,8 @@ export default function useOpenaiInstruction(
   sectionId?: number,
   selectedCategories?: SiteCategory[]
 ) {
-  const { messages, addMessage, updatePrompt } = useContext(MessageContext);
+  const { messages, addMessage, updateMessagePrompt } =
+    useContext(MessageContext);
   const location = useLocation();
   const section = pathToSection(location.pathname);
 
@@ -29,7 +30,7 @@ export default function useOpenaiInstruction(
       type: "instruction",
       content: getInstructionPrompt(section, sectionId, selectedCategories),
     };
-    updatePrompt(section, prompt);
+    updateMessagePrompt(section, prompt);
   }, [location.pathname]);
 }
 

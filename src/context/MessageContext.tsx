@@ -9,7 +9,7 @@ export type Message = {
   type: "text" | "instruction" | "cluster";
 };
 
-export type LoadingMessage = {
+export type IsStreaming = {
   text: boolean;
   json: boolean;
 };
@@ -22,11 +22,12 @@ export type ErrorMessage = {
 type MessageContextProps = {
   messages: Record<Section, Message[]>;
   addMessage: (section: Section, message: Message) => void;
-  updateResponse: (section: Section, response: string) => void;
+  updateMessageResponse: (section: Section, response: string) => void;
   prompt?: Prompt;
-  updatePrompt: (section: Section, prompt: Prompt) => void;
-  loadingMessage: LoadingMessage;
-  setLoadingMessage: React.Dispatch<React.SetStateAction<LoadingMessage>>;
+  setPrompt: React.Dispatch<React.SetStateAction<Prompt | undefined>>;
+  updateMessagePrompt: (section: Section, prompt: Prompt) => void;
+  isStreaming: IsStreaming;
+  setIsStreaming: React.Dispatch<React.SetStateAction<IsStreaming>>;
   errorMessage: ErrorMessage;
   setErrorMessage: React.Dispatch<React.SetStateAction<ErrorMessage>>;
 };
@@ -56,7 +57,7 @@ export function MessageContextProvider({
     initialSectionMessages
   );
   const [prompt, setPrompt] = useState<Prompt>();
-  const [loadingMessage, setLoadingMessage] = useState<LoadingMessage>({
+  const [isStreaming, setIsStreaming] = useState<IsStreaming>({
     text: false,
     json: false,
   });
@@ -74,7 +75,7 @@ export function MessageContextProvider({
   };
 
   // Update response(ai) of the last message for the current section.
-  const updateResponse = (section: Section, response: string) => {
+  const updateMessageResponse = (section: Section, response: string) => {
     setMessages((prev) => ({
       ...prev,
       [section]: [
@@ -85,7 +86,7 @@ export function MessageContextProvider({
   };
 
   // Update prompt(user) of the last message for the current section.
-  const updatePrompt = (section: Section, prompt: Prompt) => {
+  const updateMessagePrompt = (section: Section, prompt: Prompt) => {
     setPrompt(prompt);
 
     if (prompt.type === "text") {
@@ -104,11 +105,12 @@ export function MessageContextProvider({
       value={{
         messages,
         addMessage,
-        updateResponse,
+        updateMessageResponse,
         prompt,
-        updatePrompt,
-        loadingMessage,
-        setLoadingMessage,
+        setPrompt,
+        updateMessagePrompt,
+        isStreaming,
+        setIsStreaming,
         errorMessage,
         setErrorMessage,
       }}
