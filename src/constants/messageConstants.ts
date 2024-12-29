@@ -1,7 +1,7 @@
 import { Cluster, siteCategories } from "./surveyConstants";
 
 type textPrompt = { type: "text"; content: string };
-type sectionPrompt = { type: "section"; content: string };
+type sectionPrompt = { type: "instruction"; content: string };
 type clusterPrompt = { type: "cluster"; content: Cluster[] };
 export type Prompt = textPrompt | sectionPrompt | clusterPrompt;
 

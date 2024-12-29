@@ -11,12 +11,11 @@ import {
 import { Section } from "../constants/sectionConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
-import { MessageContext } from "../context/MessageContext";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentHome from "../components/atoms/PopupContentHome";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
-import useOpenai from "../hooks/useOpenai";
+import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { MapContext } from "../context/MapContext";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
@@ -27,7 +26,6 @@ import * as mapbox from "../services/mapbox";
  */
 export default function HomePage() {
   const { survey, setSurveyContext } = useContext(SurveyContext);
-  const { addMessage, updatePrompt } = useContext(MessageContext);
   const { mapViewer, mapMode, parentLayer, attribute, color } =
     useContext(MapContext);
 
@@ -36,8 +34,7 @@ export default function HomePage() {
     initialPreferenceList.list[0]
   );
 
-  // Get openAI instructions on the current page.
-  useOpenai(addMessage, updatePrompt);
+  useOpenaiInstruction();
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {

@@ -1,31 +1,36 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { parseString, pathToSection } from "../utils/utils";
 import { Prompt } from "../constants/messageConstants";
 import { SiteCategory } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import { useLocation } from "react-router-dom";
-import { Message } from "../context/MessageContext";
+import { MessageContext } from "../context/MessageContext";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 
 /**
- * Get openAI instructions on the current page.
+ * Get openAI instruction of the current page.
  */
-export default function useOpenai(
-  addMessage: (section: Section, message: Message) => void,
-  updatePrompt: (section: Section, prompt: Prompt) => void,
+export default function useOpenaiInstruction(
   sectionId?: number,
   selectedCategories?: SiteCategory[]
 ) {
+  const { messages, addMessage, updateMessagePrompt } =
+    useContext(MessageContext);
   const location = useLocation();
   const section = pathToSection(location.pathname);
 
   useEffect(() => {
-    addMessage(section, { user: "", ai: "", type: "section" });
+    // Exit if the section already has instruction.
+    if (messages[section].find((message) => message.type === "instruction")) {
+      return;
+    }
+
+    addMessage(section, { user: "", ai: "", type: "instruction" });
     const prompt: Prompt = {
-      type: "section",
+      type: "instruction",
       content: getInstructionPrompt(section, sectionId, selectedCategories),
     };
-    updatePrompt(section, prompt);
+    updateMessagePrompt(section, prompt);
   }, [location.pathname]);
 }
 

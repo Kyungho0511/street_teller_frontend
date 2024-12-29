@@ -28,7 +28,7 @@ export default function Navbar() {
 
   const mapboxLogoRef = useRef<HTMLDivElement>(null);
 
-  // Relocate Mapbox logo to navbar
+  // Relocate Mapbox logo to navbar.
   useEffectAfterMount(() => {
     if (!mapboxLogoRef.current) return;
     relocateLogo(mapboxLogoRef.current);

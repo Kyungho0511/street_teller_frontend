@@ -35,14 +35,14 @@ export default function CheckboxListAI({
   const {
     messages,
     addMessage,
-    loadingMessage,
-    setLoadingMessage,
+    isStreaming,
+    setIsStreaming,
     errorMessage,
     setErrorMessage,
   } = useContext(MessageContext);
 
   const [streaming, setStreaming] = useState<ClusterCheckboxItem[]>([]);
-  const listToDisplay = loadingMessage.json && streaming ? streaming : list;
+  const listToDisplay = isStreaming.json && streaming ? streaming : list;
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -66,7 +66,7 @@ export default function CheckboxListAI({
    */
   const startTypingAnimation = async () => {
     // Reset the loading and error status.
-    setLoadingMessage((prev) => ({ ...prev, json: true }));
+    setIsStreaming((prev) => ({ ...prev, json: true }));
     setErrorMessage((prev) => ({ ...prev, json: "" }));
 
     // Construct prompt JSON for OpenAI.
@@ -123,7 +123,7 @@ export default function CheckboxListAI({
         ai: JSON.stringify(response),
         type: "cluster",
       });
-      setLoadingMessage((prev) => ({ ...prev, json: false }));
+      setIsStreaming((prev) => ({ ...prev, json: false }));
       setSurveyContext({ name, list: newList } as ClusterList);
     }
   };

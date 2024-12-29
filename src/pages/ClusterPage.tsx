@@ -16,40 +16,40 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
-import { MessageContext } from "../context/MessageContext";
 import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
-import useOpenai from "../hooks/useOpenai";
-import { Section } from "../constants/sectionConstants";
+import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
+import { MessageContext } from "../context/MessageContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
-  // Global states
   const { survey } = useContext(SurveyContext);
-  const { addMessage, updatePrompt } = useContext(MessageContext);
   const { mapViewer, mapMode } = useContext(MapContext);
   const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
+  const { messages } = useContext(MessageContext);
 
-  // Local states
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
   const clusterName = pathToSection(location.pathname);
   const clusterList = survey.clusterLists[clusterIndex];
+  const section = pathToSection(location.pathname);
 
-  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] =
-    useGeoJson(geoJsonFilePath);
+  // Run the clustering logic if a cluster message is not found.
+  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
+    geoJsonFilePath,
+    !messages[section].find((message) => message.type === "cluster")
+  );
 
-  // Get openAI instructions on the current page.
-  useOpenai(addMessage, updatePrompt, parseInt(clusterId!), [
+  useOpenaiInstruction(parseInt(clusterId!), [
     `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${
       survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category
@@ -59,7 +59,11 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (!mapViewer) return;
+    if (
+      !mapViewer ||
+      messages[section].find((message) => message.type === "cluster")
+    )
+      return;
 
     // Clean up mapbox layers before starting a new clustering page.
     mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
@@ -154,7 +158,6 @@ export default function ClusterPage() {
       if (!mapViewer.getLayer(clusterList.name)) {
         mapViewer.addLayer(currentClusterLayer, "road-simple");
       }
-      const section: Section = pathToSection(location.pathname);
       mapbox.setLayers(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
     });
