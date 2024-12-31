@@ -1,17 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import {
-  faMoneyCheckDollar,
-  faPeopleGroup,
-  faPersonWalking,
-  faHospitalUser,
-  faGraduationCap,
-  faStore,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
 import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { defaultColor } from "./mapConstants";
+import { iconPaths } from "./IconConstants";
 
 /**
  * Site preference categories of the user survey.
@@ -27,7 +19,7 @@ export type SiteCategory =
 export type Preference = {
   category: SiteCategory;
   ranking: number;
-  icon: IconDefinition;
+  iconPath: string;
   selected: boolean;
   id: string;
   subCategories: ListItem[];
@@ -44,7 +36,7 @@ export const initialPreferenceList: PreferenceList = {
     {
       category: "Unserved Population Density",
       ranking: 1,
-      icon: faMoneyCheckDollar,
+      iconPath: iconPaths.unservedPopulation,
       selected: true,
       id: uuidv4(),
       subCategories: [
@@ -56,7 +48,7 @@ export const initialPreferenceList: PreferenceList = {
     {
       category: "Insured Population Density",
       ranking: 2,
-      icon: faPeopleGroup,
+      iconPath: iconPaths.insuredPopulation,
       selected: false,
       id: uuidv4(),
       subCategories: [
@@ -68,7 +60,7 @@ export const initialPreferenceList: PreferenceList = {
     {
       category: "Health Status",
       ranking: 3,
-      icon: faPersonWalking,
+      iconPath: iconPaths.healthStatus,
       selected: false,
       id: uuidv4(),
       subCategories: [
@@ -89,7 +81,7 @@ export const initialPreferenceList: PreferenceList = {
     {
       category: "Income & Expenses",
       ranking: 4,
-      icon: faHospitalUser,
+      iconPath: iconPaths.income,
       selected: false,
       id: uuidv4(),
       subCategories: [
@@ -102,7 +94,7 @@ export const initialPreferenceList: PreferenceList = {
     {
       category: "Land Use",
       ranking: 5,
-      icon: faGraduationCap,
+      iconPath: iconPaths.landUse,
       selected: false,
       id: uuidv4(),
       subCategories: [
@@ -116,7 +108,7 @@ export const initialPreferenceList: PreferenceList = {
     {
       category: "Mode of Transportation",
       ranking: 6,
-      icon: faStore,
+      iconPath: iconPaths.transportation,
       selected: false,
       id: uuidv4(),
       subCategories: [
