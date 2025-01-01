@@ -1,11 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Preference, PreferenceList } from "../../constants/surveyConstants";
 import styles from "./DraggableList.module.css";
-import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 import { Reorder } from "framer-motion";
 import { useRef } from "react";
 import NumberIcon from "../atoms/icons/NumberIcon";
 import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 type DraggableListProps = {
   list: Preference[];
@@ -78,15 +77,16 @@ export default function DraggableList({
             >
               <div className={styles.category}>
                 {displayRanking && (
-                  <NumberIcon number={item.ranking} selected={item.selected} />
+                  <NumberIcon
+                    number={item.ranking}
+                    color="var(--color-dark-grey)"
+                  />
                 )}
-                {displayIcon && (
-                  <Icon path={item.iconPath} color="var(--color-grey)" />
-                )}
+                {displayIcon && <Icon path={item.iconPath} />}
                 <span className={styles.text}>{item.category}</span>
               </div>
 
-              <FontAwesomeIcon className={styles.grip} icon={faGripLines} />
+              <Icon path={iconPaths.dragHandle} />
             </div>
           </Reorder.Item>
         ))}

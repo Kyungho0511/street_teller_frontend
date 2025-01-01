@@ -1,20 +1,15 @@
 import styles from "./Sidebar.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Logo from "../atoms/Logo";
 import MessageBox from "../molecules/MessageBox";
-import {
-  faArrowRotateRight,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Message, MessageContext } from "../../context/MessageContext";
 import Tooltip from "../atoms/Tooltip";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
-import SidebarIcon from "../atoms/icons/SidebarIcon";
 import { NavbarContext } from "../../context/NavbarContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 export const SIDEBAR_WIDTH = 480;
 
@@ -97,7 +92,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               onClick={navigateMessage}
               data-icon={"left"}
             >
-              <FontAwesomeIcon icon={faChevronLeft} />
+              <Icon path={iconPaths.chevronLeft} color="var(--color-white)" />
             </div>
             <span>
               {messageIndex + 1}/{currentMessage.length}
@@ -107,7 +102,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               onClick={navigateMessage}
               data-icon={"right"}
             >
-              <FontAwesomeIcon icon={faChevronRight} />
+              <Icon path={iconPaths.chevronRight} color="var(--color-white)" />
             </div>
           </div>
         </div>
@@ -119,7 +114,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             onMouseLeave={() => setIsSidebarTooltipOpen(false)}
             onClick={() => openSidebar(false, sidebarRef)}
           >
-            <SidebarIcon color="white" />
+            <Icon path={iconPaths.sidebar} color="var(--color-white)" />
             {isSidebarTooltipOpen && isSidebarOpen && (
               <Tooltip text="Close sidebar" />
             )}
@@ -130,7 +125,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             onMouseLeave={() => setIsRestartTooltipOpen(false)}
             onClick={() => setIsModalOpen(true)}
           >
-            <FontAwesomeIcon icon={faArrowRotateRight} />
+            <Icon path={iconPaths.restart} color="var(--color-white)" />
             {isRestartTooltipOpen && isSidebarOpen && (
               <Tooltip text="Restart" />
             )}

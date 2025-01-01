@@ -1,12 +1,12 @@
 import styles from "./PromptBox.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useRef, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { NavbarContext } from "../../context/NavbarContext";
+import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 /**
  * Prompt box component to send user messages to the AI.
@@ -74,7 +74,12 @@ export default function PromptBox() {
           disabled={disabled}
           className={`${styles.button} ${text.trim() && styles.active}`}
         >
-          <FontAwesomeIcon icon={faArrowUp} className={styles.icon} />
+          <Icon
+            path={iconPaths.arrowUp}
+            color="var(--color-white)"
+            width={34}
+            height={34}
+          />
         </button>
       </div>
     </form>
