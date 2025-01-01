@@ -39,6 +39,9 @@
   height: 2.5rem;
   border-radius: 50%;
   border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:disabled {
     color: var(--theme-grey);
@@ -54,10 +57,4 @@
   &:hover {
     background-color: var(--theme-dark-grey);
   }
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
-  color: var(--color-white);
 }

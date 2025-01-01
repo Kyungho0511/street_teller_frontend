@@ -2,7 +2,8 @@ import styles from "./NumberIcon.module.css";
 
 type NumberIconProps = {
   number: number;
-  selected: boolean;
+  color?: string;
+  selected?: boolean;
   colorContrast?: "high" | "low";
 };
 
@@ -11,7 +12,8 @@ type NumberIconProps = {
  */
 export default function NumberIcon({
   number,
-  selected,
+  color,
+  selected = false,
   colorContrast = "low",
 }: NumberIconProps) {
   return (
@@ -19,6 +21,7 @@ export default function NumberIcon({
       className={`${styles.icon} ${selected && styles.selected} ${
         colorContrast === "low" ? styles.contrast_low : styles.contrast_high
       }`}
+      style={{ backgroundColor: color }}
     >
       {number}
     </div>

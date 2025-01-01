@@ -1,10 +1,9 @@
 import styles from "./MessageBox.module.css";
 import AiReponse from "../atoms/AiResponse";
 import { Message } from "../../context/MessageContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import MarkdownRenderer from "../atoms/MarkdownRenderer";
+import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 type MessageBoxProps = {
   texts: Message[];
@@ -19,12 +18,26 @@ export default function MessageBox({ texts, textIndex }: MessageBoxProps) {
     <div className={styles.container}>
       {texts.length > textIndex && texts[textIndex].user && (
         <div className={styles.message}>
-          <FontAwesomeIcon icon={faCircleUser} className={styles.icon} />
-          {texts[textIndex].user}
+          <div className={styles.icon}>
+            <Icon
+              path={iconPaths.user}
+              height={24}
+              width={24}
+              offset={{ x: 0, y: 4 }}
+            />
+          </div>
+          <p>{texts[textIndex].user}</p>
         </div>
       )}
       <div className={styles.message}>
-        <FontAwesomeIcon icon={faLocationDot} className={styles.icon} />
+        <div className={styles.icon}>
+          <Icon
+            path={iconPaths.location}
+            height={24}
+            width={24}
+            offset={{ x: 0, y: 4 }}
+          />
+        </div>
         {/* AiResponse displays streaming response with typing animation, 
           whereas MarkdownRenderer shows fully fetched AI response */}
         {texts.length > textIndex && texts[textIndex].ai && (

@@ -1,6 +1,6 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .container {
   font-size: 0.9rem;
@@ -19,16 +19,13 @@
 .message {
   padding: 0.5rem;
 
-  /* fontawesome icons */
-  & .icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 0.5rem;
-    opacity: 0.8;
-  }
-
   /* ReactMarkdown p element */
   & p {
     display: inline;
   }
+}
+
+.icon {
+  display: inline;
+  margin-right: 0.3rem;
 }

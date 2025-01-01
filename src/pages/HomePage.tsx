@@ -68,7 +68,7 @@ export default function HomePage() {
           <DraggableList
             list={survey.preferenceList.list}
             setSurveyContext={setSurveyContext}
-            displayIcon={false}
+            displayIcon
             displayRanking
             selectable
           />

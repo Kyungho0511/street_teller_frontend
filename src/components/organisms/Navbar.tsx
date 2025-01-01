@@ -1,14 +1,13 @@
 import styles from "./Navbar.module.css";
 import { useContext, useRef } from "react";
-import SidebarIcon from "../atoms/icons/SidebarIcon";
 import { NavbarContext } from "../../context/NavbarContext";
 import WarningModal from "./WarningModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../atoms/Tooltip";
 import { relocateLogo } from "../../services/mapbox";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { SIDEBAR_WIDTH } from "./Sidebar";
+import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 /**
  * Navbar component.
@@ -68,9 +67,7 @@ export default function Navbar() {
               onMouseLeave={() => setIsSidebarTooltipOpen(false)}
               onClick={() => openSidebar(true, sidebarRef)}
             >
-              <div className={styles.icon}>
-                <SidebarIcon color="var(--color-dark-grey)" />
-              </div>
+              <Icon path={iconPaths.sidebar} color="var(--color-dark-grey)" />
               {isSidebarTooltipOpen && !isSidebarOpen && (
                 <Tooltip text="Open sidebar" offset={{ x: 28, y: 0 }} />
               )}
@@ -82,9 +79,7 @@ export default function Navbar() {
               onMouseLeave={() => setIsRestartTooltipOpen(false)}
               onClick={() => setIsModalOpen(true)}
             >
-              <div className={styles.icon}>
-                <FontAwesomeIcon icon={faArrowRotateRight} />
-              </div>
+              <Icon path={iconPaths.restart} color="var(--color-dark-grey)" />
               {isRestartTooltipOpen && !isSidebarOpen && (
                 <Tooltip text="Restart" />
               )}
@@ -103,10 +98,11 @@ export default function Navbar() {
           onConfirm={confirmRestart}
           onCancel={cancelRestart}
           icon={
-            <FontAwesomeIcon
-              icon={faArrowRotateRight}
-              className="fa-xl"
-              style={{ color: "var(--color-dark-grey)" }}
+            <Icon
+              path={iconPaths.restart}
+              color="var(--color-dark-grey)"
+              width={30}
+              height={30}
             />
           }
         />
