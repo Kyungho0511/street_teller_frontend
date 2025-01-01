@@ -1,6 +1,7 @@
 import styles from "./WarningModal.module.css";
 import ReactDOM from "react-dom";
-import CloseIcon from "../atoms/icons/CloseIcon";
+import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 type WarningModalProps = {
   title: string;
@@ -42,7 +43,7 @@ export default function WarningModal({
         </div>
 
         <div className={styles.closeButton} onClick={onCancel}>
-          <CloseIcon color="#444444" />
+          <Icon path={iconPaths.close} color="var(--color-dark-grey)" />
         </div>
       </div>
     </div>,

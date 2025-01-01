@@ -10,7 +10,7 @@ import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import { ClusterCheckboxItem } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
 import { MapContext } from "../../context/MapContext";
-import NumberIcon from "./icons/NumberIcon";
+import NumberIcon from "./NumberIcon";
 
 type PopupContentClusterProps = {
   clusterId: string;
