@@ -348,31 +348,6 @@ export function hideLineWidth(layer: string, map: mapboxgl.Map) {
 }
 
 /**
- * Offset position of the mapbox logo
- */
-export function offsetLogo(offset: { x: number; y: number }) {
-  const logo = document.querySelector(
-    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
-  ) as HTMLElement | null;
-  if (logo == null) return;
-
-  logo.style.transform = `translateX(${offset.x}px) translateY(${offset.y}px)`;
-}
-
-/**
- * Relocate the mapbox logo element to the input container.
- */
-export function relocateLogo(container: HTMLDivElement) {
-  const logo = document.querySelector(
-    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
-  ) as HTMLElement | null;
-  if (logo == null) return;
-
-  logo.style.position = "static";
-  container.appendChild(logo);
-}
-
-/**
  * Add mapbox map controls.
  */
 export function addControls(map: mapboxgl.Map) {
@@ -389,11 +364,44 @@ export function addControls(map: mapboxgl.Map) {
  * Relocate the mapbox map controls to the input container.
  */
 export function relocateControls(container: HTMLDivElement) {
-  const controls = document.querySelector(
-    `.mapboxgl-ctrl-${mapConfigs.controlPosition}`
-  ) as HTMLElement | null;
-  if (controls == null) return;
+  console.log("relocateControls");
 
-  controls.style.position = "static";
-  container.appendChild(controls);
+  const mapboxContainer = document.querySelector(
+    `.mapboxgl-ctrl-${mapConfigs.controlPosition}`
+  );
+  const controls = mapboxContainer?.querySelectorAll(".mapboxgl-ctrl");
+
+  controls?.forEach((control) => {
+    console.log(control);
+
+    if (control == null) return;
+    (control as HTMLElement).style.position = "static";
+    container.appendChild(control);
+  });
+}
+
+/**
+ * Relocate the mapbox logo element to the input container.
+ */
+export function relocateLogo(container: HTMLDivElement) {
+  const mapboxContainer = document.querySelector(
+    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
+  );
+  const logo = mapboxContainer?.querySelector(".mapboxgl-ctrl");
+  if (logo == null) return;
+
+  (logo as HTMLElement).style.position = "static";
+  container.appendChild(logo);
+}
+
+/**
+ * Offset position of the mapbox logo
+ */
+export function offsetLogo(offset: { x: number; y: number }) {
+  const logo = document.querySelector(
+    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
+  ) as HTMLElement | null;
+  if (logo == null) return;
+
+  logo.style.transform = `translateX(${offset.x}px) translateY(${offset.y}px)`;
 }
