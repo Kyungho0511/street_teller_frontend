@@ -52,7 +52,7 @@ export function createMap(
     scrollZoom: true,
     maxBounds: bounds,
     attributionControl: false,
-    logoPosition: "top-left",
+    logoPosition: mapConfigs.logoPosition,
     projection: "globe",
   });
   map.dragRotate.disable();
@@ -352,7 +352,7 @@ export function hideLineWidth(layer: string, map: mapboxgl.Map) {
  */
 export function offsetLogo(offset: { x: number; y: number }) {
   const logo = document.querySelector(
-    ".mapboxgl-ctrl-top-left"
+    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
   ) as HTMLElement | null;
   if (logo == null) return;
 
@@ -364,10 +364,36 @@ export function offsetLogo(offset: { x: number; y: number }) {
  */
 export function relocateLogo(container: HTMLDivElement) {
   const logo = document.querySelector(
-    ".mapboxgl-ctrl-top-left"
+    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
   ) as HTMLElement | null;
   if (logo == null) return;
 
   logo.style.position = "static";
   container.appendChild(logo);
+}
+
+/**
+ * Add mapbox map controls.
+ */
+export function addControls(map: mapboxgl.Map) {
+  map.addControl(new mapboxgl.GeolocateControl(), mapConfigs.controlPosition);
+  map.addControl(
+    new mapboxgl.NavigationControl({
+      showCompass: false,
+    }),
+    mapConfigs.controlPosition
+  );
+}
+
+/**
+ * Relocate the mapbox map controls to the input container.
+ */
+export function relocateControls(container: HTMLDivElement) {
+  const controls = document.querySelector(
+    `.mapboxgl-ctrl-${mapConfigs.controlPosition}`
+  ) as HTMLElement | null;
+  if (controls == null) return;
+
+  controls.style.position = "static";
+  container.appendChild(controls);
 }

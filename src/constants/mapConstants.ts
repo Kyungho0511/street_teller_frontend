@@ -25,6 +25,8 @@ export const mapConfigs = {
     pitch: 0,
     bearing: 0,
   } as Location,
+  controlPosition: "bottom-right",
+  logoPosition: "top-left",
 };
 
 export const GEOID = "GEOID";
