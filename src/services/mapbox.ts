@@ -387,10 +387,12 @@ export function relocateLogo(container: HTMLDivElement) {
   const mapboxContainer = document.querySelector(
     `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
   );
-  const logo = mapboxContainer?.querySelector(".mapboxgl-ctrl");
+  const logo = mapboxContainer?.querySelector(
+    ".mapboxgl-ctrl"
+  ) as HTMLElement | null;
   if (logo == null) return;
 
-  (logo as HTMLElement).style.position = "static";
+  logo.style.position = "static";
   container.appendChild(logo);
 }
 

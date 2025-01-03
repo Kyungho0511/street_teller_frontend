@@ -4,6 +4,7 @@ import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { useContext, useRef } from "react";
 import { relocateControls } from "../../services/mapbox";
 import { MapContext } from "../../context/MapContext";
+import { FOOTBAR_HEIGHT } from "./Footbar";
 
 /**
  * Control elements for the map.
@@ -21,7 +22,11 @@ export default function MapControls() {
   }, [mapboxcontrolsRef.current, mapViewer]);
 
   return (
-    <div ref={mapboxcontrolsRef} className={styles.mapControls}>
+    <div
+      ref={mapboxcontrolsRef}
+      className={styles.mapControls}
+      style={{ bottom: FOOTBAR_HEIGHT }}
+    >
       <LocationSearchBar />
     </div>
   );
