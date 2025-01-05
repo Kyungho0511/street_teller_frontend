@@ -364,18 +364,16 @@ export function addControls(map: mapboxgl.Map) {
  * Relocate the mapbox map controls to the input container.
  */
 export function relocateControls(container: HTMLDivElement) {
-  console.log("relocateControls");
-
   const mapboxContainer = document.querySelector(
     `.mapboxgl-ctrl-${mapConfigs.controlPosition}`
   );
   const controls = mapboxContainer?.querySelectorAll(".mapboxgl-ctrl");
 
   controls?.forEach((control) => {
-    console.log(control);
-
     if (control == null) return;
-    (control as HTMLElement).style.position = "static";
+    const style = (control as HTMLElement).style;
+    style.position = "static";
+    // style.flexGrow = "0";
     container.appendChild(control);
   });
 }

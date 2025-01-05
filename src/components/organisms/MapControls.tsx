@@ -13,10 +13,11 @@ export default function MapControls() {
   const { mapViewer } = useContext(MapContext);
   const mapboxcontrolsRef = useRef<HTMLDivElement>(null);
 
-  // Relocate Mapbox controls to the container.
+  // Add Mapbox controls to the container.
   useEffectAfterMount(() => {
     if (!mapboxcontrolsRef.current || !mapViewer) return;
-    mapViewer.on("idle", () => {
+
+    mapViewer.on("load", () => {
       relocateControls(mapboxcontrolsRef.current!);
     });
   }, [mapboxcontrolsRef.current, mapViewer]);

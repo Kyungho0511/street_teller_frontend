@@ -1,2 +1,7 @@
 .container {
+  width: 300px;
+}
+
+.input {
+  background-color: black;
 }

@@ -1,5 +1,5 @@
-import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./LocationSearchBar.module.css";
+import { useContext, useEffect, useRef, useState } from "react";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import * as mapboxgl from "mapbox-gl";
@@ -22,15 +22,21 @@ export default function LocationSearchBar() {
       mapboxgl: mapboxgl,
       marker: true,
       placeholder: "Search location",
+      collapsed: true,
+      bbox: [-74.25909, 40.477399, -73.700272, 40.917577], // NYC 5 boroughs bounding box
     });
     setSearchElement(geocoder.onAdd(mapViewer));
   }, [mapViewer]);
 
-  // Relocate the search bar from default location to the container.
   useEffect(() => {
+    // Relocate the search bar from default location to the container.
     const container = containerRef.current;
     if (!container || !searchElement) return;
     container.appendChild(searchElement);
+
+    // Custom style for the search bar.
+    const input = searchElement.querySelector("input");
+    input?.classList.add(styles.input);
 
     return () => {
       container.removeChild(searchElement);

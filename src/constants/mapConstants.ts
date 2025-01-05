@@ -1,3 +1,4 @@
+import { ControlPosition } from "mapbox-gl";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./sectionConstants";
@@ -25,8 +26,8 @@ export const mapConfigs = {
     pitch: 0,
     bearing: 0,
   } as Location,
-  controlPosition: "bottom-right",
-  logoPosition: "top-left",
+  controlPosition: "bottom-right" as ControlPosition,
+  logoPosition: "top-left" as ControlPosition,
 };
 
 export const GEOID = "GEOID";
