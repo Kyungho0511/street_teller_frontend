@@ -28,7 +28,6 @@ export default function Button({ text, type, handleClick }: ButtonProps) {
   return (
     <button
       disabled={disabled}
-      // TODO: refactor conditional styles with theme.css variables.
       className={`${styles.button} ${
         type === "sidebar" ? styles.sidebar_button : styles.footbar_button
       } ${

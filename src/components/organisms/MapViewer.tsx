@@ -39,7 +39,6 @@ export default function MapViewer() {
     temp.on("load", () => {
       setMapViewer(temp);
       setMapSettings();
-      mapbox.addControls(temp);
     });
 
     return () => {

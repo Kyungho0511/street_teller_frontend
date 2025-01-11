@@ -1,4 +1,4 @@
-import { ControlPosition } from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { Section } from "./sectionConstants";
@@ -26,8 +26,8 @@ export const mapConfigs = {
     pitch: 0,
     bearing: 0,
   } as Location,
-  controlPosition: "bottom-right" as ControlPosition,
-  logoPosition: "top-left" as ControlPosition,
+  // NYC 5 boroughs bounding box
+  bbox: [-74.25909, 40.477399, -73.700272, 40.917577] as MapboxGeocoder.Bbox,
 };
 
 export const GEOID = "GEOID";

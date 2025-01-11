@@ -8,7 +8,6 @@ import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { SIDEBAR_WIDTH } from "./Sidebar";
 import Icon from "../atoms/Icon";
 import { iconPaths } from "../../constants/IconConstants";
-import { MapContext } from "../../context/MapContext";
 
 /**
  * Navbar component.
@@ -25,16 +24,15 @@ export default function Navbar() {
     isModalOpen,
     setIsModalOpen,
   } = useContext(NavbarContext);
-  const { mapViewer } = useContext(MapContext);
   const mapboxLogoRef = useRef<HTMLDivElement>(null);
 
   // Relocate Mapbox logo to navbar.
   useEffectAfterMount(() => {
-    if (!mapboxLogoRef.current || !mapViewer) return;
-    mapViewer.on("idle", () => {
-      relocateLogo(mapboxLogoRef.current!);
-    });
-  }, [mapboxLogoRef.current, mapViewer]);
+    if (!mapboxLogoRef.current) return;
+
+    document.querySelector;
+    relocateLogo(mapboxLogoRef.current!);
+  }, [mapboxLogoRef.current]);
 
   const confirmRestart = () => {
     sessionStorage.clear();

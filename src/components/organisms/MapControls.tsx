@@ -1,10 +1,9 @@
 import styles from "./MapControls.module.css";
-import LocationSearchBar from "../molecules/LocationSearchBar";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { useContext, useRef } from "react";
-import { relocateControls } from "../../services/mapbox";
 import { MapContext } from "../../context/MapContext";
 import { FOOTBAR_HEIGHT } from "./Footbar";
+import { addControls, addSearchButton } from "../../services/mapbox";
 
 /**
  * Control elements for the map.
@@ -17,9 +16,8 @@ export default function MapControls() {
   useEffectAfterMount(() => {
     if (!mapboxcontrolsRef.current || !mapViewer) return;
 
-    mapViewer.on("load", () => {
-      relocateControls(mapboxcontrolsRef.current!);
-    });
+    addControls(mapboxcontrolsRef.current, mapViewer);
+    addSearchButton(mapboxcontrolsRef.current, mapViewer);
   }, [mapboxcontrolsRef.current, mapViewer]);
 
   return (
@@ -27,8 +25,6 @@ export default function MapControls() {
       ref={mapboxcontrolsRef}
       className={styles.mapControls}
       style={{ bottom: FOOTBAR_HEIGHT }}
-    >
-      <LocationSearchBar />
-    </div>
+    ></div>
   );
 }

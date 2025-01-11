@@ -1,4 +1,3 @@
-import mapboxgl from "mapbox-gl";
 import {
   Color,
   mapConfigs,
@@ -14,6 +13,10 @@ import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
 import { KMeansLayer } from "../constants/kMeansConstants";
+import mapboxgl from "mapbox-gl";
+import * as mapboxgljs from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 /**
  * Create a mapbox map instance.
@@ -52,7 +55,6 @@ export function createMap(
     scrollZoom: true,
     maxBounds: bounds,
     attributionControl: false,
-    logoPosition: mapConfigs.logoPosition,
     projection: "globe",
   });
   map.dragRotate.disable();
@@ -349,59 +351,48 @@ export function hideLineWidth(layer: string, map: mapboxgl.Map) {
 
 /**
  * Add mapbox map controls.
+ * @param container Container to which the controls are located.
  */
-export function addControls(map: mapboxgl.Map) {
-  map.addControl(new mapboxgl.GeolocateControl(), mapConfigs.controlPosition);
-  map.addControl(
-    new mapboxgl.NavigationControl({
-      showCompass: false,
-    }),
-    mapConfigs.controlPosition
-  );
-}
+export function addControls(container: HTMLElement, map: mapboxgl.Map) {
+  if (!container || !map) return;
 
-/**
- * Relocate the mapbox map controls to the input container.
- */
-export function relocateControls(container: HTMLDivElement) {
-  const mapboxContainer = document.querySelector(
-    `.mapboxgl-ctrl-${mapConfigs.controlPosition}`
-  );
-  const controls = mapboxContainer?.querySelectorAll(".mapboxgl-ctrl");
+  const geolocationControl = new mapboxgl.GeolocateControl();
+  const navigationControl = new mapboxgl.NavigationControl({
+    showCompass: false,
+  });
+  const controls: mapboxgl.IControl[] = [geolocationControl, navigationControl];
 
-  controls?.forEach((control) => {
-    if (control == null) return;
-    const style = (control as HTMLElement).style;
-    style.position = "static";
-    // style.flexGrow = "0";
-    container.appendChild(control);
+  controls.forEach((control) => {
+    container.appendChild(control.onAdd(map));
   });
 }
 
 /**
- * Relocate the mapbox logo element to the input container.
+ * Add a location search button to the mapbox map.
+ * @param container Container to which the search button is located.
  */
-export function relocateLogo(container: HTMLDivElement) {
-  const mapboxContainer = document.querySelector(
-    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
-  );
-  const logo = mapboxContainer?.querySelector(
-    ".mapboxgl-ctrl"
-  ) as HTMLElement | null;
-  if (logo == null) return;
+export function addSearchButton(container: HTMLElement, map: mapboxgl.Map) {
+  const geocoder = new MapboxGeocoder({
+    accessToken: import.meta.env.VITE_API_KEY_MAPBOX as string,
+    mapboxgl: mapboxgljs,
+    marker: true,
+    placeholder: "Search location",
+    collapsed: true,
+    bbox: mapConfigs.bbox,
+  });
 
-  logo.style.position = "static";
-  container.appendChild(logo);
+  container.appendChild(geocoder.onAdd(map));
 }
 
 /**
- * Offset position of the mapbox logo
+ * Relocate the mapbox logo element to the input container.
+ * @param container Container to which the logo is relocated.
  */
-export function offsetLogo(offset: { x: number; y: number }) {
+export function relocateLogo(container: HTMLElement) {
   const logo = document.querySelector(
-    `.mapboxgl-ctrl-${mapConfigs.logoPosition}`
+    `.mapboxgl-ctrl-logo`
   ) as HTMLElement | null;
   if (logo == null) return;
 
-  logo.style.transform = `translateX(${offset.x}px) translateY(${offset.y}px)`;
+  container.appendChild(logo);
 }
