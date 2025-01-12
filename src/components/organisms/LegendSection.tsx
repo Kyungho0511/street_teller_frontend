@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";
 import React from "react";
+import { MAP_CONTROLS_HEIGHT } from "./MapControls";
 
 type LegendSectionProps = {
   children: React.ReactNode;
@@ -39,7 +40,11 @@ export default function LegendSection({
       </div>
       <div
         className={styles.body}
-        style={{ maxHeight: `calc(100vh - ${FOOTBAR_HEIGHT}px - 5rem)` }}
+        style={{
+          maxHeight: `calc(100vh - ${
+            FOOTBAR_HEIGHT + MAP_CONTROLS_HEIGHT
+          }px - 5rem)`,
+        }}
       >
         {children}
       </div>

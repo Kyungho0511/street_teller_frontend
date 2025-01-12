@@ -353,25 +353,37 @@ export function hideLineWidth(layer: string, map: mapboxgl.Map) {
  * Add mapbox map controls.
  * @param container Container to which the controls are located.
  */
-export function addControls(container: HTMLElement, map: mapboxgl.Map) {
-  if (!container || !map) return;
+export function addControls(
+  container: HTMLElement,
+  map: mapboxgl.Map
+): HTMLElement[] {
+  if (!container || !map) return [];
 
   const geolocationControl = new mapboxgl.GeolocateControl();
   const navigationControl = new mapboxgl.NavigationControl({
     showCompass: false,
   });
   const controls: mapboxgl.IControl[] = [geolocationControl, navigationControl];
+  const controlElements: HTMLElement[] = [];
 
   controls.forEach((control) => {
-    container.appendChild(control.onAdd(map));
+    const controlElement = control.onAdd(map);
+    container.appendChild(controlElement);
+    controlElements.push(controlElement);
   });
+
+  return controlElements;
 }
 
 /**
  * Add a location search button to the mapbox map.
  * @param container Container to which the search button is located.
+ * @returns Search button element.
  */
-export function addSearchButton(container: HTMLElement, map: mapboxgl.Map) {
+export function addSearchButton(
+  container: HTMLElement,
+  map: mapboxgl.Map
+): HTMLElement {
   const geocoder = new MapboxGeocoder({
     accessToken: import.meta.env.VITE_API_KEY_MAPBOX as string,
     mapboxgl: mapboxgljs,
@@ -381,7 +393,10 @@ export function addSearchButton(container: HTMLElement, map: mapboxgl.Map) {
     bbox: mapConfigs.bbox,
   });
 
-  container.appendChild(geocoder.onAdd(map));
+  const searchButton = geocoder.onAdd(map);
+  container.appendChild(searchButton);
+
+  return searchButton;
 }
 
 /**
