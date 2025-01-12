@@ -6,4 +6,9 @@
   align-items: end;
   margin-bottom: 1rem;
   transition: all 0.3s ease-in-out;
+  pointer-events: none;
+
+  & * {
+    pointer-events: all;
+  }
 }

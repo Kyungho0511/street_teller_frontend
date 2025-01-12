@@ -3,10 +3,17 @@
   top: 0;
   left: 0;
   display: flex;
+  gap: 1rem;
   justify-content: start;
   height: 60px;
   padding: 0.8rem;
   transition: all 0.3s ease-in-out;
+  background-color: transparent;
+  pointer-events: none;
+
+  & * {
+    pointer-events: all;
+  }
 }
 
 .btn_container {

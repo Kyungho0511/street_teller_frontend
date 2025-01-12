@@ -1,0 +1,14 @@
+.mapControls {
+  position: fixed;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.mapboxgl-ctrl-geolocate {
+  width: 36px;
+  height: 36px;
+}

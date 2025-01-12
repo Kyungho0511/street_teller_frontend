@@ -2,7 +2,7 @@ import { Preference, PreferenceList } from "../../constants/surveyConstants";
 import styles from "./DraggableList.module.css";
 import { Reorder } from "framer-motion";
 import { useRef } from "react";
-import NumberIcon from "../atoms/icons/NumberIcon";
+import NumberIcon from "../atoms/NumberIcon";
 import Icon from "../atoms/Icon";
 import { iconPaths } from "../../constants/IconConstants";
 

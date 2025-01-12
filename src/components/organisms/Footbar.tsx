@@ -6,6 +6,7 @@ import MapToggleButton from "../atoms/MapToggleButton";
 import { SIDEBAR_WIDTH } from "./Sidebar";
 import { useContext } from "react";
 import { NavbarContext } from "../../context/NavbarContext";
+import MapControls from "./MapControls";
 
 export const FOOTBAR_HEIGHT = 90;
 
@@ -56,6 +57,7 @@ export default function Footbar() {
       <Link to={nextPath}>
         <Button text={"continue"} type="footbar" />
       </Link>
+      <MapControls />
     </footer>
   );
 }

@@ -1,4 +1,3 @@
-import mapboxgl from "mapbox-gl";
 import {
   Color,
   mapConfigs,
@@ -14,6 +13,10 @@ import * as utils from "../utils/utils";
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
 import { KMeansLayer } from "../constants/kMeansConstants";
+import mapboxgl from "mapbox-gl";
+import * as mapboxgljs from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 /**
  * Create a mapbox map instance.
@@ -52,7 +55,6 @@ export function createMap(
     scrollZoom: true,
     maxBounds: bounds,
     attributionControl: false,
-    logoPosition: "top-left",
     projection: "globe",
   });
   map.dragRotate.disable();
@@ -348,26 +350,64 @@ export function hideLineWidth(layer: string, map: mapboxgl.Map) {
 }
 
 /**
- * Offset position of the mapbox logo
+ * Add mapbox map controls.
+ * @param container Container to which the controls are located.
  */
-export function offsetLogo(offset: { x: number; y: number }) {
-  const logo = document.querySelector(
-    ".mapboxgl-ctrl-top-left"
-  ) as HTMLElement | null;
-  if (logo == null) return;
+export function addControls(
+  container: HTMLElement,
+  map: mapboxgl.Map
+): HTMLElement[] {
+  if (!container || !map) return [];
 
-  logo.style.transform = `translateX(${offset.x}px) translateY(${offset.y}px)`;
+  const geolocationControl = new mapboxgl.GeolocateControl();
+  const navigationControl = new mapboxgl.NavigationControl({
+    showCompass: false,
+  });
+  const controls: mapboxgl.IControl[] = [geolocationControl, navigationControl];
+  const controlElements: HTMLElement[] = [];
+
+  controls.forEach((control) => {
+    const controlElement = control.onAdd(map);
+    container.appendChild(controlElement);
+    controlElements.push(controlElement);
+  });
+
+  return controlElements;
+}
+
+/**
+ * Add a location search button to the mapbox map.
+ * @param container Container to which the search button is located.
+ * @returns Search button element.
+ */
+export function addSearchButton(
+  container: HTMLElement,
+  map: mapboxgl.Map
+): HTMLElement {
+  const geocoder = new MapboxGeocoder({
+    accessToken: import.meta.env.VITE_API_KEY_MAPBOX as string,
+    mapboxgl: mapboxgljs,
+    marker: true,
+    placeholder: "Search location",
+    collapsed: true,
+    bbox: mapConfigs.bbox,
+  });
+
+  const searchButton = geocoder.onAdd(map);
+  container.appendChild(searchButton);
+
+  return searchButton;
 }
 
 /**
  * Relocate the mapbox logo element to the input container.
+ * @param container Container to which the logo is relocated.
  */
-export function relocateLogo(container: HTMLDivElement) {
+export function relocateLogo(container: HTMLElement) {
   const logo = document.querySelector(
-    ".mapboxgl-ctrl-top-left"
+    `.mapboxgl-ctrl-logo`
   ) as HTMLElement | null;
   if (logo == null) return;
 
-  logo.style.position = "static";
   container.appendChild(logo);
 }

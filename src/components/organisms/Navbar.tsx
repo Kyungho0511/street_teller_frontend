@@ -24,13 +24,14 @@ export default function Navbar() {
     isModalOpen,
     setIsModalOpen,
   } = useContext(NavbarContext);
-
   const mapboxLogoRef = useRef<HTMLDivElement>(null);
 
   // Relocate Mapbox logo to navbar.
   useEffectAfterMount(() => {
     if (!mapboxLogoRef.current) return;
-    relocateLogo(mapboxLogoRef.current);
+
+    document.querySelector;
+    relocateLogo(mapboxLogoRef.current!);
   }, [mapboxLogoRef.current]);
 
   const confirmRestart = () => {
