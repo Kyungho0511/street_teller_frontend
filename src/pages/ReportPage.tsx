@@ -10,6 +10,8 @@ import { MapContext } from "../context/MapContext";
 import * as mapbox from "../services/mapbox";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { crossReferenceList } from "../utils/utils";
+import { ClusterCombination } from "../constants/surveyConstants";
+import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 // import { ClusterCheckboxItem } from "../constants/surveyConstants";
 
 /**
@@ -25,12 +27,31 @@ export default function ReportPage() {
 
   useOpenaiInstruction();
 
-  // Get unique combinations from user selected clusters.
   useEffect(() => {
+    // Get unique combinations from user selected clusters.
     const selectedClusterLists = survey.clusterLists.map((cluster) =>
       cluster.list.filter((item) => item.checked)
     );
-    const uniqueCombinations = crossReferenceList(selectedClusterLists);
+    const crossReference = crossReferenceList(selectedClusterLists);
+
+    // Count the number of geoId for each cluster combination.
+    const clusterCombinations: ClusterCombination[] = crossReference.map(
+      (list, index) => ({ clusters: list, geoIds: [], index })
+    );
+    const features = kMeansLayers[kMeansLayers.length - 1].geoJson.features;
+    features.forEach((feature) => {
+      const combination = clusterCombinations.find((combination) =>
+        combination.clusters.every((cluster) => {
+          const key = ("cluster" + cluster.clusterId) as HealthcarePropertyName;
+          return feature.properties[key] === cluster.index;
+        })
+      );
+      if (combination) {
+        combination.geoIds.push(feature.properties.GEOID as string);
+      }
+    });
+
+    // Assign the unique combination index to each tract.
   }, [survey.clusterLists]);
 
   // Add the last KMeansLayer to the map.

@@ -158,6 +158,14 @@ export type Cluster = {
   name: string;
   centroids: { name: HealthcarePropertyName; value: number }[];
   reasoning: string;
+  index: number;
+  clusterId: string;
+};
+
+export type ClusterCombination = {
+  clusters: Cluster[];
+  geoIds: string[];
+  index: number;
 };
 
 export type ClusterCheckboxItem = CheckboxItem & Cluster;
@@ -180,6 +188,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 0,
+        clusterId: "1",
         id: uuidv4(),
       },
       {
@@ -188,6 +198,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 1,
+        clusterId: "1",
         id: uuidv4(),
       },
       {
@@ -196,6 +208,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 2,
+        clusterId: "1",
         id: uuidv4(),
       },
       {
@@ -204,6 +218,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 3,
+        clusterId: "1",
         id: uuidv4(),
       },
     ],
@@ -217,6 +233,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 0,
+        clusterId: "2",
         id: uuidv4(),
       },
       {
@@ -225,6 +243,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 1,
+        clusterId: "2",
         id: uuidv4(),
       },
       {
@@ -233,6 +253,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 2,
+        clusterId: "2",
         id: uuidv4(),
       },
       {
@@ -241,6 +263,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 3,
+        clusterId: "2",
         id: uuidv4(),
       },
     ],
@@ -254,6 +278,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 0,
+        clusterId: "3",
         id: uuidv4(),
       },
       {
@@ -262,6 +288,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 1,
+        clusterId: "3",
         id: uuidv4(),
       },
       {
@@ -270,6 +298,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 2,
+        clusterId: "3",
         id: uuidv4(),
       },
       {
@@ -278,6 +308,8 @@ export const initialClusterLists: ClusterList[] = [
         reasoning: "",
         color: defaultColor,
         checked: true,
+        index: 3,
+        clusterId: "3",
         id: uuidv4(),
       },
     ],

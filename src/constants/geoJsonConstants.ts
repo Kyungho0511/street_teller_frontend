@@ -43,7 +43,7 @@ export type HealthcarePropertyName =
   | "unserved population / km2";
 
 export type HealthcareProperties = {
-  [key in HealthcarePropertyName]: number;
+  [key in HealthcarePropertyName]: number | string;
 };
 
 export type HealthcareFeature = Feature<Polygon, HealthcareProperties>;

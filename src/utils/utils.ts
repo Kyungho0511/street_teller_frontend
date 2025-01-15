@@ -129,6 +129,13 @@ export function getNeighborhoodName(geoid: string): string {
 }
 
 /**
+ * Get the tract name from the geoid.
+ */
+export function getTractName(geoid: string): string {
+  return `Census Tract ${geoid.slice(-6)}`;
+}
+
+/**
  * Get blended color from the list of colors.
  */
 export function blendColors(colors: RGBA[]): RGBA {
@@ -171,13 +178,11 @@ export function crossReferenceList<T>(list: T[][]): T[][] {
       crossReferenced.push(prefix);
       return;
     }
-
     const [firstList, ...restLists] = remainingLists;
     for (const item of firstList) {
       generateCombinations([...prefix, item], restLists);
     }
   }
-
   generateCombinations([], list);
   return crossReferenced;
 }
