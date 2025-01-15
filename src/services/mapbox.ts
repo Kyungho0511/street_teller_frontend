@@ -200,8 +200,6 @@ export function addReportLayer(
   map.getLayer(title) && map.removeLayer(title);
 
   // Add source and layer to the map.
-  console.log(kMeansLayer.geoJson);
-
   map.addSource(title, {
     type: "geojson",
     data: kMeansLayer.geoJson,

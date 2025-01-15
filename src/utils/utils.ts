@@ -128,6 +128,9 @@ export function getNeighborhoodName(geoid: string): string {
   return dict[geoid].NTAName;
 }
 
+/**
+ * Get blended color from the list of colors.
+ */
 export function blendColors(colors: RGBA[]): RGBA {
   const blendedColor = colors.reduce(
     (prev, curr) => {
@@ -150,6 +153,31 @@ export function blendColors(colors: RGBA[]): RGBA {
   } as RGBA;
 }
 
+/**
+ * Convert RGBA to string.
+ */
 export function rgbaToString(color: RGBA): string {
   return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
+}
+
+/**
+ * Cross reference the 2 dimensional list of numbers. (recursive)
+ */
+export function crossReferenceList<T>(list: T[][]): T[][] {
+  const crossReferenced: T[][] = [];
+
+  function generateCombinations(prefix: T[], remainingLists: T[][]) {
+    if (remainingLists.length === 0) {
+      crossReferenced.push(prefix);
+      return;
+    }
+
+    const [firstList, ...restLists] = remainingLists;
+    for (const item of firstList) {
+      generateCombinations([...prefix, item], restLists);
+    }
+  }
+
+  generateCombinations([], list);
+  return crossReferenced;
 }
