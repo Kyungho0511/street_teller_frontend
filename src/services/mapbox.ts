@@ -10,7 +10,10 @@ import { sectionMapConfigs } from "../constants/sectionConstants";
 import { ClusterList } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
-import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import {
+  HealthcareFeatureCollection,
+  HealthcarePropertyName,
+} from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
 import { KMeansLayer } from "../constants/kMeansConstants";
 import mapboxgl from "mapbox-gl";
@@ -192,7 +195,7 @@ export function updateClusterLayer(
  */
 export function addReportLayer(
   title: string,
-  kMeansLayer: KMeansLayer,
+  geoJson: HealthcareFeatureCollection,
   map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.
@@ -202,7 +205,7 @@ export function addReportLayer(
   // Add source and layer to the map.
   map.addSource(title, {
     type: "geojson",
-    data: kMeansLayer.geoJson,
+    data: geoJson,
   });
   map.addLayer(
     {
@@ -210,18 +213,19 @@ export function addReportLayer(
       type: "fill",
       source: title,
       paint: {
-        "fill-color": [
-          "case",
-          ["==", ["get", "cluster3"], 0],
-          utils.rgbaToString(kMeansLayer.colors[0]),
-          ["==", ["get", "cluster3"], 1],
-          utils.rgbaToString(kMeansLayer.colors[1]),
-          ["==", ["get", "cluster3"], 2],
-          utils.rgbaToString(kMeansLayer.colors[2]),
-          ["==", ["get", "cluster3"], 3],
-          utils.rgbaToString(kMeansLayer.colors[3]),
-          transparent,
-        ],
+        "fill-color": "rgba(100, 100, 100, 0.6)",
+        // [
+        //   "case",
+        //   ["==", ["get", "clusterCombination"], 0],
+        //   utils.rgbaToString(kMeansLayer.colors[0]),
+        //   ["==", ["get", "clusterCombination"], 1],
+        //   utils.rgbaToString(kMeansLayer.colors[1]),
+        //   ["==", ["get", "clusterCombination"], 2],
+        //   utils.rgbaToString(kMeansLayer.colors[2]),
+        //   ["==", ["get", "clusterCombination"], 3],
+        //   utils.rgbaToString(kMeansLayer.colors[3]),
+        //   transparent,
+        // ],
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },

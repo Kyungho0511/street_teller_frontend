@@ -7,7 +7,6 @@ import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 import { KMeansContext } from "../context/KMeansContext";
 import { MapContext } from "../context/MapContext";
-import * as mapbox from "../services/mapbox";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { crossReferenceList } from "../utils/utils";
 import { ClusterCombination } from "../constants/surveyConstants";
@@ -16,13 +15,15 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import { getFilteredGeoJson } from "../services/kmeans";
+import { addReportLayer } from "../services/mapbox";
+import { map } from "framer-motion/client";
 
 /**
  * Report page component where users select sites to report.
  */
 export default function ReportPage() {
   const { survey } = useContext(SurveyContext);
-  const { mapViewer, parentLayer } = useContext(MapContext);
+  const { mapViewer } = useContext(MapContext);
   const { kMeansLayers } = useContext(KMeansContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
 
@@ -64,7 +65,6 @@ export default function ReportPage() {
       (list, index) => ({ clusters: list, geoIds: [], index })
     );
     const features = geoJson.features;
-
     features.forEach((feature, index) => {
       const combination = clusterCombinations.find((combination) =>
         combination.clusters.every((cluster) => {
@@ -72,7 +72,6 @@ export default function ReportPage() {
           return feature.properties[key] === cluster.index;
         })
       );
-
       if (combination) {
         combination.geoIds.push(feature.properties.GEOID as string);
 
@@ -81,22 +80,16 @@ export default function ReportPage() {
           combination.index;
       }
     });
-  }, [geoJson]);
 
-  // Add the last KMeansLayer to the map.
-  useEffect(() => {
-    if (!mapViewer || !kMeansLayers.length) return;
-    mapbox.addReportLayer(
-      parentLayer,
-      kMeansLayers[kMeansLayers.length - 1],
-      mapViewer
-    );
+    // Add the geoJson data to the map.
+    if (!mapViewer) return;
+    addReportLayer("report", geoJson, mapViewer);
 
     return () => {
-      mapViewer.removeLayer(parentLayer);
-      mapViewer.removeSource(parentLayer);
+      mapViewer.removeLayer("report");
+      mapViewer.removeSource("report");
     };
-  }, []);
+  }, [geoJson, mapViewer]);
 
   return (
     <>
