@@ -7,7 +7,7 @@ import {
   ZOOM_MODIFIER,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
-import { ClusterList } from "../constants/surveyConstants";
+import { ClusterCombination, ClusterList } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
 import {
@@ -196,6 +196,7 @@ export function updateClusterLayer(
 export function addReportLayer(
   title: string,
   geoJson: HealthcareFeatureCollection,
+  clusterCombinations: ClusterCombination[],
   map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.
@@ -207,25 +208,23 @@ export function addReportLayer(
     type: "geojson",
     data: geoJson,
   });
+  const fillColorExpression: mapboxgljs.DataDrivenPropertyValueSpecification<string> =
+    ["case"];
+  clusterCombinations.forEach((combination) => {
+    fillColorExpression.push(
+      ["==", ["get", "clusterCombination"], combination.index],
+      utils.rgbaToString(combination.color)
+    );
+  });
+  fillColorExpression.push(transparent);
+
   map.addLayer(
     {
       id: title,
       type: "fill",
       source: title,
       paint: {
-        "fill-color": "rgba(100, 100, 100, 0.6)",
-        // [
-        //   "case",
-        //   ["==", ["get", "clusterCombination"], 0],
-        //   utils.rgbaToString(kMeansLayer.colors[0]),
-        //   ["==", ["get", "clusterCombination"], 1],
-        //   utils.rgbaToString(kMeansLayer.colors[1]),
-        //   ["==", ["get", "clusterCombination"], 2],
-        //   utils.rgbaToString(kMeansLayer.colors[2]),
-        //   ["==", ["get", "clusterCombination"], 3],
-        //   utils.rgbaToString(kMeansLayer.colors[3]),
-        //   transparent,
-        // ],
+        "fill-color": fillColorExpression,
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },

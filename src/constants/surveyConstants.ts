@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ListItem } from "../components/molecules/SelectableList";
 import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
-import { defaultColor } from "./mapConstants";
+import { defaultColor, RGBA } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 
 /**
@@ -158,12 +158,14 @@ export type Cluster = {
   name: string;
   centroids: { name: HealthcarePropertyName; value: number }[];
   reasoning: string;
+  color: RGBA;
   index: number;
   clusterId: string;
 };
 
 export type ClusterCombination = {
   clusters: Cluster[];
+  color: RGBA;
   geoIds: string[];
   index: number;
 };

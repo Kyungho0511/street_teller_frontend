@@ -8,7 +8,7 @@ import { SurveyContext } from "../context/SurveyContext";
 import { KMeansContext } from "../context/KMeansContext";
 import { MapContext } from "../context/MapContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
-import { crossReferenceList } from "../utils/utils";
+import { blendColors, crossReferenceList } from "../utils/utils";
 import { ClusterCombination } from "../constants/surveyConstants";
 import {
   HealthcareFeatureCollection,
@@ -17,6 +17,7 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import { addReportLayer } from "../services/mapbox";
 import { map } from "framer-motion/client";
+import { defaultColor } from "../constants/mapConstants";
 
 /**
  * Report page component where users select sites to report.
@@ -62,7 +63,12 @@ export default function ReportPage() {
 
     // Count the number of geoId for each cluster combination.
     const clusterCombinations: ClusterCombination[] = crossReference.map(
-      (list, index) => ({ clusters: list, geoIds: [], index })
+      (list, index) => ({
+        clusters: list,
+        color: defaultColor,
+        geoIds: [],
+        index,
+      })
     );
     const features = geoJson.features;
     features.forEach((feature, index) => {
@@ -81,9 +87,16 @@ export default function ReportPage() {
       }
     });
 
+    // Assign color to each cluster combination.
+    clusterCombinations.forEach((combination) => {
+      const colors = combination.clusters.map((cluster) => cluster.color);
+      const color = blendColors(colors);
+      combination.color = color;
+    });
+
     // Add the geoJson data to the map.
     if (!mapViewer) return;
-    addReportLayer("report", geoJson, mapViewer);
+    addReportLayer("report", geoJson, clusterCombinations, mapViewer);
 
     return () => {
       mapViewer.removeLayer("report");
