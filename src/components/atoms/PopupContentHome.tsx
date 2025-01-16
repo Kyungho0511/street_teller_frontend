@@ -23,7 +23,7 @@ export default function PopupContentHome({
 
   useEffectAfterMount(() => {
     if (!property) return;
-    const value = property[selectedAttribute.name];
+    const value = property[selectedAttribute.name] as number;
     setFormattedValue(utils.formatUnit(value, selectedAttribute.unit));
 
     const geoid = property.GEOID.toString();

@@ -62,7 +62,7 @@ export default function PopupContentCluster({
       const clusterList = survey.clusterLists.find(
         (clusterList) => clusterList.name === clusterKey
       )!;
-      const cluster = clusterList.list[property[clusterKey]];
+      const cluster = clusterList.list[property[clusterKey] as number];
       clusters.push(cluster);
     }
     setClusters(clusters);

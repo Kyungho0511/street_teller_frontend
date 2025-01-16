@@ -49,7 +49,7 @@ export function processData(
       attributes.forEach((attr) => {
         if (Object.prototype.hasOwnProperty.call(feature.properties, attr)) {
           if (filteredProperties) {
-            filteredProperties[attr] = feature.properties[attr];
+            filteredProperties[attr] = feature.properties[attr] as number;
           } else {
             filteredProperties = { [attr]: feature.properties[attr] };
           }
@@ -108,7 +108,7 @@ export function getFilteredGeoJson(
   filteredGeoJson.features = geoJson.features.filter((feature) => {
     const clusterKey = ("cluster" + prevClusterId) as HealthcarePropertyName;
     const cluster = feature.properties![clusterKey];
-    return selection[cluster];
+    return selection[cluster as number];
   });
 
   return filteredGeoJson;

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import CheckboxList from "../components/molecules/CheckboxList";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
@@ -11,8 +11,11 @@ import * as mapbox from "../services/mapbox";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { crossReferenceList } from "../utils/utils";
 import { ClusterCombination } from "../constants/surveyConstants";
-import { HealthcarePropertyName } from "../constants/geoJsonConstants";
-// import { ClusterCheckboxItem } from "../constants/surveyConstants";
+import {
+  HealthcareFeatureCollection,
+  HealthcarePropertyName,
+} from "../constants/geoJsonConstants";
+import { getFilteredGeoJson } from "../services/kmeans";
 
 /**
  * Report page component where users select sites to report.
@@ -21,13 +24,35 @@ export default function ReportPage() {
   const { survey } = useContext(SurveyContext);
   const { mapViewer, parentLayer } = useContext(MapContext);
   const { kMeansLayers } = useContext(KMeansContext);
+  const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
+
+  // GeoJson data from the last KMeansLayer of the cluster page.
+  const prevGeoJson = kMeansLayers[kMeansLayers.length - 1];
 
   // Temporary cluster list for testing.
   const clusterList = survey.clusterLists[2];
 
   useOpenaiInstruction();
 
+  // Prepare geoJson data for the report page.
   useEffect(() => {
+    if (!prevGeoJson) return;
+
+    const lastClusterIndex = survey.clusterLists.length - 1;
+    const selection = survey.clusterLists[lastClusterIndex].list.map(
+      (item) => item.checked
+    );
+    const geoJson = getFilteredGeoJson(
+      `${lastClusterIndex + 1}`,
+      selection,
+      prevGeoJson.geoJson
+    );
+    setGeoJson(geoJson);
+  }, [prevGeoJson]);
+
+  useEffect(() => {
+    if (!geoJson) return;
+
     // Get unique combinations from user selected clusters.
     const selectedClusterLists = survey.clusterLists.map((cluster) =>
       cluster.list.filter((item) => item.checked)
@@ -38,21 +63,25 @@ export default function ReportPage() {
     const clusterCombinations: ClusterCombination[] = crossReference.map(
       (list, index) => ({ clusters: list, geoIds: [], index })
     );
-    const features = kMeansLayers[kMeansLayers.length - 1].geoJson.features;
-    features.forEach((feature) => {
+    const features = geoJson.features;
+
+    features.forEach((feature, index) => {
       const combination = clusterCombinations.find((combination) =>
         combination.clusters.every((cluster) => {
           const key = ("cluster" + cluster.clusterId) as HealthcarePropertyName;
           return feature.properties[key] === cluster.index;
         })
       );
+
       if (combination) {
         combination.geoIds.push(feature.properties.GEOID as string);
+
+        // Assign the unique combination index to each tract.
+        geoJson.features[index].properties.clusterCombination =
+          combination.index;
       }
     });
-
-    // Assign the unique combination index to each tract.
-  }, [survey.clusterLists]);
+  }, [geoJson]);
 
   // Add the last KMeansLayer to the map.
   useEffect(() => {
