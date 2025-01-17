@@ -163,18 +163,30 @@ export type Cluster = {
   clusterId: string;
 };
 
-export type ClusterCombination = {
+export type ClusterCheckboxItem = CheckboxItem & Cluster;
+
+export type ClusterList = {
+  name: `cluster${number}`;
+  list: ClusterCheckboxItem[];
+};
+
+/**
+ * Report for a group of clusters.
+ */
+export type Report = {
+  name: string;
+  reasoning: string;
   clusters: Cluster[];
   color: RGBA;
   geoIds: string[];
   index: number;
 };
 
-export type ClusterCheckboxItem = CheckboxItem & Cluster;
+export type ReportCheckboxItem = CheckboxItem & Report;
 
-export type ClusterList = {
-  name: `cluster${number}`;
-  list: ClusterCheckboxItem[];
+export type ReportList = {
+  name: "report";
+  list: ReportCheckboxItem[];
 };
 
 /**

@@ -7,7 +7,7 @@ import {
   ZOOM_MODIFIER,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
-import { ClusterCombination, ClusterList } from "../constants/surveyConstants";
+import { Report, ClusterList } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
 import {
@@ -196,7 +196,7 @@ export function updateClusterLayer(
 export function addReportLayer(
   title: string,
   geoJson: HealthcareFeatureCollection,
-  clusterCombinations: ClusterCombination[],
+  clusterCombinations: Report[],
   map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.

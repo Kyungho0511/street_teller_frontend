@@ -46,17 +46,11 @@ export async function* streamOpenAI(
   const messages: OpenAiMessage[] = [];
 
   // 1. Add system messages.
-  if (prompt.type === "text" || prompt.type === "instruction") {
-    messages.push({
-      role: "system",
-      content: systemMessage.text,
-    });
-  } else if (prompt.type === "cluster") {
-    messages.push({
-      role: "system",
-      content: systemMessage.cluster,
-    });
-  }
+  const systemMessageKey = prompt.type === "instruction" ? "text" : prompt.type;
+  messages.push({
+    role: "system",
+    content: systemMessage[systemMessageKey],
+  });
 
   // 2-1. Provide the conversation history for context.
   history.forEach((message) => {
@@ -121,12 +115,14 @@ export async function* streamOpenAI(
     });
   }
 
-  // 3-2. Run openAI with cluster prompt.
-  if (prompt.type === "cluster") {
+  // 3-2. Run openAI with JSON type prompt.
+  if (prompt.type === "cluster" || prompt.type === "report") {
+    console.log(JSON.stringify(prompt.content));
+
     stream = await openai.chat.completions.create({
       messages: [
         ...messages,
-        { role: "assistant", content: assistantMessage },
+        { role: "assistant", content: assistantMessage[prompt.type] },
         { role: "user", content: JSON.stringify(prompt.content) },
       ],
       model: "gpt-4o-mini",
@@ -152,7 +148,7 @@ export async function* streamOpenAI(
         }
 
         // Yield the JSON object type content
-        else if (prompt.type === "cluster") {
+        else if (prompt.type === "cluster" || prompt.type === "report") {
           let parsedData;
           try {
             parsedData = parse(accumulatedResponse);
@@ -198,7 +194,7 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
   }
 
   // Run openAI with cluster prompt
-  if (prompt.type === "cluster") {
+  if (prompt.type === "cluster" || prompt.type === "report") {
     const clustersJSON = JSON.stringify(prompt.content);
     completion = await openai.chat.completions.create({
       messages: [
@@ -208,7 +204,7 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
         },
         {
           role: "assistant",
-          content: assistantMessage,
+          content: assistantMessage[prompt.type],
         },
         { role: "user", content: clustersJSON },
       ],

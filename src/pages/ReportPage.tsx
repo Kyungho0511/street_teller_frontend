@@ -9,14 +9,13 @@ import { KMeansContext } from "../context/KMeansContext";
 import { MapContext } from "../context/MapContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { blendColors, crossReferenceList } from "../utils/utils";
-import { ClusterCombination } from "../constants/surveyConstants";
+import { Report } from "../constants/surveyConstants";
 import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import { getFilteredGeoJson } from "../services/kmeans";
 import { addReportLayer } from "../services/mapbox";
-import { map } from "framer-motion/client";
 import { defaultColor } from "../constants/mapConstants";
 
 /**
@@ -55,48 +54,47 @@ export default function ReportPage() {
   useEffect(() => {
     if (!geoJson) return;
 
-    // Get unique combinations from user selected clusters.
+    // Get unique reports from user selected clusters.
     const selectedClusterLists = survey.clusterLists.map((cluster) =>
       cluster.list.filter((item) => item.checked)
     );
     const crossReference = crossReferenceList(selectedClusterLists);
 
-    // Count the number of geoId for each cluster combination.
-    const clusterCombinations: ClusterCombination[] = crossReference.map(
-      (list, index) => ({
-        clusters: list,
-        color: defaultColor,
-        geoIds: [],
-        index,
-      })
-    );
+    // Count the number of geoId for each report.
+    const reports: Report[] = crossReference.map((list, index) => ({
+      name: "",
+      reasoning: "",
+      clusters: list,
+      color: defaultColor,
+      geoIds: [],
+      index,
+    }));
     const features = geoJson.features;
     features.forEach((feature, index) => {
-      const combination = clusterCombinations.find((combination) =>
-        combination.clusters.every((cluster) => {
+      const report = reports.find((report) =>
+        report.clusters.every((cluster) => {
           const key = ("cluster" + cluster.clusterId) as HealthcarePropertyName;
           return feature.properties[key] === cluster.index;
         })
       );
-      if (combination) {
-        combination.geoIds.push(feature.properties.GEOID as string);
+      if (report) {
+        report.geoIds.push(feature.properties.GEOID as string);
 
-        // Assign the unique combination index to each tract.
-        geoJson.features[index].properties.clusterCombination =
-          combination.index;
+        // Assign the unique report index to each tract.
+        geoJson.features[index].properties.report = report.index;
       }
     });
 
-    // Assign color to each cluster combination.
-    clusterCombinations.forEach((combination) => {
-      const colors = combination.clusters.map((cluster) => cluster.color);
+    // Assign color to each report.
+    reports.forEach((report) => {
+      const colors = report.clusters.map((cluster) => cluster.color);
       const color = blendColors(colors);
-      combination.color = color;
+      report.color = color;
     });
 
     // Add the geoJson data to the map.
     if (!mapViewer) return;
-    addReportLayer("report", geoJson, clusterCombinations, mapViewer);
+    addReportLayer("report", geoJson, reports, mapViewer);
 
     return () => {
       mapViewer.removeLayer("report");

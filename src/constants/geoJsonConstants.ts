@@ -7,7 +7,7 @@ export type HealthcarePropertyName =
   | "cluster1"
   | "cluster2"
   | "cluster3"
-  | "clusterCombination"
+  | "report"
   | "medicaid enrollees / km2"
   | "commercial enrollees / km2"
   | "insured population / km2"
