@@ -1,15 +1,21 @@
-import { Cluster, siteCategories } from "./surveyConstants";
+import { Centroid, siteCategories } from "./surveyConstants";
 
-type textPrompt = { type: "text"; content: string };
-type instructionPrompt = { type: "instruction"; content: string };
-type clusterPrompt = { type: "cluster"; content: Cluster[] };
-type reportPrompt = { type: "report"; content: string };
+export type TextPrompt = { type: "text"; content: string };
+export type InstructionPrompt = { type: "instruction"; content: string };
+export type ClusterPrompt = {
+  type: "cluster";
+  content: { name: string; centroids: Centroid[] }[];
+};
+export type ReportPrompt = {
+  type: "report";
+  content: { name: string; centroids: Centroid[]; reasoning: string }[];
+};
 
 export type Prompt =
-  | textPrompt
-  | instructionPrompt
-  | clusterPrompt
-  | reportPrompt;
+  | TextPrompt
+  | InstructionPrompt
+  | ClusterPrompt
+  | ReportPrompt;
 
 // Prompt presets to get instruction for each page from openAI.
 export const WORD_COUNT_SHORT = 100;
@@ -24,8 +30,8 @@ export const systemMessage = {
 };
 
 export const assistantMessage = {
-  cluster: `{"clusters": [{"name": "name for cluster1", "reasoning": "reasoning for cluster1"}, {"name": "name for cluster2", "reasoning": "reasoning for cluster2"}, {"name": "name for cluster3", "reasoning": "reasoning for cluster3"}, {"name": "name for cluster4", "reasoning": "reasoning for cluster4"}]}`,
-  report: `{"clusters": [{"name": "name for the group", "reasoning": "reasoning for the group's name"}]}`,
+  cluster: `{"labels": [{"name": "name for label1", "reasoning": "reasoning for label1"}, {"name": "name for label2", "reasoning": "reasoning for label2"}, {"name": "name for label3", "reasoning": "reasoning for label3"}, {"name": "name for label4", "reasoning": "reasoning for label4"}]}`,
+  report: `{"labels": [{"name": "name for the group", "reasoning": "reasoning for the group's name"}]}`,
 };
 
 export const siteCategoriesMessage = `Here is the list of site preference categories and subcategories under them available for users to select. ${JSON.stringify(

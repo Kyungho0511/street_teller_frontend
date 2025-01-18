@@ -14,6 +14,7 @@ import { OpenAiResponseJSON, streamOpenAI } from "../../services/openai";
 import { KMeansLayer } from "../../constants/kMeansConstants";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
+import { ClusterPrompt } from "../../constants/messageConstants";
 
 type CheckboxListAIProps = {
   name: string;
@@ -49,7 +50,7 @@ export default function CheckboxListAI({
 
   // Fetch and display OpenAI reasoning on setting kMeansLayer.
   useEffectAfterMount(() => {
-    startTypingAnimation();
+    streamOpenAIResult();
   }, [kMeansLayers]);
 
   // Update the cluster list context whenever a new cluster is added.
@@ -62,34 +63,31 @@ export default function CheckboxListAI({
   }, [reasonings.length]);
 
   /**
-   * Start the typing animation for the OpenAI streaming response.
+   * Start displaying the OpenAI streaming response.
    */
-  const startTypingAnimation = async () => {
+  const streamOpenAIResult = async () => {
     // Reset the loading and error status.
     setIsStreaming((prev) => ({ ...prev, json: true }));
     setErrorMessage((prev) => ({ ...prev, json: "" }));
 
     // Construct prompt JSON for OpenAI.
-    const promptJson: Cluster[] = list.map(
-      (_, i) =>
-        ({
-          name: "",
-          centroids: kMeansLayers[index]?.attributes.map((attr, j) => ({
-            name: attr,
-            value: kMeansLayers[index]?.centroids[i][j],
-          })),
-        } as Cluster)
-    );
+    const promptJson = list.map((item, i) => ({
+      name: item.name,
+      centroids: kMeansLayers[index]?.attributes.map((attr, j) => ({
+        name: attr,
+        value: kMeansLayers[index]?.centroids[i][j],
+      })),
+    }));
 
     let response: OpenAiResponseJSON = {
-      clusters: [{ name: "", reasoning: "" }],
+      labels: [{ name: "", reasoning: "" }],
     };
     let newList: ClusterCheckboxItem[] = [...list];
 
     try {
       // Start OpenAI JSON response streaming.
       for await (const chunk of streamOpenAI(
-        { type: "cluster", content: promptJson },
+        { type: "cluster", content: promptJson } as ClusterPrompt,
         messages[section],
         survey.preferenceList.list,
         index
@@ -98,11 +96,11 @@ export default function CheckboxListAI({
 
         // Update streaming with parsed data.
         newList = [...list];
-        response?.clusters?.forEach((cluster, i) => {
+        response?.labels?.forEach((label, i) => {
           newList[i] = {
             ...newList[i],
-            name: cluster?.name,
-            reasoning: cluster?.reasoning,
+            name: label?.name,
+            reasoning: label?.reasoning,
             centroids: kMeansLayers[index]!.attributes.map((attr, j) => ({
               name: attr,
               value: kMeansLayers[index]!.centroids[i][j],
@@ -179,7 +177,7 @@ export default function CheckboxListAI({
       <Button
         text={"retry analysis"}
         type={"sidebar"}
-        handleClick={startTypingAnimation}
+        handleClick={streamOpenAIResult}
       />
     </>
   );

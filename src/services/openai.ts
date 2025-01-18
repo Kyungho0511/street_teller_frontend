@@ -21,7 +21,7 @@ const openai = new OpenAI({
 });
 
 export type OpenAiResponseJSON = {
-  clusters: { name: string; reasoning: string }[];
+  labels: { name: string; reasoning: string }[];
 };
 
 type OpenAiMessage = {
@@ -117,7 +117,7 @@ export async function* streamOpenAI(
 
   // 3-2. Run openAI with JSON type prompt.
   if (prompt.type === "cluster" || prompt.type === "report") {
-    console.log(JSON.stringify(prompt.content));
+    // console.log(JSON.stringify(prompt.content));
 
     stream = await openai.chat.completions.create({
       messages: [
@@ -200,7 +200,7 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
       messages: [
         {
           role: "system",
-          content: systemMessage.cluster,
+          content: systemMessage[prompt.type],
         },
         {
           role: "assistant",

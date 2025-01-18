@@ -20,7 +20,6 @@ export function KMeansContextProvider({
     "kMeansLayers",
     []
   );
-  // const [kMeansLayers, setKMeansLayers] = useState<KMeansLayer[]>([]);
 
   return (
     <KMeansContext.Provider

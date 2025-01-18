@@ -151,12 +151,14 @@ export const initialBoroughList: BoroughList = {
   ],
 };
 
+export type Centroid = { name: HealthcarePropertyName; value: number };
+
 /**
  * Clusters for the survey.
  */
 export type Cluster = {
   name: string;
-  centroids: { name: HealthcarePropertyName; value: number }[];
+  centroids: Centroid[];
   reasoning: string;
   color: RGBA;
   index: number;

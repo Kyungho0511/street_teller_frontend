@@ -17,6 +17,8 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import { addReportLayer } from "../services/mapbox";
 import { defaultColor } from "../constants/mapConstants";
+import { runOpenAI } from "../services/openai";
+import { ReportPrompt } from "../constants/messageConstants";
 
 /**
  * Report page component where users select sites to report.
@@ -90,6 +92,22 @@ export default function ReportPage() {
       const colors = report.clusters.map((cluster) => cluster.color);
       const color = blendColors(colors);
       report.color = color;
+    });
+
+    // Construct prompt for OpenAI.
+    const prompt: ReportPrompt = {
+      type: "report",
+      content: reports[0].clusters.map((cluster) => ({
+        name: cluster.name,
+        centroids: cluster.centroids,
+        reasoning: cluster.reasoning,
+      })),
+    };
+    console.log("Prompt for OpenAI:", prompt);
+
+    // Get OpenAI response.
+    runOpenAI(prompt).then((response) => {
+      console.log(response);
     });
 
     // Add the geoJson data to the map.
