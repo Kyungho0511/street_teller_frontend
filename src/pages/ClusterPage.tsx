@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
@@ -26,6 +26,7 @@ import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
 import { MessageContext } from "../context/MessageContext";
+import { ClusterPrompt } from "../constants/messageConstants";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -36,6 +37,7 @@ export default function ClusterPage() {
   const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
   const { messages } = useContext(MessageContext);
 
+  const [prompts, setPrompts] = useState<ClusterPrompt[]>([]);
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
@@ -118,9 +120,10 @@ export default function ClusterPage() {
     });
   }, [survey.preferenceList.list, geoJson]);
 
-  // Add KMeansLayer to the map.
   useEffectAfterMount(() => {
     if (!mapViewer || !kMeansLayers[clusterIndex]) return;
+
+    // Add KMeansLayer to the map.
     mapbox.addClusterLayer(
       clusterId!,
       kMeansLayers[clusterIndex],
@@ -128,8 +131,25 @@ export default function ClusterPage() {
       false
     );
 
-    // Remove KMeansLayer from mapbox when on unmount.
-    return () => mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+    // Prepare prompts for OpenAI.
+    const contents = clusterList.list.map((item, i) => ({
+      name: item.name,
+      centroids: kMeansLayers[clusterIndex]?.attributes.map((attr, j) => ({
+        name: attr,
+        value: kMeansLayers[clusterIndex]?.centroids[i][j],
+      })),
+    }));
+
+    const prompts: ClusterPrompt[] = contents.map((content) => ({
+      type: "cluster",
+      content,
+    }));
+    setPrompts(prompts);
+
+    return () => {
+      // Remove KMeansLayer from mapbox on unmount.
+      mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+    };
   }, [kMeansLayers, mapViewer]);
 
   // Update mapping on selected clusterList change
@@ -166,16 +186,20 @@ export default function ClusterPage() {
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
     return (
-      <SidebarSection>
-        <p>Loading GeoJson Data...</p>
-      </SidebarSection>
+      <Sidebar>
+        <SidebarSection>
+          <p>Loading GeoJson Data...</p>
+        </SidebarSection>
+      </Sidebar>
     );
   }
   if (errorGeoJson) {
     return (
-      <SidebarSection>
-        <p>{errorGeoJson}</p>
-      </SidebarSection>
+      <Sidebar>
+        <SidebarSection>
+          <p>{errorGeoJson}</p>
+        </SidebarSection>
+      </Sidebar>
     );
   }
 
@@ -184,10 +208,9 @@ export default function ClusterPage() {
       <Sidebar>
         <SidebarSection>
           <CheckboxListAI
-            name={clusterName}
+            page={clusterName}
             list={clusterList.list}
-            index={clusterIndex}
-            kMeansLayers={kMeansLayers}
+            prompts={prompts}
           />
         </SidebarSection>
       </Sidebar>

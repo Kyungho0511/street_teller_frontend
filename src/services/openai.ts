@@ -20,9 +20,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export type OpenAiResponseJSON = {
-  labels: { name: string; reasoning: string }[];
-};
+export type OpenAIResponseJSON = { name: string; reasoning: string };
 
 type OpenAiMessage = {
   role: "user" | "assistant" | "system";
@@ -41,7 +39,7 @@ export async function* streamOpenAI(
   history: Message[],
   preferences?: Preference[],
   clusterIndex?: number
-): AsyncGenerator<string | OpenAiResponseJSON> {
+): AsyncGenerator<string | OpenAIResponseJSON> {
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
 
@@ -175,7 +173,7 @@ export async function* streamOpenAI(
  */
 export async function runOpenAI(
   prompt: Prompt
-): Promise<string | OpenAiResponseJSON> {
+): Promise<string | OpenAIResponseJSON> {
   let completion: OpenAI.Chat.Completions.ChatCompletion | null = null;
 
   // Run openAI with text or section prompts.

@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import { ListItem } from "../components/molecules/SelectableList";
-import { CheckboxItem } from "../components/molecules/CheckboxList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
 import { defaultColor, RGBA } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
@@ -129,30 +128,8 @@ export const siteCategories = initialPreferenceList.list.map((preference) => ({
   ),
 }));
 
-/**
- * Borough list of the user survey.
- */
-export type BoroughList = {
-  name: "boroughs";
-  list: CheckboxItem[];
-};
-
-export const initialBoroughList: BoroughList = {
-  name: "boroughs",
-  list: [
-    { name: "Manhattan", checked: true, id: uuidv4() },
-    { name: "Brooklyn", checked: false, id: uuidv4() },
-    { name: "Bronx", checked: false, id: uuidv4() },
-    { name: "Queens", checked: false, id: uuidv4() },
-    { name: "Staten Island", checked: false, id: uuidv4() },
-  ],
-};
-
 export type Centroid = { name: HealthcarePropertyName; value: number };
 
-/**
- * Clusters for the survey.
- */
 export type Cluster = {
   name: string;
   centroids: Centroid[];
@@ -162,12 +139,30 @@ export type Cluster = {
   clusterId: string;
 };
 
-export type ClusterCheckboxItem = CheckboxItem & Cluster;
+export type Report = {
+  name: string;
+  reasoning: string;
+  clusters: Cluster[];
+  color: RGBA;
+  geoIds: string[];
+  index: number;
+};
+
+export type ClusterCheckboxItem = Cluster & { checked: boolean };
+
+export type ReportCheckboxItem = Report & { checked: boolean };
 
 export type ClusterList = {
   name: `cluster${number}`;
   list: ClusterCheckboxItem[];
 };
+
+export type ReportList = {
+  name: "report";
+  list: ReportCheckboxItem[];
+};
+
+export type CheckboxItem = ClusterCheckboxItem | ReportCheckboxItem;
 
 export const initialClusterLists: ClusterList[] = [
   { name: "cluster1", list: createCluster("1", 4) },
@@ -191,26 +186,4 @@ function createCluster(
   }));
 }
 
-/**
- * Report for a group of clusters.
- */
-export type Report = {
-  name: string;
-  reasoning: string;
-  clusters: Cluster[];
-  color: RGBA;
-  geoIds: string[];
-  index: number;
-};
-
-export type ReportCheckboxItem = CheckboxItem & Report;
-
-export type ReportList = {
-  name: `report${number}`;
-  list: ReportCheckboxItem[];
-};
-
-/**
- * Report lists to load initially.
- */
 export const initialReportLists: ReportList[] = [];

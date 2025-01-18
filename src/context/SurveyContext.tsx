@@ -1,11 +1,9 @@
 import { createContext } from "react";
 import {
-  BoroughList,
   PreferenceList,
   ClusterList,
   initialPreferenceList,
   initialClusterLists,
-  initialBoroughList,
   ReportList,
   initialReportLists,
 } from "../constants/surveyConstants";
@@ -13,7 +11,6 @@ import { parseString } from "../utils/utils";
 import useSessionStorage from "../hooks/useSessionStorage";
 
 export type Survey = {
-  boroughList: BoroughList;
   preferenceList: PreferenceList;
   clusterLists: ClusterList[];
   reportLists: ReportList[];
@@ -22,13 +19,12 @@ export type Survey = {
 type SurveyContextProps = {
   survey: Survey;
   setSurveyContext: (
-    newSurveyElement: BoroughList | PreferenceList | ClusterList | ReportList
+    newSurveyElement: PreferenceList | ClusterList | ReportList
   ) => void;
 };
 
 /**
- * Survey context to manage the survey state from users on
- * questionnaire regarding preferences, boroughs, and clusters.
+ * Survey context to manage the survey state from user questionnaires.
  */
 export const SurveyContext = createContext<SurveyContextProps>(
   {} as SurveyContextProps
@@ -49,14 +45,9 @@ export function SurveyContextProvider({
 
   // update survey context differently based on the survey element
   const setSurveyContext = (
-    newSurveyElement: BoroughList | PreferenceList | ClusterList | ReportList
+    newSurveyElement: PreferenceList | ClusterList | ReportList
   ) => {
-    if (newSurveyElement.name === "boroughs") {
-      setSurvey((prev) => ({
-        ...prev,
-        boroughList: { name: "boroughs", list: newSurveyElement.list },
-      }));
-    } else if (newSurveyElement.name === "preferences") {
+    if (newSurveyElement.name === "preferences") {
       setSurvey((prev) => ({
         ...prev,
         preferenceList: { name: "preferences", list: newSurveyElement.list },
@@ -68,7 +59,7 @@ export function SurveyContextProvider({
           newSurveyElement.name === list.name ? newSurveyElement : list
         ),
       }));
-    } else if (parseString(newSurveyElement.name) === "report") {
+    } else if (newSurveyElement.name === "report") {
       setSurvey((prev) => ({
         ...prev,
         reportLists: prev.reportLists.map((list) =>
@@ -93,7 +84,6 @@ export function SurveyContextProvider({
 }
 
 const initialSurvey: Survey = {
-  boroughList: initialBoroughList,
   preferenceList: initialPreferenceList,
   clusterLists: initialClusterLists,
   reportLists: initialReportLists,

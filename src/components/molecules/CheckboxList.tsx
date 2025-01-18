@@ -1,29 +1,18 @@
 import styles from "./CheckboxList.module.css";
-import { BoroughList } from "../../constants/surveyConstants";
-import { RGBA } from "../../constants/mapConstants";
+import { CheckboxItem } from "../../constants/surveyConstants";
+import { v4 as uuidv4 } from "uuid";
 
 type CheckboxListProps = {
-  name: string;
+  page: string;
   list: CheckboxItem[];
-  setSurveyContext?: (newSurveyElement: BoroughList) => void;
-};
-
-export type CheckboxItem = {
-  name: string;
-  checked: boolean;
-  id: string;
-  color?: RGBA;
-  reasoning?: string;
 };
 
 /**
  * Checkbox list component.
+ * @param page Page name that contains the checkbox list.
+ * @param list List of items to be displayed.
  */
-export default function CheckboxList({
-  name,
-  list,
-  setSurveyContext,
-}: CheckboxListProps) {
+export default function CheckboxList({ page, list }: CheckboxListProps) {
   // Handle uncontrolled checkbox change
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -34,20 +23,17 @@ export default function CheckboxList({
       ...updatedList[index],
       checked: event.target.checked,
     };
-
-    setSurveyContext &&
-      setSurveyContext({ name: "boroughs", list: updatedList });
   };
 
   return (
     <ul className={styles.list}>
       {list.map((item, index) => (
-        <li key={item.id}>
+        <li key={uuidv4()}>
           <label className={styles.label}>
             <input
               className={styles.input}
               type="checkbox"
-              name={name}
+              name={page}
               value={item.name}
               checked={item.checked}
               onChange={(event) => handleChange(event, index)}

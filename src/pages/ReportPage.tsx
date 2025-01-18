@@ -1,6 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import CheckboxList from "../components/molecules/CheckboxList";
-import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import Sidebar from "../components/organisms/Sidebar";
 import SidebarSection from "../components/organisms/SidebarSection";

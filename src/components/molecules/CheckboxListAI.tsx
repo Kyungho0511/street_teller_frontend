@@ -1,36 +1,35 @@
 import styles from "./CheckboxList.module.css";
 import {
-  Cluster,
+  CheckboxItem,
   ClusterCheckboxItem,
   ClusterList,
 } from "../../constants/surveyConstants";
 import Colorbox from "../atoms/Colorbox";
 import { useContext, useState } from "react";
-import Button from "../atoms/Button";
 import { SurveyContext } from "../../context/SurveyContext";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import { OpenAiResponseJSON, streamOpenAI } from "../../services/openai";
-import { KMeansLayer } from "../../constants/kMeansConstants";
+import { OpenAIResponseJSON, streamOpenAI } from "../../services/openai";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
-import { ClusterPrompt } from "../../constants/messageConstants";
+import { ClusterPrompt, Prompt } from "../../constants/messageConstants";
 
 type CheckboxListAIProps = {
-  name: string;
-  list: ClusterCheckboxItem[];
-  index: number;
-  kMeansLayers: KMeansLayer[];
+  page: string;
+  list: CheckboxItem[];
+  prompts: Prompt[];
 };
 
 /**
  * Checkbox list component to display the AI response.
+ * @param page Page name that contains the checkbox list.
+ * @param list List of AI reponses to be displayed after streaming.
+ * @param prompts Prompts to ask to AI.
  */
 export default function CheckboxListAI({
-  name,
+  page,
   list,
-  index,
-  kMeansLayers,
+  prompts,
 }: CheckboxListAIProps) {
   const { survey, setSurveyContext } = useContext(SurveyContext);
   const {
@@ -48,24 +47,24 @@ export default function CheckboxListAI({
   const location = useLocation();
   const section = pathToSection(location.pathname);
 
-  // Fetch and display OpenAI reasoning on setting kMeansLayer.
+  // Fetch and stream OpenAI response on setting prompts.
   useEffectAfterMount(() => {
-    streamOpenAIResult();
-  }, [kMeansLayers]);
+    prompts.length > 0 && streamOpenAIResponse();
+  }, [prompts]);
 
-  // Update the cluster list context whenever a new cluster is added.
-  const reasonings: string[] = streaming
+  // Update the list context whenever a new response is added.
+  const responses: string[] = streaming
     .map((cluster) => cluster.reasoning)
     .filter((reasoning) => reasoning !== "" && reasoning !== undefined);
 
   useEffectAfterMount(() => {
-    setSurveyContext({ name, list: streaming } as ClusterList);
-  }, [reasonings.length]);
+    setSurveyContext({ name: page, list: streaming } as ClusterList);
+  }, [responses.length]);
 
   /**
    * Start displaying the OpenAI streaming response.
    */
-  const streamOpenAIResult = async () => {
+  const streamOpenAIResponse = async () => {
     // Reset the loading and error status.
     setIsStreaming((prev) => ({ ...prev, json: true }));
     setErrorMessage((prev) => ({ ...prev, json: "" }));
@@ -79,7 +78,7 @@ export default function CheckboxListAI({
       })),
     }));
 
-    let response: OpenAiResponseJSON = {
+    let response: OpenAIResponseJSON = {
       labels: [{ name: "", reasoning: "" }],
     };
     let newList: ClusterCheckboxItem[] = [...list];
@@ -92,7 +91,7 @@ export default function CheckboxListAI({
         survey.preferenceList.list,
         index
       )) {
-        response = chunk as OpenAiResponseJSON;
+        response = chunk as OpenAIResponseJSON;
 
         // Update streaming with parsed data.
         newList = [...list];
@@ -122,7 +121,7 @@ export default function CheckboxListAI({
         type: "cluster",
       });
       setIsStreaming((prev) => ({ ...prev, json: false }));
-      setSurveyContext({ name, list: newList } as ClusterList);
+      setSurveyContext({ name: page, list: newList } as ClusterList);
     }
   };
 
@@ -138,7 +137,7 @@ export default function CheckboxListAI({
     };
 
     setSurveyContext({
-      name: name as ClusterList["name"],
+      name: page as ClusterList["name"],
       list: updatedList as ClusterCheckboxItem[],
     });
   };
@@ -157,7 +156,7 @@ export default function CheckboxListAI({
               <input
                 className={styles.input}
                 type="checkbox"
-                name={name}
+                name={page}
                 value={item.name}
                 checked={item.checked}
                 onChange={(event) => handleListChange(event, index)}
@@ -174,11 +173,11 @@ export default function CheckboxListAI({
         ))}
       </ul>
 
-      <Button
+      {/* <Button
         text={"retry analysis"}
         type={"sidebar"}
-        handleClick={streamOpenAIResult}
-      />
+        handleClick={streamOpenAIResponse}
+      /> */}
     </>
   );
 }
