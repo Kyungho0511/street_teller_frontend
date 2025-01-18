@@ -19,6 +19,7 @@ import { addReportLayer } from "../services/mapbox";
 import { defaultColor } from "../constants/mapConstants";
 import { runOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
+import CheckboxListAI from "../components/molecules/CheckboxListAI";
 
 /**
  * Report page component where users select sites to report.
@@ -28,12 +29,10 @@ export default function ReportPage() {
   const { mapViewer } = useContext(MapContext);
   const { kMeansLayers } = useContext(KMeansContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
+  const reportName = "report";
 
   // GeoJson data from the last KMeansLayer of the cluster page.
   const prevGeoJson = kMeansLayers[kMeansLayers.length - 1];
-
-  // Temporary cluster list for testing.
-  const clusterList = survey.clusterLists[2];
 
   useOpenaiInstruction();
 
@@ -94,29 +93,30 @@ export default function ReportPage() {
       report.color = color;
     });
 
-    // Construct prompt for OpenAI.
-    const prompt: ReportPrompt = {
+    // Construct prompts for OpenAI.
+    const prompts: ReportPrompt[] = reports.map((report) => ({
       type: "report",
-      content: reports[0].clusters.map((cluster) => ({
+      content: report.clusters.map((cluster) => ({
         name: cluster.name,
         centroids: cluster.centroids,
         reasoning: cluster.reasoning,
       })),
-    };
-    console.log("Prompt for OpenAI:", prompt);
+    }));
 
     // Get OpenAI response.
-    runOpenAI(prompt).then((response) => {
-      console.log(response);
+    prompts.forEach((prompt) => {
+      runOpenAI(prompt).then((response) => {
+        console.log(response);
+      });
     });
 
     // Add the geoJson data to the map.
     if (!mapViewer) return;
-    addReportLayer("report", geoJson, reports, mapViewer);
+    addReportLayer(reportName, geoJson, reports, mapViewer);
 
     return () => {
-      mapViewer.removeLayer("report");
-      mapViewer.removeSource("report");
+      mapViewer.removeLayer(reportName);
+      mapViewer.removeSource(reportName);
     };
   }, [geoJson, mapViewer]);
 
@@ -124,17 +124,18 @@ export default function ReportPage() {
     <>
       <Sidebar>
         <SidebarSection>
-          <CheckboxList name={"Title"} list={clusterList.list} />
+          <p>sidebar section</p>
+          {/* <CheckboxListAI
+            name={reportName}
+            list={clusterList.list}
+            index={clusterIndex}
+            kMeansLayers={kMeansLayers}
+          /> */}
         </SidebarSection>
       </Sidebar>
 
       <LegendSection title={"Title"}>
-        <DropdownManager
-          lists={clusterList.list}
-          displayChart
-          displayColorbox
-          autoCollapse
-        />
+        <p>legend section</p>
       </LegendSection>
     </>
   );

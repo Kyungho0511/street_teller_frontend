@@ -173,7 +173,9 @@ export async function* streamOpenAI(
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @returns openAI response.
  */
-export async function runOpenAI(prompt: Prompt): Promise<string> {
+export async function runOpenAI(
+  prompt: Prompt
+): Promise<string | OpenAiResponseJSON> {
   let completion: OpenAI.Chat.Completions.ChatCompletion | null = null;
 
   // Run openAI with text or section prompts.

@@ -137,9 +137,6 @@ export type BoroughList = {
   list: CheckboxItem[];
 };
 
-/**
- * Borough list to load initially.
- */
 export const initialBoroughList: BoroughList = {
   name: "boroughs",
   list: [
@@ -172,6 +169,28 @@ export type ClusterList = {
   list: ClusterCheckboxItem[];
 };
 
+export const initialClusterLists: ClusterList[] = [
+  { name: "cluster1", list: createCluster("1", 4) },
+  { name: "cluster2", list: createCluster("2", 4) },
+  { name: "cluster3", list: createCluster("3", 4) },
+];
+
+function createCluster(
+  clusterId: string,
+  count: number
+): ClusterCheckboxItem[] {
+  return Array.from({ length: count }, (_, index) => ({
+    name: "",
+    centroids: [{ name: "walked percent" as HealthcarePropertyName, value: 0 }],
+    reasoning: "",
+    color: defaultColor as RGBA,
+    checked: true,
+    index,
+    clusterId,
+    id: uuidv4(),
+  }));
+}
+
 /**
  * Report for a group of clusters.
  */
@@ -187,147 +206,11 @@ export type Report = {
 export type ReportCheckboxItem = CheckboxItem & Report;
 
 export type ReportList = {
-  name: "report";
+  name: `report${number}`;
   list: ReportCheckboxItem[];
 };
 
 /**
- * Cluster lists to load initially.
+ * Report lists to load initially.
  */
-export const initialClusterLists: ClusterList[] = [
-  {
-    name: "cluster1",
-    list: [
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 0,
-        clusterId: "1",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 1,
-        clusterId: "1",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 2,
-        clusterId: "1",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 3,
-        clusterId: "1",
-        id: uuidv4(),
-      },
-    ],
-  },
-  {
-    name: "cluster2",
-    list: [
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 0,
-        clusterId: "2",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 1,
-        clusterId: "2",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 2,
-        clusterId: "2",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 3,
-        clusterId: "2",
-        id: uuidv4(),
-      },
-    ],
-  },
-  {
-    name: "cluster3",
-    list: [
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 0,
-        clusterId: "3",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 1,
-        clusterId: "3",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 2,
-        clusterId: "3",
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        index: 3,
-        clusterId: "3",
-        id: uuidv4(),
-      },
-    ],
-  },
-];
+export const initialReportLists: ReportList[] = [];

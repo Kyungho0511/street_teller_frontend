@@ -7,6 +7,7 @@ import {
   initialClusterLists,
   initialBoroughList,
   ReportList,
+  initialReportLists,
 } from "../constants/surveyConstants";
 import { parseString } from "../utils/utils";
 import useSessionStorage from "../hooks/useSessionStorage";
@@ -15,12 +16,13 @@ export type Survey = {
   boroughList: BoroughList;
   preferenceList: PreferenceList;
   clusterLists: ClusterList[];
+  reportLists: ReportList[];
 };
 
 type SurveyContextProps = {
   survey: Survey;
   setSurveyContext: (
-    newSurveyElement: BoroughList | PreferenceList | ClusterList
+    newSurveyElement: BoroughList | PreferenceList | ClusterList | ReportList
   ) => void;
 };
 
@@ -66,10 +68,12 @@ export function SurveyContextProvider({
           newSurveyElement.name === list.name ? newSurveyElement : list
         ),
       }));
-    } else if (newSurveyElement.name === "report") {
+    } else if (parseString(newSurveyElement.name) === "report") {
       setSurvey((prev) => ({
         ...prev,
-        reportList: { name: "report", list: newSurveyElement.list },
+        reportLists: prev.reportLists.map((list) =>
+          newSurveyElement.name === list.name ? newSurveyElement : list
+        ),
       }));
     } else {
       console.error("Invalid survey name");
@@ -92,4 +96,5 @@ const initialSurvey: Survey = {
   boroughList: initialBoroughList,
   preferenceList: initialPreferenceList,
   clusterLists: initialClusterLists,
+  reportLists: initialReportLists,
 };
