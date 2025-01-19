@@ -1,5 +1,5 @@
 import styles from "./MessageBox.module.css";
-import AiReponse from "../atoms/AiResponse";
+import AIReponseText from "../atoms/AIResponseText";
 import { Message } from "../../context/MessageContext";
 import MarkdownRenderer from "../atoms/MarkdownRenderer";
 import Icon from "../atoms/Icon";
@@ -38,12 +38,12 @@ export default function MessageBox({ texts, textIndex }: MessageBoxProps) {
             offset={{ x: 0, y: 4 }}
           />
         </div>
-        {/* AiResponse displays streaming response with typing animation, 
+        {/* AIResponseText displays streaming response with typing animation, 
           whereas MarkdownRenderer shows fully fetched AI response */}
         {texts.length > textIndex && texts[textIndex].ai && (
           <MarkdownRenderer content={texts[textIndex].ai} />
         )}
-        <AiReponse />
+        <AIReponseText />
       </div>
     </div>
   );

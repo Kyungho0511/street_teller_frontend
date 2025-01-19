@@ -2,18 +2,17 @@ import { createContext } from "react";
 import {
   PreferenceList,
   ClusterList,
-  initialPreferenceList,
-  initialClusterLists,
   ReportList,
-  initialReportLists,
+  initialSurvey,
 } from "../constants/surveyConstants";
-import { parseString } from "../utils/utils";
 import useSessionStorage from "../hooks/useSessionStorage";
 
 export type Survey = {
-  preferenceList: PreferenceList;
-  clusterLists: ClusterList[];
-  reportLists: ReportList[];
+  preference: PreferenceList;
+  cluster1: ClusterList;
+  cluster2: ClusterList;
+  cluster3: ClusterList;
+  report: ReportList;
 };
 
 type SurveyContextProps = {
@@ -47,24 +46,30 @@ export function SurveyContextProvider({
   const setSurveyContext = (
     newSurveyElement: PreferenceList | ClusterList | ReportList
   ) => {
-    if (newSurveyElement.name === "preferences") {
+    if (newSurveyElement.name === "preference") {
       setSurvey((prev) => ({
         ...prev,
-        preferenceList: { name: "preferences", list: newSurveyElement.list },
+        preference: { name: "preference", list: newSurveyElement.list },
       }));
-    } else if (parseString(newSurveyElement.name) === "cluster") {
+    } else if (newSurveyElement.name === "cluster1") {
       setSurvey((prev) => ({
         ...prev,
-        clusterLists: prev.clusterLists.map((list) =>
-          newSurveyElement.name === list.name ? newSurveyElement : list
-        ),
+        cluster1: { name: "cluster1", list: newSurveyElement.list },
+      }));
+    } else if (newSurveyElement.name === "cluster2") {
+      setSurvey((prev) => ({
+        ...prev,
+        cluster2: { name: "cluster2", list: newSurveyElement.list },
+      }));
+    } else if (newSurveyElement.name === "cluster3") {
+      setSurvey((prev) => ({
+        ...prev,
+        cluster3: { name: "cluster3", list: newSurveyElement.list },
       }));
     } else if (newSurveyElement.name === "report") {
       setSurvey((prev) => ({
         ...prev,
-        reportLists: prev.reportLists.map((list) =>
-          newSurveyElement.name === list.name ? newSurveyElement : list
-        ),
+        report: { name: "report", list: newSurveyElement.list },
       }));
     } else {
       console.error("Invalid survey name");
@@ -82,9 +87,3 @@ export function SurveyContextProvider({
     </SurveyContext.Provider>
   );
 }
-
-const initialSurvey: Survey = {
-  preferenceList: initialPreferenceList,
-  clusterLists: initialClusterLists,
-  reportLists: initialReportLists,
-};

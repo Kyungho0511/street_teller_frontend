@@ -33,7 +33,7 @@ export default function DraggableList({
         item.ranking = index + 1;
       });
       // Update Preferences in the survey context
-      setSurveyContext({ name: "preferences", list: result });
+      setSurveyContext({ name: "preference", list: result });
     }
   };
 
@@ -57,7 +57,7 @@ export default function DraggableList({
           return { ...item, selected: false };
         }
       });
-      setSurveyContext({ name: "preferences", list: newPreferences });
+      setSurveyContext({ name: "preference", list: newPreferences });
     }
   };
 

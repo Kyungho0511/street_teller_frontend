@@ -38,7 +38,7 @@ export default function HomePage() {
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
-    const selectedPreference = survey.preferenceList.list.find(
+    const selectedPreference = survey.preference.list.find(
       (item) => item.selected
     );
     selectedPreference && setPreference(selectedPreference);
@@ -66,7 +66,7 @@ export default function HomePage() {
       <Sidebar>
         <SidebarSection>
           <DraggableList
-            list={survey.preferenceList.list}
+            list={survey.preference.list}
             setSurveyContext={setSurveyContext}
             displayIcon
             displayRanking

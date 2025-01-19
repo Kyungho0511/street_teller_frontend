@@ -3,7 +3,7 @@ import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
-import { SurveyContext } from "../context/SurveyContext";
+import { Survey, SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
@@ -27,6 +27,7 @@ import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 import { KMeansContext } from "../context/KMeansContext";
 import { MessageContext } from "../context/MessageContext";
 import { ClusterPrompt } from "../constants/messageConstants";
+import { streamOpenAI } from "../services/openai";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -37,12 +38,15 @@ export default function ClusterPage() {
   const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
   const { messages } = useContext(MessageContext);
 
-  const [prompts, setPrompts] = useState<ClusterPrompt[]>([]);
+  const [prompts, setPrompts] = useState<ClusterPrompt[]>(
+    Array(3).fill({ type: "cluster", content: [] })
+  );
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
   const clusterName = pathToSection(location.pathname);
-  const clusterList = survey.clusterLists[clusterIndex];
+  const clusterList =
+    survey[clusterName as "cluster1" | "cluster2" | "cluster3"]!;
   const section = pathToSection(location.pathname);
 
   // Run the clustering logic if a cluster message is not found.
@@ -52,10 +56,8 @@ export default function ClusterPage() {
   );
 
   useOpenaiInstruction(parseInt(clusterId!), [
-    `${survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE].category}`,
-    `${
-      survey.preferenceList.list[clusterIndex * CLUSTERING_SIZE + 1].category
-    }`,
+    `${survey.preference.list[clusterIndex * CLUSTERING_SIZE].category}`,
+    `${survey.preference.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
 
   // Filter geoJson data based on the selected clusters from the previous page.
@@ -73,8 +75,8 @@ export default function ClusterPage() {
     if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
       setGeoJson(kMeansLayers[0].geoJson);
     } else if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
-      const selection: boolean[] = survey.clusterLists[
-        clusterIndex - 1
+      const selection: boolean[] = survey[
+        `cluster${clusterIndex - 1}` as "cluster1" | "cluster2" | "cluster3"
       ].list.map((cluster) => cluster.checked);
       const filteredGeoJson = kmeans.getFilteredGeoJson(
         clusterIndex.toString(),
@@ -93,8 +95,8 @@ export default function ClusterPage() {
     const selectedAttributes: HealthcarePropertyName[] = [];
 
     for (let i = startIndex, n = endIndex; i < n; i++) {
-      if (survey.preferenceList.list.length - 1 < i) break;
-      survey.preferenceList.list[i].subCategories.forEach((subCategory) => {
+      if (survey.preference.list.length - 1 < i) break;
+      survey.preference.list[i].subCategories.forEach((subCategory) => {
         selectedAttributes.push(subCategory.name);
       });
     }
@@ -118,7 +120,7 @@ export default function ClusterPage() {
       kMeansLayers[clusterIndex] = kMeansLayer;
       return kMeansLayers;
     });
-  }, [survey.preferenceList.list, geoJson]);
+  }, [survey.preference.list, geoJson]);
 
   useEffectAfterMount(() => {
     if (!mapViewer || !kMeansLayers[clusterIndex]) return;
@@ -131,20 +133,21 @@ export default function ClusterPage() {
       false
     );
 
-    // Prepare prompts for OpenAI.
-    const contents = clusterList.list.map((item, i) => ({
+    // Prepare prompt for OpenAI.
+    const content = clusterList.list.map((item, i) => ({
       name: item.name,
       centroids: kMeansLayers[clusterIndex]?.attributes.map((attr, j) => ({
         name: attr,
         value: kMeansLayers[clusterIndex]?.centroids[i][j],
       })),
     }));
-
-    const prompts: ClusterPrompt[] = contents.map((content) => ({
+    const prompt: ClusterPrompt = {
       type: "cluster",
       content,
-    }));
-    setPrompts(prompts);
+    };
+    setPrompts((prev) =>
+      prev.map((item, i) => (i === clusterIndex ? prompt : item))
+    );
 
     return () => {
       // Remove KMeansLayer from mapbox on unmount.
@@ -208,9 +211,17 @@ export default function ClusterPage() {
       <Sidebar>
         <SidebarSection>
           <CheckboxListAI
-            page={clusterName}
+            surveyName={clusterName as keyof Survey}
             list={clusterList.list}
-            prompts={prompts}
+            prompt={prompts[clusterIndex]}
+            streamOpenAI={() =>
+              streamOpenAI(
+                prompts[clusterIndex],
+                messages[section],
+                survey.preference.list,
+                clusterIndex
+              )
+            }
           />
         </SidebarSection>
       </Sidebar>
@@ -218,7 +229,7 @@ export default function ClusterPage() {
       <PopupContextProvider>
         <LegendSection
           title={`Clustering Step`}
-          steps={getSeriesNumber(survey.clusterLists.length)}
+          steps={getSeriesNumber(3)}
           currentStep={parseInt(clusterId!)}
         >
           <DropdownManager

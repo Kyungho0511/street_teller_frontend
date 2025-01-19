@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 
 /**
- * Response component with typing animation for the text response from OpenAI.
+ * AI Response component with typing animation for the text response from OpenAI.
  */
-export default function AiResponse() {
+export default function AIResponseText() {
   const {
     prompt,
     setPrompt,
@@ -27,18 +27,18 @@ export default function AiResponse() {
   // Send added text prompt to openAI and render the response.
   useEffect(() => {
     if (prompt) {
-      startTypingAnimation(prompt);
+      displayOpenAIResponse(prompt);
     }
   }, [prompt]);
 
-  async function startTypingAnimation(prompt: Prompt): Promise<void> {
+  async function displayOpenAIResponse(prompt: Prompt): Promise<void> {
     // Reset the loading and error status.
     setIsStreaming((prev) => ({ ...prev, text: true }));
     setErrorMessage((prev) => ({ ...prev, text: "" }));
 
     let accumulatedResponse = "";
     try {
-      // play typing animation while fetching response
+      // Display response streaming.
       for await (const chunk of streamOpenAI(prompt, messages[section])) {
         accumulatedResponse += chunk;
         setText((prev) => prev + chunk);

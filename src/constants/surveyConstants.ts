@@ -1,8 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { ListItem } from "../components/molecules/SelectableList";
 import { HealthcarePropertyName } from "./geoJsonConstants";
-import { defaultColor, RGBA } from "./mapConstants";
+import { RGBA } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
+import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
+import { Survey } from "../context/SurveyContext";
+import { sectionMapConfigs } from "./sectionConstants";
 
 /**
  * Site preference categories of the user survey.
@@ -25,12 +28,12 @@ export type Preference = {
 };
 
 export type PreferenceList = {
-  name: "preferences";
+  name: "preference";
   list: Preference[];
 };
 
 export const initialPreferenceList: PreferenceList = {
-  name: "preferences",
+  name: "preference",
   list: [
     {
       category: "Unserved Population Density",
@@ -128,12 +131,14 @@ export const siteCategories = initialPreferenceList.list.map((preference) => ({
   ),
 }));
 
+export const NUMBER_OF_CLUSTERING_STEPS = 3;
+
 export type Centroid = { name: HealthcarePropertyName; value: number };
 
 export type Cluster = {
   name: string;
-  centroids: Centroid[];
   reasoning: string;
+  centroids: Centroid[];
   color: RGBA;
   index: number;
   clusterId: string;
@@ -153,7 +158,7 @@ export type ClusterCheckboxItem = Cluster & { checked: boolean };
 export type ReportCheckboxItem = Report & { checked: boolean };
 
 export type ClusterList = {
-  name: `cluster${number}`;
+  name: `cluster1` | `cluster2` | `cluster3`;
   list: ClusterCheckboxItem[];
 };
 
@@ -164,26 +169,40 @@ export type ReportList = {
 
 export type CheckboxItem = ClusterCheckboxItem | ReportCheckboxItem;
 
-export const initialClusterLists: ClusterList[] = [
-  { name: "cluster1", list: createCluster("1", 4) },
-  { name: "cluster2", list: createCluster("2", 4) },
-  { name: "cluster3", list: createCluster("3", 4) },
-];
+export const initialSurvey: Survey = {
+  preference: initialPreferenceList,
+  cluster1: createClusterList("1"),
+  cluster2: createClusterList("2"),
+  cluster3: createClusterList("3"),
+  report: {
+    name: "report",
+    list: [],
+  } as ReportList,
+};
 
-function createCluster(
-  clusterId: string,
-  count: number
-): ClusterCheckboxItem[] {
-  return Array.from({ length: count }, (_, index) => ({
-    name: "",
-    centroids: [{ name: "walked percent" as HealthcarePropertyName, value: 0 }],
-    reasoning: "",
-    color: defaultColor as RGBA,
-    checked: true,
-    index,
-    clusterId,
-    id: uuidv4(),
-  }));
+/**
+ * Create a cluster list with default values.
+ */
+function createClusterList(clusterId: string): ClusterList {
+  const list: ClusterCheckboxItem[] = Array.from(
+    { length: NUMBER_OF_CLUSTERS },
+    (_, i) => ({
+      name: "",
+      centroids: [
+        { name: "walked percent" as HealthcarePropertyName, value: 0 },
+      ],
+      reasoning: "",
+      color: sectionMapConfigs.find(
+        (section) => section.id === `cluster${clusterId}`
+      )?.color?.categorized[parseInt(clusterId) - 1] as RGBA,
+      checked: true,
+      index: i,
+      clusterId,
+      id: uuidv4(),
+    })
+  );
+  return {
+    name: `cluster${clusterId}` as "cluster1" | "cluster2" | "cluster3",
+    list,
+  };
 }
-
-export const initialReportLists: ReportList[] = [];

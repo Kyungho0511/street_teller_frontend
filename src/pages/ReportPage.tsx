@@ -7,7 +7,10 @@ import { KMeansContext } from "../context/KMeansContext";
 import { MapContext } from "../context/MapContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { blendColors, crossReferenceList } from "../utils/utils";
-import { Report } from "../constants/surveyConstants";
+import {
+  NUMBER_OF_CLUSTERING_STEPS,
+  Report,
+} from "../constants/surveyConstants";
 import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
@@ -17,7 +20,6 @@ import { addReportLayer } from "../services/mapbox";
 import { defaultColor } from "../constants/mapConstants";
 import { runOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
-import CheckboxListAI from "../components/molecules/CheckboxListAI";
 
 /**
  * Report page component where users select sites to report.
@@ -38,8 +40,8 @@ export default function ReportPage() {
   useEffect(() => {
     if (!prevGeoJson) return;
 
-    const lastClusterIndex = survey.clusterLists.length - 1;
-    const selection = survey.clusterLists[lastClusterIndex].list.map(
+    const lastClusterIndex = NUMBER_OF_CLUSTERING_STEPS - 1;
+    const selection = survey[`cluster${lastClusterIndex}`].list.map(
       (item) => item.checked
     );
     const geoJson = getFilteredGeoJson(
@@ -54,7 +56,8 @@ export default function ReportPage() {
     if (!geoJson) return;
 
     // Get unique reports from user selected clusters.
-    const selectedClusterLists = survey.clusterLists.map((cluster) =>
+    const clusters = [survey.cluster1, survey.cluster2, survey.cluster3];
+    const selectedClusterLists = clusters.map((cluster) =>
       cluster.list.filter((item) => item.checked)
     );
     const crossReference = crossReferenceList(selectedClusterLists);
@@ -123,12 +126,6 @@ export default function ReportPage() {
       <Sidebar>
         <SidebarSection>
           <p>sidebar section</p>
-          {/* <CheckboxListAI
-            name={reportName}
-            list={clusterList.list}
-            index={clusterIndex}
-            kMeansLayers={kMeansLayers}
-          /> */}
         </SidebarSection>
       </Sidebar>
 

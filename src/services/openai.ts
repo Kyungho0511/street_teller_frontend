@@ -1,17 +1,19 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
 import {
-  assistantMessage,
   Prompt,
   siteCategoriesMessage,
   systemMessage,
   wordCountMessage,
 } from "../constants/messageConstants";
-import AiResponse from "../components/atoms/AiResponse";
+import AIResponseText from "../components/atoms/AIResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
-import { Preference } from "../constants/surveyConstants";
-import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
+import { initialSurvey, Preference } from "../constants/surveyConstants";
+import {
+  CLUSTERING_SIZE,
+  NUMBER_OF_CLUSTERS,
+} from "../constants/kMeansConstants";
 
 const openai = new OpenAI({
   // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
@@ -20,7 +22,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export type OpenAIResponseJSON = { name: string; reasoning: string };
+export type OpenAIResponseJSON = { name: string; reasoning: string }[];
 
 type OpenAiMessage = {
   role: "user" | "assistant" | "system";
@@ -29,7 +31,7 @@ type OpenAiMessage = {
 
 /**
  * Stream chunks of openAI response. It's meant to be rendered with typing animation
- * in the {@link AiResponse} as soon as it gets the first chunk of the response.
+ * in the {@link AIResponseText} as soon as it gets the first chunk of the response.
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @param history an array of messages representing the conversation history so far.
  * @returns a generator that yields each chunk of the openAI response.
@@ -74,7 +76,7 @@ export async function* streamOpenAI(
     content: siteCategoriesMessage,
   });
 
-  // 2-3. Provide user selection of preferences for context.
+  // 2-3. Provide user selection of preferences for clustering pages.
   if (preferences && clusterIndex) {
     const startIndex = CLUSTERING_SIZE * clusterIndex;
     messages.push({
@@ -115,12 +117,10 @@ export async function* streamOpenAI(
 
   // 3-2. Run openAI with JSON type prompt.
   if (prompt.type === "cluster" || prompt.type === "report") {
-    // console.log(JSON.stringify(prompt.content));
-
     stream = await openai.chat.completions.create({
       messages: [
         ...messages,
-        { role: "assistant", content: assistantMessage[prompt.type] },
+        { role: "assistant", content: getAssistantMessage(prompt) },
         { role: "user", content: JSON.stringify(prompt.content) },
       ],
       model: "gpt-4o-mini",
@@ -151,6 +151,8 @@ export async function* streamOpenAI(
           try {
             parsedData = parse(accumulatedResponse);
           } catch (error) {
+            console.log("error");
+
             console.error("Parsing failed due to incomplete JSON:", error);
             continue;
           }
@@ -204,7 +206,7 @@ export async function runOpenAI(
         },
         {
           role: "assistant",
-          content: assistantMessage[prompt.type],
+          content: getAssistantMessage(prompt),
         },
         { role: "user", content: clustersJSON },
       ],
@@ -215,4 +217,30 @@ export async function runOpenAI(
   }
 
   return completion!.choices[0].message.content!;
+}
+
+/**
+ * Get the assistant message for the given prompt.
+ */
+function getAssistantMessage(prompt: Prompt): string {
+  const assistantMessage = [];
+
+  if (prompt.type === "cluster") {
+    const count = NUMBER_OF_CLUSTERS;
+    for (let i = 0; i < count; i++) {
+      assistantMessage.push({
+        name: `name for the cluster${i + 1}`,
+        reasoning: `reasoning for the cluster${i + 1}'s name`,
+      });
+    }
+  } else if (prompt.type === "report") {
+    const count = initialSurvey.report.list.length;
+    for (let i = 0; i < count; i++) {
+      assistantMessage.push({
+        name: `name for the group${i + 1}`,
+        reasoning: `reasoning for the group${i + 1}'s name`,
+      });
+    }
+  }
+  return JSON.stringify(assistantMessage);
 }

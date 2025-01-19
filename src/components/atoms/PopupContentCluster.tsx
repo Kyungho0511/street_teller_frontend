@@ -5,7 +5,7 @@ import { PopupContext } from "../../context/PopupContext";
 import ClusterPage from "../../pages/ClusterPage";
 import * as utils from "../../utils/utils";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import { SurveyContext } from "../../context/SurveyContext";
+import { Survey, SurveyContext } from "../../context/SurveyContext";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import { ClusterCheckboxItem } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
@@ -58,12 +58,13 @@ export default function PopupContentCluster({
     // Set cluster labels based on the property's cluster ID.
     const clusters: ClusterCheckboxItem[] = [];
     for (let i = 1, n = parseInt(clusterId) + 1; i < n; i++) {
-      const clusterKey = `cluster${i}` as HealthcarePropertyName;
-      const clusterList = survey.clusterLists.find(
-        (clusterList) => clusterList.name === clusterKey
-      )!;
-      const cluster = clusterList.list[property[clusterKey] as number];
-      clusters.push(cluster);
+      const clusterKey = `cluster${i}`;
+      const clusterList = survey[clusterKey as keyof Survey];
+      const cluster =
+        clusterList.list[
+          property[clusterKey as HealthcarePropertyName] as number
+        ];
+      clusters.push(cluster as ClusterCheckboxItem);
     }
     setClusters(clusters);
   }, [property]);

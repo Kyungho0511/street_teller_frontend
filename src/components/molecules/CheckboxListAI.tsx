@@ -3,37 +3,41 @@ import {
   CheckboxItem,
   ClusterCheckboxItem,
   ClusterList,
+  ReportList,
 } from "../../constants/surveyConstants";
 import Colorbox from "../atoms/Colorbox";
 import { useContext, useState } from "react";
-import { SurveyContext } from "../../context/SurveyContext";
+import { Survey, SurveyContext } from "../../context/SurveyContext";
 import { MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import { OpenAIResponseJSON, streamOpenAI } from "../../services/openai";
+import { OpenAIResponseJSON } from "../../services/openai";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
-import { ClusterPrompt, Prompt } from "../../constants/messageConstants";
+import { ClusterPrompt, ReportPrompt } from "../../constants/messageConstants";
+import { v4 as uuidv4 } from "uuid";
 
 type CheckboxListAIProps = {
-  page: string;
+  surveyName: keyof Survey;
   list: CheckboxItem[];
-  prompts: Prompt[];
+  prompt: ClusterPrompt | ReportPrompt;
+  streamOpenAI: () => AsyncGenerator<string | OpenAIResponseJSON>;
 };
 
 /**
  * Checkbox list component to display the AI response.
- * @param page Page name that contains the checkbox list.
+ * @param surveyName Survey name of the checkbox list.
  * @param list List of AI reponses to be displayed after streaming.
- * @param prompts Prompts to ask to AI.
+ * @param prompt Prompts to ask to AI.
+ * @param streamOpenAI Callback function to stream the OpenAI response.
  */
 export default function CheckboxListAI({
-  page,
+  surveyName,
   list,
-  prompts,
+  prompt,
+  streamOpenAI,
 }: CheckboxListAIProps) {
-  const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { setSurveyContext } = useContext(SurveyContext);
   const {
-    messages,
     addMessage,
     isStreaming,
     setIsStreaming,
@@ -41,7 +45,7 @@ export default function CheckboxListAI({
     setErrorMessage,
   } = useContext(MessageContext);
 
-  const [streaming, setStreaming] = useState<ClusterCheckboxItem[]>([]);
+  const [streaming, setStreaming] = useState<CheckboxItem[]>([]);
   const listToDisplay = isStreaming.json && streaming ? streaming : list;
 
   const location = useLocation();
@@ -49,8 +53,8 @@ export default function CheckboxListAI({
 
   // Fetch and stream OpenAI response on setting prompts.
   useEffectAfterMount(() => {
-    prompts.length > 0 && streamOpenAIResponse();
-  }, [prompts]);
+    prompt.content.length > 0 && displayOpenAIResponse();
+  }, [prompt]);
 
   // Update the list context whenever a new response is added.
   const responses: string[] = streaming
@@ -58,53 +62,34 @@ export default function CheckboxListAI({
     .filter((reasoning) => reasoning !== "" && reasoning !== undefined);
 
   useEffectAfterMount(() => {
-    setSurveyContext({ name: page, list: streaming } as ClusterList);
+    setSurveyContext({ name: surveyName, list: streaming } as
+      | ClusterList
+      | ReportList);
   }, [responses.length]);
 
   /**
    * Start displaying the OpenAI streaming response.
    */
-  const streamOpenAIResponse = async () => {
+  const displayOpenAIResponse = async () => {
     // Reset the loading and error status.
     setIsStreaming((prev) => ({ ...prev, json: true }));
     setErrorMessage((prev) => ({ ...prev, json: "" }));
 
-    // Construct prompt JSON for OpenAI.
-    const promptJson = list.map((item, i) => ({
-      name: item.name,
-      centroids: kMeansLayers[index]?.attributes.map((attr, j) => ({
-        name: attr,
-        value: kMeansLayers[index]?.centroids[i][j],
-      })),
-    }));
-
-    let response: OpenAIResponseJSON = {
-      labels: [{ name: "", reasoning: "" }],
-    };
-    let newList: ClusterCheckboxItem[] = [...list];
+    let response: OpenAIResponseJSON = [{ name: "", reasoning: "" }];
+    let newList: CheckboxItem[] = [...list];
 
     try {
       // Start OpenAI JSON response streaming.
-      for await (const chunk of streamOpenAI(
-        { type: "cluster", content: promptJson } as ClusterPrompt,
-        messages[section],
-        survey.preferenceList.list,
-        index
-      )) {
+      for await (const chunk of streamOpenAI()) {
         response = chunk as OpenAIResponseJSON;
 
         // Update streaming with parsed data.
         newList = [...list];
-        response?.labels?.forEach((label, i) => {
+        response?.forEach((item, i) => {
           newList[i] = {
             ...newList[i],
-            name: label?.name,
-            reasoning: label?.reasoning,
-            centroids: kMeansLayers[index]!.attributes.map((attr, j) => ({
-              name: attr,
-              value: kMeansLayers[index]!.centroids[i][j],
-            })),
-            color: kMeansLayers[index]!.colors[i],
+            name: item?.name,
+            reasoning: item?.reasoning,
           };
         });
         setStreaming(newList);
@@ -114,14 +99,16 @@ export default function CheckboxListAI({
       setErrorMessage({ ...errorMessage, json: error });
       console.error(error);
     } finally {
+      console.log("finally!");
+
       // Update the message context when the response is fully fetched.
       addMessage(section, {
-        user: JSON.stringify(promptJson),
+        user: JSON.stringify(prompt.content),
         ai: JSON.stringify(response),
         type: "cluster",
       });
       setIsStreaming((prev) => ({ ...prev, json: false }));
-      setSurveyContext({ name: page, list: newList } as ClusterList);
+      setSurveyContext({ name: surveyName, list: newList } as ClusterList);
     }
   };
 
@@ -137,7 +124,7 @@ export default function CheckboxListAI({
     };
 
     setSurveyContext({
-      name: page as ClusterList["name"],
+      name: surveyName as ClusterList["name"],
       list: updatedList as ClusterCheckboxItem[],
     });
   };
@@ -151,12 +138,12 @@ export default function CheckboxListAI({
     <>
       <ul className={styles.list}>
         {listToDisplay.map((item, index) => (
-          <li key={item.id}>
+          <li key={uuidv4()}>
             <label className={styles.label}>
               <input
                 className={styles.input}
                 type="checkbox"
-                name={page}
+                name={surveyName}
                 value={item.name}
                 checked={item.checked}
                 onChange={(event) => handleListChange(event, index)}
