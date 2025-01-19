@@ -194,7 +194,7 @@ function createClusterList(clusterId: string): ClusterList {
       reasoning: "",
       color: sectionMapConfigs.find(
         (section) => section.id === `cluster${clusterId}`
-      )?.color?.categorized[parseInt(clusterId) - 1] as RGBA,
+      )?.color?.categorized[i] as RGBA,
       checked: true,
       index: i,
       clusterId,

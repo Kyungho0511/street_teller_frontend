@@ -75,7 +75,9 @@ export default function CheckboxListAI({
     setIsStreaming((prev) => ({ ...prev, json: true }));
     setErrorMessage((prev) => ({ ...prev, json: "" }));
 
-    let response: OpenAIResponseJSON = [{ name: "", reasoning: "" }];
+    let response: OpenAIResponseJSON = {
+      labels: [{ name: "", reasoning: "" }],
+    };
     let newList: CheckboxItem[] = [...list];
 
     try {
@@ -85,7 +87,7 @@ export default function CheckboxListAI({
 
         // Update streaming with parsed data.
         newList = [...list];
-        response?.forEach((item, i) => {
+        response?.labels?.forEach((item, i) => {
           newList[i] = {
             ...newList[i],
             name: item?.name,
@@ -99,8 +101,6 @@ export default function CheckboxListAI({
       setErrorMessage({ ...errorMessage, json: error });
       console.error(error);
     } finally {
-      console.log("finally!");
-
       // Update the message context when the response is fully fetched.
       addMessage(section, {
         user: JSON.stringify(prompt.content),

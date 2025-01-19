@@ -133,17 +133,21 @@ export default function ClusterPage() {
       false
     );
 
-    // Prepare prompt for OpenAI.
-    const content = clusterList.list.map((item, i) => ({
-      name: item.name,
-      centroids: kMeansLayers[clusterIndex]?.attributes.map((attr, j) => ({
-        name: attr,
-        value: kMeansLayers[clusterIndex]?.centroids[i][j],
-      })),
-    }));
+    // Prepare prompt and list for OpenAI.
+    clusterList.list.forEach((item, i) => {
+      item.centroids = kMeansLayers[clusterIndex]?.attributes.map(
+        (attr, j) => ({
+          name: attr,
+          value: kMeansLayers[clusterIndex]?.centroids[i][j],
+        })
+      );
+    });
     const prompt: ClusterPrompt = {
       type: "cluster",
-      content,
+      content: clusterList.list.map((item) => ({
+        name: item.name,
+        centroids: item.centroids,
+      })),
     };
     setPrompts((prev) =>
       prev.map((item, i) => (i === clusterIndex ? prompt : item))

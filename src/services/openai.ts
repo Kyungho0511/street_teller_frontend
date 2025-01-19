@@ -22,7 +22,9 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export type OpenAIResponseJSON = { name: string; reasoning: string }[];
+export type OpenAIResponseJSON = {
+  labels: { name: string; reasoning: string }[];
+};
 
 type OpenAiMessage = {
   role: "user" | "assistant" | "system";
@@ -151,8 +153,6 @@ export async function* streamOpenAI(
           try {
             parsedData = parse(accumulatedResponse);
           } catch (error) {
-            console.log("error");
-
             console.error("Parsing failed due to incomplete JSON:", error);
             continue;
           }
@@ -223,12 +223,12 @@ export async function runOpenAI(
  * Get the assistant message for the given prompt.
  */
 function getAssistantMessage(prompt: Prompt): string {
-  const assistantMessage = [];
+  const assistantMessage: OpenAIResponseJSON = { labels: [] };
 
   if (prompt.type === "cluster") {
     const count = NUMBER_OF_CLUSTERS;
     for (let i = 0; i < count; i++) {
-      assistantMessage.push({
+      assistantMessage.labels.push({
         name: `name for the cluster${i + 1}`,
         reasoning: `reasoning for the cluster${i + 1}'s name`,
       });
@@ -236,7 +236,7 @@ function getAssistantMessage(prompt: Prompt): string {
   } else if (prompt.type === "report") {
     const count = initialSurvey.report.list.length;
     for (let i = 0; i < count; i++) {
-      assistantMessage.push({
+      assistantMessage.labels.push({
         name: `name for the group${i + 1}`,
         reasoning: `reasoning for the group${i + 1}'s name`,
       });
