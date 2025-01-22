@@ -1,6 +1,5 @@
 import { kmeans, Options } from "ml-kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { RGBA } from "../constants/mapConstants";
 import { Feature } from "geojson";
 import {
   HealthcareFeature,
@@ -9,7 +8,6 @@ import {
 } from "../constants/geoJsonConstants";
 import {
   INITIALIZATION,
-  KMeansLayer,
   MAX_ITERATIONS,
   NUMBER_OF_CLUSTERS,
   SEED,
@@ -66,31 +64,19 @@ export function processData(
 }
 
 /**
- * Set the kMeans clustering result as a layer object for mapping.
+ * Assign the kMeans clustering result to the geoJson.
  */
-export function setLayer(
-  clusterId: string,
-  kMeans: KMeansResult,
+export function assignToGeoJson(
   geoJson: HealthcareFeatureCollection,
-  title: string,
-  colors: RGBA[],
-  attributes: HealthcarePropertyName[]
-): KMeansLayer {
+  kMeans: KMeansResult,
+  clusterId: string
+): HealthcareFeatureCollection {
   // Deep copy data and set clustering result values.
   const kMeansGeoJson = structuredClone(geoJson);
   kMeansGeoJson.features.forEach((feature: Feature, index) => {
     feature.properties!["cluster" + clusterId] = kMeans.clusters[index];
   });
-
-  const kMeansLayer: KMeansLayer = {
-    geoJson: kMeansGeoJson,
-    centroids: kMeans.centroids,
-    title: title,
-    colors: colors,
-    attributes: attributes,
-  };
-
-  return kMeansLayer;
+  return kMeansGeoJson;
 }
 
 /**

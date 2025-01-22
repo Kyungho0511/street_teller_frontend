@@ -3,7 +3,6 @@ import LegendSection from "../components/organisms/LegendSection";
 import Sidebar from "../components/organisms/Sidebar";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
-import { KMeansContext } from "../context/KMeansContext";
 import { MapContext } from "../context/MapContext";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { blendColors, crossReferenceList } from "../utils/utils";
@@ -27,12 +26,11 @@ import { ReportPrompt } from "../constants/messageConstants";
 export default function ReportPage() {
   const { survey } = useContext(SurveyContext);
   const { mapViewer } = useContext(MapContext);
-  const { kMeansLayers } = useContext(KMeansContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const reportName = "report";
 
   // GeoJson data from the last KMeansLayer of the cluster page.
-  const prevGeoJson = kMeansLayers[kMeansLayers.length - 1];
+  // const prevGeoJson = kMeansLayers[kMeansLayers.length - 1];
 
   useOpenaiInstruction();
 

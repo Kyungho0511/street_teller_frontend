@@ -1,14 +1,15 @@
-import { Preference, PreferenceList } from "../../constants/surveyConstants";
+import { Preference } from "../../constants/surveyConstants";
 import styles from "./DraggableList.module.css";
 import { Reorder } from "framer-motion";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import NumberIcon from "../atoms/NumberIcon";
 import Icon from "../atoms/Icon";
 import { iconPaths } from "../../constants/IconConstants";
+import { Survey, SurveyContext } from "../../context/SurveyContext";
 
 type DraggableListProps = {
+  surveyName: keyof Survey;
   list: Preference[];
-  setSurveyContext?: (newSurveyElement: PreferenceList) => void;
   selectable?: boolean;
   displayIcon?: boolean;
   displayRanking?: boolean;
@@ -18,22 +19,26 @@ type DraggableListProps = {
  * Draggable list component.
  */
 export default function DraggableList({
+  surveyName,
   list,
-  setSurveyContext,
   selectable,
   displayIcon,
   displayRanking,
 }: DraggableListProps) {
+  const { setSurvey } = useContext(SurveyContext);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const handleReorder = (result: Preference[]) => {
-    if (setSurveyContext) {
+    if (setSurvey) {
       // Update ranking of preferences based on index
       result.forEach((item, index) => {
         item.ranking = index + 1;
       });
       // Update Preferences in the survey context
-      setSurveyContext({ name: "preference", list: result });
+      setSurvey((prev) => ({
+        ...prev,
+        [surveyName]: { ...prev[surveyName], list: result },
+      }));
     }
   };
 
@@ -49,7 +54,7 @@ export default function DraggableList({
     target.classList.add(styles.selected);
 
     // Update preferences selected property in the SurveyContext.
-    if (setSurveyContext) {
+    if (setSurvey) {
       const newPreferences = list.map((item, i) => {
         if (i === index) {
           return { ...item, selected: true };
@@ -57,7 +62,10 @@ export default function DraggableList({
           return { ...item, selected: false };
         }
       });
-      setSurveyContext({ name: "preference", list: newPreferences });
+      setSurvey((prev) => ({
+        ...prev,
+        [surveyName]: { ...prev[surveyName], list: newPreferences },
+      }));
     }
   };
 

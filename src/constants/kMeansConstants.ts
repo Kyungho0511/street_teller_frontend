@@ -1,9 +1,3 @@
-import {
-  HealthcareFeatureCollection,
-  HealthcarePropertyName,
-} from "./geoJsonConstants";
-import { RGBA } from "./mapConstants";
-
 // Number of preferences to be used for each clustering analysis.
 export const CLUSTERING_SIZE = 2;
 
@@ -18,11 +12,3 @@ export const SEED = 10;
 
 // Initialization method for KMeans clustering.
 export const INITIALIZATION = "kmeans++";
-
-export type KMeansLayer = {
-  geoJson: HealthcareFeatureCollection;
-  centroids: number[][];
-  title: string;
-  colors: RGBA[];
-  attributes: HealthcarePropertyName[];
-};

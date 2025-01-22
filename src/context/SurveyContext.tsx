@@ -17,9 +17,9 @@ export type Survey = {
 
 type SurveyContextProps = {
   survey: Survey;
-  setSurveyContext: (
-    newSurveyElement: PreferenceList | ClusterList | ReportList
-  ) => void;
+  setSurvey: React.Dispatch<React.SetStateAction<Survey>>;
+  getClusterSurvey: () => ClusterList[];
+  setClusterSurvey: (clusterId: string, clusterList: ClusterList) => void;
 };
 
 /**
@@ -42,45 +42,21 @@ export function SurveyContextProvider({
     initialSurvey
   );
 
-  // update survey context differently based on the survey element
-  const setSurveyContext = (
-    newSurveyElement: PreferenceList | ClusterList | ReportList
-  ) => {
-    if (newSurveyElement.name === "preference") {
-      setSurvey((prev) => ({
-        ...prev,
-        preference: { name: "preference", list: newSurveyElement.list },
-      }));
-    } else if (newSurveyElement.name === "cluster1") {
-      setSurvey((prev) => ({
-        ...prev,
-        cluster1: { name: "cluster1", list: newSurveyElement.list },
-      }));
-    } else if (newSurveyElement.name === "cluster2") {
-      setSurvey((prev) => ({
-        ...prev,
-        cluster2: { name: "cluster2", list: newSurveyElement.list },
-      }));
-    } else if (newSurveyElement.name === "cluster3") {
-      setSurvey((prev) => ({
-        ...prev,
-        cluster3: { name: "cluster3", list: newSurveyElement.list },
-      }));
-    } else if (newSurveyElement.name === "report") {
-      setSurvey((prev) => ({
-        ...prev,
-        report: { name: "report", list: newSurveyElement.list },
-      }));
-    } else {
-      console.error("Invalid survey name");
-    }
+  const getClusterSurvey = () => {
+    return [survey.cluster1, survey.cluster2, survey.cluster3];
+  };
+
+  const setClusterSurvey = (clusterId: string, clusterList: ClusterList) => {
+    setSurvey((prev) => ({ ...prev, [`cluster${clusterId}`]: clusterList }));
   };
 
   return (
     <SurveyContext.Provider
       value={{
         survey,
-        setSurveyContext,
+        setSurvey,
+        getClusterSurvey,
+        setClusterSurvey,
       }}
     >
       {children}

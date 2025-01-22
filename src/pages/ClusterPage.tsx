@@ -3,14 +3,12 @@ import CheckboxListAI from "../components/molecules/CheckboxListAI";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
-import { Survey, SurveyContext } from "../context/SurveyContext";
+import { SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import { getSeriesNumber, pathToSection } from "../utils/utils";
-import { Color } from "../constants/mapConstants";
-import { sectionMapConfigs } from "../constants/sectionConstants";
 import {
   geoJsonFilePath,
   HealthcarePropertyName,
@@ -24,18 +22,18 @@ import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
-import { KMeansContext } from "../context/KMeansContext";
 import { MessageContext } from "../context/MessageContext";
 import { ClusterPrompt } from "../constants/messageConstants";
 import { streamOpenAI } from "../services/openai";
+import { ClusterList } from "../constants/surveyConstants";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
-  const { survey } = useContext(SurveyContext);
+  const { survey, getClusterSurvey, setClusterSurvey } =
+    useContext(SurveyContext);
   const { mapViewer, mapMode } = useContext(MapContext);
-  const { kMeansLayers, setKMeansLayers } = useContext(KMeansContext);
   const { messages } = useContext(MessageContext);
 
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
@@ -44,15 +42,18 @@ export default function ClusterPage() {
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
-  const clusterName = pathToSection(location.pathname);
-  const clusterList =
-    survey[clusterName as "cluster1" | "cluster2" | "cluster3"]!;
+  const clusterName = `cluster${clusterId}` as ClusterList["name"];
+  const clusterList = survey[clusterName as ClusterList["name"]]!;
+
   const section = pathToSection(location.pathname);
+  const run = messages[section].find((message) => message.type === "cluster")
+    ? false
+    : true;
 
   // Run the clustering logic if a cluster message is not found.
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
     geoJsonFilePath,
-    !messages[section].find((message) => message.type === "cluster")
+    run
   );
 
   useOpenaiInstruction(parseInt(clusterId!), [
@@ -63,32 +64,35 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (
-      !mapViewer ||
-      messages[section].find((message) => message.type === "cluster")
-    )
+    if (!mapViewer || !run) {
       return;
+    }
+    const clusterSurvey = getClusterSurvey();
 
     // Clean up mapbox layers before starting a new clustering page.
-    mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+    mapbox.removeAllClusterLayers(clusterSurvey, mapViewer!);
 
-    if (clusterIndex === 0 && kMeansLayers[0]?.geoJson) {
-      setGeoJson(kMeansLayers[0].geoJson);
-    } else if (clusterIndex > 0 && kMeansLayers[clusterIndex - 1]) {
-      const selection: boolean[] = survey[
-        `cluster${clusterIndex - 1}` as "cluster1" | "cluster2" | "cluster3"
-      ].list.map((cluster) => cluster.checked);
+    if (clusterIndex === 0 && clusterSurvey[0]?.geoJson) {
+      setGeoJson(clusterSurvey[0].geoJson);
+    } else if (clusterIndex > 0) {
+      const prevClusterList = clusterSurvey[clusterIndex - 1];
+
+      const selection: boolean[] = prevClusterList.list.map(
+        (cluster) => cluster.checked
+      );
+
       const filteredGeoJson = kmeans.getFilteredGeoJson(
         clusterIndex.toString(),
         selection,
-        kMeansLayers[clusterIndex - 1].geoJson
+        prevClusterList.geoJson!
       );
       setGeoJson(filteredGeoJson);
     }
   }, [location.pathname, mapViewer]);
 
-  // Set KMeansLayer on loading a new clustering page.
   useEffectAfterMount(() => {
+    if (!geoJson) return;
+
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
     const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);
@@ -101,46 +105,33 @@ export default function ClusterPage() {
       });
     }
 
-    // Set KMeansLayer based on the selected attributes.
+    // Set cluster list based on the selected attributes.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    const color: Color = sectionMapConfigs.find(
-      (sec) => sec.id === clusterName
-    )!.color!;
-    setKMeansLayers((prev) => {
-      const kMeansLayer = kmeans.setLayer(
-        clusterId!,
-        kMeansResult,
-        geoJson!,
-        clusterName,
-        color.categorized,
-        selectedAttributes
-      );
-      const kMeansLayers = [...prev];
-      kMeansLayers[clusterIndex] = kMeansLayer;
-      return kMeansLayers;
-    });
-  }, [survey.preference.list, geoJson]);
-
-  useEffectAfterMount(() => {
-    if (!mapViewer || !kMeansLayers[clusterIndex]) return;
-
-    // Add KMeansLayer to the map.
-    mapbox.addClusterLayer(
-      clusterId!,
-      kMeansLayers[clusterIndex],
-      mapViewer!,
-      false
+    const kMeansGeoJson = kmeans.assignToGeoJson(
+      geoJson,
+      kMeansResult,
+      clusterId!
     );
 
+    const newClusterList: ClusterList = {
+      name: clusterName,
+      list: clusterList.list,
+      colors: clusterList.colors,
+      geoJson: kMeansGeoJson,
+      attributes: selectedAttributes,
+      kMeansResult,
+    };
+
+    // Add clusters to the map.
+    mapbox.addClusterLayer(kMeansGeoJson, newClusterList, mapViewer!);
+
     // Prepare prompt and list for OpenAI.
-    clusterList.list.forEach((item, i) => {
-      item.centroids = kMeansLayers[clusterIndex]?.attributes.map(
-        (attr, j) => ({
-          name: attr,
-          value: kMeansLayers[clusterIndex]?.centroids[i][j],
-        })
-      );
+    newClusterList.list.forEach((item, i) => {
+      item.centroids = selectedAttributes.map((attr, j) => ({
+        name: attr,
+        value: newClusterList.kMeansResult!.centroids[i][j],
+      }));
     });
     const prompt: ClusterPrompt = {
       type: "cluster",
@@ -153,14 +144,18 @@ export default function ClusterPage() {
       prev.map((item, i) => (i === clusterIndex ? prompt : item))
     );
 
+    setClusterSurvey(clusterId!, newClusterList);
+
     return () => {
       // Remove KMeansLayer from mapbox on unmount.
-      mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+      mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
     };
-  }, [kMeansLayers, mapViewer]);
+  }, [survey.preference.list, geoJson]);
 
   // Update mapping on selected clusterList change
   useEffectAfterMount(() => {
+    if (!mapViewer) return;
+
     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
   }, [clusterList, mapViewer]);
 
@@ -172,7 +167,7 @@ export default function ClusterPage() {
     const currentSources = mapViewer.getStyle()!.sources;
 
     mapViewer.on("style.load", () => {
-      mapbox.removeAllClusterLayers(kMeansLayers, mapViewer!);
+      mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
 
       // Restore sources
       Object.entries(currentSources).forEach(([id, source]) => {
@@ -215,8 +210,9 @@ export default function ClusterPage() {
       <Sidebar>
         <SidebarSection>
           <CheckboxListAI
-            surveyName={clusterName as keyof Survey}
+            surveyName={clusterName}
             list={clusterList.list}
+            colors={clusterList.colors}
             prompt={prompts[clusterIndex]}
             streamOpenAI={() =>
               streamOpenAI(

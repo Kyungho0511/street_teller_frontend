@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
 import { ListItem } from "../components/molecules/SelectableList";
-import { HealthcarePropertyName } from "./geoJsonConstants";
-import { RGBA } from "./mapConstants";
+import {
+  HealthcareFeatureCollection,
+  HealthcarePropertyName,
+} from "./geoJsonConstants";
+import { color, RGBA, transparentColor } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
-import { sectionMapConfigs } from "./sectionConstants";
+import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
+import { CheckBoxItemAI } from "../components/molecules/CheckboxListAI";
 
 /**
  * Site preference categories of the user survey.
@@ -135,56 +139,60 @@ export const NUMBER_OF_CLUSTERING_STEPS = 3;
 
 export type Centroid = { name: HealthcarePropertyName; value: number };
 
-export type Cluster = {
+export type Cluster = CheckBoxItemAI & {
   name: string;
   reasoning: string;
   centroids: Centroid[];
   color: RGBA;
   index: number;
   clusterId: string;
+  checked: boolean;
 };
 
-export type Report = {
+export type Report = CheckBoxItemAI & {
   name: string;
   reasoning: string;
   clusters: Cluster[];
   color: RGBA;
   geoIds: string[];
   index: number;
+  checked: boolean;
 };
-
-export type ClusterCheckboxItem = Cluster & { checked: boolean };
-
-export type ReportCheckboxItem = Report & { checked: boolean };
 
 export type ClusterList = {
   name: `cluster1` | `cluster2` | `cluster3`;
-  list: ClusterCheckboxItem[];
+  list: Cluster[];
+  colors: RGBA[];
+  geoJson: HealthcareFeatureCollection | undefined;
+  attributes: HealthcarePropertyName[];
+  kMeansResult: KMeansResult | undefined;
 };
 
 export type ReportList = {
   name: "report";
-  list: ReportCheckboxItem[];
+  geoJson: HealthcareFeatureCollection | undefined;
+  list: Report[];
+  colors: RGBA[];
 };
-
-export type CheckboxItem = ClusterCheckboxItem | ReportCheckboxItem;
 
 export const initialSurvey: Survey = {
   preference: initialPreferenceList,
-  cluster1: createClusterList("1"),
-  cluster2: createClusterList("2"),
-  cluster3: createClusterList("3"),
+  cluster1: createClusterList("1", color.yellow.categorized),
+  cluster2: createClusterList("2", color.blue.categorized),
+  cluster3: createClusterList("3", color.green.categorized),
   report: {
     name: "report",
     list: [],
+    colors: [],
+    geoJson: undefined,
   } as ReportList,
 };
 
 /**
  * Create a cluster list with default values.
  */
-function createClusterList(clusterId: string): ClusterList {
-  const list: ClusterCheckboxItem[] = Array.from(
+function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
+  const list: Cluster[] = Array.from(
     { length: NUMBER_OF_CLUSTERS },
     (_, i) => ({
       name: "",
@@ -192,9 +200,7 @@ function createClusterList(clusterId: string): ClusterList {
         { name: "walked percent" as HealthcarePropertyName, value: 0 },
       ],
       reasoning: "",
-      color: sectionMapConfigs.find(
-        (section) => section.id === `cluster${clusterId}`
-      )?.color?.categorized[i] as RGBA,
+      color: transparentColor,
       checked: true,
       index: i,
       clusterId,
@@ -202,7 +208,11 @@ function createClusterList(clusterId: string): ClusterList {
     })
   );
   return {
-    name: `cluster${clusterId}` as "cluster1" | "cluster2" | "cluster3",
+    name: `cluster${clusterId}` as ClusterList["name"],
     list,
+    colors,
+    geoJson: undefined,
+    attributes: [],
+    kMeansResult: undefined,
   };
 }
