@@ -2,7 +2,7 @@ import styles from "./CheckboxList.module.css";
 import Colorbox from "../atoms/Colorbox";
 import { useContext, useState } from "react";
 import { Survey, SurveyContext } from "../../context/SurveyContext";
-import { MessageContext } from "../../context/MessageContext";
+import { Message, MessageContext } from "../../context/MessageContext";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { OpenAIResponseJSON } from "../../services/openai";
 import { useLocation } from "react-router-dom";
@@ -66,8 +66,6 @@ export default function CheckboxListAI({
   useEffectAfterMount(() => {
     if (prompt.content.length === 0 || !run) return;
 
-    console.log("run the logic!!");
-
     displayOpenAIResponse();
   }, [prompt]);
 
@@ -123,7 +121,7 @@ export default function CheckboxListAI({
       addMessage(section, {
         user: JSON.stringify(prompt.content),
         ai: JSON.stringify(response),
-        type: "cluster",
+        type: parseString(surveyName) as Message["type"],
       });
       setIsStreaming((prev) => ({ ...prev, json: false }));
       setSurvey((prev) => ({

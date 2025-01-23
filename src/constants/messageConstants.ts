@@ -8,7 +8,9 @@ export type ClusterPrompt = {
 };
 export type ReportPrompt = {
   type: "report";
-  content: { name: string; centroids: Centroid[]; reasoning: string }[];
+  content: {
+    clusters: { name: string; centroids: Centroid[]; reasoning: string }[];
+  }[];
 };
 
 export type Prompt =

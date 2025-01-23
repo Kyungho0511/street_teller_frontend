@@ -234,7 +234,10 @@ function getAssistantMessage(prompt: Prompt): string {
       });
     }
   } else if (prompt.type === "report") {
-    const count = initialSurvey.report.list.length;
+    const count = prompt.content.length;
+
+    console.log("report count: ", count);
+
     for (let i = 0; i < count; i++) {
       assistantMessage.labels.push({
         name: `name for the group${i + 1}`,
@@ -242,5 +245,9 @@ function getAssistantMessage(prompt: Prompt): string {
       });
     }
   }
+
+  console.log(prompt.content);
+  console.log("assistantMessage: ", assistantMessage);
+
   return JSON.stringify(assistantMessage);
 }
