@@ -131,14 +131,14 @@ export default function ReportPage() {
       console.log(response);
     });
 
-    // // Add the geoJson data to the map.
-    // if (!mapViewer) return;
-    // addReportLayer(reportName, geoJson, reports, mapViewer);
+    // Add the geoJson data to the map.
+    if (!mapViewer) return;
+    addReportLayer(reportName, geoJson, reports, mapViewer);
 
-    // return () => {
-    //   mapViewer.removeLayer(reportName);
-    //   mapViewer.removeSource(reportName);
-    // };
+    return () => {
+      mapViewer.removeLayer(reportName);
+      mapViewer.removeSource(reportName);
+    };
   }, [geoJson, mapViewer]);
 
   return (
