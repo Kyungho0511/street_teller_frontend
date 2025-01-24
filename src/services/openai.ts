@@ -38,11 +38,13 @@ type OpenAiMessage = {
  * @returns a generator that yields each chunk of the openAI response.
  */
 export async function* streamOpenAI(
-  prompt: Prompt,
+  prompt: Prompt | undefined,
   history: Message[],
   preferences?: Preference[],
   clusterIndex?: number
 ): AsyncGenerator<string | OpenAIResponseJSON> {
+  if (!prompt) return;
+
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
 
@@ -242,9 +244,6 @@ function getAssistantMessage(prompt: Prompt): string {
     }
   }
 
-  console.log("prompt content: ", prompt.content);
-  console.log("assistantMessage: ", assistantMessage);
-
   return JSON.stringify(assistantMessage);
 }
 
@@ -274,8 +273,6 @@ function getSystemMessage(prompt: Prompt): string {
     systemMessage +=
       jsonPrefix + message[type as "cluster" | "report"] + jsonSuffix;
   }
-
-  console.log("systemMessage: ", systemMessage);
 
   return systemMessage;
 }

@@ -37,7 +37,7 @@ export default function ClusterPage() {
   const { messages } = useContext(MessageContext);
 
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
-    Array(3).fill({ type: "cluster", content: [] })
+    Array(3).fill(undefined)
   );
   const { clusterId } = useParams<string>()!;
   const clusterIndex = parseInt(clusterId!) - 1;

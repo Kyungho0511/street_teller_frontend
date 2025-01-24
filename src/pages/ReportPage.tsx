@@ -18,10 +18,11 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import { addReportLayer } from "../services/mapbox";
 import { defaultColor } from "../constants/mapConstants";
-import { runOpenAI } from "../services/openai";
+import { runOpenAI, streamOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
 import { MessageContext } from "../context/MessageContext";
 import { useLocation } from "react-router-dom";
+import CheckboxListAI from "../components/molecules/CheckboxListAI";
 
 /**
  * Report page component where users select sites to report.
@@ -31,6 +32,7 @@ export default function ReportPage() {
   const { messages } = useContext(MessageContext);
   const { mapViewer } = useContext(MapContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
+  const [prompt, setPrompt] = useState<ReportPrompt>();
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -125,11 +127,7 @@ export default function ReportPage() {
       });
       prompt.content.push(obj);
     });
-
-    // Get OpenAI response.
-    runOpenAI(prompt).then((response) => {
-      console.log(response);
-    });
+    setPrompt(prompt);
 
     // Add the geoJson data to the map.
     if (!mapViewer) return;
@@ -145,7 +143,13 @@ export default function ReportPage() {
     <>
       <Sidebar>
         <SidebarSection>
-          <p>sidebar section</p>
+          <CheckboxListAI
+            surveyName={reportName}
+            list={survey.report.list}
+            colors={survey.report.colors}
+            prompt={prompt}
+            streamOpenAI={() => streamOpenAI(prompt, messages[section])}
+          />
         </SidebarSection>
       </Sidebar>
 

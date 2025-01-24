@@ -22,7 +22,7 @@ type CheckboxListAIProps = {
   surveyName: keyof Survey;
   list: CheckBoxItemAI[];
   colors: RGBA[];
-  prompt: ClusterPrompt | ReportPrompt;
+  prompt: ClusterPrompt | ReportPrompt | undefined;
   streamOpenAI: () => AsyncGenerator<string | OpenAIResponseJSON>;
 };
 
@@ -64,7 +64,7 @@ export default function CheckboxListAI({
 
   // Fetch and stream OpenAI response on setting prompts.
   useEffectAfterMount(() => {
-    if (prompt.content.length === 0 || !run) return;
+    if (!prompt || !run) return;
 
     displayOpenAIResponse();
   }, [prompt]);
