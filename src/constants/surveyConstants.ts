@@ -9,7 +9,7 @@ import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { CheckBoxItemAI } from "../components/molecules/CheckboxListAI";
+import { CheckboxItem } from "../components/molecules/CheckboxList";
 
 /**
  * Site preference categories of the user survey.
@@ -139,9 +139,9 @@ export const NUMBER_OF_CLUSTERING_STEPS = 3;
 
 export type Centroid = { name: HealthcarePropertyName; value: number };
 
-export type Cluster = CheckBoxItemAI & {
+export type Cluster = CheckboxItem & {
   name: string;
-  reasoning: string;
+  content: string;
   centroids: Centroid[];
   color: RGBA;
   index: number;
@@ -149,9 +149,9 @@ export type Cluster = CheckBoxItemAI & {
   checked: boolean;
 };
 
-export type Report = CheckBoxItemAI & {
+export type Report = CheckboxItem & {
   name: string;
-  reasoning: string;
+  content: string;
   clusters: Cluster[];
   color: RGBA;
   geoIds: string[];
@@ -199,7 +199,7 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
       centroids: [
         { name: "walked percent" as HealthcarePropertyName, value: 0 },
       ],
-      reasoning: "",
+      content: "",
       color: transparentColor,
       checked: true,
       index: i,

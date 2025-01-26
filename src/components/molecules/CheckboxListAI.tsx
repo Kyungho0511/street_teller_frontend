@@ -1,5 +1,3 @@
-import styles from "./CheckboxList.module.css";
-import Colorbox from "../atoms/Colorbox";
 import { useContext, useState } from "react";
 import { Survey, SurveyContext } from "../../context/SurveyContext";
 import { Message, MessageContext } from "../../context/MessageContext";
@@ -8,19 +6,12 @@ import { OpenAIResponseJSON } from "../../services/openai";
 import { useLocation } from "react-router-dom";
 import { parseString, pathToSection } from "../../utils/utils";
 import { ClusterPrompt, ReportPrompt } from "../../constants/messageConstants";
-import { v4 as uuidv4 } from "uuid";
 import { RGBA } from "../../constants/mapConstants";
-
-export type CheckBoxItemAI = {
-  name: string;
-  reasoning: string;
-  color: RGBA;
-  checked: boolean;
-};
+import CheckboxList, { CheckboxItem } from "./CheckboxList";
 
 type CheckboxListAIProps = {
   surveyName: keyof Survey;
-  list: CheckBoxItemAI[];
+  list: CheckboxItem[];
   colors: RGBA[];
   prompt: ClusterPrompt | ReportPrompt | undefined;
   streamOpenAI: () => AsyncGenerator<string | OpenAIResponseJSON>;
@@ -30,7 +21,7 @@ type CheckboxListAIProps = {
  * Checkbox list component to display the AI response.
  * @param surveyName Survey name of the checkbox list.
  * @param list List of AI reponses to be displayed after streaming.
- * @param colors List of colors to be used for the checkbox list.
+ * @param colors List of colors to be applied to AI response.
  * @param prompt Prompts to ask to AI.
  * @param streamOpenAI Callback function to stream the OpenAI response.
  */
@@ -51,13 +42,8 @@ export default function CheckboxListAI({
     setErrorMessage,
   } = useContext(MessageContext);
 
-  const [streaming, setStreaming] = useState<CheckBoxItemAI[]>([]);
+  const [streaming, setStreaming] = useState<CheckboxItem[]>([]);
   const listToDisplay = isStreaming.json && streaming ? streaming : list;
-
-  if (!isStreaming.json && surveyName === "report") {
-    console.log(surveyName, ": ", listToDisplay);
-    console.log("colors: ", colors);
-  }
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -76,7 +62,7 @@ export default function CheckboxListAI({
 
   // Update the list context whenever a new response is added.
   const responses: string[] = streaming
-    .map((cluster) => cluster.reasoning)
+    .map((cluster) => cluster.content)
     .filter((reasoning) => reasoning !== "" && reasoning !== undefined);
 
   // Update the survey context when the new response is added.
@@ -98,7 +84,7 @@ export default function CheckboxListAI({
     let response: OpenAIResponseJSON = {
       labels: [{ name: "", reasoning: "" }],
     };
-    let newList: CheckBoxItemAI[] = [...list];
+    let newList: CheckboxItem[] = [...list];
 
     try {
       // Start OpenAI JSON response streaming.
@@ -111,7 +97,7 @@ export default function CheckboxListAI({
           newList[i] = {
             ...newList[i],
             name: item?.name,
-            reasoning: item?.reasoning,
+            content: item?.reasoning,
             color: colors[i],
           };
         });
@@ -136,53 +122,10 @@ export default function CheckboxListAI({
     }
   };
 
-  // Handle uncontrolled checkbox change
-  const handleListChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const updatedList = [...list];
-    updatedList[index] = {
-      ...updatedList[index],
-      checked: event.target.checked,
-    };
-
-    setSurvey((prev) => ({
-      ...prev,
-      [surveyName]: { ...prev[surveyName], list: updatedList },
-    }));
-  };
-
   // Display error status of fetching openai response.
   if (errorMessage.json) {
     return <p>{errorMessage.json}</p>;
   }
 
-  return (
-    <>
-      <ul className={styles.list}>
-        {listToDisplay.map((item, index) => (
-          <li key={uuidv4()}>
-            <label className={styles.label}>
-              <input
-                className={styles.input}
-                type="checkbox"
-                name={surveyName}
-                value={item.name}
-                checked={item.checked}
-                onChange={(event) => handleListChange(event, index)}
-              />
-              <span className={styles.indicator}></span>
-              <Colorbox
-                label={item.name}
-                color={item.color}
-                fontSize={"1rem"}
-              />
-            </label>
-            <div className={styles.text}>{item.reasoning}</div>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
+  return <CheckboxList surveyName={surveyName} list={listToDisplay} />;
 }

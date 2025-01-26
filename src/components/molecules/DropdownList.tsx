@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import styles from "./DropdownList.module.css";
-import { ClusterCheckboxItem } from "../../constants/surveyConstants";
+import { Cluster } from "../../constants/surveyConstants";
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
 import Colorbox from "../atoms/Colorbox";
 import DropdownManager from "./DropdownManager";
 
 type DropdownListProps = {
-  list: ClusterCheckboxItem;
+  list: Cluster;
   index: number;
   toggleList: (index: number) => void;
   expanded: boolean;

@@ -213,7 +213,7 @@ export function addReportLayer(
     ["case"];
   reports.forEach((report) => {
     fillColorExpression.push(
-      ["==", ["get", "clusterCombination"], report.index],
+      ["==", ["get", "report"], report.index],
       utils.rgbaToString(report.color)
     );
   });

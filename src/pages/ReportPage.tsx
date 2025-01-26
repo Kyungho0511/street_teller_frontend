@@ -74,7 +74,7 @@ export default function ReportPage() {
     // Count the number of geoId for each report.
     const reports: Report[] = crossReference.map((list, index) => ({
       name: "",
-      reasoning: "",
+      content: "",
       clusters: list,
       color: defaultColor,
       geoIds: [],
@@ -125,7 +125,7 @@ export default function ReportPage() {
         obj.clusters.push({
           name: cluster.name,
           centroids: cluster.centroids,
-          reasoning: cluster.reasoning,
+          reasoning: cluster.content,
         });
       });
       prompt.content.push(obj);
@@ -135,8 +135,6 @@ export default function ReportPage() {
     // Add the geoJson data to the map.
     if (!mapViewer) return;
     addReportLayer(reportName, geoJson, reports, mapViewer);
-
-    console.log(survey.report.list);
 
     return () => {
       mapViewer.removeLayer(reportName);

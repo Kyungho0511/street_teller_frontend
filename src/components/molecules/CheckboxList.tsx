@@ -1,18 +1,30 @@
+import { useContext } from "react";
+import { RGBA } from "../../constants/mapConstants";
+import Colorbox from "../atoms/Colorbox";
 import styles from "./CheckboxList.module.css";
-import { CheckboxItem } from "../../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
+import { Survey, SurveyContext } from "../../context/SurveyContext";
+
+export type CheckboxItem = {
+  name: string;
+  content: string;
+  color: RGBA;
+  checked: boolean;
+};
 
 type CheckboxListProps = {
-  page: string;
+  surveyName: keyof Survey;
   list: CheckboxItem[];
 };
 
 /**
  * Checkbox list component.
- * @param page Page name that contains the checkbox list.
+ * @param surveyName Survey name of the checkbox list.
  * @param list List of items to be displayed.
  */
-export default function CheckboxList({ page, list }: CheckboxListProps) {
+export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
+  const { setSurvey } = useContext(SurveyContext);
+
   // Handle uncontrolled checkbox change
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -23,6 +35,11 @@ export default function CheckboxList({ page, list }: CheckboxListProps) {
       ...updatedList[index],
       checked: event.target.checked,
     };
+
+    setSurvey((prev) => ({
+      ...prev,
+      [surveyName]: { ...prev[surveyName], list: updatedList },
+    }));
   };
 
   return (
@@ -33,14 +50,15 @@ export default function CheckboxList({ page, list }: CheckboxListProps) {
             <input
               className={styles.input}
               type="checkbox"
-              name={page}
+              name={surveyName}
               value={item.name}
               checked={item.checked}
               onChange={(event) => handleChange(event, index)}
             />
             <span className={styles.indicator}></span>
-            <p>{item.name}</p>
+            <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
           </label>
+          <div className={styles.text}>{item.content}</div>
         </li>
       ))}
     </ul>

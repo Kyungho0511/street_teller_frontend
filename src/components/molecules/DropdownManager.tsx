@@ -1,13 +1,13 @@
 import { useContext, useState } from "react";
 import DropdownList from "./DropdownList";
-import { ClusterCheckboxItem } from "../../constants/surveyConstants";
+import { Cluster } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { PopupContext } from "../../context/PopupContext";
 import { useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 type DropdownManagerProps = {
-  lists: ClusterCheckboxItem[];
+  lists: Cluster[];
   displayChart?: boolean; // display a chart for each list item.
   displayColorbox?: boolean; // display a color box for each list item.
   expandFirstList?: boolean; // expand the first list item by default.
