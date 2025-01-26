@@ -17,8 +17,8 @@ import {
 } from "../constants/geoJsonConstants";
 import { getFilteredGeoJson } from "../services/kmeans";
 import { addReportLayer } from "../services/mapbox";
-import { defaultColor } from "../constants/mapConstants";
-import { runOpenAI, streamOpenAI } from "../services/openai";
+import { defaultColor, RGBA } from "../constants/mapConstants";
+import { streamOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
 import { MessageContext } from "../context/MessageContext";
 import { useLocation } from "react-router-dom";
@@ -33,6 +33,7 @@ export default function ReportPage() {
   const { mapViewer } = useContext(MapContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
+  const [colors, setColors] = useState<RGBA[]>([]);
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -80,6 +81,7 @@ export default function ReportPage() {
       index,
       checked: true,
     }));
+
     geoJson.features.forEach((feature, index) => {
       const report = reports.find((report) =>
         report.clusters.every((cluster) => {
@@ -108,6 +110,7 @@ export default function ReportPage() {
       const color = blendColors(colors);
       report.color = color;
     });
+    setColors(reports.map((report) => report.color));
 
     // Construct prompts for OpenAI.
     const prompt: ReportPrompt = {
@@ -133,6 +136,8 @@ export default function ReportPage() {
     if (!mapViewer) return;
     addReportLayer(reportName, geoJson, reports, mapViewer);
 
+    console.log(survey.report.list);
+
     return () => {
       mapViewer.removeLayer(reportName);
       mapViewer.removeSource(reportName);
@@ -146,7 +151,7 @@ export default function ReportPage() {
           <CheckboxListAI
             surveyName={reportName}
             list={survey.report.list}
-            colors={survey.report.colors}
+            colors={colors}
             prompt={prompt}
             streamOpenAI={() => streamOpenAI(prompt, messages[section])}
           />

@@ -54,6 +54,11 @@ export default function CheckboxListAI({
   const [streaming, setStreaming] = useState<CheckBoxItemAI[]>([]);
   const listToDisplay = isStreaming.json && streaming ? streaming : list;
 
+  if (!isStreaming.json && surveyName === "report") {
+    console.log(surveyName, ": ", listToDisplay);
+    console.log("colors: ", colors);
+  }
+
   const location = useLocation();
   const section = pathToSection(location.pathname);
   const run = messages[section].find(
@@ -119,7 +124,7 @@ export default function CheckboxListAI({
     } finally {
       // Update the message context when the response is fully fetched.
       addMessage(section, {
-        user: JSON.stringify(prompt.content),
+        user: JSON.stringify(prompt!.content),
         ai: JSON.stringify(response),
         type: parseString(surveyName) as Message["type"],
       });
