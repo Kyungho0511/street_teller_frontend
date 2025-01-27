@@ -101,7 +101,7 @@ export default function ClusterPage() {
     for (let i = startIndex, n = endIndex; i < n; i++) {
       if (survey.preference.list.length - 1 < i) break;
       survey.preference.list[i].subCategories.forEach((subCategory) => {
-        selectedAttributes.push(subCategory.name);
+        selectedAttributes.push(subCategory);
       });
     }
 

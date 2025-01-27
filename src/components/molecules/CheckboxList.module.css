@@ -1,6 +1,6 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .list {
   display: flex;
@@ -70,4 +70,16 @@
 
 .text {
   margin-bottom: 2rem;
+}
+
+/* Sub-list styling */
+.subItem {
+  font-size: 0.9rem;
+  font-weight: var(--font-regular);
+  color: var(--color-dark-grey);
+  padding: 0.1rem 0;
+}
+
+.subHeader {
+  display: flex;
 }

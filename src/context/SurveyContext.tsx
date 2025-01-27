@@ -4,6 +4,7 @@ import {
   ClusterList,
   ReportList,
   initialSurvey,
+  ReportSubList,
 } from "../constants/surveyConstants";
 import useSessionStorage from "../hooks/useSessionStorage";
 
@@ -20,6 +21,7 @@ type SurveyContextProps = {
   setSurvey: React.Dispatch<React.SetStateAction<Survey>>;
   getClusterSurvey: () => ClusterList[];
   setClusterSurvey: (clusterId: string, clusterList: ClusterList) => void;
+  getReportSubList: () => ReportSubList[];
 };
 
 /**
@@ -50,6 +52,19 @@ export function SurveyContextProvider({
     setSurvey((prev) => ({ ...prev, [`cluster${clusterId}`]: clusterList }));
   };
 
+  const getReportSubList = () => {
+    const reportSubLists = survey.report.list?.map((report) => {
+      const subList: ReportSubList = report.clusters?.map((cluster) => ({
+        name: cluster.name,
+        content: "",
+        color: cluster.color,
+      }));
+      return subList;
+    });
+
+    return reportSubLists;
+  };
+
   return (
     <SurveyContext.Provider
       value={{
@@ -57,6 +72,7 @@ export function SurveyContextProvider({
         setSurvey,
         getClusterSurvey,
         setClusterSurvey,
+        getReportSubList,
       }}
     >
       {children}

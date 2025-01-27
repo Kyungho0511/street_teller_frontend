@@ -1,9 +1,10 @@
+import styles from "./CheckboxList.module.css";
 import { useContext } from "react";
 import { RGBA } from "../../constants/mapConstants";
 import Colorbox from "../atoms/Colorbox";
-import styles from "./CheckboxList.module.css";
 import { v4 as uuidv4 } from "uuid";
 import { Survey, SurveyContext } from "../../context/SurveyContext";
+import { ReportSubList } from "../../constants/surveyConstants";
 
 export type CheckboxItem = {
   name: string;
@@ -15,6 +16,7 @@ export type CheckboxItem = {
 type CheckboxListProps = {
   surveyName: keyof Survey;
   list: CheckboxItem[];
+  subList?: ReportSubList[];
 };
 
 /**
@@ -22,7 +24,11 @@ type CheckboxListProps = {
  * @param surveyName Survey name of the checkbox list.
  * @param list List of items to be displayed.
  */
-export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
+export default function CheckboxList({
+  surveyName,
+  list,
+  subList,
+}: CheckboxListProps) {
   const { setSurvey } = useContext(SurveyContext);
 
   // Handle uncontrolled checkbox change
@@ -58,7 +64,25 @@ export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
             <span className={styles.indicator}></span>
             <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
           </label>
-          <div className={styles.text}>{item.content}</div>
+          <p className={styles.text}>{item.content}</p>
+
+          {subList &&
+            subList[index] &&
+            subList[index].map((item) => (
+              <ul className={styles.subList}>
+                <li className={styles.subItem} key={uuidv4()}>
+                  <div className={styles.subHeader}>
+                    <Colorbox
+                      label={item.name}
+                      color={item.color}
+                      fontSize={"0.8rem"}
+                    />
+                    <p className={styles.subLabel}>{item.name}</p>
+                  </div>
+                  <p className={styles.subText}>{item.content}</p>
+                </li>
+              </ul>
+            ))}
         </li>
       ))}
     </ul>

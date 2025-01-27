@@ -10,6 +10,7 @@ import {
   Centroid,
   NUMBER_OF_CLUSTERING_STEPS,
   Report,
+  ReportSubList,
 } from "../constants/surveyConstants";
 import {
   HealthcareFeatureCollection,
@@ -28,7 +29,8 @@ import CheckboxListAI from "../components/molecules/CheckboxListAI";
  * Report page component where users select sites to report.
  */
 export default function ReportPage() {
-  const { survey, getClusterSurvey } = useContext(SurveyContext);
+  const { survey, getClusterSurvey, getReportSubList } =
+    useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
   const { mapViewer } = useContext(MapContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
@@ -152,6 +154,7 @@ export default function ReportPage() {
             colors={colors}
             prompt={prompt}
             streamOpenAI={() => streamOpenAI(prompt, messages[section])}
+            subList={getReportSubList()}
           />
         </SidebarSection>
       </Sidebar>

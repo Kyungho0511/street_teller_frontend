@@ -1,5 +1,6 @@
-import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./SelectableList.module.css";
+import { v4 as uuidv4 } from "uuid";
+import { useContext, useEffect, useRef, useState } from "react";
 import { MapContext } from "../../context/MapContext";
 import { mapAttributes } from "../../constants/mapConstants";
 import * as mapbox from "../../services/mapbox";
@@ -7,35 +8,26 @@ import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 type SelectableListProps = {
-  list: ListItem[];
-  mappable?: boolean;
-};
-
-export type ListItem = {
-  name: HealthcarePropertyName;
-  id: string;
+  list: HealthcarePropertyName[];
 };
 
 /**
- * List component with selectable items.
+ * List component with selectable items associated with mapping.
  */
-export default function SelectableList({
-  list,
-  mappable,
-}: SelectableListProps) {
+export default function SelectableList({ list }: SelectableListProps) {
   const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(
-    list[0].name
+    list[0]
   );
   const { mapViewer, parentLayer, color } = useContext(MapContext);
   const { setAttribute } = useContext(MapContext);
 
   useEffect(() => {
-    setSelectedItem(list[0].name);
+    setSelectedItem(list[0]);
   }, [list]);
 
   useEffectAfterMount(() => {
     // Update Mapping with the selected item.
-    if (mapViewer && mappable && parentLayer && color) {
+    if (mapViewer && parentLayer && color) {
       mapbox.updateLayerAttribute(parentLayer, selectedItem, color, mapViewer);
     }
     // Update the attribute for map legned.
@@ -47,7 +39,7 @@ export default function SelectableList({
         ? setAttribute(newAttribute)
         : console.error("Attribute not found.");
     }
-  }, [selectedItem, mapViewer, mappable, parentLayer, color, setAttribute]);
+  }, [selectedItem, mapViewer, parentLayer, color, setAttribute]);
 
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
@@ -61,7 +53,7 @@ export default function SelectableList({
     target.classList.add(styles.selected);
 
     // Update the selected item.
-    setSelectedItem(list[index].name);
+    setSelectedItem(list[index]);
   };
 
   return (
@@ -70,12 +62,12 @@ export default function SelectableList({
         <li
           ref={(element) => (itemRefs.current[index] = element)}
           className={`${styles.item} ${
-            item.name === selectedItem && styles.selected
+            item === selectedItem && styles.selected
           }`}
-          key={item.id}
+          key={uuidv4()}
           onClick={(event) => handleClick(event, index)}
         >
-          <p className={styles.text}>{item.name}</p>
+          <p className={styles.text}>{item}</p>
         </li>
       ))}
     </ul>

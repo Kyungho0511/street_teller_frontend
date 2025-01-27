@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import { ListItem } from "../components/molecules/SelectableList";
 import {
   HealthcareFeatureCollection,
   HealthcarePropertyName,
@@ -28,7 +27,7 @@ export type Preference = {
   iconPath: string;
   selected: boolean;
   id: string;
-  subCategories: ListItem[];
+  subCategories: HealthcarePropertyName[];
 };
 
 export type PreferenceList = {
@@ -46,9 +45,9 @@ export const initialPreferenceList: PreferenceList = {
       selected: true,
       id: uuidv4(),
       subCategories: [
-        { name: "unserved population / km2", id: uuidv4() },
-        { name: "unserved medicaid enrollees / km2", id: uuidv4() },
-        { name: "unserved commercial enrollees / km2", id: uuidv4() },
+        "unserved population / km2",
+        "unserved medicaid enrollees / km2",
+        "unserved commercial enrollees / km2",
       ],
     },
     {
@@ -58,9 +57,9 @@ export const initialPreferenceList: PreferenceList = {
       selected: false,
       id: uuidv4(),
       subCategories: [
-        { name: "insured population / km2", id: uuidv4() },
-        { name: "medicaid enrollees / km2", id: uuidv4() },
-        { name: "commercial enrollees / km2", id: uuidv4() },
+        "insured population / km2",
+        "medicaid enrollees / km2",
+        "commercial enrollees / km2",
       ],
     },
     {
@@ -70,18 +69,18 @@ export const initialPreferenceList: PreferenceList = {
       selected: false,
       id: uuidv4(),
       subCategories: [
-        { name: "no leisure-time physical activity", id: uuidv4() },
-        { name: "binge drinking", id: uuidv4() },
-        { name: "sleeping less than 7 hours", id: uuidv4() },
-        { name: "current smoking", id: uuidv4() },
-        { name: "cholesterol screening", id: uuidv4() },
-        { name: "current lack of health insurance", id: uuidv4() },
-        { name: "taking medicine for high blood pressure", id: uuidv4() },
-        { name: "visits to dentist or dental clinic", id: uuidv4() },
-        { name: "visits to doctor for routine checkup", id: uuidv4() },
-        { name: "physical health not good for >=14 days", id: uuidv4() },
-        { name: "mental health not good for >=14 days", id: uuidv4() },
-        { name: "fair or poor self-rated health status", id: uuidv4() },
+        "no leisure-time physical activity",
+        "binge drinking",
+        "sleeping less than 7 hours",
+        "current smoking",
+        "cholesterol screening",
+        "current lack of health insurance",
+        "taking medicine for high blood pressure",
+        "visits to dentist or dental clinic",
+        "visits to doctor for routine checkup",
+        "physical health not good for >=14 days",
+        "mental health not good for >=14 days",
+        "fair or poor self-rated health status",
       ],
     },
     {
@@ -91,10 +90,10 @@ export const initialPreferenceList: PreferenceList = {
       selected: false,
       id: uuidv4(),
       subCategories: [
-        { name: "average land price / ft2", id: uuidv4() },
-        { name: "median household income", id: uuidv4() },
-        { name: "median household disposable income", id: uuidv4() },
-        { name: "median monthly housing cost", id: uuidv4() },
+        "average land price / ft2",
+        "median household income",
+        "median household disposable income",
+        "median monthly housing cost",
       ],
     },
     {
@@ -104,11 +103,11 @@ export const initialPreferenceList: PreferenceList = {
       selected: false,
       id: uuidv4(),
       subCategories: [
-        { name: "agricultural land percent", id: uuidv4() },
-        { name: "residential district percent", id: uuidv4() },
-        { name: "commercial district percent", id: uuidv4() },
-        { name: "industrial district percent", id: uuidv4() },
-        { name: "vacant land percent", id: uuidv4() },
+        "agricultural land percent",
+        "residential district percent",
+        "commercial district percent",
+        "industrial district percent",
+        "vacant land percent",
       ],
     },
     {
@@ -118,22 +117,22 @@ export const initialPreferenceList: PreferenceList = {
       selected: false,
       id: uuidv4(),
       subCategories: [
-        { name: "drove alone percent", id: uuidv4() },
-        { name: "carpooled percent", id: uuidv4() },
-        { name: "public transit percent", id: uuidv4() },
-        { name: "walked percent", id: uuidv4() },
-        { name: "worked from home percent", id: uuidv4() },
+        "drove alone percent",
+        "carpooled percent",
+        "public transit percent",
+        "walked percent",
+        "worked from home percent",
       ],
     },
   ],
 };
 
-export const siteCategories = initialPreferenceList.list.map((preference) => ({
-  category: preference.category,
-  subCategories: preference.subCategories.map(
-    (subCategory) => subCategory.name
-  ),
-}));
+export const siteCategories = initialPreferenceList.list.map(
+  ({ category, subCategories }) => ({
+    category,
+    subCategories,
+  })
+);
 
 export const NUMBER_OF_CLUSTERING_STEPS = 3;
 
@@ -174,6 +173,12 @@ export type ReportList = {
   list: Report[];
   colors: RGBA[];
 };
+
+export type ReportSubList = {
+  name: string;
+  content: string;
+  color: RGBA;
+}[];
 
 export const initialSurvey: Survey = {
   preference: initialPreferenceList,

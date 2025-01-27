@@ -77,7 +77,7 @@ export default function HomePage() {
 
       <PopupContextProvider>
         <LegendSection title={preference.category as string}>
-          <SelectableList list={preference.subCategories} mappable />
+          <SelectableList list={preference.subCategories} />
           <GradientBar
             bound={attribute.bound}
             unit={attribute.unit}
