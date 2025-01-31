@@ -2,7 +2,6 @@ import styles from "./CheckboxList.module.css";
 import { useContext } from "react";
 import { RGBA } from "../../constants/mapConstants";
 import Colorbox from "../atoms/Colorbox";
-import { v4 as uuidv4 } from "uuid";
 import { Survey, SurveyContext } from "../../context/SurveyContext";
 import { ReportSubList } from "../../constants/surveyConstants";
 
@@ -11,6 +10,7 @@ export type CheckboxItem = {
   content: string;
   color: RGBA;
   checked: boolean;
+  id: string;
 };
 
 type CheckboxListProps = {
@@ -31,6 +31,8 @@ export default function CheckboxList({
 }: CheckboxListProps) {
   const { setSurvey } = useContext(SurveyContext);
 
+  subList && console.log(subList);
+
   // Handle uncontrolled checkbox change
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -48,10 +50,12 @@ export default function CheckboxList({
     }));
   };
 
+  list.forEach((item, index) => console.log(index, item.id));
+
   return (
     <ul className={styles.list}>
       {list.map((item, index) => (
-        <li key={uuidv4()}>
+        <li key={item.id}>
           <label className={styles.label}>
             <input
               className={styles.input}
@@ -66,11 +70,11 @@ export default function CheckboxList({
           </label>
           <p className={styles.text}>{item.content}</p>
 
-          {subList &&
-            subList[index] &&
-            subList[index].map((item) => (
-              <ul className={styles.subList}>
-                <li className={styles.subItem} key={uuidv4()}>
+          <ul className={styles.subList}>
+            {subList &&
+              subList[index] &&
+              subList[index].map((item) => (
+                <li className={styles.subItem} key={item.id}>
                   <div className={styles.subHeader}>
                     <Colorbox
                       label={item.name}
@@ -81,8 +85,8 @@ export default function CheckboxList({
                   </div>
                   <p className={styles.subText}>{item.content}</p>
                 </li>
-              </ul>
-            ))}
+              ))}
+          </ul>
         </li>
       ))}
     </ul>

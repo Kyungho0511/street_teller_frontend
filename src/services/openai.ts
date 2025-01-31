@@ -257,7 +257,7 @@ function getSystemMessage(prompt: Prompt): string {
   const prefix = "Assistant is a large language model trained by OpenAI";
   const jsonPrefix =
     "You are a helpful assistant designed to output JSON. You are an expert for interpreting machine learning outcomes, especially in the context of urban planning, your focus is on analyzing and labeling clusters from k-means clustering. You translate the values of variables within these k-means clusters into understandable, human language names. This process involves examining the distinctive characteristics of each cluster, understanding the significance of each variable within the context of urban fabrics, and then formulating descriptive names that accurately reflect the underlying patterns and relationships.";
-  const jsonSuffix = `I want a JSON output with an array of ${count} objects with name and reasoning for each object. Please be consistent with naming logic and keep the name within four words. For the reasoning part, please keep it under 100 words and specify two distinctive data in number for each object`;
+  const jsonSuffix = `I want a JSON output with an array of ${count} label object with name and reasoning for each label. Please use "labels" as a key for JSON and store the output array as a value for "labels" key. Be consistent with naming logic and keep the name within four words. For the reasoning part, please keep it under 100 words and specify two distinctive data in number for each object`;
 
   const message = {
     text: "You are an expert in the context of urban planning, your goal is to provide insightful and informative responses to questions about site analysis especially in the context of site selection.",

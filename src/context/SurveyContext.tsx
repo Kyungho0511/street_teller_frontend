@@ -7,6 +7,7 @@ import {
   ReportSubList,
 } from "../constants/surveyConstants";
 import useSessionStorage from "../hooks/useSessionStorage";
+import { v4 as uuidv4 } from "uuid";
 
 export type Survey = {
   preference: PreferenceList;
@@ -58,6 +59,7 @@ export function SurveyContextProvider({
         name: cluster.name,
         content: "",
         color: cluster.color,
+        id: uuidv4(),
       }));
       return subList;
     });

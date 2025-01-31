@@ -35,8 +35,6 @@ export default function CheckboxListAI({
   streamOpenAI,
   subList,
 }: CheckboxListAIProps) {
-  subList && console.log(subList);
-
   const { setSurvey } = useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
   const {

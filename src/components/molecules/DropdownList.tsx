@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import styles from "./DropdownList.module.css";
 import { Cluster } from "../../constants/surveyConstants";
 import BarChart from "../atoms/BarChart";
@@ -35,7 +34,7 @@ export default function DropdownList({
       </button>
       <ul className={styles.list}>
         {list.centroids.map((item) => (
-          <li className={styles.item} key={uuidv4()}>
+          <li className={styles.item} key={item.id}>
             {displayChart && (
               <BarChart
                 label={item.name}

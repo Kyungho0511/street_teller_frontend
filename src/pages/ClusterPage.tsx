@@ -26,6 +26,7 @@ import { MessageContext } from "../context/MessageContext";
 import { ClusterPrompt } from "../constants/messageConstants";
 import { streamOpenAI } from "../services/openai";
 import { ClusterList } from "../constants/surveyConstants";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -101,7 +102,7 @@ export default function ClusterPage() {
     for (let i = startIndex, n = endIndex; i < n; i++) {
       if (survey.preference.list.length - 1 < i) break;
       survey.preference.list[i].subCategories.forEach((subCategory) => {
-        selectedAttributes.push(subCategory);
+        selectedAttributes.push(subCategory.name);
       });
     }
 
@@ -131,6 +132,7 @@ export default function ClusterPage() {
       item.centroids = selectedAttributes.map((attr, j) => ({
         name: attr,
         value: newClusterList.kMeansResult!.centroids[i][j],
+        id: uuidv4(),
       }));
     });
     const prompt: ClusterPrompt = {

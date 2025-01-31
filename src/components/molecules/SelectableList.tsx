@@ -1,5 +1,4 @@
 import styles from "./SelectableList.module.css";
-import { v4 as uuidv4 } from "uuid";
 import { useContext, useEffect, useRef, useState } from "react";
 import { MapContext } from "../../context/MapContext";
 import { mapAttributes } from "../../constants/mapConstants";
@@ -8,7 +7,7 @@ import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 type SelectableListProps = {
-  list: HealthcarePropertyName[];
+  list: { name: HealthcarePropertyName; id: string }[];
 };
 
 /**
@@ -16,13 +15,13 @@ type SelectableListProps = {
  */
 export default function SelectableList({ list }: SelectableListProps) {
   const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(
-    list[0]
+    list[0].name
   );
   const { mapViewer, parentLayer, color } = useContext(MapContext);
   const { setAttribute } = useContext(MapContext);
 
   useEffect(() => {
-    setSelectedItem(list[0]);
+    setSelectedItem(list[0].name);
   }, [list]);
 
   useEffectAfterMount(() => {
@@ -53,7 +52,7 @@ export default function SelectableList({ list }: SelectableListProps) {
     target.classList.add(styles.selected);
 
     // Update the selected item.
-    setSelectedItem(list[index]);
+    setSelectedItem(list[index].name);
   };
 
   return (
@@ -62,12 +61,12 @@ export default function SelectableList({ list }: SelectableListProps) {
         <li
           ref={(element) => (itemRefs.current[index] = element)}
           className={`${styles.item} ${
-            item === selectedItem && styles.selected
+            item.name === selectedItem && styles.selected
           }`}
-          key={uuidv4()}
+          key={item.id}
           onClick={(event) => handleClick(event, index)}
         >
-          <p className={styles.text}>{item}</p>
+          <p className={styles.text}>{item.name}</p>
         </li>
       ))}
     </ul>

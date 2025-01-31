@@ -1,5 +1,4 @@
 import NumberIcon from "../atoms/NumberIcon";
-import { v4 as uuidv4 } from "uuid";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";
 import React from "react";
@@ -27,8 +26,8 @@ export default function LegendSection({
         <div className={styles.header_content}>
           {title && <h4 className={styles.title}>{title}</h4>}
           {steps &&
-            steps.map((step) => (
-              <div key={uuidv4()}>
+            steps.map((step, index) => (
+              <div key={index}>
                 <NumberIcon
                   number={step}
                   selected={step === currentStep}

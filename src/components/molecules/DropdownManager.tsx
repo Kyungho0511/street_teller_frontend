@@ -4,7 +4,6 @@ import { Cluster } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { PopupContext } from "../../context/PopupContext";
 import { useLocation } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 
 type DropdownManagerProps = {
   lists: Cluster[];
@@ -62,7 +61,7 @@ export default function DropdownManager({
   return (
     <div>
       {lists.map((list, index) => (
-        <div key={uuidv4()}>
+        <div key={list.id}>
           <DropdownList
             list={list}
             index={index}

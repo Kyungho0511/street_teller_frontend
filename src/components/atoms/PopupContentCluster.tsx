@@ -1,5 +1,4 @@
 import styles from "./PopupContent.module.css";
-import { v4 as uuidv4 } from "uuid";
 import { useContext, useEffect, useState } from "react";
 import { PopupContext } from "../../context/PopupContext";
 import ClusterPage from "../../pages/ClusterPage";
@@ -75,7 +74,7 @@ export default function PopupContentCluster({
       <div className={styles.body}>
         {clusters?.length &&
           clusters.map((cluster, index) => (
-            <div className={styles.item} key={uuidv4()}>
+            <div className={styles.item} key={cluster.id}>
               <Colorbox label={cluster.name} color={cluster.color} />
               <div style={{ width: "2rem" }}></div> {/* Spacer */}
               <NumberIcon

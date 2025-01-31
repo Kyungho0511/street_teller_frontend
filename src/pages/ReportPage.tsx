@@ -10,7 +10,6 @@ import {
   Centroid,
   NUMBER_OF_CLUSTERING_STEPS,
   Report,
-  ReportSubList,
 } from "../constants/surveyConstants";
 import {
   HealthcareFeatureCollection,
@@ -24,6 +23,7 @@ import { ReportPrompt } from "../constants/messageConstants";
 import { MessageContext } from "../context/MessageContext";
 import { useLocation } from "react-router-dom";
 import CheckboxListAI from "../components/molecules/CheckboxListAI";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Report page component where users select sites to report.
@@ -82,6 +82,7 @@ export default function ReportPage() {
       geoIds: [],
       index,
       checked: true,
+      id: uuidv4(),
     }));
 
     geoJson.features.forEach((feature, index) => {
