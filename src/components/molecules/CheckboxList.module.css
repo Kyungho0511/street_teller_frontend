@@ -8,6 +8,10 @@
   margin-top: 1.2rem;
 }
 
+.item {
+  margin-bottom: 1.5rem;
+}
+
 .label {
   display: flex;
   align-items: center;
@@ -69,7 +73,7 @@
 }
 
 .text {
-  margin-bottom: 2rem;
+  margin-bottom: 0.25rem;
 }
 
 /* Sub-list styling */
@@ -78,8 +82,4 @@
   font-weight: var(--font-regular);
   color: var(--color-dark-grey);
   padding: 0.1rem 0;
-}
-
-.subHeader {
-  display: flex;
 }

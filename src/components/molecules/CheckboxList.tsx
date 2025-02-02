@@ -3,7 +3,6 @@ import { useContext } from "react";
 import { RGBA } from "../../constants/mapConstants";
 import Colorbox from "../atoms/Colorbox";
 import { Survey, SurveyContext } from "../../context/SurveyContext";
-import { ReportSubList } from "../../constants/surveyConstants";
 
 export type CheckboxItem = {
   name: string;
@@ -16,7 +15,6 @@ export type CheckboxItem = {
 type CheckboxListProps = {
   surveyName: keyof Survey;
   list: CheckboxItem[];
-  subList?: ReportSubList[];
 };
 
 /**
@@ -24,14 +22,8 @@ type CheckboxListProps = {
  * @param surveyName Survey name of the checkbox list.
  * @param list List of items to be displayed.
  */
-export default function CheckboxList({
-  surveyName,
-  list,
-  subList,
-}: CheckboxListProps) {
-  const { setSurvey } = useContext(SurveyContext);
-
-  subList && console.log(subList);
+export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
+  const { setSurvey, getReportSubList } = useContext(SurveyContext);
 
   // Handle uncontrolled checkbox change
   const handleChange = (
@@ -50,12 +42,10 @@ export default function CheckboxList({
     }));
   };
 
-  list.forEach((item, index) => console.log(index, item.id));
-
   return (
     <ul className={styles.list}>
       {list.map((item, index) => (
-        <li key={item.id}>
+        <li key={item.id} className={styles.item}>
           <label className={styles.label}>
             <input
               className={styles.input}
@@ -71,19 +61,15 @@ export default function CheckboxList({
           <p className={styles.text}>{item.content}</p>
 
           <ul className={styles.subList}>
-            {subList &&
-              subList[index] &&
-              subList[index].map((item) => (
+            {surveyName === "report" &&
+              getReportSubList(index).map((item) => (
                 <li className={styles.subItem} key={item.id}>
-                  <div className={styles.subHeader}>
-                    <Colorbox
-                      label={item.name}
-                      color={item.color}
-                      fontSize={"0.8rem"}
-                    />
-                    <p className={styles.subLabel}>{item.name}</p>
-                  </div>
-                  <p className={styles.subText}>{item.content}</p>
+                  <Colorbox
+                    label={item.name}
+                    color={item.color}
+                    fontSize={"0.9rem"}
+                  />
+                  {/* <p className={styles.subText}>{item.content}</p> */}
                 </li>
               ))}
           </ul>

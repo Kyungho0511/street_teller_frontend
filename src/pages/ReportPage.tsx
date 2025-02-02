@@ -17,7 +17,7 @@ import {
 } from "../constants/geoJsonConstants";
 import { getFilteredGeoJson } from "../services/kmeans";
 import { addReportLayer } from "../services/mapbox";
-import { defaultColor, RGBA } from "../constants/mapConstants";
+import { defaultColor } from "../constants/mapConstants";
 import { streamOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
 import { MessageContext } from "../context/MessageContext";
@@ -29,13 +29,12 @@ import { v4 as uuidv4 } from "uuid";
  * Report page component where users select sites to report.
  */
 export default function ReportPage() {
-  const { survey, getClusterSurvey, getReportSubList } =
+  const { survey, getClusterSurvey, getReportSubList, setReportSurvey } =
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
   const { mapViewer } = useContext(MapContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
-  const [colors, setColors] = useState<RGBA[]>([]);
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
@@ -113,7 +112,6 @@ export default function ReportPage() {
       const color = blendColors(colors);
       report.color = color;
     });
-    setColors(reports.map((report) => report.color));
 
     // Construct prompts for OpenAI.
     const prompt: ReportPrompt = {
@@ -135,6 +133,14 @@ export default function ReportPage() {
     });
     setPrompt(prompt);
 
+    // Update the survey context.
+    setReportSurvey({
+      name: reportName,
+      geoJson,
+      list: reports,
+      colors: reports.map((report) => report.color),
+    });
+
     // Add the geoJson data to the map.
     if (!mapViewer) return;
     addReportLayer(reportName, geoJson, reports, mapViewer);
@@ -152,10 +158,9 @@ export default function ReportPage() {
           <CheckboxListAI
             surveyName={reportName}
             list={survey.report.list}
-            colors={colors}
+            colors={survey.report.colors}
             prompt={prompt}
             streamOpenAI={() => streamOpenAI(prompt, messages[section])}
-            subList={getReportSubList()}
           />
         </SidebarSection>
       </Sidebar>

@@ -8,7 +8,6 @@ import { parseString, pathToSection } from "../../utils/utils";
 import { ClusterPrompt, ReportPrompt } from "../../constants/messageConstants";
 import { RGBA } from "../../constants/mapConstants";
 import CheckboxList, { CheckboxItem } from "./CheckboxList";
-import { ReportSubList } from "../../constants/surveyConstants";
 
 type CheckboxListAIProps = {
   surveyName: keyof Survey;
@@ -16,7 +15,6 @@ type CheckboxListAIProps = {
   colors: RGBA[];
   prompt: ClusterPrompt | ReportPrompt | undefined;
   streamOpenAI: () => AsyncGenerator<string | OpenAIResponseJSON>;
-  subList?: ReportSubList[];
 };
 
 /**
@@ -33,7 +31,6 @@ export default function CheckboxListAI({
   colors,
   prompt,
   streamOpenAI,
-  subList,
 }: CheckboxListAIProps) {
   const { setSurvey } = useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
@@ -130,11 +127,5 @@ export default function CheckboxListAI({
     return <p>{errorMessage.json}</p>;
   }
 
-  return (
-    <CheckboxList
-      surveyName={surveyName}
-      list={listToDisplay}
-      subList={subList}
-    />
-  );
+  return <CheckboxList surveyName={surveyName} list={listToDisplay} />;
 }
