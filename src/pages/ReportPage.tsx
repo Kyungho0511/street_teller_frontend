@@ -22,8 +22,11 @@ import { streamOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
 import { MessageContext } from "../context/MessageContext";
 import { useLocation } from "react-router-dom";
-import CheckboxListAI from "../components/molecules/CheckboxListAI";
+import AIResponseList from "../components/molecules/AIReponseList";
 import { v4 as uuidv4 } from "uuid";
+import PopupSection from "../components/organisms/PopupSection";
+import PopupContentCluster from "../components/atoms/PopupContentCluster";
+import { PopupContextProvider } from "../context/PopupContext";
 
 /**
  * Report page component where users select sites to report.
@@ -155,7 +158,7 @@ export default function ReportPage() {
     <>
       <Sidebar>
         <SidebarSection>
-          <CheckboxListAI
+          <AIResponseList
             surveyName={reportName}
             list={survey.report.list}
             colors={survey.report.colors}
@@ -165,9 +168,15 @@ export default function ReportPage() {
         </SidebarSection>
       </Sidebar>
 
-      <LegendSection title={"Title"}>
-        <p>legend section</p>
-      </LegendSection>
+      <PopupContextProvider>
+        <LegendSection title={"Title"}>
+          <p>legend section</p>
+        </LegendSection>
+
+        <PopupSection enableSelectEffect>
+          <PopupContentCluster clusterId={"3"} />
+        </PopupSection>
+      </PopupContextProvider>
     </>
   );
 }

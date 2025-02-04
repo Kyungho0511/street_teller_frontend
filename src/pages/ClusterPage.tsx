@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import CheckboxListAI from "../components/molecules/CheckboxListAI";
+import AIResponseList from "../components/molecules/AIReponseList";
 import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
@@ -27,6 +27,7 @@ import { ClusterPrompt } from "../constants/messageConstants";
 import { streamOpenAI } from "../services/openai";
 import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
+import BarChartDropDownList from "../components/molecules/BarChartDropDownList";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -211,7 +212,7 @@ export default function ClusterPage() {
     <>
       <Sidebar>
         <SidebarSection>
-          <CheckboxListAI
+          <AIResponseList
             surveyName={clusterName}
             list={clusterList.list}
             colors={clusterList.colors}
@@ -224,6 +225,7 @@ export default function ClusterPage() {
                 clusterIndex
               )
             }
+            listType={"checkbox"}
           />
         </SidebarSection>
       </Sidebar>
@@ -236,10 +238,9 @@ export default function ClusterPage() {
         >
           <DropdownManager
             lists={clusterList.list}
-            displayChart
-            displayColorbox
+            listType={BarChartDropDownList}
             autoCollapse
-          />
+          ></DropdownManager>
         </LegendSection>
 
         <PopupSection enableSelectEffect>

@@ -1,25 +1,28 @@
 import { useContext, useState } from "react";
-import DropdownList from "./DropdownList";
 import { Cluster } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { PopupContext } from "../../context/PopupContext";
 import { useLocation } from "react-router-dom";
 
+export type DropDownListProps = {
+  index: number;
+  toggleList: (index: number) => void;
+  expanded: boolean;
+};
+
 type DropdownManagerProps = {
   lists: Cluster[];
-  displayChart?: boolean; // display a chart for each list item.
-  displayColorbox?: boolean; // display a color box for each list item.
+  listType: React.ElementType;
   expandFirstList?: boolean; // expand the first list item by default.
   autoCollapse?: boolean; // only one list can be expanded at a time.
 };
 
 /**
- * Dropdown manager component to manage {@link DropdownList} components.
+ * Dropdown manager component to manage dropdown list components.
  */
 export default function DropdownManager({
   lists,
-  displayChart,
-  displayColorbox,
+  listType,
   expandFirstList,
   autoCollapse,
 }: DropdownManagerProps) {
@@ -28,6 +31,7 @@ export default function DropdownManager({
     new Array(lists.length).fill(false)
   );
   const location = useLocation();
+  const ListType = listType;
 
   // Expand the first list if requested.
   useEffectAfterMount(() => {
@@ -61,14 +65,12 @@ export default function DropdownManager({
   return (
     <div>
       {lists.map((list, index) => (
-        <div key={list.id}>
-          <DropdownList
+        <div key={index}>
+          <ListType
             list={list}
             index={index}
             toggleList={toggleList}
             expanded={expandedLists[index]}
-            displayChart={displayChart}
-            displayColorbox={displayColorbox}
           />
         </div>
       ))}
