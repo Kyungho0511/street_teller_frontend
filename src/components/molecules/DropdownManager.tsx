@@ -22,7 +22,7 @@ type DropdownManagerProps = {
  */
 export default function DropdownManager({
   lists,
-  listType,
+  listType: ListType,
   expandFirstList,
   autoCollapse,
 }: DropdownManagerProps) {
@@ -31,7 +31,6 @@ export default function DropdownManager({
     new Array(lists.length).fill(false)
   );
   const location = useLocation();
-  const ListType = listType;
 
   // Expand the first list if requested.
   useEffectAfterMount(() => {

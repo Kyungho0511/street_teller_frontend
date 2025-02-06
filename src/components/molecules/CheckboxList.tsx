@@ -18,7 +18,7 @@ type CheckboxListProps = {
 };
 
 /**
- * Checkbox list component.
+ * Checkbox list component with a nested sublist.
  * @param surveyName Survey name of the checkbox list.
  * @param list List of items to be displayed.
  */

@@ -15,7 +15,7 @@ import {
 } from "../constants/kMeansConstants";
 
 const openai = new OpenAI({
-  // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
+  // TODO: Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
   // Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
   apiKey: import.meta.env.VITE_API_KEY_OPENAI as string,
   dangerouslyAllowBrowser: true,
@@ -254,6 +254,9 @@ function getSystemMessage(prompt: Prompt): string {
   const type = prompt.type === "instruction" ? "text" : prompt.type;
 
   const count = type === "cluster" ? NUMBER_OF_CLUSTERS : prompt.content.length;
+
+  console.log("count: ", count);
+
   const prefix = "Assistant is a large language model trained by OpenAI";
   const jsonPrefix =
     "You are a helpful assistant designed to output JSON. You are an expert for interpreting machine learning outcomes, especially in the context of urban planning, your focus is on analyzing and labeling clusters from k-means clustering. You translate the values of variables within these k-means clusters into understandable, human language names. This process involves examining the distinctive characteristics of each cluster, understanding the significance of each variable within the context of urban fabrics, and then formulating descriptive names that accurately reflect the underlying patterns and relationships.";

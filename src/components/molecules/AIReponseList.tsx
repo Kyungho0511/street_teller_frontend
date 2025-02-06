@@ -7,33 +7,33 @@ import { useLocation } from "react-router-dom";
 import { parseString, pathToSection } from "../../utils/utils";
 import { ClusterPrompt, ReportPrompt } from "../../constants/messageConstants";
 import { RGBA } from "../../constants/mapConstants";
-import CheckboxList, { CheckboxItem } from "./CheckboxList";
+import { CheckboxItem } from "./CheckboxList";
 
 type AIResponseListProps = {
   surveyName: keyof Survey;
   list: CheckboxItem[];
+  listType: React.ElementType;
   colors: RGBA[];
   prompt: ClusterPrompt | ReportPrompt | undefined;
   streamOpenAI: () => AsyncGenerator<string | OpenAIResponseJSON>;
-  listType: "checkbox" | "regular";
 };
 
 /**
  * Checkbox list component to display the AI response.
  * @param surveyName Survey name of the checkbox list.
  * @param list List of AI reponses to be displayed after streaming.
+ * @param listType Format of the list to be displayed.
  * @param colors List of colors to be applied to AI response.
  * @param prompt Prompts to ask to AI.
  * @param streamOpenAI Callback function to stream the OpenAI response.
- * @param listType Format of the list to be displayed.
  */
 export default function AIResponseList({
   surveyName,
   list,
+  listType: ListType,
   colors,
   prompt,
   streamOpenAI,
-  listType,
 }: AIResponseListProps) {
   const { setSurvey } = useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
@@ -94,6 +94,8 @@ export default function AIResponseList({
       for await (const chunk of streamOpenAI()) {
         response = chunk as OpenAIResponseJSON;
 
+        console.log("response: ", response);
+
         // Update streaming with parsed data.
         newList = [...list];
         response?.labels?.forEach((item, i) => {
@@ -130,9 +132,5 @@ export default function AIResponseList({
     return <p>{errorMessage.json}</p>;
   }
 
-  return (
-    listType === "checkbox" && (
-      <CheckboxList surveyName={surveyName} list={listToDisplay} />
-    )
-  );
+  return <ListType surveyName={surveyName} list={listToDisplay} />;
 }
