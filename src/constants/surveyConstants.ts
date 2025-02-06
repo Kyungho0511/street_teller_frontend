@@ -8,7 +8,7 @@ import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { CheckboxItem } from "../components/molecules/CheckboxList";
+import { CheckboxItem } from "../components/molecules/CheckboxDropdownList";
 
 /**
  * Site preference categories of the user survey.

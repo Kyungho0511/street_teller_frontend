@@ -17,8 +17,6 @@ type ListBaseProps = {
 export default function ListBase({ surveyName, list }: ListBaseProps) {
   const { getReportSubList } = useContext(SurveyContext);
 
-  console.log("list: ", list);
-
   return (
     <ul className={styles.list}>
       {list.map((item, index) => (

@@ -7,7 +7,10 @@ import { useLocation } from "react-router-dom";
 import { parseString, pathToSection } from "../../utils/utils";
 import { ClusterPrompt, ReportPrompt } from "../../constants/messageConstants";
 import { RGBA } from "../../constants/mapConstants";
-import { CheckboxItem } from "./CheckboxList";
+import { CheckboxItem } from "./CheckboxDropdownList";
+import DropdownManager from "./DropdownManager";
+import BarChartDropdownList from "./BarChartDropDownList";
+import CheckboxDropdownList from "./CheckboxDropdownList";
 
 type AIResponseListProps = {
   surveyName: keyof Survey;
@@ -94,8 +97,6 @@ export default function AIResponseList({
       for await (const chunk of streamOpenAI()) {
         response = chunk as OpenAIResponseJSON;
 
-        console.log("response: ", response);
-
         // Update streaming with parsed data.
         newList = [...list];
         response?.labels?.forEach((item, i) => {
@@ -132,5 +133,10 @@ export default function AIResponseList({
     return <p>{errorMessage.json}</p>;
   }
 
-  return <ListType surveyName={surveyName} list={listToDisplay} />;
+  return ListType instanceof BarChartDropdownList ||
+    ListType instanceof CheckboxDropdownList ? (
+    <DropdownManager lists={listToDisplay} listType={ListType} autoCollapse />
+  ) : (
+    <ListType surveyName={surveyName} list={listToDisplay} />
+  );
 }

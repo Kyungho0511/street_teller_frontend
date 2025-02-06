@@ -1,17 +1,17 @@
 import { useContext, useState } from "react";
-import { Cluster } from "../../constants/surveyConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { PopupContext } from "../../context/PopupContext";
 import { useLocation } from "react-router-dom";
+import { CheckboxItem } from "./CheckboxDropdownList";
 
-export type DropDownListProps = {
+export type DropdownListProps = {
   index: number;
   toggleList: (index: number) => void;
   expanded: boolean;
 };
 
 type DropdownManagerProps = {
-  lists: Cluster[];
+  lists: CheckboxItem[];
   listType: React.ElementType;
   expandFirstList?: boolean; // expand the first list item by default.
   autoCollapse?: boolean; // only one list can be expanded at a time.

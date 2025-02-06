@@ -1,4 +1,4 @@
-import styles from "./CheckboxList.module.css";
+import styles from "./CheckboxDropdownList.module.css";
 import { useContext } from "react";
 import { RGBA } from "../../constants/mapConstants";
 import Colorbox from "../atoms/Colorbox";
@@ -12,7 +12,7 @@ export type CheckboxItem = {
   id: string;
 };
 
-type CheckboxListProps = {
+type CheckboxDropdownListProps = {
   surveyName: keyof Survey;
   list: CheckboxItem[];
 };
@@ -22,7 +22,10 @@ type CheckboxListProps = {
  * @param surveyName Survey name of the checkbox list.
  * @param list List of items to be displayed.
  */
-export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
+export default function CheckboxDropdownList({
+  surveyName,
+  list,
+}: CheckboxDropdownListProps) {
   const { setSurvey, getReportSubList } = useContext(SurveyContext);
 
   // Handle uncontrolled checkbox change

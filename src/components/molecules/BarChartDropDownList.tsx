@@ -1,23 +1,23 @@
-import styles from "./DropdownList.module.css";
+import styles from "./BarChartDropdownList.module.css";
 import { Cluster } from "../../constants/surveyConstants";
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
 import Colorbox from "../atoms/Colorbox";
-import { DropDownListProps, DropdownManager } from "./DropdownManager";
+import { DropdownListProps, DropdownManager } from "./DropdownManager";
 
-type BarChartDropDownListProps = DropDownListProps & {
+type BarChartDropdownListProps = DropdownListProps & {
   list: Cluster;
 };
 
 /**
  * Bar chart drop down list component to be used with {@link DropdownManager} component.
  */
-export default function BarChartDropDownList({
+export default function BarChartDropdownList({
   list,
   index,
   toggleList,
   expanded,
-}: BarChartDropDownListProps) {
+}: BarChartDropdownListProps) {
   return (
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
       <button className={styles.list_button} onClick={() => toggleList(index)}>

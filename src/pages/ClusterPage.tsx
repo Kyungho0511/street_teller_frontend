@@ -27,8 +27,8 @@ import { ClusterPrompt } from "../constants/messageConstants";
 import { streamOpenAI } from "../services/openai";
 import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
-import BarChartDropDownList from "../components/molecules/BarChartDropDownList";
-import CheckboxList from "../components/molecules/CheckboxList";
+import BarChartDropdownList from "../components/molecules/BarChartDropDownList";
+import CheckboxDropdownList from "../components/molecules/CheckboxDropdownList";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -216,7 +216,7 @@ export default function ClusterPage() {
           <AIResponseList
             surveyName={clusterName}
             list={clusterList.list}
-            listType={CheckboxList}
+            listType={CheckboxDropdownList}
             colors={clusterList.colors}
             prompt={prompts[clusterIndex]}
             streamOpenAI={() =>
@@ -239,9 +239,9 @@ export default function ClusterPage() {
         >
           <DropdownManager
             lists={clusterList.list}
-            listType={BarChartDropDownList}
+            listType={BarChartDropdownList}
             autoCollapse
-          ></DropdownManager>
+          />
         </LegendSection>
 
         <PopupSection enableSelectEffect>
