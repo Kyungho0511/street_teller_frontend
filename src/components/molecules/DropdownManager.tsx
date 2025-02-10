@@ -20,7 +20,7 @@ export default function DropdownManager({
   expandFirstList,
   autoCollapse,
 }: DropdownManagerProps) {
-  const { selectedCluster } = useContext(PopupContext);
+  const { selectedCluster, selectedReport } = useContext(PopupContext);
   const [expandedLists, setExpandedLists] = useState<boolean[]>(() =>
     new Array(lists.length).fill(false)
   );
@@ -46,6 +46,12 @@ export default function DropdownManager({
     if (selectedCluster == null) return;
     toggleList(selectedCluster);
   }, [selectedCluster]);
+
+  // Expand the selected report list.
+  useEffectAfterMount(() => {
+    if (selectedReport == null) return;
+    toggleList(selectedReport);
+  }, [selectedReport]);
 
   const toggleList = (index: number) => {
     if (autoCollapse) {

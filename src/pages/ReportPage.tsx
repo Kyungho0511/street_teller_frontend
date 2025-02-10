@@ -28,6 +28,7 @@ import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import DropdownList from "../components/molecules/DropdownList";
+import PopupContentReport from "../components/atoms/PopupContentReport";
 
 /**
  * Report page component where users select sites to report.
@@ -157,26 +158,26 @@ export default function ReportPage() {
 
   return (
     <>
-      <Sidebar>
-        <SidebarSection>
-          <AIResponseList
-            surveyName={reportName}
-            list={survey.report.list}
-            listType={DropdownList}
-            colors={survey.report.colors}
-            prompt={prompt}
-            streamOpenAI={() => streamOpenAI(prompt, messages[section])}
-          />
-        </SidebarSection>
-      </Sidebar>
-
       <PopupContextProvider>
+        <Sidebar>
+          <SidebarSection>
+            <AIResponseList
+              surveyName={reportName}
+              list={survey.report.list}
+              listType={DropdownList}
+              colors={survey.report.colors}
+              prompt={prompt}
+              streamOpenAI={() => streamOpenAI(prompt, messages[section])}
+            />
+          </SidebarSection>
+        </Sidebar>
+
         <LegendSection title={"Title"}>
           <p>legend section</p>
         </LegendSection>
 
         <PopupSection enableSelectEffect>
-          <PopupContentCluster clusterId={"3"} />
+          <PopupContentReport />
         </PopupSection>
       </PopupContextProvider>
     </>
