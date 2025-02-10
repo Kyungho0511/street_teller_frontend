@@ -28,7 +28,7 @@ import { streamOpenAI } from "../services/openai";
 import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
 import BarChartDropdownList from "../components/molecules/BarChartDropDownList";
-import CheckboxDropdownList from "../components/molecules/CheckboxDropdownList";
+import CheckboxList from "../components/molecules/CheckboxList";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -216,7 +216,7 @@ export default function ClusterPage() {
           <AIResponseList
             surveyName={clusterName}
             list={clusterList.list}
-            listType={CheckboxDropdownList}
+            listType={CheckboxList}
             colors={clusterList.colors}
             prompt={prompts[clusterIndex]}
             streamOpenAI={() =>

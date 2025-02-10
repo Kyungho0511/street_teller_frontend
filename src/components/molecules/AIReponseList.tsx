@@ -7,14 +7,13 @@ import { useLocation } from "react-router-dom";
 import { parseString, pathToSection } from "../../utils/utils";
 import { ClusterPrompt, ReportPrompt } from "../../constants/messageConstants";
 import { RGBA } from "../../constants/mapConstants";
-import { CheckboxItem } from "./CheckboxDropdownList";
 import DropdownManager from "./DropdownManager";
-import BarChartDropdownList from "./BarChartDropDownList";
-import CheckboxDropdownList from "./CheckboxDropdownList";
+import DropdownList from "./DropdownList";
+import { ListItem } from "../../constants/surveyConstants";
 
 type AIResponseListProps = {
   surveyName: keyof Survey;
-  list: CheckboxItem[];
+  list: ListItem[];
   listType: React.ElementType;
   colors: RGBA[];
   prompt: ClusterPrompt | ReportPrompt | undefined;
@@ -48,7 +47,7 @@ export default function AIResponseList({
     setErrorMessage,
   } = useContext(MessageContext);
 
-  const [streaming, setStreaming] = useState<CheckboxItem[]>([]);
+  const [streaming, setStreaming] = useState<ListItem[]>([]);
   const listToDisplay = isStreaming.json && streaming ? streaming : list;
 
   const location = useLocation();
@@ -90,7 +89,7 @@ export default function AIResponseList({
     let response: OpenAIResponseJSON = {
       labels: [{ name: "", reasoning: "" }],
     };
-    let newList: CheckboxItem[] = [...list];
+    let newList: ListItem[] = [...list];
 
     try {
       // Start OpenAI JSON response streaming.
@@ -133,8 +132,7 @@ export default function AIResponseList({
     return <p>{errorMessage.json}</p>;
   }
 
-  return ListType instanceof BarChartDropdownList ||
-    ListType instanceof CheckboxDropdownList ? (
+  return ListType === DropdownList ? (
     <DropdownManager lists={listToDisplay} listType={ListType} autoCollapse />
   ) : (
     <ListType surveyName={surveyName} list={listToDisplay} />

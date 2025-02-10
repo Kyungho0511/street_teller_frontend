@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from "uuid";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
-import ListBase from "../components/molecules/ListBase";
+import DropdownList from "../components/molecules/DropdownList";
 
 /**
  * Report page component where users select sites to report.
@@ -162,7 +162,7 @@ export default function ReportPage() {
           <AIResponseList
             surveyName={reportName}
             list={survey.report.list}
-            listType={ListBase}
+            listType={DropdownList}
             colors={survey.report.colors}
             prompt={prompt}
             streamOpenAI={() => streamOpenAI(prompt, messages[section])}

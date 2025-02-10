@@ -1,32 +1,21 @@
-import styles from "./CheckboxDropdownList.module.css";
+import styles from "./CheckboxList.module.css";
 import { useContext } from "react";
-import { RGBA } from "../../constants/mapConstants";
 import Colorbox from "../atoms/Colorbox";
 import { Survey, SurveyContext } from "../../context/SurveyContext";
+import { ListItem } from "../../constants/surveyConstants";
 
-export type CheckboxItem = {
-  name: string;
-  content: string;
-  color: RGBA;
-  checked: boolean;
-  id: string;
-};
-
-type CheckboxDropdownListProps = {
+type CheckboxListProps = {
   surveyName: keyof Survey;
-  list: CheckboxItem[];
+  list: ListItem[];
 };
 
 /**
- * Checkbox list component with a nested sublist.
+ * Checkbox list component.
  * @param surveyName Survey name of the checkbox list.
  * @param list List of items to be displayed.
  */
-export default function CheckboxDropdownList({
-  surveyName,
-  list,
-}: CheckboxDropdownListProps) {
-  const { setSurvey, getReportSubList } = useContext(SurveyContext);
+export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
+  const { setSurvey } = useContext(SurveyContext);
 
   // Handle uncontrolled checkbox change
   const handleChange = (
@@ -62,20 +51,6 @@ export default function CheckboxDropdownList({
             <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
           </label>
           <p className={styles.text}>{item.content}</p>
-
-          <ul className={styles.subList}>
-            {surveyName === "report" &&
-              getReportSubList(index).map((item) => (
-                <li className={styles.subItem} key={item.id}>
-                  <Colorbox
-                    label={item.name}
-                    color={item.color}
-                    fontSize={"0.9rem"}
-                  />
-                  {/* <p className={styles.subText}>{item.content}</p> */}
-                </li>
-              ))}
-          </ul>
         </li>
       ))}
     </ul>

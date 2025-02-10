@@ -2,16 +2,10 @@ import { useContext, useState } from "react";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import { PopupContext } from "../../context/PopupContext";
 import { useLocation } from "react-router-dom";
-import { CheckboxItem } from "./CheckboxDropdownList";
-
-export type DropdownListProps = {
-  index: number;
-  toggleList: (index: number) => void;
-  expanded: boolean;
-};
+import { ListItem } from "../../constants/surveyConstants";
 
 type DropdownManagerProps = {
-  lists: CheckboxItem[];
+  lists: ListItem[];
   listType: React.ElementType;
   expandFirstList?: boolean; // expand the first list item by default.
   autoCollapse?: boolean; // only one list can be expanded at a time.
@@ -31,6 +25,10 @@ export default function DropdownManager({
     new Array(lists.length).fill(false)
   );
   const location = useLocation();
+
+  useEffectAfterMount(() => {
+    setExpandedLists(new Array(lists.length).fill(false));
+  }, [lists.length]);
 
   // Expand the first list if requested.
   useEffectAfterMount(() => {

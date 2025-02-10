@@ -255,8 +255,6 @@ function getSystemMessage(prompt: Prompt): string {
 
   const count = type === "cluster" ? NUMBER_OF_CLUSTERS : prompt.content.length;
 
-  console.log("count: ", count);
-
   const prefix = "Assistant is a large language model trained by OpenAI";
   const jsonPrefix =
     "You are a helpful assistant designed to output JSON. You are an expert for interpreting machine learning outcomes, especially in the context of urban planning, your focus is on analyzing and labeling clusters from k-means clustering. You translate the values of variables within these k-means clusters into understandable, human language names. This process involves examining the distinctive characteristics of each cluster, understanding the significance of each variable within the context of urban fabrics, and then formulating descriptive names that accurately reflect the underlying patterns and relationships.";

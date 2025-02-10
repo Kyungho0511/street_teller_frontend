@@ -8,7 +8,6 @@ import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { CheckboxItem } from "../components/molecules/CheckboxDropdownList";
 
 /**
  * Site preference categories of the user survey.
@@ -142,7 +141,17 @@ export type Centroid = {
   id: string;
 };
 
-export type Cluster = CheckboxItem & {
+export type ListItem = {
+  name: string;
+  content: string;
+  color: RGBA;
+  checked: boolean;
+  id: string;
+  centroids?: Centroid[];
+  geoIds?: string[];
+};
+
+export type Cluster = ListItem & {
   name: string;
   content: string;
   centroids: Centroid[];
@@ -153,7 +162,7 @@ export type Cluster = CheckboxItem & {
   id: string;
 };
 
-export type Report = CheckboxItem & {
+export type Report = ListItem & {
   name: string;
   content: string;
   clusters: Cluster[];
