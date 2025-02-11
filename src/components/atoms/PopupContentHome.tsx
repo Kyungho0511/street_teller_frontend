@@ -5,6 +5,7 @@ import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import * as utils from "../../utils/utils";
 import { PopupContext } from "../../context/PopupContext";
 import HomePage from "../../pages/HomePage";
+import useNeighborhoodName from "../../hooks/useNeighborhoodName";
 
 type PopupContentHomeProps = {
   selectedAttribute: MapAttribute;
@@ -18,17 +19,13 @@ export default function PopupContentHome({
 }: PopupContentHomeProps) {
   const { property } = useContext(PopupContext);
   const [formattedValue, setFormattedValue] = useState<string>("");
-  const [countyName, setCountyName] = useState<string>("");
-  const [neighborhoodName, setNeighborhoodName] = useState<string>("");
+  const [countyName, neighborhoodName] = useNeighborhoodName();
 
   useEffectAfterMount(() => {
     if (!property) return;
+
     const value = property[selectedAttribute.name] as number;
     setFormattedValue(utils.formatUnit(value, selectedAttribute.unit));
-
-    const geoid = property.GEOID.toString();
-    setCountyName(utils.getCountyName(geoid));
-    setNeighborhoodName(utils.getNeighborhoodName(geoid));
   }, [property]);
 
   return (

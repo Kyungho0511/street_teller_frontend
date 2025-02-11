@@ -12,6 +12,7 @@ import { Survey, SurveyContext } from "../../context/SurveyContext";
 import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
 import Colorbox from "./Colorbox";
 import ReportPage from "../../pages/ReportPage";
+import useNeighborhoodName from "../../hooks/useNeighborhoodName";
 
 /**
  * Popup content component for the {@link ReportPage}
@@ -20,9 +21,8 @@ export default function PopupContentReport() {
   const { mapViewer, parentLayer } = useContext(MapContext);
   const { survey } = useContext(SurveyContext);
   const { property, setSelectedReport } = useContext(PopupContext);
-  const [countyName, setCountyName] = useState<string>("");
-  const [neighborhoodName, setNeighborhoodName] = useState<string>("");
   const [clusters, setClusters] = useState<Cluster[]>();
+  const [countyName, neighborhoodName] = useNeighborhoodName();
 
   // Set selected report based on the map mouse event.
   useEffect(() => {
@@ -43,11 +43,6 @@ export default function PopupContentReport() {
 
   useEffectAfterMount(() => {
     if (!property) return;
-
-    // Set location names based on the property's GEOID.
-    const geoid = property.GEOID.toString();
-    setCountyName(utils.getCountyName(geoid));
-    setNeighborhoodName(utils.getNeighborhoodName(geoid));
 
     // Set cluster labels based on the property's cluster ID.
     const clusters: Cluster[] = [];
