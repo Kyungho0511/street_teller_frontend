@@ -5,7 +5,7 @@ import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import * as utils from "../../utils/utils";
 import { PopupContext } from "../../context/PopupContext";
 import HomePage from "../../pages/HomePage";
-import useNameFromMap from "../../hooks/useNeighborhoodName";
+import useNameFromMap from "../../hooks/useNameFromMap";
 
 type PopupContentHomeProps = {
   selectedAttribute: MapAttribute;
