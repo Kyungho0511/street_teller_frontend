@@ -1,28 +1,21 @@
 import styles from "./PopupContent.module.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { MapContext } from "../../context/MapContext";
 import { PopupContext } from "../../context/PopupContext";
-import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import * as utils from "../../utils/utils";
-import {
-  Cluster,
-  NUMBER_OF_CLUSTERING_STEPS,
-} from "../../constants/surveyConstants";
-import { Survey, SurveyContext } from "../../context/SurveyContext";
-import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
+import { NUMBER_OF_CLUSTERING_STEPS } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
 import ReportPage from "../../pages/ReportPage";
-import useNeighborhoodName from "../../hooks/useNeighborhoodName";
+import useNameFromMap from "../../hooks/useNeighborhoodName";
+import useClusterFromMap from "../../hooks/useClusterLabel";
 
 /**
  * Popup content component for the {@link ReportPage}
  */
 export default function PopupContentReport() {
   const { mapViewer, parentLayer } = useContext(MapContext);
-  const { survey } = useContext(SurveyContext);
-  const { property, setSelectedReport } = useContext(PopupContext);
-  const [clusters, setClusters] = useState<Cluster[]>();
-  const [countyName, neighborhoodName] = useNeighborhoodName();
+  const { setSelectedReport } = useContext(PopupContext);
+  const [clusters] = useClusterFromMap(NUMBER_OF_CLUSTERING_STEPS.toString());
+  const [countyName, neighborhoodName] = useNameFromMap();
 
   // Set selected report based on the map mouse event.
   useEffect(() => {
@@ -40,23 +33,6 @@ export default function PopupContentReport() {
       mapViewer.off("click", updateSelectedReport);
     };
   }, [mapViewer, parentLayer]);
-
-  useEffectAfterMount(() => {
-    if (!property) return;
-
-    // Set cluster labels based on the property's cluster ID.
-    const clusters: Cluster[] = [];
-    for (let i = 1, n = NUMBER_OF_CLUSTERING_STEPS + 1; i < n; i++) {
-      const clusterKey = `cluster${i}`;
-      const clusterList = survey[clusterKey as keyof Survey];
-      const cluster =
-        clusterList.list[
-          property[clusterKey as HealthcarePropertyName] as number
-        ];
-      clusters.push(cluster as Cluster);
-    }
-    setClusters(clusters);
-  }, [property]);
 
   return (
     <>

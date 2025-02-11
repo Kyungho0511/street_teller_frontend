@@ -5,7 +5,7 @@ import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import * as utils from "../../utils/utils";
 import { PopupContext } from "../../context/PopupContext";
 import HomePage from "../../pages/HomePage";
-import useNeighborhoodName from "../../hooks/useNeighborhoodName";
+import useNameFromMap from "../../hooks/useNeighborhoodName";
 
 type PopupContentHomeProps = {
   selectedAttribute: MapAttribute;
@@ -19,7 +19,7 @@ export default function PopupContentHome({
 }: PopupContentHomeProps) {
   const { property } = useContext(PopupContext);
   const [formattedValue, setFormattedValue] = useState<string>("");
-  const [countyName, neighborhoodName] = useNeighborhoodName();
+  const [countyName, neighborhoodName] = useNameFromMap();
 
   useEffectAfterMount(() => {
     if (!property) return;
