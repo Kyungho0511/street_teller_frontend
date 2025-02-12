@@ -148,7 +148,7 @@ export default function ReportPage() {
 
     // Add the geoJson data to the map.
     if (!mapViewer) return;
-    mapbox.addReportLayer(reportName, geoJson, reports, mapViewer);
+    mapbox.addReportLayer(reportName, geoJson, mapViewer);
 
     return () => {
       mapViewer.removeLayer(reportName);

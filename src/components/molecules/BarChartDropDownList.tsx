@@ -3,8 +3,8 @@ import { Cluster } from "../../constants/surveyConstants";
 import BarChart from "../atoms/BarChart";
 import * as utils from "../../utils/utils";
 import Colorbox from "../atoms/Colorbox";
-import { DropdownManager } from "./DropdownManager";
 import { DropdownListProps } from "./DropdownList";
+import DropdownManager from "./DropdownManager";
 
 type BarChartDropdownListProps = DropdownListProps & {
   list: Cluster;

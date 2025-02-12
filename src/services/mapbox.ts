@@ -8,7 +8,7 @@ import {
   themeColor,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
-import { Report, ClusterList } from "../constants/surveyConstants";
+import { ClusterList } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
 import {
@@ -198,7 +198,6 @@ export function updateClusterLayer(
 export function addReportLayer(
   name: string,
   geoJson: HealthcareFeatureCollection,
-  reports: Report[],
   map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.

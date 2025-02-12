@@ -1,5 +1,5 @@
 import styles from "./PopupContent.module.css";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { PopupContext } from "../../context/PopupContext";
 import ClusterPage from "../../pages/ClusterPage";
 import Colorbox from "./Colorbox";

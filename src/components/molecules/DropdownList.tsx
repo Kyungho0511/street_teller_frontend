@@ -1,5 +1,5 @@
 import styles from "./DropdownList.module.css";
-import { DropdownManager } from "./DropdownManager";
+import DropdownManager from "./DropdownManager";
 import { ListItem } from "../../constants/surveyConstants";
 
 export type DropdownListProps = {
