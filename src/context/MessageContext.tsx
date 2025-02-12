@@ -6,7 +6,7 @@ import { initialSectionMessages, Section } from "../constants/sectionConstants";
 export type Message = {
   user: string;
   ai: string;
-  type: "text" | "instruction" | "cluster";
+  type: "text" | "instruction" | "cluster" | "report";
 };
 
 export type IsStreaming = {

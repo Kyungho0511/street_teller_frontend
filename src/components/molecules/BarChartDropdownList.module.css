@@ -2,19 +2,14 @@
 @import "../../styles/color.css";
 @import "../../styles/theme.css";
 
-@import "../../styles/font.css";
-@import "../../styles/color.css";
-@import "../../styles/theme.css";
-
 .container {
-  margin-top: 1rem;
   padding: 0.3rem;
 }
 
 .list_button {
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
   width: 100%;
   text-align: start;
   padding: 0;
@@ -78,11 +73,6 @@
   }
 }
 
-.title {
-  font-size: 1rem;
-  margin: 0;
-}
-
-.subtitle {
-  margin: 0;
+.spacer {
+  width: 5rem;
 }

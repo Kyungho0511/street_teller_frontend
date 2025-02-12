@@ -1,28 +1,23 @@
 import styles from "./PopupContent.module.css";
 import { useContext } from "react";
 import { PopupContext } from "../../context/PopupContext";
-import ClusterPage from "../../pages/ClusterPage";
+import { NUMBER_OF_CLUSTERING_STEPS } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
+import ReportPage from "../../pages/ReportPage";
 import useNameFromMap from "../../hooks/useNameFromMap";
 import useClusterFromMap from "../../hooks/useClusterFromMap";
 import useMapClickEvent from "../../hooks/useMapClickEvent";
 
-type PopupContentClusterProps = {
-  clusterId: string;
-};
-
 /**
- * Popup content component for the {@link ClusterPage}
+ * Popup content component for the {@link ReportPage}
  */
-export default function PopupContentCluster({
-  clusterId,
-}: PopupContentClusterProps) {
-  const { setSelectedCluster } = useContext(PopupContext);
-  const [clusters] = useClusterFromMap(clusterId);
+export default function PopupContentReport() {
+  const { setSelectedReport } = useContext(PopupContext);
+  const [clusters] = useClusterFromMap(NUMBER_OF_CLUSTERING_STEPS.toString());
   const [countyName, neighborhoodName] = useNameFromMap();
 
-  // Set selected cluster based on the map mouse event.
-  useMapClickEvent(`cluster${clusterId}`, setSelectedCluster);
+  // Set selected report based on the map mouse event.
+  useMapClickEvent("report", setSelectedReport);
 
   return (
     <>

@@ -8,6 +8,8 @@ type PopupContextProps = {
   >;
   selectedCluster: number | undefined;
   setSelectedCluster: React.Dispatch<React.SetStateAction<number | undefined>>;
+  selectedReport: number | undefined;
+  setSelectedReport: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
 export const PopupContext = createContext<PopupContextProps>(
@@ -24,6 +26,7 @@ export function PopupContextProvider({
 }) {
   const [property, setProperty] = useState<HealthcareProperties>();
   const [selectedCluster, setSelectedCluster] = useState<number>();
+  const [selectedReport, setSelectedReport] = useState<number>();
 
   return (
     <PopupContext.Provider
@@ -32,6 +35,8 @@ export function PopupContextProvider({
         setProperty,
         selectedCluster,
         setSelectedCluster,
+        selectedReport,
+        setSelectedReport,
       }}
     >
       {children}

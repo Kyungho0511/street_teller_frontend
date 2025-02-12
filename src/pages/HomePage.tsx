@@ -25,7 +25,7 @@ import * as mapbox from "../services/mapbox";
  * Home page component where users sort their data preferences.
  */
 export default function HomePage() {
-  const { survey, setSurveyContext } = useContext(SurveyContext);
+  const { survey } = useContext(SurveyContext);
   const { mapViewer, mapMode, parentLayer, attribute, color } =
     useContext(MapContext);
 
@@ -38,7 +38,7 @@ export default function HomePage() {
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
-    const selectedPreference = survey.preferenceList.list.find(
+    const selectedPreference = survey.preference.list.find(
       (item) => item.selected
     );
     selectedPreference && setPreference(selectedPreference);
@@ -66,8 +66,8 @@ export default function HomePage() {
       <Sidebar>
         <SidebarSection>
           <DraggableList
-            list={survey.preferenceList.list}
-            setSurveyContext={setSurveyContext}
+            surveyName="preference"
+            list={survey.preference.list}
             displayIcon
             displayRanking
             selectable
@@ -77,7 +77,7 @@ export default function HomePage() {
 
       <PopupContextProvider>
         <LegendSection title={preference.category as string}>
-          <SelectableList list={preference.subCategories} mappable />
+          <SelectableList list={preference.subCategories} />
           <GradientBar
             bound={attribute.bound}
             unit={attribute.unit}

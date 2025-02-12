@@ -1,9 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
-import { ListItem } from "../components/molecules/SelectableList";
-import { CheckboxItem } from "../components/molecules/CheckboxList";
-import { HealthcarePropertyName } from "./geoJsonConstants";
-import { defaultColor } from "./mapConstants";
+import {
+  HealthcareFeatureCollection,
+  HealthcarePropertyName,
+} from "./geoJsonConstants";
+import { color, RGBA, transparentColor } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
+import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
+import { Survey } from "../context/SurveyContext";
+import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 /**
  * Site preference categories of the user survey.
@@ -22,16 +26,16 @@ export type Preference = {
   iconPath: string;
   selected: boolean;
   id: string;
-  subCategories: ListItem[];
+  subCategories: { name: HealthcarePropertyName; id: string }[];
 };
 
 export type PreferenceList = {
-  name: "preferences";
+  name: "preference";
   list: Preference[];
 };
 
 export const initialPreferenceList: PreferenceList = {
-  name: "preferences",
+  name: "preference",
   list: [
     {
       category: "Unserved Population Density",
@@ -122,164 +126,112 @@ export const initialPreferenceList: PreferenceList = {
   ],
 };
 
-export const siteCategories = initialPreferenceList.list.map((preference) => ({
-  category: preference.category,
-  subCategories: preference.subCategories.map(
-    (subCategory) => subCategory.name
-  ),
-}));
+export const siteCategories = initialPreferenceList.list.map(
+  ({ category, subCategories }) => ({
+    category,
+    subCategories,
+  })
+);
 
-/**
- * Borough list of the user survey.
- */
-export type BoroughList = {
-  name: "boroughs";
-  list: CheckboxItem[];
+export const NUMBER_OF_CLUSTERING_STEPS = 3;
+
+export type Centroid = {
+  name: HealthcarePropertyName;
+  value: number;
+  id: string;
 };
 
-/**
- * Borough list to load initially.
- */
-export const initialBoroughList: BoroughList = {
-  name: "boroughs",
-  list: [
-    { name: "Manhattan", checked: true, id: uuidv4() },
-    { name: "Brooklyn", checked: false, id: uuidv4() },
-    { name: "Bronx", checked: false, id: uuidv4() },
-    { name: "Queens", checked: false, id: uuidv4() },
-    { name: "Staten Island", checked: false, id: uuidv4() },
-  ],
-};
-
-/**
- * Clusters for the survey.
- */
-export type Cluster = {
+export type ListItem = {
   name: string;
-  centroids: { name: HealthcarePropertyName; value: number }[];
-  reasoning: string;
+  content: string;
+  color: RGBA;
+  checked: boolean;
+  id: string;
+  centroids?: Centroid[];
+  geoIds?: string[];
 };
 
-export type ClusterCheckboxItem = CheckboxItem & Cluster;
+export type Cluster = ListItem & {
+  name: string;
+  content: string;
+  centroids: Centroid[];
+  color: RGBA;
+  index: number;
+  clusterId: string;
+  checked: boolean;
+  id: string;
+};
+
+export type Report = ListItem & {
+  name: string;
+  content: string;
+  clusters: Cluster[];
+  color: RGBA;
+  geoIds: string[];
+  index: number;
+  checked: boolean;
+  id: string;
+};
 
 export type ClusterList = {
-  name: `cluster${number}`;
-  list: ClusterCheckboxItem[];
+  name: `cluster1` | `cluster2` | `cluster3`;
+  list: Cluster[];
+  colors: RGBA[];
+  geoJson: HealthcareFeatureCollection | undefined;
+  attributes: HealthcarePropertyName[];
+  kMeansResult: KMeansResult | undefined;
+};
+
+export type ReportList = {
+  name: "report";
+  geoJson: HealthcareFeatureCollection | undefined;
+  list: Report[];
+  colors: RGBA[];
+};
+
+export type ReportSubList = {
+  name: string;
+  content: string;
+  color: RGBA;
+  id: string;
+}[];
+
+export const initialSurvey: Survey = {
+  preference: initialPreferenceList,
+  cluster1: createClusterList("1", color.yellow.categorized),
+  cluster2: createClusterList("2", color.blue.categorized),
+  cluster3: createClusterList("3", color.green.categorized),
+  report: {
+    name: "report",
+    list: [],
+    colors: [],
+    geoJson: undefined,
+  } as ReportList,
 };
 
 /**
- * Cluster lists to load initially.
+ * Create a cluster list with default values.
  */
-export const initialClusterLists: ClusterList[] = [
-  {
-    name: "cluster1",
-    list: [
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-    ],
-  },
-  {
-    name: "cluster2",
-    list: [
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-    ],
-  },
-  {
-    name: "cluster3",
-    list: [
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-      {
-        name: "",
-        centroids: [{ name: "walked percent", value: 0 }],
-        reasoning: "",
-        color: defaultColor,
-        checked: true,
-        id: uuidv4(),
-      },
-    ],
-  },
-];
+function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
+  const list: Cluster[] = Array.from(
+    { length: NUMBER_OF_CLUSTERS },
+    (_, i) => ({
+      name: "",
+      centroids: [],
+      content: "",
+      color: transparentColor,
+      checked: true,
+      index: i,
+      clusterId,
+      id: uuidv4(),
+    })
+  );
+  return {
+    name: `cluster${clusterId}` as ClusterList["name"],
+    list,
+    colors,
+    geoJson: undefined,
+    attributes: [],
+    kMeansResult: undefined,
+  };
+}

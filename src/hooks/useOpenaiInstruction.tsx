@@ -9,10 +9,12 @@ import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
 
 /**
  * Get openAI instruction of the current page.
+ * @param sectionId section id number of the current page in case of multiple sub-sections.
+ * @param siteCategories name of the selected preference categories for current clustering analysis.
  */
 export default function useOpenaiInstruction(
   sectionId?: number,
-  selectedCategories?: SiteCategory[]
+  siteCategories?: SiteCategory[]
 ) {
   const { messages, addMessage, updateMessagePrompt } =
     useContext(MessageContext);
@@ -28,7 +30,7 @@ export default function useOpenaiInstruction(
     addMessage(section, { user: "", ai: "", type: "instruction" });
     const prompt: Prompt = {
       type: "instruction",
-      content: getInstructionPrompt(section, sectionId, selectedCategories),
+      content: getInstructionPrompt(section, sectionId, siteCategories),
     };
     updateMessagePrompt(section, prompt);
   }, [location.pathname]);
@@ -38,30 +40,33 @@ export default function useOpenaiInstruction(
  * Get instruction prompt for each page to request to openAI.
  * @param section section name of the current page.
  * @param sectionId section id number of the current page in case of multiple sub-sections.
- * @param categories name of the selected preference categories for current clustering analysis.
+ * @param siteCategories name of the selected preference categories for current clustering analysis.
  */
 function getInstructionPrompt(
   section: Section,
   sectionId?: number,
-  selectedCategories?: SiteCategory[]
+  siteCategories?: SiteCategory[]
 ): string {
-  // Instruction prompt prefix.
-  let instructionPrompt = "Instruct users with the following sentence: ";
+  const prefix = "Instruct users with the following sentence: ";
+  let prompt = "";
 
+  // Home Instruction
   if (section === "home") {
-    instructionPrompt += `Hi, I am a site analysis agent to recommend site clusters based on your site preferences. Tell me about your healthcare site preferences by sorting the categories below in order of importance for your new healthcare site. I will tell you about NYC site clusters that suit your need the best. Try not to mention the category names as it is redundant, unless you are asked for it.`;
-  } else if (
-    parseString(section) === "cluster" &&
-    sectionId &&
-    selectedCategories
-  ) {
+    prompt += `Hi, I am a site analysis agent to recommend site clusters based on your site preferences. Tell me about your healthcare site preferences by sorting the categories below in order of importance for your new healthcare site. I will tell you about NYC site clusters that suit your need the best. Try not to mention the category names as it is redundant, unless you are asked for it.`;
+  }
+  // Cluster Instruction
+  else if (parseString(section) === "cluster" && sectionId && siteCategories) {
     const categoryNumber = CLUSTERING_SIZE * (sectionId - 1) + 1;
-    instructionPrompt += `These are cluster groups based on the preference categories ranked at ${categoryNumber} and ${
+    prompt += `These are cluster groups based on your prefered site categories ranked at ${categoryNumber} and ${
       categoryNumber + 1
     } in your priority.  
-      ${categoryNumber}. **${selectedCategories[0]}** 
-      ${categoryNumber + 1}. **${selectedCategories[1]}**
-      Review my interpretation of the clustering analysis below. If you want me to re-explain clustering analysis, press the "retry analysis" button below. When you are ready, select clusters you're targeting, and continue.`;
+      ${categoryNumber}. **${siteCategories[0]}** 
+      ${categoryNumber + 1}. **${siteCategories[1]}**
+      Please review my clustering analysis report below. Choose the clusters you want to target and click the "Continue" button located at the bottom right corner.`;
   }
-  return instructionPrompt;
+  // Report Instruction
+  else if (section === "report") {
+    prompt += `Review the selected site clusters you'd like to search in the real estate listing. You can adjust your selection by using the checkboxes below. When you're finished, click the "Show Listing" button in the bottom right corner.`;
+  }
+  return prefix + prompt;
 }

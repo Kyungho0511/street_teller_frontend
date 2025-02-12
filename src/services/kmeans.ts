@@ -1,6 +1,5 @@
 import { kmeans, Options } from "ml-kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { RGBA } from "../constants/mapConstants";
 import { Feature } from "geojson";
 import {
   HealthcareFeature,
@@ -9,7 +8,6 @@ import {
 } from "../constants/geoJsonConstants";
 import {
   INITIALIZATION,
-  KMeansLayer,
   MAX_ITERATIONS,
   NUMBER_OF_CLUSTERS,
   SEED,
@@ -49,7 +47,7 @@ export function processData(
       attributes.forEach((attr) => {
         if (Object.prototype.hasOwnProperty.call(feature.properties, attr)) {
           if (filteredProperties) {
-            filteredProperties[attr] = feature.properties[attr];
+            filteredProperties[attr] = feature.properties[attr] as number;
           } else {
             filteredProperties = { [attr]: feature.properties[attr] };
           }
@@ -66,31 +64,19 @@ export function processData(
 }
 
 /**
- * Set the kMeans clustering result as a layer object for mapping.
+ * Assign the kMeans clustering result to the geoJson.
  */
-export function setLayer(
-  clusterId: string,
-  kMeans: KMeansResult,
+export function assignToGeoJson(
   geoJson: HealthcareFeatureCollection,
-  title: string,
-  colors: RGBA[],
-  attributes: HealthcarePropertyName[]
-): KMeansLayer {
+  kMeans: KMeansResult,
+  clusterId: string
+): HealthcareFeatureCollection {
   // Deep copy data and set clustering result values.
   const kMeansGeoJson = structuredClone(geoJson);
   kMeansGeoJson.features.forEach((feature: Feature, index) => {
     feature.properties!["cluster" + clusterId] = kMeans.clusters[index];
   });
-
-  const kMeansLayer: KMeansLayer = {
-    geoJson: kMeansGeoJson,
-    centroids: kMeans.centroids,
-    title: title,
-    colors: colors,
-    attributes: attributes,
-  };
-
-  return kMeansLayer;
+  return kMeansGeoJson;
 }
 
 /**
@@ -108,7 +94,7 @@ export function getFilteredGeoJson(
   filteredGeoJson.features = geoJson.features.filter((feature) => {
     const clusterKey = ("cluster" + prevClusterId) as HealthcarePropertyName;
     const cluster = feature.properties![clusterKey];
-    return selection[cluster];
+    return selection[cluster as number];
   });
 
   return filteredGeoJson;

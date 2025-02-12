@@ -5,14 +5,17 @@ import {
   MapLayer,
   transparent,
   ZOOM_MODIFIER,
+  themeColor,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
 import { ClusterList } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
-import { HealthcarePropertyName } from "../constants/geoJsonConstants";
+import {
+  HealthcareFeatureCollection,
+  HealthcarePropertyName,
+} from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
-import { KMeansLayer } from "../constants/kMeansConstants";
 import mapboxgl from "mapbox-gl";
 import * as mapboxgljs from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -187,44 +190,45 @@ export function updateClusterLayer(
 
 /**
  * Add a report layer to the mapbox map.
- * @param kMeansLayers kMeans Layers to be used to create the report layer.
+ * @param name Name of the report layer.
+ * @param geoJson GeoJson data to be added to the map.
+ * @param reports List of reports to be added to the map.
  * @param map Map to which the layer is added.
  */
 export function addReportLayer(
-  title: string,
-  kMeansLayer: KMeansLayer,
+  name: string,
+  geoJson: HealthcareFeatureCollection,
   map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.
-  map.getSource(title) && map.removeSource(title);
-  map.getLayer(title) && map.removeLayer(title);
+  map.getSource(name) && map.removeSource(name);
+  map.getLayer(name) && map.removeLayer(name);
 
   // Add source and layer to the map.
-  console.log(kMeansLayer.geoJson);
-
-  map.addSource(title, {
+  map.addSource(name, {
     type: "geojson",
-    data: kMeansLayer.geoJson,
+    data: geoJson,
   });
+
+  // // color expression for belended colors
+  // const fillColorExpression: mapboxgljs.DataDrivenPropertyValueSpecification<string> =
+  //   ["case"];
+  // reports.forEach((report) => {
+  //   fillColorExpression.push(
+  //     ["==", ["get", "report"], report.index],
+  //     utils.rgbaToString(report.color)
+  //   );
+  // });
+  // fillColorExpression.push(transparent);
+
   map.addLayer(
     {
-      id: title,
+      id: name,
       type: "fill",
-      source: title,
+      source: name,
       paint: {
-        "fill-color": [
-          "case",
-          ["==", ["get", "cluster3"], 0],
-          utils.rgbaToString(kMeansLayer.colors[0]),
-          ["==", ["get", "cluster3"], 1],
-          utils.rgbaToString(kMeansLayer.colors[1]),
-          ["==", ["get", "cluster3"], 2],
-          utils.rgbaToString(kMeansLayer.colors[2]),
-          ["==", ["get", "cluster3"], 3],
-          utils.rgbaToString(kMeansLayer.colors[3]),
-          transparent,
-        ],
-        "fill-opacity": 1,
+        "fill-color": utils.rgbaToString(themeColor),
+        "fill-opacity": 0.7,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
@@ -234,42 +238,41 @@ export function addReportLayer(
 
 /**
  * Add a k-means cluster layer to the mapbox map.
- * @param clusterId clustering iteration number.
- * @param kMeansLayer kMeans Layer to be added.
+ * @param geoJson GeoJson data to be added to the map.
+ * @param clusterList List of clusters to be added to the map.
  * @param map Map to which the layer is added.
- * @param useColor If true, the layer is colored.
  */
 export function addClusterLayer(
-  clusterId: string,
-  kMeansLayer: KMeansLayer,
-  map: mapboxgl.Map,
-  useColor?: boolean
+  geoJson: HealthcareFeatureCollection,
+  clusterList: ClusterList,
+  map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.
-  map.getSource(kMeansLayer.title) && map.removeSource(kMeansLayer.title);
-  map.getLayer(kMeansLayer.title) && map.removeLayer(kMeansLayer.title);
+  map.getSource(clusterList.name) && map.removeSource(clusterList.name);
+  map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
 
   // Add source and layer to the map.
-  map.addSource(kMeansLayer.title, {
+  map.addSource(clusterList.name, {
     type: "geojson",
-    data: kMeansLayer.geoJson,
+    data: geoJson,
   });
+
   map.addLayer(
     {
-      id: kMeansLayer.title,
+      id: clusterList.name,
       type: "fill",
-      source: kMeansLayer.title,
+      source: clusterList.name,
       paint: {
         "fill-color": [
           "case",
-          ["==", ["get", "cluster" + clusterId], 0],
-          useColor ? utils.rgbaToString(kMeansLayer.colors[0]) : transparent,
-          ["==", ["get", "cluster" + clusterId], 1],
-          useColor ? utils.rgbaToString(kMeansLayer.colors[1]) : transparent,
-          ["==", ["get", "cluster" + clusterId], 2],
-          useColor ? utils.rgbaToString(kMeansLayer.colors[2]) : transparent,
-          ["==", ["get", "cluster" + clusterId], 3],
-          useColor ? utils.rgbaToString(kMeansLayer.colors[3]) : transparent,
+          ["==", ["get", clusterList.name], 0],
+          utils.rgbaToString(clusterList.list[0].color),
+          ["==", ["get", clusterList.name], 1],
+          utils.rgbaToString(clusterList.list[1].color),
+          ["==", ["get", clusterList.name], 2],
+          utils.rgbaToString(clusterList.list[2].color),
+          ["==", ["get", clusterList.name], 3],
+          utils.rgbaToString(clusterList.list[3].color),
           transparent,
         ],
         "fill-opacity": 1,
@@ -282,28 +285,28 @@ export function addClusterLayer(
 
 /**
  * Remove a k-means cluster layer from the mapbox map.
- * @param kMeansLayer Layer to be removed.
+ * @param clusterList List of clusters to be removed.
  * @param map Map from which the layer is removed.
  */
 export function removeClusterLayer(
-  kMeansLayer: KMeansLayer,
+  clusterList: ClusterList,
   map: mapboxgl.Map
 ) {
-  if (map.getLayer(kMeansLayer.title)) {
-    map.removeLayer(kMeansLayer.title);
+  if (map.getLayer(clusterList.name)) {
+    map.removeLayer(clusterList.name);
   }
 }
 /**
  * Remove all k-means cluster layers from the mapbox map.
- * @param kMeansLayers Layers to be removed.
+ * @param clusterListCollection Collection of cluster lists to be removed.
  * @param map Map from which the layers are removed.
  */
 export function removeAllClusterLayers(
-  kMeansLayers: KMeansLayer[],
+  clusterListCollection: ClusterList[],
   map: mapboxgl.Map
 ) {
-  kMeansLayers.forEach((kMeansLayer) => {
-    removeClusterLayer(kMeansLayer, map);
+  clusterListCollection.forEach((list) => {
+    removeClusterLayer(list, map);
   });
 }
 

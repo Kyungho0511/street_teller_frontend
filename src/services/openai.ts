@@ -1,27 +1,28 @@
 import OpenAI from "openai";
 import { Stream } from "openai/streaming.mjs";
 import {
-  assistantMessage,
   Prompt,
   siteCategoriesMessage,
-  systemMessage,
   wordCountMessage,
 } from "../constants/messageConstants";
-import AiResponse from "../components/atoms/AiResponse";
+import AIResponseText from "../components/atoms/AIResponseText";
 import { parse } from "best-effort-json-parser";
 import { Message } from "../context/MessageContext";
 import { Preference } from "../constants/surveyConstants";
-import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
+import {
+  CLUSTERING_SIZE,
+  NUMBER_OF_CLUSTERS,
+} from "../constants/kMeansConstants";
 
 const openai = new OpenAI({
-  // Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
+  // TODO: Disable dangerouslyAllowBrowser after testing!!!!!!!!!!!!!!!!!
   // Remove apiKey from the code and use env instead!!!!!!!!!!!!!!!
   apiKey: import.meta.env.VITE_API_KEY_OPENAI as string,
   dangerouslyAllowBrowser: true,
 });
 
-export type OpenAiResponseJSON = {
-  clusters: { name: string; reasoning: string }[];
+export type OpenAIResponseJSON = {
+  labels: { name: string; reasoning: string }[];
 };
 
 type OpenAiMessage = {
@@ -31,32 +32,27 @@ type OpenAiMessage = {
 
 /**
  * Stream chunks of openAI response. It's meant to be rendered with typing animation
- * in the {@link AiResponse} as soon as it gets the first chunk of the response.
+ * in the {@link AIResponseText} as soon as it gets the first chunk of the response.
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @param history an array of messages representing the conversation history so far.
  * @returns a generator that yields each chunk of the openAI response.
  */
 export async function* streamOpenAI(
-  prompt: Prompt,
+  prompt: Prompt | undefined,
   history: Message[],
   preferences?: Preference[],
   clusterIndex?: number
-): AsyncGenerator<string | OpenAiResponseJSON> {
+): AsyncGenerator<string | OpenAIResponseJSON> {
+  if (!prompt) return;
+
   let stream: Stream<OpenAI.Chat.Completions.ChatCompletionChunk> | null = null;
   const messages: OpenAiMessage[] = [];
 
   // 1. Add system messages.
-  if (prompt.type === "text" || prompt.type === "instruction") {
-    messages.push({
-      role: "system",
-      content: systemMessage.text,
-    });
-  } else if (prompt.type === "cluster") {
-    messages.push({
-      role: "system",
-      content: systemMessage.cluster,
-    });
-  }
+  messages.push({
+    role: "system",
+    content: getSystemMessage(prompt),
+  });
 
   // 2-1. Provide the conversation history for context.
   history.forEach((message) => {
@@ -82,7 +78,7 @@ export async function* streamOpenAI(
     content: siteCategoriesMessage,
   });
 
-  // 2-3. Provide user selection of preferences for context.
+  // 2-3. Provide user selection of preferences for clustering pages.
   if (preferences && clusterIndex) {
     const startIndex = CLUSTERING_SIZE * clusterIndex;
     messages.push({
@@ -121,12 +117,12 @@ export async function* streamOpenAI(
     });
   }
 
-  // 3-2. Run openAI with cluster prompt.
-  if (prompt.type === "cluster") {
+  // 3-2. Run openAI with JSON type prompt.
+  if (prompt.type === "cluster" || prompt.type === "report") {
     stream = await openai.chat.completions.create({
       messages: [
         ...messages,
-        { role: "assistant", content: assistantMessage },
+        { role: "assistant", content: getAssistantMessage(prompt) },
         { role: "user", content: JSON.stringify(prompt.content) },
       ],
       model: "gpt-4o-mini",
@@ -152,7 +148,7 @@ export async function* streamOpenAI(
         }
 
         // Yield the JSON object type content
-        else if (prompt.type === "cluster") {
+        else if (prompt.type === "cluster" || prompt.type === "report") {
           let parsedData;
           try {
             parsedData = parse(accumulatedResponse);
@@ -177,7 +173,9 @@ export async function* streamOpenAI(
  * @param prompt takes three types of prompts: text, section, and cluster.
  * @returns openAI response.
  */
-export async function runOpenAI(prompt: Prompt): Promise<string> {
+export async function runOpenAI(
+  prompt: Prompt
+): Promise<string | OpenAIResponseJSON> {
   let completion: OpenAI.Chat.Completions.ChatCompletion | null = null;
 
   // Run openAI with text or section prompts.
@@ -187,7 +185,7 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
       messages: [
         {
           role: "system",
-          content: systemMessage.text,
+          content: getSystemMessage(prompt),
         },
         { role: "user", content: content },
       ],
@@ -198,17 +196,17 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
   }
 
   // Run openAI with cluster prompt
-  if (prompt.type === "cluster") {
+  if (prompt.type === "cluster" || prompt.type === "report") {
     const clustersJSON = JSON.stringify(prompt.content);
     completion = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: systemMessage.cluster,
+          content: getSystemMessage(prompt),
         },
         {
           role: "assistant",
-          content: assistantMessage,
+          content: getAssistantMessage(prompt),
         },
         { role: "user", content: clustersJSON },
       ],
@@ -219,4 +217,63 @@ export async function runOpenAI(prompt: Prompt): Promise<string> {
   }
 
   return completion!.choices[0].message.content!;
+}
+
+/**
+ * Get the assistant message for the given prompt.
+ */
+function getAssistantMessage(prompt: Prompt): string {
+  const assistantMessage: OpenAIResponseJSON = { labels: [] };
+
+  if (prompt.type === "cluster") {
+    const count = NUMBER_OF_CLUSTERS;
+    for (let i = 0; i < count; i++) {
+      assistantMessage.labels.push({
+        name: `name for the cluster${i + 1}`,
+        reasoning: `reasoning for the cluster${i + 1}'s name`,
+      });
+    }
+  } else if (prompt.type === "report") {
+    const count = prompt.content.length;
+
+    for (let i = 0; i < count; i++) {
+      assistantMessage.labels.push({
+        name: `name for the group${i + 1}`,
+        reasoning: `reasoning for the group${i + 1}'s name`,
+      });
+    }
+  }
+
+  return JSON.stringify(assistantMessage);
+}
+
+/**
+ * Get the system message for the given prompt.
+ */
+function getSystemMessage(prompt: Prompt): string {
+  const type = prompt.type === "instruction" ? "text" : prompt.type;
+
+  const count = type === "cluster" ? NUMBER_OF_CLUSTERS : prompt.content.length;
+
+  const prefix = "Assistant is a large language model trained by OpenAI";
+  const jsonPrefix =
+    "You are a helpful assistant designed to output JSON. You are an expert for interpreting machine learning outcomes, especially in the context of urban planning, your focus is on analyzing and labeling clusters from k-means clustering. You translate the values of variables within these k-means clusters into understandable, human language names. This process involves examining the distinctive characteristics of each cluster, understanding the significance of each variable within the context of urban fabrics, and then formulating descriptive names that accurately reflect the underlying patterns and relationships.";
+  const jsonSuffix = `I want a JSON output with an array of ${count} label object with name and reasoning for each label. Please use "labels" as a key for JSON and store the output array as a value for "labels" key. Be consistent with naming logic and keep the name within four words. For the reasoning part, please keep it under 100 words and specify two distinctive data in number for each object`;
+
+  const message = {
+    text: "You are an expert in the context of urban planning, your goal is to provide insightful and informative responses to questions about site analysis especially in the context of site selection.",
+    cluster: `I will provide you a JSON containing ${count} cluster objects with numeric values for cluster centroids from k-means clustering. I want you to name these clusters with meaningful names based on numeric values.`,
+    report: `I will provide you a JSON containing ${count} group objects with an array of three clusters with name, centroids(numeric values for cluster centers means from k-means clustering), and reasoning for each cluster's naming. I want you to label for these ${count} groups with meaningful names based on three clusters' characteristics.`,
+  };
+
+  let systemMessage = prefix;
+
+  if (type === "text") {
+    systemMessage += message.text;
+  } else {
+    systemMessage +=
+      jsonPrefix + message[type as "cluster" | "report"] + jsonSuffix;
+  }
+
+  return systemMessage;
 }

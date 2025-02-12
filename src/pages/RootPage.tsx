@@ -4,7 +4,6 @@ import MapViewer from "../components/organisms/MapViewer";
 import { SurveyContextProvider } from "../context/SurveyContext";
 import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
-import { KMeansContextProvider } from "../context/KMeansContext";
 import Navbar from "../components/organisms/Navbar";
 import { NavbarContextProvider } from "../context/NavbarContext";
 
@@ -19,9 +18,7 @@ export default function RootPage() {
         <Navbar />
         <MessageContextProvider>
           <SurveyContextProvider>
-            <KMeansContextProvider>
-              <Outlet />
-            </KMeansContextProvider>
+            <Outlet />
           </SurveyContextProvider>
           <Footbar />
         </MessageContextProvider>

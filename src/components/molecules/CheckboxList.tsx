@@ -1,29 +1,22 @@
 import styles from "./CheckboxList.module.css";
-import { BoroughList } from "../../constants/surveyConstants";
-import { RGBA } from "../../constants/mapConstants";
+import { useContext } from "react";
+import Colorbox from "../atoms/Colorbox";
+import { Survey, SurveyContext } from "../../context/SurveyContext";
+import { ListItem } from "../../constants/surveyConstants";
 
 type CheckboxListProps = {
-  name: string;
-  list: CheckboxItem[];
-  setSurveyContext?: (newSurveyElement: BoroughList) => void;
-};
-
-export type CheckboxItem = {
-  name: string;
-  checked: boolean;
-  id: string;
-  color?: RGBA;
-  reasoning?: string;
+  surveyName: keyof Survey;
+  list: ListItem[];
 };
 
 /**
  * Checkbox list component.
+ * @param surveyName Survey name of the checkbox list.
+ * @param list List of items to be displayed.
  */
-export default function CheckboxList({
-  name,
-  list,
-  setSurveyContext,
-}: CheckboxListProps) {
+export default function CheckboxList({ surveyName, list }: CheckboxListProps) {
+  const { setSurvey } = useContext(SurveyContext);
+
   // Handle uncontrolled checkbox change
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -35,26 +28,29 @@ export default function CheckboxList({
       checked: event.target.checked,
     };
 
-    setSurveyContext &&
-      setSurveyContext({ name: "boroughs", list: updatedList });
+    setSurvey((prev) => ({
+      ...prev,
+      [surveyName]: { ...prev[surveyName], list: updatedList },
+    }));
   };
 
   return (
     <ul className={styles.list}>
       {list.map((item, index) => (
-        <li key={item.id}>
+        <li key={item.id} className={styles.item}>
           <label className={styles.label}>
             <input
               className={styles.input}
               type="checkbox"
-              name={name}
+              name={surveyName}
               value={item.name}
               checked={item.checked}
               onChange={(event) => handleChange(event, index)}
             />
             <span className={styles.indicator}></span>
-            <p>{item.name}</p>
+            <Colorbox label={item.name} color={item.color} fontSize={"1rem"} />
           </label>
+          <p className={styles.text}>{item.content}</p>
         </li>
       ))}
     </ul>

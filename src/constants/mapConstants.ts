@@ -51,9 +51,23 @@ export const transparent = utils.rgbaToString({
   a: 0,
 });
 
+export const transparentColor: RGBA = {
+  r: 255,
+  g: 255,
+  b: 255,
+  a: 0,
+};
+
 export const defaultColor: RGBA = {
   r: 255,
   g: 255,
+  b: 255,
+  a: 255,
+};
+
+export const themeColor: RGBA = {
+  r: 50,
+  g: 125,
   b: 255,
   a: 255,
 };
@@ -89,7 +103,6 @@ export const color: { [key in string]: Color } = {
       { r: 244, g: 137, b: 75, a: 0.8 },
       { r: 226, g: 102, b: 102, a: 0.8 },
     ],
-
     min: { r: 255, g: 250, b: 236, a: 0.8 },
     max: { r: 249, g: 162, b: 0, a: 0.8 },
   },

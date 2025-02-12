@@ -1,11 +1,15 @@
-@import '../../styles/font.css';
-@import '../../styles/color.css';
-@import '../../styles/theme.css';
+@import "../../styles/font.css";
+@import "../../styles/color.css";
+@import "../../styles/theme.css";
 
 .list {
   display: flex;
   flex-direction: column;
   margin-top: 1.2rem;
+}
+
+.item {
+  margin-bottom: 1.5rem;
 }
 
 .label {
@@ -69,5 +73,13 @@
 }
 
 .text {
-  margin-bottom: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Sub-list styling */
+.subItem {
+  font-size: 0.9rem;
+  font-weight: var(--font-regular);
+  color: var(--color-dark-grey);
+  padding: 0.1rem 0;
 }

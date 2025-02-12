@@ -1,55 +1,44 @@
-import { v4 as uuidv4 } from "uuid";
 import styles from "./DropdownList.module.css";
-import { ClusterCheckboxItem } from "../../constants/surveyConstants";
-import BarChart from "../atoms/BarChart";
-import * as utils from "../../utils/utils";
-import Colorbox from "../atoms/Colorbox";
 import DropdownManager from "./DropdownManager";
+import { ListItem } from "../../constants/surveyConstants";
 
-type DropdownListProps = {
-  list: ClusterCheckboxItem;
+export type DropdownListProps = {
+  list: ListItem;
   index: number;
   toggleList: (index: number) => void;
   expanded: boolean;
-  displayChart?: boolean; // display a chart for each list item.
-  displayColorbox?: boolean; // display a color box for each list item.
 };
 
 /**
- * Dropdown list component to be used within a {@link DropdownManager}.
+ * List component to be used with {@link DropdownManager} component.
+ * @param list List of items to be displayed.
  */
 export default function DropdownList({
   list,
   index,
-  toggleList: toggleList,
+  toggleList,
   expanded,
-  displayChart,
-  displayColorbox,
 }: DropdownListProps) {
   return (
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
       <button className={styles.list_button} onClick={() => toggleList(index)}>
-        {displayColorbox && <Colorbox label={list.name} color={list.color} />}
-        <div className={styles.spacer}></div>
+        <div>
+          <p className={styles.title}>{list.name}</p>
+          <p className={styles.subtitle}>
+            {list.geoIds &&
+              `(4 listings in ${list.geoIds.length} census tracts)`}
+          </p>
+        </div>
         <div className={styles.triangle}></div>
       </button>
+      <p className={styles.description}>{list.content}</p>
       <ul className={styles.list}>
-        {list.centroids.map((item) => (
-          <li className={styles.item} key={uuidv4()}>
-            {displayChart && (
-              <BarChart
-                label={item.name}
-                value={item.value}
-                unit={utils.getUnit(item.name)}
-              />
-            )}
-            {!displayChart && (
-              <span className={styles.text}>{`${item.name}: ${
-                Math.round(item.value * 100) / 100
-              }`}</span>
-            )}
-          </li>
-        ))}
+        {list.geoIds &&
+          list.geoIds.map((item) => (
+            <li className={styles.item} key={item}>
+              {`${item} tract`}
+            </li>
+          ))}
       </ul>
     </div>
   );
