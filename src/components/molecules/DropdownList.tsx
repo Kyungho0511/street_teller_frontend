@@ -23,7 +23,7 @@ export default function DropdownList({
     <div className={`${styles.container} ${expanded && styles.expanded}`}>
       <button className={styles.list_button} onClick={() => toggleList(index)}>
         <div>
-          <p className={styles.title}>{`${index + 1}. ${list.name}`}</p>
+          <p className={styles.title}>{list.name}</p>
           <p className={styles.subtitle}>
             {list.geoIds &&
               `(4 listings in ${list.geoIds.length} census tracts)`}

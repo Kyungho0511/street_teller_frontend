@@ -65,6 +65,13 @@ export const defaultColor: RGBA = {
   a: 255,
 };
 
+export const themeColor: RGBA = {
+  r: 50,
+  g: 125,
+  b: 255,
+  a: 255,
+};
+
 export type Color = {
   categorized: RGBA[];
   min: RGBA;

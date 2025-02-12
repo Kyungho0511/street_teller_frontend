@@ -5,6 +5,7 @@ import {
   MapLayer,
   transparent,
   ZOOM_MODIFIER,
+  themeColor,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
 import { Report, ClusterList } from "../constants/surveyConstants";
@@ -209,15 +210,17 @@ export function addReportLayer(
     type: "geojson",
     data: geoJson,
   });
-  const fillColorExpression: mapboxgljs.DataDrivenPropertyValueSpecification<string> =
-    ["case"];
-  reports.forEach((report) => {
-    fillColorExpression.push(
-      ["==", ["get", "report"], report.index],
-      utils.rgbaToString(report.color)
-    );
-  });
-  fillColorExpression.push(transparent);
+
+  // // color expression for belended colors
+  // const fillColorExpression: mapboxgljs.DataDrivenPropertyValueSpecification<string> =
+  //   ["case"];
+  // reports.forEach((report) => {
+  //   fillColorExpression.push(
+  //     ["==", ["get", "report"], report.index],
+  //     utils.rgbaToString(report.color)
+  //   );
+  // });
+  // fillColorExpression.push(transparent);
 
   map.addLayer(
     {
@@ -225,8 +228,8 @@ export function addReportLayer(
       type: "fill",
       source: name,
       paint: {
-        "fill-color": fillColorExpression,
-        "fill-opacity": 1,
+        "fill-color": utils.rgbaToString(themeColor),
+        "fill-opacity": 0.7,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
