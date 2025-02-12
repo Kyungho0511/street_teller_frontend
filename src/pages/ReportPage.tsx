@@ -16,7 +16,7 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import { getFilteredGeoJson } from "../services/kmeans";
-import { addReportLayer } from "../services/mapbox";
+import * as mapbox from "../services/mapbox";
 import { defaultColor } from "../constants/mapConstants";
 import { streamOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
@@ -25,10 +25,10 @@ import { useLocation } from "react-router-dom";
 import AIResponseList from "../components/molecules/AIReponseList";
 import { v4 as uuidv4 } from "uuid";
 import PopupSection from "../components/organisms/PopupSection";
-import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import { PopupContextProvider } from "../context/PopupContext";
 import DropdownList from "../components/molecules/DropdownList";
 import PopupContentReport from "../components/atoms/PopupContentReport";
+import useEffectAfterMount from "../hooks/useEffectAfterMount";
 
 /**
  * Report page component where users select sites to report.
@@ -37,7 +37,7 @@ export default function ReportPage() {
   const { survey, getClusterSurvey, setReportSurvey } =
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
-  const { mapViewer } = useContext(MapContext);
+  const { mapViewer, mapMode } = useContext(MapContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
 
@@ -148,13 +148,36 @@ export default function ReportPage() {
 
     // Add the geoJson data to the map.
     if (!mapViewer) return;
-    addReportLayer(reportName, geoJson, reports, mapViewer);
+    mapbox.addReportLayer(reportName, geoJson, reports, mapViewer);
 
     return () => {
       mapViewer.removeLayer(reportName);
       mapViewer.removeSource(reportName);
     };
   }, [geoJson, mapViewer]);
+
+  // Restore mapping on mapMode change
+  useEffectAfterMount(() => {
+    if (!mapViewer) return;
+
+    const currentReportLayer = mapViewer.getLayer(reportName)!;
+    const currentSources = mapViewer.getStyle()!.sources;
+
+    mapViewer.on("style.load", () => {
+      // Restore sources
+      Object.entries(currentSources).forEach(([id, source]) => {
+        if (!mapViewer.getSource(id)) {
+          mapViewer.addSource(id, source);
+        }
+      });
+
+      // Restore current cluster layer.
+      if (!mapViewer.getLayer(reportName)) {
+        mapViewer.addLayer(currentReportLayer, "road-simple");
+      }
+      mapbox.setLayers(section, mapViewer);
+    });
+  }, [mapMode]);
 
   return (
     <>
