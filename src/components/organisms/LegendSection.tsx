@@ -1,14 +1,13 @@
-import NumberIcon from "../atoms/NumberIcon";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";
 import React from "react";
 import { MAP_CONTROLS_HEIGHT } from "./MapControls";
+import useNameFromMap from "../../hooks/useNameFromMap";
 
 type LegendSectionProps = {
   children: React.ReactNode;
   title?: string;
-  steps?: number[];
-  currentStep?: number;
+  useTitleFromMap?: boolean;
 };
 
 /**
@@ -17,24 +16,20 @@ type LegendSectionProps = {
 export default function LegendSection({
   children,
   title,
-  steps,
-  currentStep,
+  useTitleFromMap,
 }: LegendSectionProps) {
+  const [countyName, neighborhoodName] = useNameFromMap();
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.header_content}>
           {title && <h4 className={styles.title}>{title}</h4>}
-          {steps &&
-            steps.map((step, index) => (
-              <div key={index}>
-                <NumberIcon
-                  number={step}
-                  selected={step === currentStep}
-                  colorContrast="high"
-                />
-              </div>
-            ))}
+          {useTitleFromMap && (
+            <h4
+              className={styles.title}
+            >{`${neighborhoodName}, ${countyName}`}</h4>
+          )}
         </div>
       </div>
       <div

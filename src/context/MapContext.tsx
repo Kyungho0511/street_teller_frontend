@@ -18,8 +18,8 @@ type MapContextProps = {
   setMapViewer: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
   mapPreview: mapboxgl.Map | undefined;
   setMapPreview: React.Dispatch<React.SetStateAction<mapboxgl.Map | undefined>>;
-  map3dViewer: Cesium.Viewer | undefined;
-  setMap3dViewer: React.Dispatch<
+  map3dPreview: Cesium.Viewer | undefined;
+  setMap3dPreview: React.Dispatch<
     React.SetStateAction<Cesium.Viewer | undefined>
   >;
   parentLayer: string;
@@ -50,7 +50,7 @@ export function MapContextProvider({
 }) {
   const [mapViewer, setMapViewer] = useState<mapboxgl.Map>();
   const [mapPreview, setMapPreview] = useState<mapboxgl.Map>();
-  const [map3dViewer, setMap3dViewer] = useState<Cesium.Viewer>();
+  const [map3dPreview, setMap3dPreview] = useState<Cesium.Viewer>();
   const [parentLayer, setParentLayer] = useState<string>("");
   const [location, setLocation] = useState<Location>(
     mapConfigs.location as Location
@@ -83,8 +83,8 @@ export function MapContextProvider({
         setMapViewer,
         mapPreview,
         setMapPreview,
-        map3dViewer,
-        setMap3dViewer,
+        map3dPreview,
+        setMap3dPreview,
         parentLayer,
         setParentLayer,
         attribute,

@@ -8,7 +8,7 @@ import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
-import { getSeriesNumber, pathToSection } from "../utils/utils";
+import { pathToSection } from "../utils/utils";
 import {
   geoJsonFilePath,
   HealthcarePropertyName,
@@ -27,8 +27,8 @@ import { ClusterPrompt } from "../constants/messageConstants";
 import { streamOpenAI } from "../services/openai";
 import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
-import BarChartDropdownList from "../components/molecules/BarChartDropDownList";
 import CheckboxList from "../components/molecules/CheckboxList";
+import Map3dViewer from "../components/organisms/Map3dViewer";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -232,7 +232,11 @@ export default function ClusterPage() {
       </Sidebar>
 
       <PopupContextProvider>
-        <LegendSection
+        <LegendSection useTitleFromMap>
+          <Map3dViewer />
+        </LegendSection>
+
+        {/* <LegendSection
           title={`Clustering Step`}
           steps={getSeriesNumber(3)}
           currentStep={parseInt(clusterId!)}
@@ -242,7 +246,7 @@ export default function ClusterPage() {
             listType={BarChartDropdownList}
             autoCollapse
           />
-        </LegendSection>
+        </LegendSection> */}
 
         <PopupSection enableSelectEffect>
           <PopupContentCluster clusterId={clusterId!} />
