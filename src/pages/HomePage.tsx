@@ -74,7 +74,7 @@ export default function HomePage() {
         </SidebarSection>
       </Sidebar>
 
-      <LegendSection title={preference.category as string} alwaysVisible>
+      <LegendSection title={preference.category as string}>
         <SelectableList list={preference.subCategories} />
         <GradientBar
           bound={attribute.bound}

@@ -7,11 +7,7 @@ import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
-import {
-  getCountyName,
-  getNeighborhoodName,
-  pathToSection,
-} from "../utils/utils";
+import * as utils from "../utils/utils";
 import {
   geoJsonFilePath,
   HealthcareProperties,
@@ -55,7 +51,7 @@ export default function ClusterPage() {
   const clusterName = `cluster${clusterId}` as ClusterList["name"];
   const clusterList = survey[clusterName as ClusterList["name"]]!;
 
-  const section = pathToSection(location.pathname);
+  const section = utils.pathToSection(location.pathname);
   const run = messages[section].find((message) => message.type === "cluster")
     ? false
     : true;
@@ -208,8 +204,8 @@ export default function ClusterPage() {
       if (!feature) return;
       const property = feature.properties as HealthcareProperties;
       const geoid = property.GEOID.toString();
-      const neighborhoodName = getNeighborhoodName(geoid);
-      const countyName = getCountyName(geoid);
+      const neighborhoodName = utils.getNeighborhoodName(geoid);
+      const countyName = utils.getCountyName(geoid);
       setLegendTitle(`${neighborhoodName}, ${countyName}`);
     };
     mapViewer.on("click", handleClick);
@@ -261,15 +257,14 @@ export default function ClusterPage() {
         </SidebarSection>
       </Sidebar>
 
-      {selectedCluster != null && (
-        <LegendSection
-          title={legendTitle}
-          onClose={() => setSelectedCluster(undefined)}
-        >
-          <Map3dViewer />
-          <p>{`Selected Cluster: ${selectedCluster}`}</p>
-        </LegendSection>
-      )}
+      <LegendSection
+        title={legendTitle}
+        visible={selectedCluster !== undefined}
+        onClose={() => setSelectedCluster(undefined)}
+      >
+        <Map3dViewer />
+        <p>{`Selected Cluster: ${selectedCluster}`}</p>
+      </LegendSection>
 
       {/* <LegendSection
           title={`Clustering Step`}

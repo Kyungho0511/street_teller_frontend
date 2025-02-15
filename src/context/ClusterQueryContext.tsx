@@ -29,8 +29,6 @@ export function ClusterQueryContextProvider({
   const [selectedCluster, setSelectedCluster] = useState<number>();
   const [selectedReport, setSelectedReport] = useState<number>();
 
-  console.log(selectedCluster);
-
   return (
     <ClusterQueryContext.Provider
       value={{
