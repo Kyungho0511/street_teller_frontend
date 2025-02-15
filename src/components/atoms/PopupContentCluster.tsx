@@ -1,6 +1,6 @@
 import styles from "./PopupContent.module.css";
 import { useContext } from "react";
-import { PopupContext } from "../../context/PopupContext";
+import { ClusterQueryContext } from "../../context/ClusterQueryContext";
 import ClusterPage from "../../pages/ClusterPage";
 import Colorbox from "./Colorbox";
 import useNameFromMap from "../../hooks/useNameFromMap";
@@ -17,7 +17,7 @@ type PopupContentClusterProps = {
 export default function PopupContentCluster({
   clusterId,
 }: PopupContentClusterProps) {
-  const { setSelectedCluster } = useContext(PopupContext);
+  const { setSelectedCluster } = useContext(ClusterQueryContext);
   const [clusters] = useClusterFromMap(clusterId);
   const [countyName, neighborhoodName] = useNameFromMap();
 

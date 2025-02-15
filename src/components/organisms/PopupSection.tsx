@@ -5,7 +5,7 @@ import { FOOTBAR_HEIGHT } from "./Footbar";
 import { RGBA, POPUP } from "../../constants/mapConstants";
 import { isTransparent } from "../../utils/utils";
 import useMapSelectEffect from "../../hooks/useMapSelectEffect";
-import { PopupContext } from "../../context/PopupContext";
+import { ClusterQueryContext } from "../../context/ClusterQueryContext";
 import { HealthcareProperties } from "../../constants/geoJsonConstants";
 
 type Coordinate = {
@@ -25,7 +25,7 @@ export default function PopupSection({
   children,
 }: PopupSectionProps) {
   const { mapViewer, parentLayer } = useContext(MapContext);
-  const { setProperty } = useContext(PopupContext);
+  const { setProperty } = useContext(ClusterQueryContext);
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
 

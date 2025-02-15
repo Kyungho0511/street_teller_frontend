@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Cluster } from "../constants/surveyConstants";
-import { PopupContext } from "../context/PopupContext";
+import { ClusterQueryContext } from "../context/ClusterQueryContext";
 import { Survey, SurveyContext } from "../context/SurveyContext";
 import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import useEffectAfterMount from "./useEffectAfterMount";
@@ -10,7 +10,7 @@ import useEffectAfterMount from "./useEffectAfterMount";
  */
 export default function useClusterFromMap(clusterId: string) {
   const { survey } = useContext(SurveyContext);
-  const { property } = useContext(PopupContext);
+  const { property } = useContext(ClusterQueryContext);
   const [clusters, setClusters] = useState<Cluster[]>();
 
   useEffectAfterMount(() => {

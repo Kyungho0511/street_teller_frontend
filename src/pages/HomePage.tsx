@@ -13,7 +13,6 @@ import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentHome from "../components/atoms/PopupContentHome";
-import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { MapContext } from "../context/MapContext";
@@ -75,21 +74,19 @@ export default function HomePage() {
         </SidebarSection>
       </Sidebar>
 
-      <PopupContextProvider>
-        <LegendSection title={preference.category as string}>
-          <SelectableList list={preference.subCategories} />
-          <GradientBar
-            bound={attribute.bound}
-            unit={attribute.unit}
-            selectedAttribute={attribute}
-          />
-          <Colorbox label={"non-shortage areas"} />
-        </LegendSection>
+      <LegendSection title={preference.category as string} alwaysVisible>
+        <SelectableList list={preference.subCategories} />
+        <GradientBar
+          bound={attribute.bound}
+          unit={attribute.unit}
+          selectedAttribute={attribute}
+        />
+        <Colorbox label={"non-shortage areas"} />
+      </LegendSection>
 
-        <PopupSection enableSelectEffect>
-          <PopupContentHome selectedAttribute={attribute} />
-        </PopupSection>
-      </PopupContextProvider>
+      <PopupSection enableSelectEffect>
+        <PopupContentHome selectedAttribute={attribute} />
+      </PopupSection>
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { MapAttribute } from "../../constants/mapConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import * as utils from "../../utils/utils";
-import { PopupContext } from "../../context/PopupContext";
+import { ClusterQueryContext } from "../../context/ClusterQueryContext";
 import HomePage from "../../pages/HomePage";
 import useNameFromMap from "../../hooks/useNameFromMap";
 
@@ -17,7 +17,7 @@ type PopupContentHomeProps = {
 export default function PopupContentHome({
   selectedAttribute,
 }: PopupContentHomeProps) {
-  const { property } = useContext(PopupContext);
+  const { property } = useContext(ClusterQueryContext);
   const [formattedValue, setFormattedValue] = useState<string>("");
   const [countyName, neighborhoodName] = useNameFromMap();
 

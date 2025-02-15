@@ -1,6 +1,6 @@
 import styles from "./PopupContent.module.css";
 import { useContext } from "react";
-import { PopupContext } from "../../context/PopupContext";
+import { ClusterQueryContext } from "../../context/ClusterQueryContext";
 import { NUMBER_OF_CLUSTERING_STEPS } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
 import ReportPage from "../../pages/ReportPage";
@@ -12,7 +12,7 @@ import useMapClickEvent from "../../hooks/useMapClickEvent";
  * Popup content component for the {@link ReportPage}
  */
 export default function PopupContentReport() {
-  const { setSelectedReport } = useContext(PopupContext);
+  const { setSelectedReport } = useContext(ClusterQueryContext);
   const [clusters] = useClusterFromMap(NUMBER_OF_CLUSTERING_STEPS.toString());
   const [countyName, neighborhoodName] = useNameFromMap();
 

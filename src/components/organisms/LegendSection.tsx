@@ -1,13 +1,14 @@
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import styles from "./LegendSection.module.css";
-import React from "react";
 import { MAP_CONTROLS_HEIGHT } from "./MapControls";
-import useNameFromMap from "../../hooks/useNameFromMap";
+import Icon from "../atoms/Icon";
+import { iconPaths } from "../../constants/IconConstants";
 
 type LegendSectionProps = {
   children: React.ReactNode;
-  title?: string;
-  useTitleFromMap?: boolean;
+  title: string;
+  onClose?: () => void;
+  alwaysVisible?: boolean;
 };
 
 /**
@@ -16,21 +17,20 @@ type LegendSectionProps = {
 export default function LegendSection({
   children,
   title,
-  useTitleFromMap,
+  onClose,
+  alwaysVisible,
 }: LegendSectionProps) {
-  const [countyName, neighborhoodName] = useNameFromMap();
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.header_content}>
           {title && <h4 className={styles.title}>{title}</h4>}
-          {useTitleFromMap && (
-            <h4
-              className={styles.title}
-            >{`${neighborhoodName}, ${countyName}`}</h4>
-          )}
         </div>
+        {!alwaysVisible && (
+          <div className={styles.closeButton} onClick={onClose}>
+            <Icon path={iconPaths.close} color="var(--color-dark-grey)" />
+          </div>
+        )}
       </div>
       <div
         className={styles.body}

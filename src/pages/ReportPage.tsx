@@ -25,7 +25,6 @@ import { useLocation } from "react-router-dom";
 import AIResponseList from "../components/molecules/AIReponseList";
 import { v4 as uuidv4 } from "uuid";
 import PopupSection from "../components/organisms/PopupSection";
-import { PopupContextProvider } from "../context/PopupContext";
 import DropdownList from "../components/molecules/DropdownList";
 import PopupContentReport from "../components/atoms/PopupContentReport";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
@@ -181,28 +180,26 @@ export default function ReportPage() {
 
   return (
     <>
-      <PopupContextProvider>
-        <Sidebar>
-          <SidebarSection>
-            <AIResponseList
-              surveyName={reportName}
-              list={survey.report.list}
-              listType={DropdownList}
-              colors={survey.report.colors}
-              prompt={prompt}
-              streamOpenAI={() => streamOpenAI(prompt, messages[section])}
-            />
-          </SidebarSection>
-        </Sidebar>
+      <Sidebar>
+        <SidebarSection>
+          <AIResponseList
+            surveyName={reportName}
+            list={survey.report.list}
+            listType={DropdownList}
+            colors={survey.report.colors}
+            prompt={prompt}
+            streamOpenAI={() => streamOpenAI(prompt, messages[section])}
+          />
+        </SidebarSection>
+      </Sidebar>
 
-        <LegendSection title={"Title"}>
-          <p>legend section</p>
-        </LegendSection>
+      <LegendSection title={"Title"}>
+        <p>legend section</p>
+      </LegendSection>
 
-        <PopupSection enableSelectEffect>
-          <PopupContentReport />
-        </PopupSection>
-      </PopupContextProvider>
+      <PopupSection enableSelectEffect>
+        <PopupContentReport />
+      </PopupSection>
     </>
   );
 }

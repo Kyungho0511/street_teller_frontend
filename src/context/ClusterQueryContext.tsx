@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
 
-type PopupContextProps = {
+type ClusterQueryContextProps = {
   property: HealthcareProperties | undefined;
   setProperty: React.Dispatch<
     React.SetStateAction<HealthcareProperties | undefined>
@@ -12,14 +12,15 @@ type PopupContextProps = {
   setSelectedReport: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
-export const PopupContext = createContext<PopupContextProps>(
-  {} as PopupContextProps
+export const ClusterQueryContext = createContext<ClusterQueryContextProps>(
+  {} as ClusterQueryContextProps
 );
 
 /**
- * Context provider for the popup.
+ * Context provider to store the queried cluster data
+ * from the user interaction on the rendered map features.
  */
-export function PopupContextProvider({
+export function ClusterQueryContextProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -28,8 +29,10 @@ export function PopupContextProvider({
   const [selectedCluster, setSelectedCluster] = useState<number>();
   const [selectedReport, setSelectedReport] = useState<number>();
 
+  console.log(selectedCluster);
+
   return (
-    <PopupContext.Provider
+    <ClusterQueryContext.Provider
       value={{
         property,
         setProperty,
@@ -40,6 +43,6 @@ export function PopupContextProvider({
       }}
     >
       {children}
-    </PopupContext.Provider>
+    </ClusterQueryContext.Provider>
   );
 }

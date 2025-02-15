@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import AIResponseList from "../components/molecules/AIReponseList";
-import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
@@ -8,9 +7,14 @@ import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
-import { pathToSection } from "../utils/utils";
+import {
+  getCountyName,
+  getNeighborhoodName,
+  pathToSection,
+} from "../utils/utils";
 import {
   geoJsonFilePath,
+  HealthcareProperties,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
@@ -18,7 +22,6 @@ import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
-import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
@@ -29,6 +32,7 @@ import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
 import CheckboxList from "../components/molecules/CheckboxList";
 import Map3dViewer from "../components/organisms/Map3dViewer";
+import { ClusterQueryContext } from "../context/ClusterQueryContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -36,9 +40,12 @@ import Map3dViewer from "../components/organisms/Map3dViewer";
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const { mapViewer, mapMode } = useContext(MapContext);
+  const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
+  const { selectedCluster, setSelectedCluster } =
+    useContext(ClusterQueryContext);
 
+  const [legendTitle, setLegendTitle] = useState<string>("");
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
     Array(3).fill(undefined)
   );
@@ -189,6 +196,29 @@ export default function ClusterPage() {
     });
   }, [mapMode]);
 
+  // Set legend title and content on click.
+  useEffect(() => {
+    if (!mapViewer) return;
+
+    const handleClick = (event: mapboxgl.MapMouseEvent) => {
+      const feature = mapViewer.queryRenderedFeatures(event.point, {
+        layers: [parentLayer],
+      })[0];
+
+      if (!feature) return;
+      const property = feature.properties as HealthcareProperties;
+      const geoid = property.GEOID.toString();
+      const neighborhoodName = getNeighborhoodName(geoid);
+      const countyName = getCountyName(geoid);
+      setLegendTitle(`${neighborhoodName}, ${countyName}`);
+    };
+    mapViewer.on("click", handleClick);
+
+    return () => {
+      mapViewer.off("click", handleClick);
+    };
+  }, [mapViewer]);
+
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
     return (
@@ -231,15 +261,18 @@ export default function ClusterPage() {
         </SidebarSection>
       </Sidebar>
 
-      <PopupContextProvider>
-        <LegendSection useTitleFromMap>
+      {selectedCluster != null && (
+        <LegendSection
+          title={legendTitle}
+          onClose={() => setSelectedCluster(undefined)}
+        >
           <Map3dViewer />
+          <p>{`Selected Cluster: ${selectedCluster}`}</p>
         </LegendSection>
+      )}
 
-        {/* <LegendSection
+      {/* <LegendSection
           title={`Clustering Step`}
-          steps={getSeriesNumber(3)}
-          currentStep={parseInt(clusterId!)}
         >
           <DropdownManager
             lists={clusterList.list}
@@ -248,10 +281,9 @@ export default function ClusterPage() {
           />
         </LegendSection> */}
 
-        <PopupSection enableSelectEffect>
-          <PopupContentCluster clusterId={clusterId!} />
-        </PopupSection>
-      </PopupContextProvider>
+      <PopupSection enableSelectEffect>
+        <PopupContentCluster clusterId={clusterId!} />
+      </PopupSection>
     </>
   );
 }

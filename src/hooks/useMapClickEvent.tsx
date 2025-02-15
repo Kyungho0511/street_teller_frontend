@@ -19,9 +19,10 @@ export default function useMapClickEvent(
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-      setSelectedIndex(feature.properties![key]);
+
+      setSelectedIndex(feature?.properties![key]);
     };
-    mapViewer.on("click", parentLayer, updateSelectedIndex);
+    mapViewer.on("click", updateSelectedIndex);
 
     return () => {
       mapViewer.off("click", updateSelectedIndex);
