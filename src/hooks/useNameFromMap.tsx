@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { ClusterQueryContext } from "../context/ClusterQueryContext";
+import { MapQueryContext } from "../context/MapQueryContext";
 import useEffectAfterMount from "./useEffectAfterMount";
 import * as utils from "../utils/utils";
 
@@ -7,7 +7,7 @@ import * as utils from "../utils/utils";
  * Custom hook to manage neighborhood name from map interaction.
  */
 export default function useNameFromMap() {
-  const { property } = useContext(ClusterQueryContext);
+  const { property } = useContext(MapQueryContext);
   const [countyName, setCountyName] = useState<string>("");
   const [neighborhoodName, setNeighborhoodName] = useState<string>("");
 

@@ -2,7 +2,7 @@ import styles from "./GradientBar.module.css";
 import { MapAttribute, MapBound, UnitType } from "../../constants/mapConstants";
 import * as utils from "../../utils/utils";
 import { useContext } from "react";
-import { ClusterQueryContext } from "../../context/ClusterQueryContext";
+import { MapQueryContext } from "../../context/MapQueryContext";
 
 type GradientBarProps = {
   bound: MapBound;
@@ -18,7 +18,7 @@ export default function GradientBar({
   unit,
   selectedAttribute,
 }: GradientBarProps) {
-  const { property } = useContext(ClusterQueryContext);
+  const { property } = useContext(MapQueryContext);
   const value = property ? (property[selectedAttribute.name] as number) : null;
   const scaleMin = utils.formatUnit(bound.min, unit);
   const scaleMax = utils.formatUnit(bound.max, unit);

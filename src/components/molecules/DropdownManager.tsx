@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
-import { ClusterQueryContext } from "../../context/ClusterQueryContext";
+import { MapQueryContext } from "../../context/MapQueryContext";
 import { useLocation } from "react-router-dom";
 import { ListItem } from "../../constants/surveyConstants";
 
@@ -20,7 +20,7 @@ export default function DropdownManager({
   expandFirstList,
   autoCollapse,
 }: DropdownManagerProps) {
-  const { selectedCluster, selectedReport } = useContext(ClusterQueryContext);
+  const { selectedCluster, selectedReport } = useContext(MapQueryContext);
   const [expandedLists, setExpandedLists] = useState<boolean[]>(() =>
     new Array(lists.length).fill(false)
   );

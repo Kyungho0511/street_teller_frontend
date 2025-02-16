@@ -3,7 +3,6 @@ import styles from "./LegendSection.module.css";
 import { MAP_CONTROLS_HEIGHT } from "./MapControls";
 import Icon from "../atoms/Icon";
 import { iconPaths } from "../../constants/IconConstants";
-import { useState } from "react";
 
 type LegendSectionProps = {
   children: React.ReactNode;

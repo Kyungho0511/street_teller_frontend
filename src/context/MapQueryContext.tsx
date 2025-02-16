@@ -1,7 +1,8 @@
 import { createContext, useState } from "react";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
+import { Position } from "geojson";
 
-type ClusterQueryContextProps = {
+type MapQueryContextProps = {
   property: HealthcareProperties | undefined;
   setProperty: React.Dispatch<
     React.SetStateAction<HealthcareProperties | undefined>
@@ -10,17 +11,25 @@ type ClusterQueryContextProps = {
   setSelectedCluster: React.Dispatch<React.SetStateAction<number | undefined>>;
   selectedReport: number | undefined;
   setSelectedReport: React.Dispatch<React.SetStateAction<number | undefined>>;
+  selectedFeaturePosition: Position | undefined;
+  setSelectedFeaturePosition: React.Dispatch<
+    React.SetStateAction<Position | undefined>
+  >;
 };
 
-export const ClusterQueryContext = createContext<ClusterQueryContextProps>(
-  {} as ClusterQueryContextProps
+/**
+ * Context that stores queried map data from the
+ * user interaction on the rendered map features.
+ */
+export const MapQueryContext = createContext<MapQueryContextProps>(
+  {} as MapQueryContextProps
 );
 
 /**
- * Context provider to store the queried cluster data
+ * Context provider to store the queried map data
  * from the user interaction on the rendered map features.
  */
-export function ClusterQueryContextProvider({
+export function MapQueryContextProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -28,9 +37,11 @@ export function ClusterQueryContextProvider({
   const [property, setProperty] = useState<HealthcareProperties>();
   const [selectedCluster, setSelectedCluster] = useState<number>();
   const [selectedReport, setSelectedReport] = useState<number>();
+  const [selectedFeaturePosition, setSelectedFeaturePosition] =
+    useState<Position>();
 
   return (
-    <ClusterQueryContext.Provider
+    <MapQueryContext.Provider
       value={{
         property,
         setProperty,
@@ -38,9 +49,11 @@ export function ClusterQueryContextProvider({
         setSelectedCluster,
         selectedReport,
         setSelectedReport,
+        selectedFeaturePosition,
+        setSelectedFeaturePosition,
       }}
     >
       {children}
-    </ClusterQueryContext.Provider>
+    </MapQueryContext.Provider>
   );
 }

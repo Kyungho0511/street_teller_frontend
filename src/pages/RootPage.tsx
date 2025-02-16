@@ -6,7 +6,7 @@ import { MessageContextProvider } from "../context/MessageContext";
 import { MapContextProvider } from "../context/MapContext";
 import Navbar from "../components/organisms/Navbar";
 import { NavbarContextProvider } from "../context/NavbarContext";
-import { ClusterQueryContextProvider } from "../context/ClusterQueryContext";
+import { MapQueryContextProvider } from "../context/MapQueryContext";
 
 /**
  * Root component that wraps other pages.
@@ -19,9 +19,9 @@ export default function RootPage() {
         <Navbar />
         <MessageContextProvider>
           <SurveyContextProvider>
-            <ClusterQueryContextProvider>
+            <MapQueryContextProvider>
               <Outlet />
-            </ClusterQueryContextProvider>
+            </MapQueryContextProvider>
           </SurveyContextProvider>
           <Footbar />
         </MessageContextProvider>

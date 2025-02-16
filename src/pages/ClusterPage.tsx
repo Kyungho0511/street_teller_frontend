@@ -28,7 +28,7 @@ import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
 import CheckboxList from "../components/molecules/CheckboxList";
 import Map3dViewer from "../components/organisms/Map3dViewer";
-import { ClusterQueryContext } from "../context/ClusterQueryContext";
+import { MapQueryContext } from "../context/MapQueryContext";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -38,8 +38,8 @@ export default function ClusterPage() {
     useContext(SurveyContext);
   const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
-  const { selectedCluster, setSelectedCluster } =
-    useContext(ClusterQueryContext);
+  const { selectedCluster, setSelectedCluster, setSelectedFeaturePosition } =
+    useContext(MapQueryContext);
 
   const [legendTitle, setLegendTitle] = useState<string>("");
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
@@ -192,22 +192,34 @@ export default function ClusterPage() {
     });
   }, [mapMode]);
 
-  // Set legend title and content on click.
+  // Set queried properties based on the map mouse event for Legend.
   useEffect(() => {
     if (!mapViewer) return;
 
     const handleClick = (event: mapboxgl.MapMouseEvent) => {
+      // Set the legend title
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-
       if (!feature) return;
       const property = feature.properties as HealthcareProperties;
       const geoid = property.GEOID.toString();
       const neighborhoodName = utils.getNeighborhoodName(geoid);
       const countyName = utils.getCountyName(geoid);
       setLegendTitle(`${neighborhoodName}, ${countyName}`);
+
+      // Set the center longitude and latitude of the selected polygon.
+      if (!(feature.geometry.type === "Polygon")) return;
+      const coordinates = feature.geometry.coordinates[0];
+
+      const center = utils.getCenterCoordinate(coordinates);
+
+      console.log(coordinates);
+      console.log("center: ", center);
+
+      setSelectedFeaturePosition(center);
     };
+
     mapViewer.on("click", handleClick);
 
     return () => {
