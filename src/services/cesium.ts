@@ -31,6 +31,10 @@ export async function createMap3D(
   const viewer = map3dRef.current;
   viewer.scene.backgroundColor = Cesium.Color.TRANSPARENT;
 
+  // Remove existing credits and cesium logo
+  const creditContainer = viewer.cesiumWidget.creditContainer as HTMLElement;
+  creditContainer.style.display = "none";
+
   try {
     const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(
       GOOGLE_3D_TILES_ID
