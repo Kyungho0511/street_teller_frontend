@@ -1,5 +1,13 @@
 import * as Cesium from "cesium";
-import { GOOGLE_3D_TILES_ID } from "../constants/3DTilesConstants";
+import {
+  ALTITUDE,
+  BEARING,
+  GOOGLE_3D_TILES_ID,
+  OFFSET_X,
+  OFFSET_Y,
+  PITCH,
+  ROLL,
+} from "../constants/map3DConstants";
 import { Position } from "geojson";
 
 /**
@@ -31,7 +39,13 @@ export async function createMap3D(
   const viewer = map3dRef.current;
   viewer.scene.backgroundColor = Cesium.Color.TRANSPARENT;
 
-  // Remove existing credits and cesium logo
+  // These settings advance the clock time.
+  viewer.clock.canAnimate = true;
+  viewer.clock.shouldAnimate = true;
+
+  // Remove existing credits and cesium logo for now.
+  // TODO: Add custom cesium credit. https://cesium.com/docs/cesiumjs-ref-doc/Credit.html
+  // Double check if I am using any assets that require credits.
   const creditContainer = viewer.cesiumWidget.creditContainer as HTMLElement;
   creditContainer.style.display = "none";
 
@@ -51,27 +65,76 @@ export async function createMap3D(
 
 /**
  * Set camera view to a specific position on the 3D map.
+ * @param position - The position to set the camera view.
  */
-export function setView(position: Position, cesiumViewer: Cesium.Viewer) {
-  console.log(position);
+export function setView(target: Position, cesiumViewer: Cesium.Viewer): void {
+  const targetCartesian = mapboxPositionToCartesian(target);
+  const targetOffset = new Cesium.Cartesian3(OFFSET_X, OFFSET_Y, ALTITUDE);
+  cesiumViewer.camera.lookAt(targetCartesian, targetOffset);
+}
 
-  const altitude = 250; // in meters
-  const pitch = -45; // in degrees
-  const bearing = 0; // in degrees
-  const roll = 0; // in degrees
+/**
+ * Auto rotate the camera in X and Y axis.
+ * @param target - The target axis of the rotation.
+ * @param speed - The speed of the rotation.
+ * @returns A function to remove the auto rotation event.
+ */
+export function enableAutoRotate(
+  target: Position,
+  speed: number,
+  cesiumViewer: Cesium.Viewer
+): () => void {
+  const targetCartesian = mapboxPositionToCartesian(target);
 
+  const rotateListener = () => {
+    const deltaTime =
+      cesiumViewer.clock.currentTime.secondsOfDay -
+      cesiumViewer.clock.startTime.secondsOfDay;
+    const targetOffset = new Cesium.Cartesian3(
+      OFFSET_X * Math.cos(deltaTime * speed),
+      OFFSET_Y * Math.sin(deltaTime * speed),
+      ALTITUDE
+    );
+    cesiumViewer.scene.camera.lookAt(targetCartesian, targetOffset);
+  };
+
+  cesiumViewer.clock.onTick.addEventListener(rotateListener);
+
+  return () => {
+    cesiumViewer.clock.onTick.removeEventListener(rotateListener);
+  };
+}
+
+/**
+ * Convert a Mapbox position to a Cesium Cartesian3 position.
+ * @param position - The mapbox position to convert.
+ */
+export function mapboxPositionToCartesian(position: Position) {
   const cartographic = new Cesium.Cartographic(
     Cesium.Math.toRadians(position[0]), // longitude
     Cesium.Math.toRadians(position[1]), // latitude
-    altitude
+    100
+  );
+  return Cesium.Ellipsoid.WGS84.cartographicToCartesian(cartographic);
+}
+
+/**
+ * Convert a Mapbox position to a Cesium Cartesian3 position with Terrain height.
+ * @param position - The mapbox position to convert.
+ */
+export async function mapboxPositionToCartesianTerrain(
+  position: Position,
+  cesiumViewer: Cesium.Viewer
+): Promise<Cesium.Cartesian3> {
+  const cartographic = await Cesium.sampleTerrainMostDetailed(
+    cesiumViewer.terrainProvider,
+    [
+      new Cesium.Cartographic(
+        Cesium.Math.toRadians(position[0]), // longitude
+        Cesium.Math.toRadians(position[1]) // latitude
+      ),
+    ]
   );
 
-  cesiumViewer.camera.setView({
-    destination: Cesium.Ellipsoid.WGS84.cartographicToCartesian(cartographic),
-    orientation: {
-      heading: bearing,
-      pitch: Cesium.Math.toRadians(pitch),
-      roll,
-    },
-  });
+  return Cesium.Ellipsoid.WGS84.cartographicToCartesian(cartographic[0]);
 }

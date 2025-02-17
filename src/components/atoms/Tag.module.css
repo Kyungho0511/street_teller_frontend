@@ -1,0 +1,16 @@
+.tag {
+  position: absolute;
+  width: fit-content;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  z-index: 1;
+}
+
+.text {
+  margin: 0;
+  color: var(--color-white);
+  font-size: var(--font-xsmall);
+  font-weight: var(--font-regular);
+  line-height: var(--font-xsmall);
+}

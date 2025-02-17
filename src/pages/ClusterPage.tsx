@@ -211,12 +211,7 @@ export default function ClusterPage() {
       // Set the center longitude and latitude of the selected polygon.
       if (!(feature.geometry.type === "Polygon")) return;
       const coordinates = feature.geometry.coordinates[0];
-
       const center = utils.getCenterCoordinate(coordinates);
-
-      console.log(coordinates);
-      console.log("center: ", center);
-
       setSelectedFeaturePosition(center);
     };
 
@@ -274,7 +269,7 @@ export default function ClusterPage() {
         visible={selectedCluster !== undefined}
         onClose={() => setSelectedCluster(undefined)}
       >
-        <Map3dViewer />
+        <Map3dViewer visible={selectedCluster !== undefined} />
         <p>{`Selected Cluster: ${selectedCluster}`}</p>
       </LegendSection>
 
