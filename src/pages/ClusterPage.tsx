@@ -40,8 +40,12 @@ export default function ClusterPage() {
     useContext(SurveyContext);
   const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
-  const { selectedCluster, setSelectedCluster, setSelectedFeaturePosition } =
-    useContext(MapQueryContext);
+  const {
+    selectedCluster,
+    setSelectedCluster,
+    setSelectedClusterInfo,
+    setSelectedFeaturePosition,
+  } = useContext(MapQueryContext);
 
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
     Array(3).fill(undefined)
@@ -255,6 +259,8 @@ export default function ClusterPage() {
                 clusterIndex
               )
             }
+            showInfo
+            setInfo={setSelectedClusterInfo}
           />
         </SidebarSection>
       </Sidebar>
@@ -278,15 +284,9 @@ export default function ClusterPage() {
         )}
       </LegendSection>
 
-      {/* <LegendSection
-          title={`Clustering Step`}
-        >
-          <DropdownManager
-            lists={clusterList.list}
-            listType={BarChartDropdownList}
-            autoCollapse
-          />
-        </LegendSection> */}
+      <LegendSection title={`Clustering Step`}>
+        <p></p>
+      </LegendSection>
 
       <PopupSection enableSelectEffect>
         <PopupContentCluster clusterId={clusterId!} />

@@ -18,6 +18,8 @@ type AIResponseListProps = {
   colors: RGBA[];
   prompt: ClusterPrompt | ReportPrompt | undefined;
   streamOpenAI: () => AsyncGenerator<string | OpenAIResponseJSON>;
+  showInfo?: boolean;
+  setInfo?: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
 /**
@@ -28,6 +30,8 @@ type AIResponseListProps = {
  * @param colors List of colors to be applied to AI response.
  * @param prompt Prompts to ask to AI.
  * @param streamOpenAI Callback function to stream the OpenAI response.
+ * @param showInfo Flag to show the information icon on list items.
+ * @param setInfo Callback function to set the selected information index.
  */
 export default function AIResponseList({
   surveyName,
@@ -36,6 +40,8 @@ export default function AIResponseList({
   colors,
   prompt,
   streamOpenAI,
+  showInfo = false,
+  setInfo,
 }: AIResponseListProps) {
   const { setSurvey } = useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
@@ -135,6 +141,11 @@ export default function AIResponseList({
   return ListType === DropdownList ? (
     <DropdownManager lists={listToDisplay} listType={ListType} autoCollapse />
   ) : (
-    <ListType surveyName={surveyName} list={listToDisplay} />
+    <ListType
+      surveyName={surveyName}
+      list={listToDisplay}
+      showInfo={showInfo}
+      setInfo={setInfo}
+    />
   );
 }

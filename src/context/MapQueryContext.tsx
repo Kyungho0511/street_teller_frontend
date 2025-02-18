@@ -13,6 +13,10 @@ type MapQueryContextProps = {
   >;
   selectedCluster: number | undefined;
   setSelectedCluster: React.Dispatch<React.SetStateAction<number | undefined>>;
+  selectedClusterInfo: number | undefined;
+  setSelectedClusterInfo: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
   selectedReport: number | undefined;
   setSelectedReport: React.Dispatch<React.SetStateAction<number | undefined>>;
   selectedFeaturePosition: Position | undefined;
@@ -43,9 +47,12 @@ export function MapQueryContextProvider({
   const [selectedProperty, setSelectedProperty] =
     useState<HealthcareProperties>();
   const [selectedCluster, setSelectedCluster] = useState<number>();
+  const [selectedClusterInfo, setSelectedClusterInfo] = useState<number>();
   const [selectedReport, setSelectedReport] = useState<number>();
   const [selectedFeaturePosition, setSelectedFeaturePosition] =
     useState<Position>();
+
+  console.log(selectedClusterInfo);
 
   return (
     <MapQueryContext.Provider
@@ -56,6 +63,8 @@ export function MapQueryContextProvider({
         setSelectedProperty,
         selectedCluster,
         setSelectedCluster,
+        selectedClusterInfo,
+        setSelectedClusterInfo,
         selectedReport,
         setSelectedReport,
         selectedFeaturePosition,
