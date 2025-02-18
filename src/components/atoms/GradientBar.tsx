@@ -18,8 +18,10 @@ export default function GradientBar({
   unit,
   selectedAttribute,
 }: GradientBarProps) {
-  const { property } = useContext(MapQueryContext);
-  const value = property ? (property[selectedAttribute.name] as number) : null;
+  const { hoveredProperty } = useContext(MapQueryContext);
+  const value = hoveredProperty
+    ? (hoveredProperty[selectedAttribute.name] as number)
+    : null;
   const scaleMin = utils.formatUnit(bound.min, unit);
   const scaleMax = utils.formatUnit(bound.max, unit);
   // const scaleValue = value !== null ? utils.formatUnit(value, unit) : "";

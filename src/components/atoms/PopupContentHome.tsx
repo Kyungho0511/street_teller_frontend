@@ -17,20 +17,22 @@ type PopupContentHomeProps = {
 export default function PopupContentHome({
   selectedAttribute,
 }: PopupContentHomeProps) {
-  const { property } = useContext(MapQueryContext);
+  const { hoveredProperty } = useContext(MapQueryContext);
   const [formattedValue, setFormattedValue] = useState<string>("");
-  const [countyName, neighborhoodName] = useNameFromMap();
+  const { hoveredCountyName, hoveredNeighborhoodName } = useNameFromMap();
 
   useEffectAfterMount(() => {
-    if (!property) return;
+    if (!hoveredProperty) return;
 
-    const value = property[selectedAttribute.name] as number;
+    const value = hoveredProperty[selectedAttribute.name] as number;
     setFormattedValue(utils.formatUnit(value, selectedAttribute.unit));
-  }, [property]);
+  }, [hoveredProperty]);
 
   return (
     <>
-      <p className={styles.title}>{`${neighborhoodName}, ${countyName}`}</p>
+      <p
+        className={styles.title}
+      >{`${hoveredNeighborhoodName}, ${hoveredCountyName}`}</p>
       <div className={styles.body}>
         <div className={styles.item}>
           <span className={styles.text}>{selectedAttribute.name}</span>

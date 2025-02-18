@@ -1,12 +1,9 @@
 import * as Cesium from "cesium";
 import {
   ALTITUDE,
-  BEARING,
   GOOGLE_3D_TILES_ID,
   OFFSET_X,
   OFFSET_Y,
-  PITCH,
-  ROLL,
 } from "../constants/map3DConstants";
 import { Position } from "geojson";
 

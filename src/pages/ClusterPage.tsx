@@ -10,7 +10,6 @@ import { MapContext } from "../context/MapContext";
 import * as utils from "../utils/utils";
 import {
   geoJsonFilePath,
-  HealthcareProperties,
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
@@ -29,6 +28,9 @@ import { v4 as uuidv4 } from "uuid";
 import CheckboxList from "../components/molecules/CheckboxList";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import { MapQueryContext } from "../context/MapQueryContext";
+import useClusterFromMap from "../hooks/useClusterFromMap";
+import Colorbox from "../components/atoms/Colorbox";
+import useNameFromMap from "../hooks/useNameFromMap";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -41,7 +43,6 @@ export default function ClusterPage() {
   const { selectedCluster, setSelectedCluster, setSelectedFeaturePosition } =
     useContext(MapQueryContext);
 
-  const [legendTitle, setLegendTitle] = useState<string>("");
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
     Array(3).fill(undefined)
   );
@@ -55,6 +56,8 @@ export default function ClusterPage() {
   const run = messages[section].find((message) => message.type === "cluster")
     ? false
     : true;
+  const { currentSelectedCluster } = useClusterFromMap(clusterId!);
+  const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Run the clustering logic if a cluster message is not found.
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
@@ -192,24 +195,16 @@ export default function ClusterPage() {
     });
   }, [mapMode]);
 
-  // Set queried properties based on the map mouse event for Legend.
+  // Set the center longitude and latitude of the selected polygon.
   useEffect(() => {
     if (!mapViewer) return;
 
     const handleClick = (event: mapboxgl.MapMouseEvent) => {
-      // Set the legend title
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-      if (!feature) return;
-      const property = feature.properties as HealthcareProperties;
-      const geoid = property.GEOID.toString();
-      const neighborhoodName = utils.getNeighborhoodName(geoid);
-      const countyName = utils.getCountyName(geoid);
-      setLegendTitle(`${neighborhoodName}, ${countyName}`);
+      if (!feature || !(feature.geometry.type === "Polygon")) return;
 
-      // Set the center longitude and latitude of the selected polygon.
-      if (!(feature.geometry.type === "Polygon")) return;
       const coordinates = feature.geometry.coordinates[0];
       const center = utils.getCenterCoordinate(coordinates);
       setSelectedFeaturePosition(center);
@@ -265,12 +260,22 @@ export default function ClusterPage() {
       </Sidebar>
 
       <LegendSection
-        title={legendTitle}
+        title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
         visible={selectedCluster !== undefined}
         onClose={() => setSelectedCluster(undefined)}
       >
         <Map3dViewer visible={selectedCluster !== undefined} />
-        <p>{`Selected Cluster: ${selectedCluster}`}</p>
+        {currentSelectedCluster && (
+          <div style={{ marginTop: "1rem" }}>
+            <Colorbox
+              label={currentSelectedCluster.name}
+              color={currentSelectedCluster.color}
+              fontSize="1rem"
+              fontWeight="var(--font-bold)"
+            />
+            <p style={{ margin: 0 }}>{currentSelectedCluster.content}</p>
+          </div>
+        )}
       </LegendSection>
 
       {/* <LegendSection

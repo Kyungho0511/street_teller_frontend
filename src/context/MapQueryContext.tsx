@@ -3,8 +3,12 @@ import { HealthcareProperties } from "../constants/geoJsonConstants";
 import { Position } from "geojson";
 
 type MapQueryContextProps = {
-  property: HealthcareProperties | undefined;
-  setProperty: React.Dispatch<
+  hoveredProperty: HealthcareProperties | undefined;
+  setHoveredProperty: React.Dispatch<
+    React.SetStateAction<HealthcareProperties | undefined>
+  >;
+  selectedProperty: HealthcareProperties | undefined;
+  setSelectedProperty: React.Dispatch<
     React.SetStateAction<HealthcareProperties | undefined>
   >;
   selectedCluster: number | undefined;
@@ -34,7 +38,10 @@ export function MapQueryContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [property, setProperty] = useState<HealthcareProperties>();
+  const [hoveredProperty, setHoveredProperty] =
+    useState<HealthcareProperties>();
+  const [selectedProperty, setSelectedProperty] =
+    useState<HealthcareProperties>();
   const [selectedCluster, setSelectedCluster] = useState<number>();
   const [selectedReport, setSelectedReport] = useState<number>();
   const [selectedFeaturePosition, setSelectedFeaturePosition] =
@@ -43,8 +50,10 @@ export function MapQueryContextProvider({
   return (
     <MapQueryContext.Provider
       value={{
-        property,
-        setProperty,
+        hoveredProperty,
+        setHoveredProperty,
+        selectedProperty,
+        setSelectedProperty,
         selectedCluster,
         setSelectedCluster,
         selectedReport,

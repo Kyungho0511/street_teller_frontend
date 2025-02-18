@@ -7,16 +7,32 @@ import * as utils from "../utils/utils";
  * Custom hook to manage neighborhood name from map interaction.
  */
 export default function useNameFromMap() {
-  const { property } = useContext(MapQueryContext);
-  const [countyName, setCountyName] = useState<string>("");
-  const [neighborhoodName, setNeighborhoodName] = useState<string>("");
+  const { hoveredProperty, selectedProperty } = useContext(MapQueryContext);
+  const [hoveredCountyName, setHoveredCountyName] = useState<string>("");
+  const [hoveredNeighborhoodName, setHoveredNeighborhoodName] =
+    useState<string>("");
+  const [selectedCountyName, setSelectedCountyName] = useState<string>("");
+  const [selectedNeighborhoodName, setSelectedNeighborhoodName] =
+    useState<string>("");
 
   useEffectAfterMount(() => {
-    if (!property) return;
-    const geoid = property.GEOID.toString();
-    setCountyName(utils.getCountyName(geoid));
-    setNeighborhoodName(utils.getNeighborhoodName(geoid));
-  }, [property]);
+    if (!hoveredProperty) return;
+    const geoid = hoveredProperty.GEOID.toString();
+    setHoveredCountyName(utils.getCountyName(geoid));
+    setHoveredNeighborhoodName(utils.getNeighborhoodName(geoid));
+  }, [hoveredProperty]);
 
-  return [countyName, neighborhoodName] as const;
+  useEffectAfterMount(() => {
+    if (!selectedProperty) return;
+    const geoid = selectedProperty.GEOID.toString();
+    setSelectedCountyName(utils.getCountyName(geoid));
+    setSelectedNeighborhoodName(utils.getNeighborhoodName(geoid));
+  }, [selectedProperty]);
+
+  return {
+    hoveredCountyName,
+    hoveredNeighborhoodName,
+    selectedCountyName,
+    selectedNeighborhoodName,
+  };
 }
