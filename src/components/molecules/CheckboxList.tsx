@@ -5,6 +5,7 @@ import { Survey, SurveyContext } from "../../context/SurveyContext";
 import { ListItem } from "../../constants/surveyConstants";
 import Icon from "../atoms/Icon";
 import { iconPaths } from "../../constants/IconConstants";
+import { MapQueryContext } from "../../context/MapQueryContext";
 
 type CheckboxListProps = {
   surveyName: keyof Survey;
@@ -27,6 +28,7 @@ export default function CheckboxList({
   setInfo,
 }: CheckboxListProps) {
   const { setSurvey } = useContext(SurveyContext);
+  const { selectedClusterInfo } = useContext(MapQueryContext);
 
   // Handle uncontrolled checkbox change
   const handleChange = (
@@ -67,7 +69,12 @@ export default function CheckboxList({
               />
             </label>
             {showInfo && setInfo && (
-              <div className={styles.icon} onClick={() => setInfo(index)}>
+              <div
+                className={`${styles.icon} ${
+                  selectedClusterInfo === index && styles.selected
+                }`}
+                onClick={() => setInfo(index)}
+              >
                 <Icon path={iconPaths.information} height={24} width={24} />
               </div>
             )}
