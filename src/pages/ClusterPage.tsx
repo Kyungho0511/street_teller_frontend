@@ -31,6 +31,7 @@ import { MapQueryContext } from "../context/MapQueryContext";
 import useClusterFromMap from "../hooks/useClusterFromMap";
 import Colorbox from "../components/atoms/Colorbox";
 import useNameFromMap from "../hooks/useNameFromMap";
+import BarChartList from "../components/molecules/BarChartList";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -43,6 +44,7 @@ export default function ClusterPage() {
   const {
     selectedCluster,
     setSelectedCluster,
+    selectedClusterInfo,
     setSelectedClusterInfo,
     setSelectedFeaturePosition,
   } = useContext(MapQueryContext);
@@ -221,6 +223,9 @@ export default function ClusterPage() {
     };
   }, [mapViewer]);
 
+  // Set the selected cluster information.
+  useEffect(() => {}, [selectedClusterInfo]);
+
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
     return (
@@ -265,10 +270,12 @@ export default function ClusterPage() {
         </SidebarSection>
       </Sidebar>
 
+      {/* Legend for 3d preview */}
       <LegendSection
         title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
         visible={selectedCluster !== undefined}
         onClose={() => setSelectedCluster(undefined)}
+        onOpen={() => setSelectedClusterInfo(undefined)}
       >
         <Map3dViewer visible={selectedCluster !== undefined} />
         {currentSelectedCluster && (
@@ -284,9 +291,23 @@ export default function ClusterPage() {
         )}
       </LegendSection>
 
-      <LegendSection title={`Clustering Step`}>
-        <p></p>
-      </LegendSection>
+      {/* Legend for cluster information */}
+      {selectedClusterInfo !== undefined && (
+        <LegendSection
+          title={clusterList.list[selectedClusterInfo].name}
+          titleColor={clusterList.list[selectedClusterInfo].color}
+          visible={selectedClusterInfo !== undefined}
+          onClose={() => setSelectedClusterInfo(undefined)}
+          onOpen={() => setSelectedCluster(undefined)}
+        >
+          <p style={{ margin: 0 }}>
+            {clusterList.list[selectedClusterInfo].content}
+          </p>
+          <BarChartList
+            list={clusterList.list[selectedClusterInfo].centroids}
+          />
+        </LegendSection>
+      )}
 
       <PopupSection enableSelectEffect>
         <PopupContentCluster clusterId={clusterId!} />

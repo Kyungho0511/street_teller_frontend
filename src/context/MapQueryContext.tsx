@@ -52,8 +52,6 @@ export function MapQueryContextProvider({
   const [selectedFeaturePosition, setSelectedFeaturePosition] =
     useState<Position>();
 
-  console.log(selectedClusterInfo);
-
   return (
     <MapQueryContext.Provider
       value={{

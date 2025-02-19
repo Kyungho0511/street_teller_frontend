@@ -7,6 +7,7 @@ type ColorboxProps = {
   color?: RGBA;
   fontSize?: string;
   fontWeight?: string;
+  capitalize?: boolean;
 };
 
 /**
@@ -17,6 +18,7 @@ export default function Colorbox({
   color,
   fontSize,
   fontWeight,
+  capitalize,
 }: ColorboxProps) {
   return (
     <div className={styles.container}>
@@ -24,7 +26,14 @@ export default function Colorbox({
         className={styles.colorbox}
         style={color && { backgroundColor: rgbaToString(color) }}
       ></div>
-      <p className={styles.text} style={{ fontSize, fontWeight }}>
+      <p
+        className={styles.text}
+        style={{
+          fontSize,
+          fontWeight,
+          textTransform: capitalize ? "capitalize" : "none",
+        }}
+      >
         {label}
       </p>
     </div>

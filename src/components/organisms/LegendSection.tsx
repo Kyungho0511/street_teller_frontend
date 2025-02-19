@@ -3,12 +3,17 @@ import styles from "./LegendSection.module.css";
 import { MAP_CONTROLS_HEIGHT } from "./MapControls";
 import Icon from "../atoms/Icon";
 import { iconPaths } from "../../constants/IconConstants";
+import { useEffect } from "react";
+import { RGBA } from "../../constants/mapConstants";
+import Colorbox from "../atoms/Colorbox";
 
 type LegendSectionProps = {
   children: React.ReactNode;
-  title: string;
+  title?: string;
+  titleColor?: RGBA;
   visible?: boolean;
   onClose?: () => void;
+  onOpen?: () => void;
 };
 
 /**
@@ -17,9 +22,16 @@ type LegendSectionProps = {
 export default function LegendSection({
   children,
   title,
+  titleColor,
   visible = true,
   onClose,
+  onOpen,
 }: LegendSectionProps) {
+  // Call onOpen callback function on component mount.
+  useEffect(() => {
+    onOpen && visible && onOpen();
+  }, [visible]);
+
   return (
     <div
       className={styles.container}
@@ -27,7 +39,16 @@ export default function LegendSection({
     >
       <div className={styles.header}>
         <div className={styles.header_content}>
-          {title && <h4 className={styles.title}>{title}</h4>}
+          {title && titleColor && (
+            <Colorbox
+              label={title}
+              color={titleColor}
+              fontSize="1.1rem"
+              fontWeight="var(--font-bold)"
+              capitalize
+            />
+          )}
+          {title && !titleColor && <h4 className={styles.title}>{title}</h4>}
         </div>
         {onClose && (
           <div className={styles.closeButton} onClick={onClose}>
