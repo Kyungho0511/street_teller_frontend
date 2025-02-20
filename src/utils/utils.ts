@@ -7,6 +7,7 @@ import {
   mapAttributes,
 } from "../constants/mapConstants";
 import census_tract_to_nta from "../assets/data/census_tract_to_nta.json";
+import { Position } from "geojson";
 
 /**
  * Returns the section name corresponding to the path.
@@ -185,4 +186,20 @@ export function crossReferenceList<T>(list: T[][]): T[][] {
   }
   generateCombinations([], list);
   return crossReferenced;
+}
+
+/**
+ * Get the center coordinate of multiple coordinates.
+ * @param coordinates Coordinates of longitude and latitude to get the center.
+ */
+export function getCenterCoordinate(coordinates: Position[]): Position {
+  const center: Position = [0, 0];
+  for (const coord of coordinates) {
+    center[0] += coord[0];
+    center[1] += coord[1];
+  }
+  center[0] /= coordinates.length;
+  center[1] /= coordinates.length;
+
+  return center;
 }

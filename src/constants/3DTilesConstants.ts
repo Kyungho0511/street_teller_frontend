@@ -1,1 +1,0 @@
-export const GOOGLE_3D_TILES_ID = 2275207;

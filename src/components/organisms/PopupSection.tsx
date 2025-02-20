@@ -4,8 +4,7 @@ import { MapContext } from "../../context/MapContext";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import { RGBA, POPUP } from "../../constants/mapConstants";
 import { isTransparent } from "../../utils/utils";
-import useMapSelectEffect from "../../hooks/useMapSelectEffect";
-import { PopupContext } from "../../context/PopupContext";
+import { MapQueryContext } from "../../context/MapQueryContext";
 import { HealthcareProperties } from "../../constants/geoJsonConstants";
 
 type Coordinate = {
@@ -13,40 +12,44 @@ type Coordinate = {
   y: number;
 };
 type PopupSectionProps = {
-  enableSelectEffect?: boolean;
   children: React.ReactNode;
 };
 
 /**
  * Container component for the map popup.
  */
-export default function PopupSection({
-  enableSelectEffect,
-  children,
-}: PopupSectionProps) {
+export default function PopupSection({ children }: PopupSectionProps) {
   const { mapViewer, parentLayer } = useContext(MapContext);
-  const { setProperty } = useContext(PopupContext);
+  const { setHoveredProperty, setSelectedProperty } =
+    useContext(MapQueryContext);
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
-
-  // Add selection effect to the map's selected features.
-  useMapSelectEffect(parentLayer, mapViewer, enableSelectEffect);
 
   // Set properties based on the map mouse event.
   useEffect(() => {
     if (!mapViewer) return;
-    const updateProperties = (event: mapboxgl.MapMouseEvent) => {
+    const updateHoveredProperties = (event: mapboxgl.MapMouseEvent) => {
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
-      setProperty(feature.properties as HealthcareProperties);
+      setHoveredProperty(feature.properties as HealthcareProperties);
     };
-    mapViewer.on("mousemove", parentLayer, updateProperties);
+
+    const updateSelectedProperties = (event: mapboxgl.MapMouseEvent) => {
+      const feature = mapViewer.queryRenderedFeatures(event.point, {
+        layers: [parentLayer],
+      })[0];
+      setSelectedProperty(feature.properties as HealthcareProperties);
+    };
+
+    mapViewer.on("mousemove", parentLayer, updateHoveredProperties);
+    mapViewer.on("click", parentLayer, updateSelectedProperties);
 
     return () => {
-      mapViewer.off("mousemove", parentLayer, updateProperties);
+      mapViewer.off("mousemove", parentLayer, updateHoveredProperties);
+      mapViewer.off("click", parentLayer, updateSelectedProperties);
     };
-  }, [mapViewer, parentLayer, setProperty]);
+  }, [mapViewer, parentLayer, setHoveredProperty, setSelectedProperty]);
 
   // Set popup status & position based on the map mouse event.
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function PopupSection({
     };
 
     const hidePopup = () => {
-      setProperty(undefined);
+      setHoveredProperty(undefined);
       setDisplay("none");
     };
 

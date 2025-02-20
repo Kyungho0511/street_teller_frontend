@@ -2,7 +2,7 @@ import styles from "./GradientBar.module.css";
 import { MapAttribute, MapBound, UnitType } from "../../constants/mapConstants";
 import * as utils from "../../utils/utils";
 import { useContext } from "react";
-import { PopupContext } from "../../context/PopupContext";
+import { MapQueryContext } from "../../context/MapQueryContext";
 
 type GradientBarProps = {
   bound: MapBound;
@@ -18,8 +18,10 @@ export default function GradientBar({
   unit,
   selectedAttribute,
 }: GradientBarProps) {
-  const { property } = useContext(PopupContext);
-  const value = property ? (property[selectedAttribute.name] as number) : null;
+  const { hoveredProperty } = useContext(MapQueryContext);
+  const value = hoveredProperty
+    ? (hoveredProperty[selectedAttribute.name] as number)
+    : null;
   const scaleMin = utils.formatUnit(bound.min, unit);
   const scaleMax = utils.formatUnit(bound.max, unit);
   // const scaleValue = value !== null ? utils.formatUnit(value, unit) : "";

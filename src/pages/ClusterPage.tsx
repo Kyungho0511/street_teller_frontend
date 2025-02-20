@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import AIResponseList from "../components/molecules/AIReponseList";
-import DropdownManager from "../components/molecules/DropdownManager";
 import LegendSection from "../components/organisms/LegendSection";
 import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
@@ -8,7 +7,7 @@ import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
-import { getSeriesNumber, pathToSection } from "../utils/utils";
+import * as utils from "../utils/utils";
 import {
   geoJsonFilePath,
   HealthcarePropertyName,
@@ -18,7 +17,6 @@ import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
-import { PopupContextProvider } from "../context/PopupContext";
 import Sidebar from "../components/organisms/Sidebar";
 import useOpenaiInstruction from "../hooks/useOpenaiInstruction";
 import { CLUSTERING_SIZE } from "../constants/kMeansConstants";
@@ -27,8 +25,14 @@ import { ClusterPrompt } from "../constants/messageConstants";
 import { streamOpenAI } from "../services/openai";
 import { ClusterList } from "../constants/surveyConstants";
 import { v4 as uuidv4 } from "uuid";
-import BarChartDropdownList from "../components/molecules/BarChartDropDownList";
 import CheckboxList from "../components/molecules/CheckboxList";
+import Map3dViewer from "../components/organisms/Map3dViewer";
+import { MapQueryContext } from "../context/MapQueryContext";
+import useClusterFromMap from "../hooks/useClusterFromMap";
+import Colorbox from "../components/atoms/Colorbox";
+import useNameFromMap from "../hooks/useNameFromMap";
+import BarChartList from "../components/molecules/BarChartList";
+import useMapSelectEffect from "../hooks/useMapSelectEffect";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -36,8 +40,15 @@ import CheckboxList from "../components/molecules/CheckboxList";
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const { mapViewer, mapMode } = useContext(MapContext);
+  const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
+  const {
+    selectedCluster,
+    setSelectedCluster,
+    selectedClusterInfo,
+    setSelectedClusterInfo,
+    setSelectedFeaturePosition,
+  } = useContext(MapQueryContext);
 
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
     Array(3).fill(undefined)
@@ -48,10 +59,12 @@ export default function ClusterPage() {
   const clusterName = `cluster${clusterId}` as ClusterList["name"];
   const clusterList = survey[clusterName as ClusterList["name"]]!;
 
-  const section = pathToSection(location.pathname);
+  const section = utils.pathToSection(location.pathname);
   const run = messages[section].find((message) => message.type === "cluster")
     ? false
     : true;
+  const { currentSelectedCluster } = useClusterFromMap(clusterId!);
+  const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Run the clustering logic if a cluster message is not found.
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
@@ -59,10 +72,12 @@ export default function ClusterPage() {
     run
   );
 
+  // Set OpenAI instruction and map select effect.
   useOpenaiInstruction(parseInt(clusterId!), [
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
+  useMapSelectEffect(parentLayer, mapViewer, true, selectedCluster);
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
@@ -189,6 +204,31 @@ export default function ClusterPage() {
     });
   }, [mapMode]);
 
+  // Set the center longitude and latitude of the selected polygon.
+  useEffect(() => {
+    if (!mapViewer) return;
+
+    const handleClick = (event: mapboxgl.MapMouseEvent) => {
+      const feature = mapViewer.queryRenderedFeatures(event.point, {
+        layers: [parentLayer],
+      })[0];
+      if (!feature || !(feature.geometry.type === "Polygon")) return;
+
+      const coordinates = feature.geometry.coordinates[0];
+      const center = utils.getCenterCoordinate(coordinates);
+      setSelectedFeaturePosition(center);
+    };
+
+    mapViewer.on("click", handleClick);
+
+    return () => {
+      mapViewer.off("click", handleClick);
+    };
+  }, [mapViewer]);
+
+  // Set the selected cluster information.
+  useEffect(() => {}, [selectedClusterInfo]);
+
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
     return (
@@ -227,27 +267,54 @@ export default function ClusterPage() {
                 clusterIndex
               )
             }
+            showInfo
+            setInfo={setSelectedClusterInfo}
           />
         </SidebarSection>
       </Sidebar>
 
-      <PopupContextProvider>
+      {/* Legend for 3d preview */}
+      <LegendSection
+        title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
+        visible={selectedCluster !== undefined}
+        onClose={() => setSelectedCluster(undefined)}
+        onOpen={() => setSelectedClusterInfo(undefined)}
+      >
+        <Map3dViewer visible={selectedCluster !== undefined} />
+        {currentSelectedCluster && (
+          <div style={{ marginTop: "1rem" }}>
+            <Colorbox
+              label={currentSelectedCluster.name}
+              color={currentSelectedCluster.color}
+              fontSize="1rem"
+              fontWeight="var(--font-bold)"
+            />
+            <p style={{ margin: 0 }}>{currentSelectedCluster.content}</p>
+          </div>
+        )}
+      </LegendSection>
+
+      {/* Legend for cluster information */}
+      {selectedClusterInfo !== undefined && (
         <LegendSection
-          title={`Clustering Step`}
-          steps={getSeriesNumber(3)}
-          currentStep={parseInt(clusterId!)}
+          title={clusterList.list[selectedClusterInfo].name}
+          titleColor={clusterList.list[selectedClusterInfo].color}
+          visible={selectedClusterInfo !== undefined}
+          onClose={() => setSelectedClusterInfo(undefined)}
+          onOpen={() => setSelectedCluster(undefined)}
         >
-          <DropdownManager
-            lists={clusterList.list}
-            listType={BarChartDropdownList}
-            autoCollapse
+          <p style={{ margin: 0 }}>
+            {clusterList.list[selectedClusterInfo].content}
+          </p>
+          <BarChartList
+            list={clusterList.list[selectedClusterInfo].centroids}
           />
         </LegendSection>
+      )}
 
-        <PopupSection enableSelectEffect>
-          <PopupContentCluster clusterId={clusterId!} />
-        </PopupSection>
-      </PopupContextProvider>
+      <PopupSection>
+        <PopupContentCluster clusterId={clusterId!} />
+      </PopupSection>
     </>
   );
 }
