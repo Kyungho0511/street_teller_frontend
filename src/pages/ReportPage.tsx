@@ -30,6 +30,8 @@ import PopupContentReport from "../components/atoms/PopupContentReport";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
 import { MapQueryContext } from "../context/MapQueryContext";
+import useNameFromMap from "../hooks/useNameFromMap";
+import Map3dViewer from "../components/organisms/Map3dViewer";
 
 /**
  * Report page component where users select sites to report.
@@ -39,7 +41,7 @@ export default function ReportPage() {
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
   const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
-  const { selectedReport } = useContext(MapQueryContext);
+  const { selectedReport, setSelectedReport } = useContext(MapQueryContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
 
@@ -57,6 +59,8 @@ export default function ReportPage() {
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer, true, selectedReport);
+
+  const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Prepare geoJson data for the report page.
   useEffect(() => {
@@ -198,9 +202,15 @@ export default function ReportPage() {
         </SidebarSection>
       </Sidebar>
 
-      <LegendSection title={"Title"}>
-        <p>legend section</p>
+      {/* Legend for 3d preview */}
+      <LegendSection
+        title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
+        visible={selectedReport !== undefined}
+      >
+        <Map3dViewer visible={selectedReport !== undefined} />
       </LegendSection>
+
+      {/* Legend for report listing information */}
 
       <PopupSection>
         <PopupContentReport />

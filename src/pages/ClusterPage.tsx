@@ -87,8 +87,10 @@ export default function ClusterPage() {
     }
     const clusterSurvey = getClusterSurvey();
 
-    // Clean up mapbox layers before starting a new clustering page.
+    // Clean up mapbox layers and UI before starting a new clustering page.
     mapbox.removeAllClusterLayers(clusterSurvey, mapViewer!);
+    setSelectedCluster(undefined);
+    setSelectedClusterInfo(undefined);
 
     if (clusterIndex === 0 && clusterSurvey[0]?.geoJson) {
       setGeoJson(clusterSurvey[0].geoJson);
