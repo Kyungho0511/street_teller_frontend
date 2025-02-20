@@ -1,4 +1,4 @@
-import styles from "./ProgressBar.module.css";
+// import styles from "./ProgressBar.module.css";
 
 export default function ProgressBar() {
   return (
