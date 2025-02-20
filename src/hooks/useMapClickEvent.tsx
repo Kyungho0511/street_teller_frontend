@@ -20,7 +20,7 @@ export default function useMapClickEvent(
         layers: [parentLayer],
       })[0];
 
-      setSelectedIndex(feature?.properties![key]);
+      setSelectedIndex((prev) => feature?.properties![key] ?? prev);
     };
     mapViewer.on("click", updateSelectedIndex);
 

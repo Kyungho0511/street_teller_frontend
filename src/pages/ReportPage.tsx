@@ -28,6 +28,8 @@ import PopupSection from "../components/organisms/PopupSection";
 import DropdownList from "../components/molecules/DropdownList";
 import PopupContentReport from "../components/atoms/PopupContentReport";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
+import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import { MapQueryContext } from "../context/MapQueryContext";
 
 /**
  * Report page component where users select sites to report.
@@ -36,7 +38,8 @@ export default function ReportPage() {
   const { survey, getClusterSurvey, setReportSurvey } =
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
-  const { mapViewer, mapMode } = useContext(MapContext);
+  const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
+  const { selectedReport } = useContext(MapQueryContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
 
@@ -51,7 +54,9 @@ export default function ReportPage() {
     ? false
     : true;
 
+  // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
+  useMapSelectEffect(parentLayer, mapViewer, true, selectedReport);
 
   // Prepare geoJson data for the report page.
   useEffect(() => {
@@ -197,7 +202,7 @@ export default function ReportPage() {
         <p>legend section</p>
       </LegendSection>
 
-      <PopupSection enableSelectEffect>
+      <PopupSection>
         <PopupContentReport />
       </PopupSection>
     </>

@@ -32,6 +32,7 @@ import useClusterFromMap from "../hooks/useClusterFromMap";
 import Colorbox from "../components/atoms/Colorbox";
 import useNameFromMap from "../hooks/useNameFromMap";
 import BarChartList from "../components/molecules/BarChartList";
+import useMapSelectEffect from "../hooks/useMapSelectEffect";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -71,10 +72,12 @@ export default function ClusterPage() {
     run
   );
 
+  // Set OpenAI instruction and map select effect.
   useOpenaiInstruction(parseInt(clusterId!), [
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
+  useMapSelectEffect(parentLayer, mapViewer, true, selectedCluster);
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
@@ -309,7 +312,7 @@ export default function ClusterPage() {
         </LegendSection>
       )}
 
-      <PopupSection enableSelectEffect>
+      <PopupSection>
         <PopupContentCluster clusterId={clusterId!} />
       </PopupSection>
     </>

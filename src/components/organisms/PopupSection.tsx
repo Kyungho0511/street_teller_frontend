@@ -4,7 +4,6 @@ import { MapContext } from "../../context/MapContext";
 import { FOOTBAR_HEIGHT } from "./Footbar";
 import { RGBA, POPUP } from "../../constants/mapConstants";
 import { isTransparent } from "../../utils/utils";
-import useMapSelectEffect from "../../hooks/useMapSelectEffect";
 import { MapQueryContext } from "../../context/MapQueryContext";
 import { HealthcareProperties } from "../../constants/geoJsonConstants";
 
@@ -13,25 +12,18 @@ type Coordinate = {
   y: number;
 };
 type PopupSectionProps = {
-  enableSelectEffect?: boolean;
   children: React.ReactNode;
 };
 
 /**
  * Container component for the map popup.
  */
-export default function PopupSection({
-  enableSelectEffect,
-  children,
-}: PopupSectionProps) {
+export default function PopupSection({ children }: PopupSectionProps) {
   const { mapViewer, parentLayer } = useContext(MapContext);
   const { setHoveredProperty, setSelectedProperty } =
     useContext(MapQueryContext);
   const [position, setPosition] = useState<Coordinate>({ x: 0, y: 0 });
   const [display, setDisplay] = useState<"block" | "none">("none");
-
-  // Add selection effect to the map's selected features.
-  useMapSelectEffect(parentLayer, mapViewer, enableSelectEffect);
 
   // Set properties based on the map mouse event.
   useEffect(() => {

@@ -19,6 +19,7 @@ import { MapContext } from "../context/MapContext";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
+import useMapSelectEffect from "../hooks/useMapSelectEffect";
 
 /**
  * Home page component where users sort their data preferences.
@@ -33,7 +34,9 @@ export default function HomePage() {
     initialPreferenceList.list[0]
   );
 
+  // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
+  useMapSelectEffect(parentLayer, mapViewer);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
@@ -84,7 +87,7 @@ export default function HomePage() {
         <Colorbox label={"non-shortage areas"} />
       </LegendSection>
 
-      <PopupSection enableSelectEffect>
+      <PopupSection>
         <PopupContentHome selectedAttribute={attribute} />
       </PopupSection>
     </>

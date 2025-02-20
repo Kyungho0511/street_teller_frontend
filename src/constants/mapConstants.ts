@@ -32,9 +32,13 @@ export const mapConfigs = {
 
 export const GEOID = "GEOID";
 
-export const OUTLINE_LAYER = "tracts-features-nyc-outline";
+export const OUTLINE_LAYER_HOVER = "tracts-features-nyc-outline-hover";
 
-export const THICK_LINE_WEIGHT = 4;
+export const OUTLINE_LAYER_SELECT = "tracts-features-nyc-outline-select";
+
+export const THICK_LINE_WEIGHT_HOVER = 3;
+
+export const THICK_LINE_WEIGHT_SELECT = 6;
 
 export const ZOOM_MODIFIER = 3; // zoom level modifier for map preview.
 
