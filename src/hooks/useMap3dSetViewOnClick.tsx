@@ -11,8 +11,6 @@ export default function useMap3dSetViewOnClick() {
   const { mapViewer, parentLayer } = useContext(MapContext);
   const { setSelectedFeaturePosition } = useContext(MapQueryContext);
 
-  console.log(parentLayer);
-
   // Set the center longitude and latitude of the selected polygon.
   useEffect(() => {
     if (!mapViewer) return;
@@ -31,7 +29,6 @@ export default function useMap3dSetViewOnClick() {
     mapViewer.on("click", handleClick);
 
     return () => {
-      console.log("unmounting useMap3dSetViewOnClick");
       mapViewer.off("click", handleClick);
     };
   }, [mapViewer, parentLayer, setSelectedFeaturePosition]);

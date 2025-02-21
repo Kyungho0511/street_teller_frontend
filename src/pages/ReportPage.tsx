@@ -33,6 +33,8 @@ import { MapQueryContext } from "../context/MapQueryContext";
 import useNameFromMap from "../hooks/useNameFromMap";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
+import useClusterFromMap from "../hooks/useClusterFromMap";
+import Colorbox from "../components/atoms/Colorbox";
 
 /**
  * Report page component where users select sites to report.
@@ -62,6 +64,7 @@ export default function ReportPage() {
   useMapSelectEffect(parentLayer, mapViewer, true, selectedReport);
   useMap3dSetViewOnClick();
 
+  const { selectedClusters } = useClusterFromMap("3");
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Prepare geoJson data for the report page.
@@ -208,11 +211,26 @@ export default function ReportPage() {
       <LegendSection
         title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
         visible={selectedReport !== undefined}
+        onClose={() => setSelectedReport(undefined)}
       >
         <Map3dViewer visible={selectedReport !== undefined} />
+        {selectedClusters?.length &&
+          selectedClusters.map((cluster) => (
+            <div key={cluster.id}>
+              <div style={{ marginTop: "1rem" }}>
+                <Colorbox
+                  label={cluster.name}
+                  color={cluster.color}
+                  fontSize="0.9rem"
+                  fontWeight="var(--font-bold)"
+                />
+                <p style={{ margin: 0 }}>{cluster.content}</p>
+              </div>
+            </div>
+          ))}
       </LegendSection>
 
-      {/* Legend for report listing information */}
+      {/* TODO: Add Legend for report listing information later... */}
 
       <PopupSection>
         <PopupContentReport />

@@ -9,7 +9,7 @@ import {
 import useEffectAfterMount from "./useEffectAfterMount";
 
 /**
- * Custom hook to get clusters from the map.
+ * Custom hook to get features from the map.
  */
 export default function useClusterFromMap(clusterId: string) {
   const { survey } = useContext(SurveyContext);
