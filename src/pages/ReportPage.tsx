@@ -32,6 +32,7 @@ import useMapSelectEffect from "../hooks/useMapSelectEffect";
 import { MapQueryContext } from "../context/MapQueryContext";
 import useNameFromMap from "../hooks/useNameFromMap";
 import Map3dViewer from "../components/organisms/Map3dViewer";
+import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
 
 /**
  * Report page component where users select sites to report.
@@ -59,6 +60,7 @@ export default function ReportPage() {
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer, true, selectedReport);
+  useMap3dSetViewOnClick();
 
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 

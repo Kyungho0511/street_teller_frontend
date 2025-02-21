@@ -72,13 +72,13 @@ export default function MapViewer() {
     mapViewer.setStyle(styleUrl);
   }, [mapMode]);
 
-  const setMapSettings = () => {
+  function setMapSettings() {
     // Update the map parent layer and color of the current page.
     const section = pathToSection(location.pathname);
     const mapSec = sectionMapConfigs.find((sec) => sec.id === section)!;
     setParentLayer(mapSec.parentLayer);
     setColor(mapSec.color);
-  };
+  }
 
   return <div id="map" ref={mapContainerRef} className={styles.map}></div>;
 }

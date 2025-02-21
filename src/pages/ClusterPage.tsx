@@ -33,6 +33,7 @@ import Colorbox from "../components/atoms/Colorbox";
 import useNameFromMap from "../hooks/useNameFromMap";
 import BarChartList from "../components/molecules/BarChartList";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -47,7 +48,6 @@ export default function ClusterPage() {
     setSelectedCluster,
     selectedClusterInfo,
     setSelectedClusterInfo,
-    setSelectedFeaturePosition,
   } = useContext(MapQueryContext);
 
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
@@ -78,6 +78,7 @@ export default function ClusterPage() {
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
   useMapSelectEffect(parentLayer, mapViewer, true, selectedCluster);
+  useMap3dSetViewOnClick();
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
@@ -205,31 +206,6 @@ export default function ClusterPage() {
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
     });
   }, [mapMode]);
-
-  // Set the center longitude and latitude of the selected polygon.
-  useEffect(() => {
-    if (!mapViewer) return;
-
-    const handleClick = (event: mapboxgl.MapMouseEvent) => {
-      const feature = mapViewer.queryRenderedFeatures(event.point, {
-        layers: [parentLayer],
-      })[0];
-      if (!feature || !(feature.geometry.type === "Polygon")) return;
-
-      const coordinates = feature.geometry.coordinates[0];
-      const center = utils.getCenterCoordinate(coordinates);
-      setSelectedFeaturePosition(center);
-    };
-
-    mapViewer.on("click", handleClick);
-
-    return () => {
-      mapViewer.off("click", handleClick);
-    };
-  }, [mapViewer]);
-
-  // Set the selected cluster information.
-  useEffect(() => {}, [selectedClusterInfo]);
 
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
