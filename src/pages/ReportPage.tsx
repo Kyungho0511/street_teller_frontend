@@ -214,6 +214,16 @@ export default function ReportPage() {
         onClose={() => setSelectedReport(undefined)}
       >
         <Map3dViewer visible={selectedReport !== undefined} />
+        {selectedReport !== undefined && (
+          <div>
+            <h4 style={{ fontSize: "1.1rem" }}>
+              {survey.report.list[selectedReport].name}
+            </h4>
+            <p style={{ marginTop: 0 }}>
+              {survey.report.list[selectedReport].content}
+            </p>
+          </div>
+        )}
         {selectedClusters?.length &&
           selectedClusters.map((cluster) => (
             <div key={cluster.id}>
