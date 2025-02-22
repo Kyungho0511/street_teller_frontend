@@ -17,7 +17,12 @@ import {
 } from "../constants/geoJsonConstants";
 import { getFilteredGeoJson } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
-import { defaultColor } from "../constants/mapConstants";
+import {
+  defaultColor,
+  GEOID,
+  OUTLINE_LAYER_SELECT,
+  THICK_LINE_WEIGHT_SELECT,
+} from "../constants/mapConstants";
 import { streamOpenAI } from "../services/openai";
 import { ReportPrompt } from "../constants/messageConstants";
 import { MessageContext } from "../context/MessageContext";
@@ -44,7 +49,8 @@ export default function ReportPage() {
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
   const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
-  const { selectedReport, setSelectedReport } = useContext(MapQueryContext);
+  const { selectedReport, setSelectedReport, selectedGeoId, setSelectedGeoId } =
+    useContext(MapQueryContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
 
@@ -61,7 +67,7 @@ export default function ReportPage() {
 
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
-  useMapSelectEffect(parentLayer, mapViewer, true, selectedReport);
+  useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
   const { selectedClusters } = useClusterFromMap("3");
@@ -176,7 +182,7 @@ export default function ReportPage() {
     const currentReportLayer = mapViewer.getLayer(reportName)!;
     const currentSources = mapViewer.getStyle()!.sources;
 
-    mapViewer.on("style.load", () => {
+    const onStyleLoad = () => {
       // Restore sources
       Object.entries(currentSources).forEach(([id, source]) => {
         if (!mapViewer.getSource(id)) {
@@ -189,7 +195,22 @@ export default function ReportPage() {
         mapViewer.addLayer(currentReportLayer, "road-simple");
       }
       mapbox.setLayers(section, mapViewer);
-    });
+
+      // Restore selected GeoId effect.
+      selectedGeoId &&
+        mapbox.setLineWidth(
+          OUTLINE_LAYER_SELECT,
+          GEOID,
+          selectedGeoId,
+          THICK_LINE_WEIGHT_SELECT,
+          mapViewer
+        );
+    };
+    mapViewer.on("style.load", onStyleLoad);
+
+    return () => {
+      mapViewer.off("style.load", onStyleLoad);
+    };
   }, [mapMode]);
 
   return (
@@ -211,7 +232,10 @@ export default function ReportPage() {
       <LegendSection
         title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
         visible={selectedReport !== undefined}
-        onClose={() => setSelectedReport(undefined)}
+        onClose={() => {
+          setSelectedReport(undefined);
+          setSelectedGeoId(undefined);
+        }}
       >
         <Map3dViewer visible={selectedReport !== undefined} />
         {selectedReport !== undefined && (

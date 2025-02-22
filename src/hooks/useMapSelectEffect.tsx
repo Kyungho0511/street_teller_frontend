@@ -8,22 +8,26 @@ import {
 } from "../constants/mapConstants";
 import * as mapbox from "../services/mapbox";
 import { isTransparent } from "../utils/utils";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import useEffectAfterMount from "./useEffectAfterMount";
+import { MapQueryContext } from "../context/MapQueryContext";
+import { MapContext } from "../context/MapContext";
 
 /**
  * Add selection effect to the map's selected features.
  * @param layer Name of the layer to add select effect.
  * @param map Mapbox map instance to add select effect.
  * @param enableClickEvent Flag to enable click event.
- * @param selectedIndex Index of the selected feature.
  */
 export default function useMapSelectEffect(
   layer: string,
   map?: mapboxgl.Map,
-  enableClickEvent?: boolean,
-  selectedIndex?: number
+  enableClickEvent?: boolean
 ) {
+  const { mapMode } = useContext(MapContext);
+  const { selectedGeoId, setSelectedGeoId } = useContext(MapQueryContext);
+
+  // Subscribe event handlers to the map.
   useEffect(() => {
     if (!map) return;
 
@@ -79,13 +83,7 @@ export default function useMapSelectEffect(
         layers: [layer],
       })[0];
 
-      mapbox.setLineWidth(
-        OUTLINE_LAYER_SELECT,
-        GEOID,
-        feature.properties![GEOID],
-        THICK_LINE_WEIGHT_SELECT,
-        map
-      );
+      setSelectedGeoId((prev) => feature?.properties![GEOID] ?? prev);
     };
 
     // Add event listeners.
@@ -105,13 +103,21 @@ export default function useMapSelectEffect(
     };
   }, [layer, map, enableClickEvent]);
 
-  // Hide selection effect when there is no selected feature.
+  // Handle selection effect based on selected GeoId.
   useEffectAfterMount(() => {
     if (!map) return;
 
-    if (selectedIndex === undefined) {
+    if (selectedGeoId === undefined) {
       mapbox.hideLineWidth(OUTLINE_LAYER_SELECT, map);
       return;
     }
-  }, [map, selectedIndex]);
+
+    mapbox.setLineWidth(
+      OUTLINE_LAYER_SELECT,
+      GEOID,
+      selectedGeoId,
+      THICK_LINE_WEIGHT_SELECT,
+      map
+    );
+  }, [map, selectedGeoId]);
 }
