@@ -11,7 +11,6 @@ import { isTransparent } from "../utils/utils";
 import { useContext, useEffect } from "react";
 import useEffectAfterMount from "./useEffectAfterMount";
 import { MapQueryContext } from "../context/MapQueryContext";
-import { MapContext } from "../context/MapContext";
 
 /**
  * Add selection effect to the map's selected features.
@@ -24,7 +23,6 @@ export default function useMapSelectEffect(
   map?: mapboxgl.Map,
   enableClickEvent?: boolean
 ) {
-  const { mapMode } = useContext(MapContext);
   const { selectedGeoId, setSelectedGeoId } = useContext(MapQueryContext);
 
   // Subscribe event handlers to the map.

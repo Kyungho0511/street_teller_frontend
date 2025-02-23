@@ -44,8 +44,6 @@ import {
  * Cluster page component which consists of three clustering sub-sections.
  */
 export default function ClusterPage() {
-  console.log("ClusterPage");
-
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
   const { mapViewer, mapMode, parentLayer } = useContext(MapContext);

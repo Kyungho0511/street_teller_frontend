@@ -4,9 +4,10 @@ import Button from "../atoms/Button";
 import PromptBox from "../molecules/PromptBox";
 import MapToggleButton from "../atoms/MapToggleButton";
 import { SIDEBAR_WIDTH } from "./Sidebar";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { NavbarContext } from "../../context/NavbarContext";
 import MapControls from "./MapControls";
+import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 export const FOOTBAR_HEIGHT = 90;
 
@@ -18,6 +19,14 @@ export default function Footbar() {
 
   // Router navigation logic
   const location = useLocation();
+
+  const [navButtonVisible, setNavButtonVisible] = useState(
+    () => location.pathname !== "/report"
+  );
+  useEffectAfterMount(() => {
+    setNavButtonVisible(location.pathname !== "/report");
+  }, [location.pathname]);
+
   let nextPath = "/";
 
   switch (location.pathname) {
@@ -55,7 +64,7 @@ export default function Footbar() {
       <MapToggleButton />
       <PromptBox />
       <Link to={nextPath}>
-        <Button text={"continue"} type="footbar" />
+        {navButtonVisible && <Button text={"continue"} type="footbar" />}
       </Link>
       <MapControls />
     </footer>
