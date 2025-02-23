@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom";
 import styles from "./Logo.module.css";
-import white from "../../assets/images/site_teller_white_logo.png";
-import black from "../../assets/images/site_teller_black_logo.png";
-import blue from "../../assets/images/site_teller_blue_logo.png";
+import white from "../../assets/images/street_teller_white_icon.png";
+import black from "../../assets/images/street_teller_black_icon.png";
+import blue from "../../assets/images/street_teller_blue_icon.png";
 
 type LogoProps = {
-  width: string;
   color: "white" | "black" | "blue";
 };
 
 /**
- * Logo component to display the site teller brand image.
+ * Logo component to display the street teller brand image.
  *
  */
-export default function Logo({ width, color }: LogoProps) {
+export default function Logo({ color }: LogoProps) {
   const logo = {
     white: white,
     black: black,
@@ -23,12 +22,8 @@ export default function Logo({ width, color }: LogoProps) {
   return (
     <Link to="/" draggable={false}>
       <div className={styles.container}>
-        <img
-          src={logo[color]}
-          alt="logo_image"
-          className={styles.logo}
-          style={{ width: width }}
-        />
+        <img src={logo[color]} alt="logo_image" className={styles.icon} />
+        <p className={styles.text}>Street Teller</p>
       </div>
     </Link>
   );
