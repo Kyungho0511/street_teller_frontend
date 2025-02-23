@@ -85,7 +85,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     >
       <div className={styles.header}>
         <div className={styles.logo_container}>
-          <Logo width="150px" color="white" />
+          <Logo color="white" />
           <div className={styles.navigate_container}>
             <div
               className={`${styles.button} ${styles.small}`}

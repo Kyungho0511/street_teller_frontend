@@ -19,6 +19,8 @@ type MapQueryContextProps = {
   >;
   selectedReport: number | undefined;
   setSelectedReport: React.Dispatch<React.SetStateAction<number | undefined>>;
+  selectedGeoId: number | undefined;
+  setSelectedGeoId: React.Dispatch<React.SetStateAction<number | undefined>>;
   selectedFeaturePosition: Position | undefined;
   setSelectedFeaturePosition: React.Dispatch<
     React.SetStateAction<Position | undefined>
@@ -49,6 +51,7 @@ export function MapQueryContextProvider({
   const [selectedCluster, setSelectedCluster] = useState<number>();
   const [selectedClusterInfo, setSelectedClusterInfo] = useState<number>();
   const [selectedReport, setSelectedReport] = useState<number>();
+  const [selectedGeoId, setSelectedGeoId] = useState<number>();
   const [selectedFeaturePosition, setSelectedFeaturePosition] =
     useState<Position>();
 
@@ -65,6 +68,8 @@ export function MapQueryContextProvider({
         setSelectedClusterInfo,
         selectedReport,
         setSelectedReport,
+        selectedGeoId,
+        setSelectedGeoId,
         selectedFeaturePosition,
         setSelectedFeaturePosition,
       }}

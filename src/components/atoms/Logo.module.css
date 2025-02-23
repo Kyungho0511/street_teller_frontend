@@ -1,6 +1,24 @@
-.logo {
-  display: block;
+.container {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
   padding: 0.5rem;
   pointer-events: none;
   user-select: none;
+}
+
+.icon {
+  width: 30px;
+}
+
+.text {
+  color: var(--color-white);
+  font-size: 1.4rem;
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
 }

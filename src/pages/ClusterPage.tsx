@@ -33,6 +33,12 @@ import Colorbox from "../components/atoms/Colorbox";
 import useNameFromMap from "../hooks/useNameFromMap";
 import BarChartList from "../components/molecules/BarChartList";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
+import {
+  GEOID,
+  OUTLINE_LAYER_SELECT,
+  THICK_LINE_WEIGHT_SELECT,
+} from "../constants/mapConstants";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -47,7 +53,8 @@ export default function ClusterPage() {
     setSelectedCluster,
     selectedClusterInfo,
     setSelectedClusterInfo,
-    setSelectedFeaturePosition,
+    selectedGeoId,
+    setSelectedGeoId,
   } = useContext(MapQueryContext);
 
   const [prompts, setPrompts] = useState<ClusterPrompt[]>(
@@ -77,7 +84,8 @@ export default function ClusterPage() {
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE].category}`,
     `${survey.preference.list[clusterIndex * CLUSTERING_SIZE + 1].category}`,
   ]);
-  useMapSelectEffect(parentLayer, mapViewer, true, selectedCluster);
+  useMapSelectEffect(parentLayer, mapViewer, true);
+  useMap3dSetViewOnClick();
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
@@ -87,8 +95,10 @@ export default function ClusterPage() {
     }
     const clusterSurvey = getClusterSurvey();
 
-    // Clean up mapbox layers before starting a new clustering page.
+    // Clean up mapbox layers and UI before starting a new clustering page.
     mapbox.removeAllClusterLayers(clusterSurvey, mapViewer!);
+    setSelectedCluster(undefined);
+    setSelectedClusterInfo(undefined);
 
     if (clusterIndex === 0 && clusterSurvey[0]?.geoJson) {
       setGeoJson(clusterSurvey[0].geoJson);
@@ -185,7 +195,7 @@ export default function ClusterPage() {
     const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
     const currentSources = mapViewer.getStyle()!.sources;
 
-    mapViewer.on("style.load", () => {
+    const onStyleLoad = () => {
       mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
 
       // Restore sources
@@ -194,40 +204,29 @@ export default function ClusterPage() {
           mapViewer.addSource(id, source);
         }
       });
-
       // Restore current cluster layer.
       if (!mapViewer.getLayer(clusterList.name)) {
         mapViewer.addLayer(currentClusterLayer, "road-simple");
       }
       mapbox.setLayers(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
-    });
-  }, [mapMode]);
 
-  // Set the center longitude and latitude of the selected polygon.
-  useEffect(() => {
-    if (!mapViewer) return;
-
-    const handleClick = (event: mapboxgl.MapMouseEvent) => {
-      const feature = mapViewer.queryRenderedFeatures(event.point, {
-        layers: [parentLayer],
-      })[0];
-      if (!feature || !(feature.geometry.type === "Polygon")) return;
-
-      const coordinates = feature.geometry.coordinates[0];
-      const center = utils.getCenterCoordinate(coordinates);
-      setSelectedFeaturePosition(center);
+      // Restore selected GeoId effect.
+      selectedGeoId &&
+        mapbox.setLineWidth(
+          OUTLINE_LAYER_SELECT,
+          GEOID,
+          selectedGeoId,
+          THICK_LINE_WEIGHT_SELECT,
+          mapViewer
+        );
     };
-
-    mapViewer.on("click", handleClick);
+    mapViewer.on("style.load", onStyleLoad);
 
     return () => {
-      mapViewer.off("click", handleClick);
+      mapViewer.off("style.load", onStyleLoad);
     };
-  }, [mapViewer]);
-
-  // Set the selected cluster information.
-  useEffect(() => {}, [selectedClusterInfo]);
+  }, [mapMode]);
 
   // Display loading & error status of fetching geoJson data.
   if (loadingGeoJson) {
@@ -277,7 +276,10 @@ export default function ClusterPage() {
       <LegendSection
         title={`${selectedNeighborhoodName}, ${selectedCountyName}`}
         visible={selectedCluster !== undefined}
-        onClose={() => setSelectedCluster(undefined)}
+        onClose={() => {
+          setSelectedCluster(undefined);
+          setSelectedGeoId(undefined);
+        }}
         onOpen={() => setSelectedClusterInfo(undefined)}
       >
         <Map3dViewer visible={selectedCluster !== undefined} />
@@ -300,8 +302,14 @@ export default function ClusterPage() {
           title={clusterList.list[selectedClusterInfo].name}
           titleColor={clusterList.list[selectedClusterInfo].color}
           visible={selectedClusterInfo !== undefined}
-          onClose={() => setSelectedClusterInfo(undefined)}
-          onOpen={() => setSelectedCluster(undefined)}
+          onClose={() => {
+            setSelectedClusterInfo(undefined);
+            setSelectedGeoId(undefined);
+          }}
+          onOpen={() => {
+            setSelectedCluster(undefined);
+            setSelectedGeoId(undefined);
+          }}
         >
           <p style={{ margin: 0 }}>
             {clusterList.list[selectedClusterInfo].content}

@@ -15,17 +15,17 @@ export default function useMapClickEvent(
   useEffect(() => {
     if (!mapViewer) return;
 
-    const updateSelectedIndex = (event: mapboxgl.MapMouseEvent) => {
+    const clickHandler = (event: mapboxgl.MapMouseEvent) => {
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
 
       setSelectedIndex((prev) => feature?.properties![key] ?? prev);
     };
-    mapViewer.on("click", updateSelectedIndex);
+    mapViewer.on("click", clickHandler);
 
     return () => {
-      mapViewer.off("click", updateSelectedIndex);
+      mapViewer.off("click", clickHandler);
     };
   }, [mapViewer, parentLayer, key]);
 }
