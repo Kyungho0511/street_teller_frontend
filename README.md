@@ -40,5 +40,5 @@ The diagram below illustrates the process of preparing a database and developing
   <a href="https://www.mapbox.com/" target="_blank" rel="noreferrer"> <img alt="Mapbox" src="https://img.shields.io/badge/-Mapbox-333333?style=flat-square&logo=mapbox&logoColor=white" /></a>
   <a href="https://www.python.org/" target="_blank" rel="noreferrer"><img alt="python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" /></a>
   <a href="https://geopandas.org/en/stable/" target="_blank" rel="noreferrer"> <img alt="geopandas" src="https://img.shields.io/badge/-GeoPandas-139C5A?style=flat-square&logo=geopandas&logoColor=white" /></a>
-  <a href="https://www.npmjs.com/package/ml-kmeans" target="_blank" rel="noreferrer"><img alt="ml-kmeans.js" src="https://img.shields.io/badge/-ml-kmeans.js-40AEF0?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/ml-kmeans" target="_blank" rel="noreferrer"><img alt="ml-kmeans.js" src="https://img.shields.io/badge/-ML kmeans.js-40AEF0?style=flat-square" /></a>
 </p>
