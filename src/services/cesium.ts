@@ -1,10 +1,5 @@
 import * as Cesium from "cesium";
-import {
-  ALTITUDE,
-  GOOGLE_3D_TILES_ID,
-  OFFSET_X,
-  OFFSET_Y,
-} from "../constants/map3DConstants";
+import { ALTITUDE, OFFSET_X, OFFSET_Y } from "../constants/map3DConstants";
 import { Position } from "geojson";
 
 /**
@@ -48,7 +43,7 @@ export async function createMap3D(
 
   try {
     const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(
-      GOOGLE_3D_TILES_ID
+      import.meta.env.VITE_GOOGLE_3D_TILES_ID as number
     );
     viewer.scene.primitives.add(tileset);
   } catch (error) {
