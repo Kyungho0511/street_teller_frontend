@@ -43,7 +43,7 @@ export async function createMap3D(
 
   try {
     const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(
-      import.meta.env.VITE_GOOGLE_3D_TILES_ID as number
+      Number(import.meta.env.VITE_GOOGLE_3D_TILES_ID)
     );
     viewer.scene.primitives.add(tileset);
   } catch (error) {
