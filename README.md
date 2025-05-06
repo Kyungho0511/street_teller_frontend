@@ -8,7 +8,6 @@ The NYC Street Teller is a digital realtor designed for future New York City res
 
 * Live website **[Here](https://street-teller.netlify.app/)**
 
-<br/>
 
 ## Getting Started
 
