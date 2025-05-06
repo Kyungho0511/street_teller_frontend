@@ -1,6 +1,10 @@
 # NYC Street Teller
 
+The NYC Street Teller is a site selection web application for healthcare providers seeking to expand their service locations in NYC 5 boroughs. It helps providers narrow down potential site locations based on selected data of interest, such as underserved populations and income levels. Integrated with a large language model (LLM) chatbot interface, it answers providers' questions about NYC neighborhoods from healthcare perspective, making it easy to choose the right service location.
+
+<!---
 The NYC Street Teller is a digital realtor designed for future New York City residents. It recommends neighborhoods based on your preferred living conditions and ultimately suggests housing listings tailored to your needs. Integrated with a large language model (LLM) chatbot interface, it answers your questions about NYC neighborhoods and their living conditions, making it easy to choose the right house for you.
+-->
 <br/>
 * Live website **[Here](https://street-teller.netlify.app/)**
 
@@ -40,6 +44,7 @@ The NYC Street Teller is a digital realtor designed for future New York City res
     $ vite
     ```
 
+
 ## Features
 
 ### Get personalized reports on NYC Neighborhoods
@@ -47,11 +52,13 @@ The NYC Street Teller is a digital realtor designed for future New York City res
 * LLM reports NYC Neighborhoods clusters based on your preferred living conditions.
 * Review and choose Neighborhoods that suit your needs.
 
+<!---
 ### View available Housing listings
 <img width="1129" alt="Screenshot 2025-04-25 at 5 20 59 PM" src="https://github.com/user-attachments/assets/01ccab04-ed8e-4011-9723-9e610bd71134" />
 
 ### Explore NYC Neighborhoods with immersive viewer
 <img width="1038" alt="Screenshot 2025-04-25 at 5 21 24 PM" src="https://github.com/user-attachments/assets/3c1570bd-bfe0-4998-a355-fc36bfbedb19" />
+-->
 
 
 ## Tech Stack
