@@ -21,10 +21,10 @@ export default function Footbar() {
   const location = useLocation();
 
   const [navButtonVisible, setNavButtonVisible] = useState(
-    () => location.pathname !== "/report"
+    () => location.pathname !== "/cluster/3"
   );
   useEffectAfterMount(() => {
-    setNavButtonVisible(location.pathname !== "/report");
+    setNavButtonVisible(location.pathname !== "/cluster/3");
   }, [location.pathname]);
 
   let nextPath = "/";
@@ -39,9 +39,9 @@ export default function Footbar() {
     case "/cluster/2":
       nextPath = "/cluster/3";
       break;
-    case "/cluster/3":
-      nextPath = "/report";
-      break;
+    // case "/cluster/3":
+    //   nextPath = "/report";
+    //   break;
   }
 
   return (
