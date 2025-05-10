@@ -67,16 +67,18 @@ export default function ClusterPage() {
   const clusterList = survey[clusterName as ClusterList["name"]]!;
 
   const section = utils.pathToSection(location.pathname);
-  const run = messages[section].find((message) => message.type === "cluster")
-    ? false
-    : true;
+  const hasMessage = messages[section].find(
+    (message) => message.type === "cluster"
+  )
+    ? true
+    : false;
   const { currentSelectedCluster } = useClusterFromMap(clusterId!);
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Run the clustering logic if a cluster message is not found.
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
     geoJsonFilePath,
-    run
+    !hasMessage
   );
 
   // Set OpenAI instruction and map select effect.
@@ -90,13 +92,13 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (!mapViewer || !run) {
+    if (!mapViewer || hasMessage) {
       return;
     }
     const clusterSurvey = getClusterSurvey();
 
-    // Clean up mapbox layers and UI before starting a new clustering page.
-    mapbox.removeAllClusterLayers(clusterSurvey, mapViewer!);
+    // Set layers and UI before starting a new clustering page.
+    mapbox.setLayers(section, mapViewer);
     setSelectedCluster(undefined);
     setSelectedClusterInfo(undefined);
 
@@ -174,14 +176,9 @@ export default function ClusterPage() {
     );
 
     setClusterSurvey(clusterId!, newClusterList);
-
-    return () => {
-      // Remove KMeansLayer from mapbox on unmount.
-      mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
-    };
   }, [survey.preference.list, geoJson]);
 
-  // Update mapping on selected clusterList change
+  // Update cluster layer properties.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
@@ -196,7 +193,7 @@ export default function ClusterPage() {
     const currentSources = mapViewer.getStyle()!.sources;
 
     const onStyleLoad = () => {
-      mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
+      mapbox.removeClusterLayer(clusterList, mapViewer);
 
       // Restore sources
       Object.entries(currentSources).forEach(([id, source]) => {

@@ -114,7 +114,8 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
   const paintProps: string[] | undefined = getLayerPaintType(layer, map);
   paintProps &&
     paintProps.forEach(function (prop) {
-      map.setPaintProperty(layer.name, prop, layer.opacity);
+      map.getLayer(layer.name) &&
+        map.setPaintProperty(layer.name, prop, layer.opacity);
     });
 }
 
@@ -171,21 +172,21 @@ export function updateClusterLayer(
   clusterList: ClusterList,
   map?: mapboxgl.Map
 ) {
-  if (map && map.getLayer(clusterList.name)) {
-    const list = clusterList.list;
-    map.setPaintProperty(clusterList.name, "fill-color", [
-      "case",
-      ["==", ["get", "cluster" + clusterId], 0],
-      list[0].checked ? utils.rgbaToString(list[0].color!) : transparent,
-      ["==", ["get", "cluster" + clusterId], 1],
-      list[1].checked ? utils.rgbaToString(list[1].color!) : transparent,
-      ["==", ["get", "cluster" + clusterId], 2],
-      list[2].checked ? utils.rgbaToString(list[2].color!) : transparent,
-      ["==", ["get", "cluster" + clusterId], 3],
-      list[3].checked ? utils.rgbaToString(list[3].color!) : transparent,
-      transparent,
-    ]);
-  }
+  if (!map || !map.getLayer(clusterList.name)) return;
+
+  const list = clusterList.list;
+  map.setPaintProperty(clusterList.name, "fill-color", [
+    "case",
+    ["==", ["get", "cluster" + clusterId], 0],
+    list[0].checked ? utils.rgbaToString(list[0].color!) : transparent,
+    ["==", ["get", "cluster" + clusterId], 1],
+    list[1].checked ? utils.rgbaToString(list[1].color!) : transparent,
+    ["==", ["get", "cluster" + clusterId], 2],
+    list[2].checked ? utils.rgbaToString(list[2].color!) : transparent,
+    ["==", ["get", "cluster" + clusterId], 3],
+    list[3].checked ? utils.rgbaToString(list[3].color!) : transparent,
+    transparent,
+  ]);
 }
 
 /**
@@ -247,6 +248,8 @@ export function addClusterLayer(
   clusterList: ClusterList,
   map: mapboxgl.Map
 ) {
+  console.log("adding cluster layer", clusterList.name);
+
   // Remove the layer if it already exists.
   map.getSource(clusterList.name) && map.removeSource(clusterList.name);
   map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
