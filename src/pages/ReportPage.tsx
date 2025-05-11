@@ -61,9 +61,11 @@ export default function ReportPage() {
   const lastClusterId = NUMBER_OF_CLUSTERING_STEPS;
   const lastCluster = `cluster${lastClusterId}`;
   const prevGeoJson = survey[lastCluster].geoJson;
-  const run = messages[section].find((message) => message.type === "report")
-    ? false
-    : true;
+  const hasMessage = messages[section].find(
+    (message) => message.type === "report"
+  )
+    ? true
+    : false;
 
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
@@ -75,7 +77,7 @@ export default function ReportPage() {
 
   // Prepare geoJson data for the report page.
   useEffect(() => {
-    if (!prevGeoJson || !run) return;
+    if (!prevGeoJson || hasMessage) return;
 
     const selection = survey[lastCluster].list.map((item) => item.checked);
     const geoJson = getFilteredGeoJson(
@@ -194,7 +196,7 @@ export default function ReportPage() {
       if (!mapViewer.getLayer(reportName)) {
         mapViewer.addLayer(currentReportLayer, "road-simple");
       }
-      mapbox.setLayers(section, mapViewer);
+      mapbox.setLayerSettings(section, mapViewer);
 
       // Restore selected GeoId effect.
       selectedGeoId &&

@@ -52,7 +52,7 @@ export default function MapViewer() {
     if (!mapViewer) return;
 
     const section = pathToSection(location.pathname);
-    mapbox.setLayers(section, mapViewer);
+    mapbox.setLayerSettings(section, mapViewer);
     setMapSettings();
 
     return () => {

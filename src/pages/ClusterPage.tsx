@@ -46,7 +46,15 @@ import {
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
+  const {
+    mapViewer,
+    mapMode,
+    parentLayer,
+    layers,
+    setLayers,
+    sources,
+    setSources,
+  } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
     selectedCluster,
@@ -65,7 +73,6 @@ export default function ClusterPage() {
   const location = useLocation();
   const clusterName = `cluster${clusterId}` as ClusterList["name"];
   const clusterList = survey[clusterName as ClusterList["name"]]!;
-
   const section = utils.pathToSection(location.pathname);
   const hasMessage = messages[section].find(
     (message) => message.type === "cluster"
@@ -89,6 +96,19 @@ export default function ClusterPage() {
   useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
+  // Restore mapping layers from session storage.
+  useEffect(() => {
+    if (
+      !mapViewer ||
+      !layers[section] ||
+      !sources[section] ||
+      mapViewer.getLayer(section)
+    )
+      return;
+
+    mapbox.restoreLayer(layers[section], sources[section], mapViewer);
+  }, [section, mapViewer]);
+
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
@@ -97,8 +117,8 @@ export default function ClusterPage() {
     }
     const clusterSurvey = getClusterSurvey();
 
-    // Set layers and UI before starting a new clustering page.
-    mapbox.setLayers(section, mapViewer);
+    // Set map layers and UI before starting a new clustering page.
+    mapbox.setLayerSettings(section, mapViewer);
     setSelectedCluster(undefined);
     setSelectedClusterInfo(undefined);
 
@@ -118,7 +138,7 @@ export default function ClusterPage() {
       );
       setGeoJson(filteredGeoJson);
     }
-  }, [location.pathname, mapViewer]);
+  }, [section, mapViewer]);
 
   useEffectAfterMount(() => {
     if (!geoJson) return;
@@ -153,8 +173,17 @@ export default function ClusterPage() {
       kMeansResult,
     };
 
-    // Add clusters to the map.
-    mapbox.addClusterLayer(kMeansGeoJson, newClusterList, mapViewer!);
+    // Add cluster layer to the map and store it at context.
+    const { layer, source } = mapbox.addClusterLayer(
+      kMeansGeoJson,
+      newClusterList,
+      mapViewer!
+    );
+    setLayers((prev) => ({ ...prev, [section]: layer }));
+    setSources((prev) => ({
+      ...prev,
+      [section]: source,
+    }));
 
     // Prepare prompt and list for OpenAI.
     newClusterList.list.forEach((item, i) => {
@@ -179,7 +208,7 @@ export default function ClusterPage() {
   }, [survey.preference.list, geoJson]);
 
   // Update cluster layer properties.
-  useEffectAfterMount(() => {
+  useEffect(() => {
     if (!mapViewer) return;
 
     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
@@ -205,7 +234,7 @@ export default function ClusterPage() {
       if (!mapViewer.getLayer(clusterList.name)) {
         mapViewer.addLayer(currentClusterLayer, "road-simple");
       }
-      mapbox.setLayers(section, mapViewer);
+      mapbox.setLayerSettings(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
 
       // Restore selected GeoId effect.

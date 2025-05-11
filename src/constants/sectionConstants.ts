@@ -7,6 +7,8 @@ import { color, MapSection } from "./mapConstants";
  */
 export type Section = "home" | `cluster1` | `cluster2` | `cluster3` | "report";
 
+export const sections = ["home", "cluster1", "cluster2", "cluster3", "report"];
+
 export const sectionMapConfigs: MapSection[] = [
   {
     id: "home",

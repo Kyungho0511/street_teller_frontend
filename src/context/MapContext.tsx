@@ -33,6 +33,22 @@ type MapContextProps = {
   previewMode: MapMode;
   location: Location;
   setLocation: React.Dispatch<React.SetStateAction<Location>>;
+  layers: Record<
+    string,
+    mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface
+  >;
+  setLayers: React.Dispatch<
+    React.SetStateAction<
+      Record<
+        string,
+        mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface
+      >
+    >
+  >;
+  sources: Record<string, mapboxgl.SourceSpecification>;
+  setSources: React.Dispatch<
+    React.SetStateAction<Record<string, mapboxgl.SourceSpecification>>
+  >;
 };
 
 /**
@@ -52,6 +68,12 @@ export function MapContextProvider({
   const [mapPreview, setMapPreview] = useState<mapboxgl.Map>();
   const [map3dPreview, setMap3dPreview] = useState<Cesium.Viewer>();
   const [parentLayer, setParentLayer] = useState<string>("");
+  const [layers, setLayers] = useSessionStorage<
+    Record<string, mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface>
+  >("layers", {});
+  const [sources, setSources] = useSessionStorage<
+    Record<string, mapboxgl.SourceSpecification>
+  >("sources", {});
   const [location, setLocation] = useState<Location>(
     mapConfigs.location as Location
   );
@@ -87,6 +109,10 @@ export function MapContextProvider({
         setMap3dPreview,
         parentLayer,
         setParentLayer,
+        layers,
+        setLayers,
+        sources,
+        setSources,
         attribute,
         setAttribute,
         color,

@@ -20,6 +20,11 @@ import mapboxgl from "mapbox-gl";
 import * as mapboxgljs from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import mapboxgl from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
+import { AnyLayer } from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 
 /**
  * Create a mapbox map instance.
@@ -120,11 +125,11 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
 }
 
 /**
- * Turn on layers based on the section.
+ * Set layer settings based on the section.
  * @param section Each url path corresponds to a section.
  * @param map Map in which layers are set.
  */
-export function setLayers(section: Section, map: mapboxgl.Map): void {
+export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
   // Exit if the section is not found.
   const mapSection = sectionMapConfigs.find((sec) => sec.id === section);
   if (!mapSection) return;
@@ -229,7 +234,7 @@ export function addReportLayer(
       source: name,
       paint: {
         "fill-color": utils.rgbaToString(themeColor),
-        "fill-opacity": 0.7,
+        "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
@@ -247,18 +252,20 @@ export function addClusterLayer(
   geoJson: HealthcareFeatureCollection,
   clusterList: ClusterList,
   map: mapboxgl.Map
-) {
-  console.log("adding cluster layer", clusterList.name);
-
+): {
+  layer: mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface;
+  source: mapboxgl.SourceSpecification;
+} {
   // Remove the layer if it already exists.
   map.getSource(clusterList.name) && map.removeSource(clusterList.name);
   map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
 
   // Add source and layer to the map.
-  map.addSource(clusterList.name, {
+  const source: mapboxgljs.SourceSpecification = {
     type: "geojson",
     data: geoJson,
-  });
+  };
+  map.addSource(clusterList.name, source);
 
   map.addLayer(
     {
@@ -284,6 +291,11 @@ export function addClusterLayer(
     },
     "road-simple"
   );
+
+  return {
+    layer: map.getLayer(clusterList.name)!,
+    source,
+  };
 }
 
 /**
@@ -311,6 +323,20 @@ export function removeAllClusterLayers(
   clusterListCollection.forEach((list) => {
     removeClusterLayer(list, map);
   });
+}
+
+export function restoreLayer(
+  layer: mapboxgljs.LayerSpecification | mapboxgljs.CustomLayerInterface,
+  source: mapboxgl.SourceSpecification,
+  map: mapboxgl.Map
+) {
+  console.log("restoreLayer", layer, source);
+
+  map.getSource(layer.id) && map.removeSource(layer.id);
+  map.addSource(layer.id, source);
+
+  map.getLayer(layer.id) && map.removeLayer(layer.id);
+  map.addLayer(layer, "road-simple");
 }
 
 /**
