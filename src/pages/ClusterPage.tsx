@@ -96,6 +96,16 @@ export default function ClusterPage() {
   useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
+  // Turn off Legend section on leaving current url.
+  useEffect(() => {
+    return () => {
+      console.log("Leaving clustering page");
+      setSelectedCluster(undefined);
+      setSelectedClusterInfo(undefined);
+      setSelectedGeoId(undefined);
+    };
+  }, [location.pathname]);
+
   // Restore mapping layers from session storage.
   useEffect(() => {
     if (
@@ -103,9 +113,9 @@ export default function ClusterPage() {
       !layers[section] ||
       !sources[section] ||
       mapViewer.getLayer(section)
-    )
+    ) {
       return;
-
+    }
     mapbox.restoreLayer(layers[section], sources[section], mapViewer);
   }, [section, mapViewer]);
 

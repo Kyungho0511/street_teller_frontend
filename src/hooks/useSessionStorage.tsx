@@ -14,7 +14,17 @@ export default function useSessionStorage<T>(key: string, initialValue: T) {
 
   // Update session storage when state changes
   useEffect(() => {
-    window.sessionStorage.setItem(key, JSON.stringify(storedValue));
+    try {
+      window.sessionStorage.setItem(key, JSON.stringify(storedValue));
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.name === "QuotaExceededError"
+      ) {
+        console.error("Session storage quota exceeded. Clearing storage...");
+        window.sessionStorage.clear();
+      }
+    }
   }, [key, storedValue]);
 
   return [storedValue, setStoredValue] as const;

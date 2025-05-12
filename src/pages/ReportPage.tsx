@@ -18,7 +18,6 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
 import {
-  BEFORE_ID,
   defaultColor,
   GEOID,
   OUTLINE_LAYER_SELECT,
@@ -49,7 +48,8 @@ export default function ReportPage() {
   const { survey, getClusterSurvey, setReportSurvey } =
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
-  const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
+  const { mapViewer, mapMode, parentLayer, layers, sources } =
+    useContext(MapContext);
   const { selectedReport, setSelectedReport, selectedGeoId, setSelectedGeoId } =
     useContext(MapQueryContext);
   const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
@@ -57,13 +57,12 @@ export default function ReportPage() {
 
   const location = useLocation();
   const section = pathToSection(location.pathname);
-
   const reportName = "report";
   const lastClusterId = NUMBER_OF_CLUSTERING_STEPS;
   const lastCluster = `cluster${lastClusterId}`;
   const prevGeoJson = survey[lastCluster].geoJson;
   const hasMessage = messages[section].find(
-    (message) => message.type === "report"
+    (message) => message.type === section
   )
     ? true
     : false;
@@ -182,21 +181,9 @@ export default function ReportPage() {
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const currentReportLayer = mapViewer.getLayer(reportName)!;
-    const currentSources = mapViewer.getStyle()!.sources;
-
     const onStyleLoad = () => {
-      // Restore sources
-      Object.entries(currentSources).forEach(([id, source]) => {
-        if (!mapViewer.getSource(id)) {
-          mapViewer.addSource(id, source);
-        }
-      });
-
       // Restore current cluster layer.
-      if (!mapViewer.getLayer(reportName)) {
-        mapViewer.addLayer(currentReportLayer, BEFORE_ID);
-      }
+      mapbox.restoreLayer(layers[section], sources[section], mapViewer);
       mapbox.setLayerSettings(section, mapViewer);
 
       // Restore selected GeoId effect.
@@ -215,6 +202,14 @@ export default function ReportPage() {
       mapViewer.off("style.load", onStyleLoad);
     };
   }, [mapMode]);
+
+  // Turn off Legend section on unmount.
+  useEffect(() => {
+    return () => {
+      setSelectedReport(undefined);
+      setSelectedGeoId(undefined);
+    };
+  }, []);
 
   return (
     <>
