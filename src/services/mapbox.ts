@@ -1,3 +1,7 @@
+import * as mapboxgljs from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   Color,
   mapConfigs,
@@ -17,17 +21,6 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
-import mapboxgl from "mapbox-gl";
-import * as mapboxgljs from "mapbox-gl";
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import mapboxgl from "mapbox-gl";
-import mapboxgl from "mapbox-gl";
-import mapboxgl from "mapbox-gl";
-import { AnyLayer } from "mapbox-gl";
-import mapboxgl from "mapbox-gl";
-import mapboxgl from "mapbox-gl";
-import mapboxgl from "mapbox-gl";
 
 /**
  * Create a mapbox map instance.
@@ -220,7 +213,7 @@ export function addReportLayer(
   });
 
   // // color expression for belended colors
-  // const fillColorExpression: mapboxgljs.DataDrivenPropertyValueSpecification<string> =
+  // const fillColorExpression: mapboxgl.DataDrivenPropertyValueSpecification<string> =
   //   ["case"];
   // reports.forEach((report) => {
   //   fillColorExpression.push(
@@ -264,7 +257,7 @@ export function addClusterLayer(
   map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
 
   // Add source and layer to the map.
-  const source: mapboxgljs.SourceSpecification = {
+  const source: mapboxgl.SourceSpecification = {
     type: "geojson",
     data: geoJson,
   };
@@ -329,7 +322,7 @@ export function removeAllClusterLayers(
 }
 
 export function restoreLayer(
-  layer: mapboxgljs.LayerSpecification | mapboxgljs.CustomLayerInterface,
+  layer: mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface,
   source: mapboxgl.SourceSpecification,
   map: mapboxgl.Map
 ) {
