@@ -4,7 +4,7 @@ import { MapQueryContext } from "../../context/MapQueryContext";
 import ClusterPage from "../../pages/ClusterPage";
 import Colorbox from "./Colorbox";
 import useNameFromMap from "../../hooks/useNameFromMap";
-import useClusterFromMap from "../../hooks/useClusterFromMap";
+import useFeatureFromMap from "../../hooks/useFeatureFromMap";
 import useMapClickEvent from "../../hooks/useMapClickEvent";
 
 type PopupContentClusterProps = {
@@ -18,7 +18,7 @@ export default function PopupContentCluster({
   clusterId,
 }: PopupContentClusterProps) {
   const { setSelectedCluster } = useContext(MapQueryContext);
-  const { currentHoveredCluster } = useClusterFromMap(clusterId);
+  const { currentHoveredFeature } = useFeatureFromMap(clusterId);
   const { hoveredCountyName, hoveredNeighborhoodName } = useNameFromMap();
 
   // Set selected cluster based on the map mouse event.
@@ -30,11 +30,11 @@ export default function PopupContentCluster({
         className={styles.title}
       >{`${hoveredNeighborhoodName}, ${hoveredCountyName}`}</p>
       <div className={styles.body}>
-        {currentHoveredCluster && (
+        {currentHoveredFeature && (
           <div className={styles.item}>
             <Colorbox
-              label={currentHoveredCluster.name}
-              color={currentHoveredCluster.color}
+              label={currentHoveredFeature.name}
+              color={currentHoveredFeature.color}
             />
             <div style={{ width: "2rem" }}></div> {/* Spacer */}
           </div>

@@ -38,7 +38,7 @@ import { MapQueryContext } from "../context/MapQueryContext";
 import useNameFromMap from "../hooks/useNameFromMap";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
-import useClusterFromMap from "../hooks/useClusterFromMap";
+import useFeatureFromMap from "../hooks/useFeatureFromMap";
 import Colorbox from "../components/atoms/Colorbox";
 
 /**
@@ -72,7 +72,7 @@ export default function ReportPage() {
   useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
-  const { selectedClusters } = useClusterFromMap("3");
+  const { selectedFeatures } = useFeatureFromMap("3");
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Prepare geoJson data for the report page.
@@ -250,8 +250,8 @@ export default function ReportPage() {
             </p>
           </div>
         )}
-        {selectedClusters?.length &&
-          selectedClusters.map((cluster) => (
+        {selectedFeatures?.length &&
+          selectedFeatures.map((cluster) => (
             <div key={cluster.id}>
               <div style={{ marginTop: "1rem" }}>
                 <Colorbox
@@ -266,7 +266,7 @@ export default function ReportPage() {
           ))}
       </LegendSection>
 
-      {/* TODO: Add Legend for report listing information later... */}
+      {/* TODO: Add Legend for report information later... */}
 
       <PopupSection>
         <PopupContentReport />

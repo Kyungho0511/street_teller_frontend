@@ -6,6 +6,7 @@ import {
   transparent,
   ZOOM_MODIFIER,
   themeColor,
+  RGBA,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
 import { ClusterList } from "../constants/surveyConstants";
@@ -24,6 +25,8 @@ import mapboxgl from "mapbox-gl";
 import mapboxgl from "mapbox-gl";
 import mapboxgl from "mapbox-gl";
 import { AnyLayer } from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 import mapboxgl from "mapbox-gl";
 
 /**
@@ -349,6 +352,31 @@ export function offLayers(map: mapboxgl.Map) {
       setLayerOpacity({ name: layer.name, opacity: 0 }, map);
     });
   });
+}
+
+/**
+ * Check if the feature is active. Inactive features are hidden with a transparent color.
+ * @param layer Name of the layer that contains features to be checked.
+ * @param event Map event to check if the interacted feature is active.
+ * @param map Map in which the features are tested.
+ * @returns False if the feature is hidden or not found.
+ */
+export function isActiveFeature(
+  layer: string,
+  event: mapboxgl.MapMouseEvent,
+  map: mapboxgl.Map
+): boolean {
+  const feature = map.queryRenderedFeatures(event.point, {
+    layers: [layer],
+  })[0];
+  const paint = feature?.layer?.paint;
+
+  if (paint == null) {
+    return false;
+  }
+  const fillColor = (paint as { "fill-color": RGBA })["fill-color"];
+
+  return !utils.isTransparent(fillColor);
 }
 
 /**

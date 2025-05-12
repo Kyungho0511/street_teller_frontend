@@ -7,8 +7,6 @@ import { color, MapSection } from "./mapConstants";
  */
 export type Section = "home" | `cluster1` | `cluster2` | `cluster3` | "report";
 
-export const sections = ["home", "cluster1", "cluster2", "cluster3", "report"];
-
 export const sectionMapConfigs: MapSection[] = [
   {
     id: "home",
@@ -51,11 +49,14 @@ export const sectionMapConfigs: MapSection[] = [
     parentLayer: "cluster3",
     color: color.green,
   },
-  // {
-  //   id: "report",
-  //   layers: [{ name: "tracts", opacity: 0.9 }],
-  //   parentLayer: "report",
-  // },
+  {
+    id: "report",
+    layers: [
+      { name: "tracts", opacity: 0.9 },
+      { name: "report", opacity: 1 },
+    ],
+    parentLayer: "report",
+  },
 ];
 
 export const initialSectionMessages: Record<Section, Message[]> = {

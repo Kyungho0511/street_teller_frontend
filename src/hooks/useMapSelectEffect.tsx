@@ -1,5 +1,4 @@
 import {
-  RGBA,
   GEOID,
   OUTLINE_LAYER_HOVER,
   THICK_LINE_WEIGHT_HOVER,
@@ -7,7 +6,6 @@ import {
   THICK_LINE_WEIGHT_SELECT,
 } from "../constants/mapConstants";
 import * as mapbox from "../services/mapbox";
-import { isTransparent } from "../utils/utils";
 import { useContext, useEffect } from "react";
 import useEffectAfterMount from "./useEffectAfterMount";
 import { MapQueryContext } from "../context/MapQueryContext";
@@ -29,24 +27,13 @@ export default function useMapSelectEffect(
   useEffect(() => {
     if (!map) return;
 
-    // Skip non-selected features(filled with transparent color).
-    const isSelectedFeature = (event: mapboxgl.MapMouseEvent): boolean => {
-      const feature = map.queryRenderedFeatures(event.point, {
-        layers: [layer],
-      })[0];
-      const fillColor = (feature?.layer?.paint as { "fill-color": RGBA })[
-        "fill-color"
-      ];
-      return !isTransparent(fillColor);
-    };
-
     const mouseLeaveHandler = () => {
       map.getCanvas().style.cursor = "grab";
       mapbox.hideLineWidth(OUTLINE_LAYER_HOVER, map);
     };
 
     const mouseMoveHandler = (event: mapboxgl.MapMouseEvent) => {
-      if (!isSelectedFeature(event)) {
+      if (!mapbox.isActiveFeature(layer, event, map)) {
         map.getCanvas().style.cursor = "grab";
         mapbox.hideLineWidth(OUTLINE_LAYER_HOVER, map);
         return;
@@ -75,8 +62,9 @@ export default function useMapSelectEffect(
     };
 
     const mouseClickHandler = (event: mapboxgl.MapMouseEvent) => {
-      if (!isSelectedFeature(event)) return;
-
+      if (!mapbox.isActiveFeature(layer, event, map)) {
+        return;
+      }
       const feature = map.queryRenderedFeatures(event.point, {
         layers: [layer],
       })[0];

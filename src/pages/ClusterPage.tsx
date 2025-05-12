@@ -28,7 +28,7 @@ import { v4 as uuidv4 } from "uuid";
 import CheckboxList from "../components/molecules/CheckboxList";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import { MapQueryContext } from "../context/MapQueryContext";
-import useClusterFromMap from "../hooks/useClusterFromMap";
+import useFeatureFromMap from "../hooks/useFeatureFromMap";
 import Colorbox from "../components/atoms/Colorbox";
 import useNameFromMap from "../hooks/useNameFromMap";
 import BarChartList from "../components/molecules/BarChartList";
@@ -79,7 +79,7 @@ export default function ClusterPage() {
   )
     ? true
     : false;
-  const { currentSelectedCluster } = useClusterFromMap(clusterId!);
+  const { currentSelectedFeature } = useFeatureFromMap(clusterId!);
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Run the clustering logic if a cluster message is not found.
@@ -309,15 +309,15 @@ export default function ClusterPage() {
         onOpen={() => setSelectedClusterInfo(undefined)}
       >
         <Map3dViewer visible={selectedCluster !== undefined} />
-        {currentSelectedCluster && (
+        {currentSelectedFeature && (
           <div style={{ marginTop: "1rem" }}>
             <Colorbox
-              label={currentSelectedCluster.name}
-              color={currentSelectedCluster.color}
+              label={currentSelectedFeature.name}
+              color={currentSelectedFeature.color}
               fontSize="1rem"
               fontWeight="var(--font-bold)"
             />
-            <p style={{ margin: 0 }}>{currentSelectedCluster.content}</p>
+            <p style={{ margin: 0 }}>{currentSelectedFeature.content}</p>
           </div>
         )}
       </LegendSection>
