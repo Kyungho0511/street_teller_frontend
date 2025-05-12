@@ -5,7 +5,7 @@ import { NUMBER_OF_CLUSTERING_STEPS } from "../../constants/surveyConstants";
 import Colorbox from "./Colorbox";
 import ReportPage from "../../pages/ReportPage";
 import useNameFromMap from "../../hooks/useNameFromMap";
-import useClusterFromMap from "../../hooks/useClusterFromMap";
+import useFeatureFromMap from "../../hooks/useFeatureFromMap";
 import useMapClickEvent from "../../hooks/useMapClickEvent";
 
 /**
@@ -13,7 +13,7 @@ import useMapClickEvent from "../../hooks/useMapClickEvent";
  */
 export default function PopupContentReport() {
   const { setSelectedReport } = useContext(MapQueryContext);
-  const { hoveredClusters } = useClusterFromMap(
+  const { hoveredFeatures } = useFeatureFromMap(
     NUMBER_OF_CLUSTERING_STEPS.toString()
   );
   const { hoveredCountyName, hoveredNeighborhoodName } = useNameFromMap();
@@ -27,8 +27,8 @@ export default function PopupContentReport() {
         className={styles.title}
       >{`${hoveredNeighborhoodName}, ${hoveredCountyName}`}</p>
       <div className={styles.body}>
-        {hoveredClusters?.length &&
-          hoveredClusters.map((cluster) => (
+        {hoveredFeatures?.length &&
+          hoveredFeatures.map((cluster) => (
             <div className={styles.item} key={cluster.id}>
               <Colorbox label={cluster.name} color={cluster.color} />
               <div style={{ width: "2rem" }}></div> {/* Spacer */}

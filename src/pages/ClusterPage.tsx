@@ -28,7 +28,7 @@ import { v4 as uuidv4 } from "uuid";
 import CheckboxList from "../components/molecules/CheckboxList";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import { MapQueryContext } from "../context/MapQueryContext";
-import useClusterFromMap from "../hooks/useClusterFromMap";
+import useFeatureFromMap from "../hooks/useFeatureFromMap";
 import Colorbox from "../components/atoms/Colorbox";
 import useNameFromMap from "../hooks/useNameFromMap";
 import BarChartList from "../components/molecules/BarChartList";
@@ -46,7 +46,15 @@ import {
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const { mapViewer, mapMode, parentLayer } = useContext(MapContext);
+  const {
+    mapViewer,
+    mapMode,
+    parentLayer,
+    layers,
+    setLayers,
+    sources,
+    setSources,
+  } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
     selectedCluster,
@@ -65,18 +73,19 @@ export default function ClusterPage() {
   const location = useLocation();
   const clusterName = `cluster${clusterId}` as ClusterList["name"];
   const clusterList = survey[clusterName as ClusterList["name"]]!;
-
   const section = utils.pathToSection(location.pathname);
-  const run = messages[section].find((message) => message.type === "cluster")
-    ? false
-    : true;
-  const { currentSelectedCluster } = useClusterFromMap(clusterId!);
+  const hasMessage = messages[section].find(
+    (message) => message.type === "cluster"
+  )
+    ? true
+    : false;
+  const { currentSelectedFeature } = useFeatureFromMap(clusterId!);
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Run the clustering logic if a cluster message is not found.
   const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
     geoJsonFilePath,
-    run
+    !hasMessage
   );
 
   // Set OpenAI instruction and map select effect.
@@ -87,16 +96,29 @@ export default function ClusterPage() {
   useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
+  // Restore mapping layers from session storage.
+  useEffect(() => {
+    if (
+      !mapViewer ||
+      !layers[section] ||
+      !sources[section] ||
+      mapViewer.getLayer(section)
+    )
+      return;
+
+    mapbox.restoreLayer(layers[section], sources[section], mapViewer);
+  }, [section, mapViewer]);
+
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (!mapViewer || !run) {
+    if (!mapViewer || hasMessage) {
       return;
     }
     const clusterSurvey = getClusterSurvey();
 
-    // Clean up mapbox layers and UI before starting a new clustering page.
-    mapbox.removeAllClusterLayers(clusterSurvey, mapViewer!);
+    // Set map layers and UI before starting a new clustering page.
+    mapbox.setLayerSettings(section, mapViewer);
     setSelectedCluster(undefined);
     setSelectedClusterInfo(undefined);
 
@@ -116,7 +138,7 @@ export default function ClusterPage() {
       );
       setGeoJson(filteredGeoJson);
     }
-  }, [location.pathname, mapViewer]);
+  }, [section, mapViewer]);
 
   useEffectAfterMount(() => {
     if (!geoJson) return;
@@ -151,8 +173,17 @@ export default function ClusterPage() {
       kMeansResult,
     };
 
-    // Add clusters to the map.
-    mapbox.addClusterLayer(kMeansGeoJson, newClusterList, mapViewer!);
+    // Add cluster layer to the map and store it at context.
+    const { layer, source } = mapbox.addClusterLayer(
+      kMeansGeoJson,
+      newClusterList,
+      mapViewer!
+    );
+    setLayers((prev) => ({ ...prev, [section]: layer }));
+    setSources((prev) => ({
+      ...prev,
+      [section]: source,
+    }));
 
     // Prepare prompt and list for OpenAI.
     newClusterList.list.forEach((item, i) => {
@@ -174,15 +205,10 @@ export default function ClusterPage() {
     );
 
     setClusterSurvey(clusterId!, newClusterList);
-
-    return () => {
-      // Remove KMeansLayer from mapbox on unmount.
-      mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
-    };
   }, [survey.preference.list, geoJson]);
 
-  // Update mapping on selected clusterList change
-  useEffectAfterMount(() => {
+  // Update cluster layer properties.
+  useEffect(() => {
     if (!mapViewer) return;
 
     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
@@ -192,23 +218,10 @@ export default function ClusterPage() {
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
-    const currentSources = mapViewer.getStyle()!.sources;
-
     const onStyleLoad = () => {
-      mapbox.removeAllClusterLayers(getClusterSurvey(), mapViewer!);
-
-      // Restore sources
-      Object.entries(currentSources).forEach(([id, source]) => {
-        if (!mapViewer.getSource(id)) {
-          mapViewer.addSource(id, source);
-        }
-      });
       // Restore current cluster layer.
-      if (!mapViewer.getLayer(clusterList.name)) {
-        mapViewer.addLayer(currentClusterLayer, "road-simple");
-      }
-      mapbox.setLayers(section, mapViewer);
+      mapbox.restoreLayer(layers[section], sources[section], mapViewer);
+      mapbox.setLayerSettings(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
 
       // Restore selected GeoId effect.
@@ -283,15 +296,15 @@ export default function ClusterPage() {
         onOpen={() => setSelectedClusterInfo(undefined)}
       >
         <Map3dViewer visible={selectedCluster !== undefined} />
-        {currentSelectedCluster && (
+        {currentSelectedFeature && (
           <div style={{ marginTop: "1rem" }}>
             <Colorbox
-              label={currentSelectedCluster.name}
-              color={currentSelectedCluster.color}
+              label={currentSelectedFeature.name}
+              color={currentSelectedFeature.color}
               fontSize="1rem"
               fontWeight="var(--font-bold)"
             />
-            <p style={{ margin: 0 }}>{currentSelectedCluster.content}</p>
+            <p style={{ margin: 0 }}>{currentSelectedFeature.content}</p>
           </div>
         )}
       </LegendSection>

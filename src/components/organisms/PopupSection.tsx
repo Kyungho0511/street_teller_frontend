@@ -6,6 +6,7 @@ import { RGBA, POPUP } from "../../constants/mapConstants";
 import { isTransparent } from "../../utils/utils";
 import { MapQueryContext } from "../../context/MapQueryContext";
 import { HealthcareProperties } from "../../constants/geoJsonConstants";
+import { isActiveFeature } from "../../services/mapbox";
 
 type Coordinate = {
   x: number;
@@ -29,6 +30,9 @@ export default function PopupSection({ children }: PopupSectionProps) {
   useEffect(() => {
     if (!mapViewer) return;
     const updateHoveredProperties = (event: mapboxgl.MapMouseEvent) => {
+      if (!isActiveFeature(parentLayer, event, mapViewer)) {
+        return;
+      }
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];
@@ -36,6 +40,9 @@ export default function PopupSection({ children }: PopupSectionProps) {
     };
 
     const updateSelectedProperties = (event: mapboxgl.MapMouseEvent) => {
+      if (!isActiveFeature(parentLayer, event, mapViewer)) {
+        return;
+      }
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];

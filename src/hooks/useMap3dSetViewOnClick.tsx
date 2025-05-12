@@ -3,6 +3,7 @@ import Map3dViewer from "../components/organisms/Map3dViewer";
 import { MapContext } from "../context/MapContext";
 import * as utils from "../utils/utils";
 import { MapQueryContext } from "../context/MapQueryContext";
+import { isActiveFeature } from "../services/mapbox";
 
 /**
  * Custom hook to set the view to the selected feature for {@link Map3dViewer}.
@@ -16,6 +17,10 @@ export default function useMap3dSetViewOnClick() {
     if (!mapViewer) return;
 
     const handleClick = (event: mapboxgl.MapMouseEvent) => {
+      if (!isActiveFeature(parentLayer, event, mapViewer)) {
+        return;
+      }
+
       const feature = mapViewer.queryRenderedFeatures(event.point, {
         layers: [parentLayer],
       })[0];

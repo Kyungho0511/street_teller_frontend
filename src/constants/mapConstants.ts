@@ -30,6 +30,8 @@ export const mapConfigs = {
   bbox: [-74.25909, 40.477399, -73.700272, 40.917577] as MapboxGeocoder.Bbox,
 };
 
+export const BEFORE_ID = "road-simple";
+
 export const GEOID = "GEOID";
 
 export const OUTLINE_LAYER_HOVER = "tracts-features-nyc-outline-hover";

@@ -1,3 +1,7 @@
+import * as mapboxgljs from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   Color,
   mapConfigs,
@@ -6,6 +10,8 @@ import {
   transparent,
   ZOOM_MODIFIER,
   themeColor,
+  RGBA,
+  BEFORE_ID,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
 import { ClusterList } from "../constants/surveyConstants";
@@ -16,10 +22,6 @@ import {
   HealthcarePropertyName,
 } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
-import mapboxgl from "mapbox-gl";
-import * as mapboxgljs from "mapbox-gl";
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 /**
  * Create a mapbox map instance.
@@ -114,16 +116,17 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
   const paintProps: string[] | undefined = getLayerPaintType(layer, map);
   paintProps &&
     paintProps.forEach(function (prop) {
-      map.setPaintProperty(layer.name, prop, layer.opacity);
+      map.getLayer(layer.name) &&
+        map.setPaintProperty(layer.name, prop, layer.opacity);
     });
 }
 
 /**
- * Turn on layers based on the section.
+ * Set layer settings based on the section.
  * @param section Each url path corresponds to a section.
  * @param map Map in which layers are set.
  */
-export function setLayers(section: Section, map: mapboxgl.Map): void {
+export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
   // Exit if the section is not found.
   const mapSection = sectionMapConfigs.find((sec) => sec.id === section);
   if (!mapSection) return;
@@ -171,21 +174,21 @@ export function updateClusterLayer(
   clusterList: ClusterList,
   map?: mapboxgl.Map
 ) {
-  if (map && map.getLayer(clusterList.name)) {
-    const list = clusterList.list;
-    map.setPaintProperty(clusterList.name, "fill-color", [
-      "case",
-      ["==", ["get", "cluster" + clusterId], 0],
-      list[0].checked ? utils.rgbaToString(list[0].color!) : transparent,
-      ["==", ["get", "cluster" + clusterId], 1],
-      list[1].checked ? utils.rgbaToString(list[1].color!) : transparent,
-      ["==", ["get", "cluster" + clusterId], 2],
-      list[2].checked ? utils.rgbaToString(list[2].color!) : transparent,
-      ["==", ["get", "cluster" + clusterId], 3],
-      list[3].checked ? utils.rgbaToString(list[3].color!) : transparent,
-      transparent,
-    ]);
-  }
+  if (!map || !map.getLayer(clusterList.name)) return;
+
+  const list = clusterList.list;
+  map.setPaintProperty(clusterList.name, "fill-color", [
+    "case",
+    ["==", ["get", "cluster" + clusterId], 0],
+    list[0].checked ? utils.rgbaToString(list[0].color!) : transparent,
+    ["==", ["get", "cluster" + clusterId], 1],
+    list[1].checked ? utils.rgbaToString(list[1].color!) : transparent,
+    ["==", ["get", "cluster" + clusterId], 2],
+    list[2].checked ? utils.rgbaToString(list[2].color!) : transparent,
+    ["==", ["get", "cluster" + clusterId], 3],
+    list[3].checked ? utils.rgbaToString(list[3].color!) : transparent,
+    transparent,
+  ]);
 }
 
 /**
@@ -211,7 +214,7 @@ export function addReportLayer(
   });
 
   // // color expression for belended colors
-  // const fillColorExpression: mapboxgljs.DataDrivenPropertyValueSpecification<string> =
+  // const fillColorExpression: mapboxgl.DataDrivenPropertyValueSpecification<string> =
   //   ["case"];
   // reports.forEach((report) => {
   //   fillColorExpression.push(
@@ -228,11 +231,11 @@ export function addReportLayer(
       source: name,
       paint: {
         "fill-color": utils.rgbaToString(themeColor),
-        "fill-opacity": 0.7,
+        "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
-    "road-simple"
+    BEFORE_ID
   );
 }
 
@@ -246,16 +249,20 @@ export function addClusterLayer(
   geoJson: HealthcareFeatureCollection,
   clusterList: ClusterList,
   map: mapboxgl.Map
-) {
+): {
+  layer: mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface;
+  source: mapboxgl.SourceSpecification;
+} {
   // Remove the layer if it already exists.
   map.getSource(clusterList.name) && map.removeSource(clusterList.name);
   map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
 
   // Add source and layer to the map.
-  map.addSource(clusterList.name, {
+  const source: mapboxgl.SourceSpecification = {
     type: "geojson",
     data: geoJson,
-  });
+  };
+  map.addSource(clusterList.name, source);
 
   map.addLayer(
     {
@@ -279,8 +286,13 @@ export function addClusterLayer(
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
-    "road-simple"
+    BEFORE_ID
   );
+
+  return {
+    layer: map.getLayer(clusterList.name)!,
+    source,
+  };
 }
 
 /**
@@ -311,6 +323,24 @@ export function removeAllClusterLayers(
 }
 
 /**
+ * Restore a layer on the mapbox map from cached data.
+ * @param layer Layer to be restored.
+ * @param source Source to be restored.
+ * @param map Map from which the layer is restored.
+ */
+export function restoreLayer(
+  layer: mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface,
+  source: mapboxgl.SourceSpecification,
+  map: mapboxgl.Map
+) {
+  map.getSource(layer.id) && map.removeSource(layer.id);
+  map.addSource(layer.id, source);
+
+  map.getLayer(layer.id) && map.removeLayer(layer.id);
+  map.addLayer(layer, BEFORE_ID);
+}
+
+/**
  * Turn off all layers by setting opacity to 0.
  * @param map Map in which the layers are turned off.
  */
@@ -320,6 +350,31 @@ export function offLayers(map: mapboxgl.Map) {
       setLayerOpacity({ name: layer.name, opacity: 0 }, map);
     });
   });
+}
+
+/**
+ * Check if the feature is active. Inactive features are hidden with a transparent color.
+ * @param layer Name of the layer that contains features to be checked.
+ * @param event Map event to check if the interacted feature is active.
+ * @param map Map in which the features are tested.
+ * @returns False if the feature is hidden or not found.
+ */
+export function isActiveFeature(
+  layer: string,
+  event: mapboxgl.MapMouseEvent,
+  map: mapboxgl.Map
+): boolean {
+  const feature = map.queryRenderedFeatures(event.point, {
+    layers: [layer],
+  })[0];
+  const paint = feature?.layer?.paint;
+
+  if (paint == null) {
+    return false;
+  }
+  const fillColor = (paint as { "fill-color": RGBA })["fill-color"];
+
+  return !utils.isTransparent(fillColor);
 }
 
 /**

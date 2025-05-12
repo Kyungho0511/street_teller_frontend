@@ -53,7 +53,7 @@ export default function HomePage() {
     mapViewer.on("style.load", () => {
       // Restore current layers and attributes.
       const section: Section = pathToSection(location.pathname);
-      mapbox.setLayers(section, mapViewer);
+      mapbox.setLayerSettings(section, mapViewer);
       mapbox.updateLayerAttribute(
         parentLayer,
         attribute.name,

@@ -18,6 +18,7 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
 import {
+  BEFORE_ID,
   defaultColor,
   GEOID,
   OUTLINE_LAYER_SELECT,
@@ -38,7 +39,7 @@ import { MapQueryContext } from "../context/MapQueryContext";
 import useNameFromMap from "../hooks/useNameFromMap";
 import Map3dViewer from "../components/organisms/Map3dViewer";
 import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
-import useClusterFromMap from "../hooks/useClusterFromMap";
+import useFeatureFromMap from "../hooks/useFeatureFromMap";
 import Colorbox from "../components/atoms/Colorbox";
 
 /**
@@ -61,21 +62,23 @@ export default function ReportPage() {
   const lastClusterId = NUMBER_OF_CLUSTERING_STEPS;
   const lastCluster = `cluster${lastClusterId}`;
   const prevGeoJson = survey[lastCluster].geoJson;
-  const run = messages[section].find((message) => message.type === "report")
-    ? false
-    : true;
+  const hasMessage = messages[section].find(
+    (message) => message.type === "report"
+  )
+    ? true
+    : false;
 
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
-  const { selectedClusters } = useClusterFromMap("3");
+  const { selectedFeatures } = useFeatureFromMap("3");
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
   // Prepare geoJson data for the report page.
   useEffect(() => {
-    if (!prevGeoJson || !run) return;
+    if (!prevGeoJson || hasMessage) return;
 
     const selection = survey[lastCluster].list.map((item) => item.checked);
     const geoJson = getFilteredGeoJson(
@@ -192,9 +195,9 @@ export default function ReportPage() {
 
       // Restore current cluster layer.
       if (!mapViewer.getLayer(reportName)) {
-        mapViewer.addLayer(currentReportLayer, "road-simple");
+        mapViewer.addLayer(currentReportLayer, BEFORE_ID);
       }
-      mapbox.setLayers(section, mapViewer);
+      mapbox.setLayerSettings(section, mapViewer);
 
       // Restore selected GeoId effect.
       selectedGeoId &&
@@ -248,8 +251,8 @@ export default function ReportPage() {
             </p>
           </div>
         )}
-        {selectedClusters?.length &&
-          selectedClusters.map((cluster) => (
+        {selectedFeatures?.length &&
+          selectedFeatures.map((cluster) => (
             <div key={cluster.id}>
               <div style={{ marginTop: "1rem" }}>
                 <Colorbox
@@ -264,7 +267,7 @@ export default function ReportPage() {
           ))}
       </LegendSection>
 
-      {/* TODO: Add Legend for report listing information later... */}
+      {/* TODO: Add Legend for report information later... */}
 
       <PopupSection>
         <PopupContentReport />
