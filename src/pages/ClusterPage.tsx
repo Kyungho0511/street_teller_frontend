@@ -218,22 +218,9 @@ export default function ClusterPage() {
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const currentClusterLayer = mapViewer.getLayer(clusterList.name)!;
-    const currentSources = mapViewer.getStyle()!.sources;
-
     const onStyleLoad = () => {
-      mapbox.removeClusterLayer(clusterList, mapViewer);
-
-      // Restore sources
-      Object.entries(currentSources).forEach(([id, source]) => {
-        if (!mapViewer.getSource(id)) {
-          mapViewer.addSource(id, source);
-        }
-      });
       // Restore current cluster layer.
-      if (!mapViewer.getLayer(clusterList.name)) {
-        mapViewer.addLayer(currentClusterLayer, "road-simple");
-      }
+      mapbox.restoreLayer(layers[section], sources[section], mapViewer);
       mapbox.setLayerSettings(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
 

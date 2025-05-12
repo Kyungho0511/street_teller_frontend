@@ -18,6 +18,7 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
 import {
+  BEFORE_ID,
   defaultColor,
   GEOID,
   OUTLINE_LAYER_SELECT,
@@ -194,7 +195,7 @@ export default function ReportPage() {
 
       // Restore current cluster layer.
       if (!mapViewer.getLayer(reportName)) {
-        mapViewer.addLayer(currentReportLayer, "road-simple");
+        mapViewer.addLayer(currentReportLayer, BEFORE_ID);
       }
       mapbox.setLayerSettings(section, mapViewer);
 

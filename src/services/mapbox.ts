@@ -11,6 +11,7 @@ import {
   ZOOM_MODIFIER,
   themeColor,
   RGBA,
+  BEFORE_ID,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
 import { ClusterList } from "../constants/surveyConstants";
@@ -234,7 +235,7 @@ export function addReportLayer(
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
-    "road-simple"
+    BEFORE_ID
   );
 }
 
@@ -285,7 +286,7 @@ export function addClusterLayer(
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },
     },
-    "road-simple"
+    BEFORE_ID
   );
 
   return {
@@ -321,18 +322,22 @@ export function removeAllClusterLayers(
   });
 }
 
+/**
+ * Restore a layer on the mapbox map from cached data.
+ * @param layer Layer to be restored.
+ * @param source Source to be restored.
+ * @param map Map from which the layer is restored.
+ */
 export function restoreLayer(
   layer: mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface,
   source: mapboxgl.SourceSpecification,
   map: mapboxgl.Map
 ) {
-  console.log("restoreLayer", layer, source);
-
   map.getSource(layer.id) && map.removeSource(layer.id);
   map.addSource(layer.id, source);
 
   map.getLayer(layer.id) && map.removeLayer(layer.id);
-  map.addLayer(layer, "road-simple");
+  map.addLayer(layer, BEFORE_ID);
 }
 
 /**
