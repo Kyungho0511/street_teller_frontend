@@ -18,7 +18,6 @@ import {
 import { getFilteredGeoJson } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
 import {
-  BEFORE_ID,
   defaultColor,
   GEOID,
   OUTLINE_LAYER_SELECT,
@@ -203,6 +202,14 @@ export default function ReportPage() {
       mapViewer.off("style.load", onStyleLoad);
     };
   }, [mapMode]);
+
+  // Turn off Legend section on unmount.
+  useEffect(() => {
+    return () => {
+      setSelectedReport(undefined);
+      setSelectedGeoId(undefined);
+    };
+  }, []);
 
   return (
     <>
