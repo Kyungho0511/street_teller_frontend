@@ -48,7 +48,7 @@ export default function ReportPage() {
   const { survey, getClusterSurvey, setReportSurvey } =
     useContext(SurveyContext);
   const { messages } = useContext(MessageContext);
-  const { mapViewer, mapMode, parentLayer, layers, sources } =
+  const { mapViewer, mapMode, parentLayer, layers, geoJsons } =
     useContext(MapContext);
   const { selectedReport, setSelectedReport, selectedGeoId, setSelectedGeoId } =
     useContext(MapQueryContext);
@@ -61,7 +61,7 @@ export default function ReportPage() {
   const lastClusterId = NUMBER_OF_CLUSTERING_STEPS;
   const lastCluster = `cluster${lastClusterId}`;
   const prevGeoJson = survey[lastCluster].geoJson;
-  const hasMessage = messages[section].find(
+  const aiMessageLoaded = messages[section].find(
     (message) => message.type === section
   )
     ? true
@@ -77,7 +77,7 @@ export default function ReportPage() {
 
   // Prepare geoJson data for the report page.
   useEffect(() => {
-    if (!prevGeoJson || hasMessage) return;
+    if (!prevGeoJson || aiMessageLoaded) return;
 
     const selection = survey[lastCluster].list.map((item) => item.checked);
     const geoJson = getFilteredGeoJson(
@@ -183,7 +183,7 @@ export default function ReportPage() {
 
     const onStyleLoad = () => {
       // Restore current cluster layer.
-      mapbox.restoreLayer(layers[section], sources[section], mapViewer);
+      mapbox.restoreLayer(layers[section], geoJsons[section], mapViewer);
       mapbox.setLayerSettings(section, mapViewer);
 
       // Restore selected GeoId effect.

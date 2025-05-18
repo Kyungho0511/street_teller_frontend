@@ -7,6 +7,8 @@ import { MapContext } from "../../context/MapContext";
 import { mapConfigs } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import useGeoJson from "../../hooks/useGeoJson";
+import { geoJsonFilePath } from "../../constants/geoJsonConstants";
 
 /**
  * Mapbox map viewer component.
@@ -23,6 +25,8 @@ export default function MapViewer() {
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+
+  const { geoJson } = useGeoJson(geoJsonFilePath);
 
   useEffect(() => {
     // Create a map instance on component mount.

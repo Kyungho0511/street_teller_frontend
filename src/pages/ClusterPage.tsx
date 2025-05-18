@@ -46,15 +46,8 @@ import {
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const {
-    mapViewer,
-    mapMode,
-    parentLayer,
-    layers,
-    setLayers,
-    sources,
-    setSources,
-  } = useContext(MapContext);
+  const { mapViewer, mapMode, parentLayer, layers, setLayers } =
+    useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
     selectedCluster,
@@ -72,7 +65,7 @@ export default function ClusterPage() {
   const clusterIndex = parseInt(clusterId!) - 1;
   const location = useLocation();
   const clusterName = `cluster${clusterId}` as ClusterList["name"];
-  const clusterList = survey[clusterName as ClusterList["name"]]!;
+  const clusterList = survey[clusterName]!;
   const section = utils.pathToSection(location.pathname);
   const hasMessage = messages[section].find(
     (message) => message.type === "cluster"
@@ -96,28 +89,18 @@ export default function ClusterPage() {
   useMapSelectEffect(parentLayer, mapViewer, true);
   useMap3dSetViewOnClick();
 
-  // Turn off Legend section on leaving current url.
-  useEffect(() => {
-    return () => {
-      console.log("Leaving clustering page");
-      setSelectedCluster(undefined);
-      setSelectedClusterInfo(undefined);
-      setSelectedGeoId(undefined);
-    };
-  }, [location.pathname]);
-
-  // Restore mapping layers from session storage.
-  useEffect(() => {
-    if (
-      !mapViewer ||
-      !layers[section] ||
-      !sources[section] ||
-      mapViewer.getLayer(section)
-    ) {
-      return;
-    }
-    mapbox.restoreLayer(layers[section], sources[section], mapViewer);
-  }, [section, mapViewer]);
+  // // Restore mapping layers from session storage.
+  // useEffect(() => {
+  //   if (
+  //     !mapViewer ||
+  //     !layers[section] ||
+  //     !sources[section] ||
+  //     mapViewer.getLayer(section)
+  //   ) {
+  //     return;
+  //   }
+  //   mapbox.restoreLayer(layers[section], sources[section], mapViewer);
+  // }, [section, mapViewer]);
 
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
@@ -189,11 +172,11 @@ export default function ClusterPage() {
       newClusterList,
       mapViewer!
     );
-    setLayers((prev) => ({ ...prev, [section]: layer }));
-    setSources((prev) => ({
-      ...prev,
-      [section]: source,
-    }));
+    // setLayers((prev) => ({ ...prev, [section]: layer }));
+    // setSources((prev) => ({
+    //   ...prev,
+    //   [section]: source,
+    // }));
 
     // Prepare prompt and list for OpenAI.
     newClusterList.list.forEach((item, i) => {
@@ -230,7 +213,7 @@ export default function ClusterPage() {
 
     const onStyleLoad = () => {
       // Restore current cluster layer.
-      mapbox.restoreLayer(layers[section], sources[section], mapViewer);
+      mapbox.restoreLayer(layers[section], geoJsons[section], mapViewer);
       mapbox.setLayerSettings(section, mapViewer);
       mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
 
@@ -251,25 +234,14 @@ export default function ClusterPage() {
     };
   }, [mapMode]);
 
-  // Display loading & error status of fetching geoJson data.
-  if (loadingGeoJson) {
-    return (
-      <Sidebar>
-        <SidebarSection>
-          <p>Loading GeoJson Data...</p>
-        </SidebarSection>
-      </Sidebar>
-    );
-  }
-  if (errorGeoJson) {
-    return (
-      <Sidebar>
-        <SidebarSection>
-          <p>{errorGeoJson}</p>
-        </SidebarSection>
-      </Sidebar>
-    );
-  }
+  // Turn off Legend section on leaving current url.
+  useEffect(() => {
+    return () => {
+      setSelectedCluster(undefined);
+      setSelectedClusterInfo(undefined);
+      setSelectedGeoId(undefined);
+    };
+  }, [location.pathname]);
 
   return (
     <>

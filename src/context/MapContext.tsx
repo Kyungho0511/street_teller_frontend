@@ -45,8 +45,8 @@ type MapContextProps = {
       >
     >
   >;
-  sources: Record<string, mapboxgl.SourceSpecification>;
-  setSources: React.Dispatch<
+  geoJsons: Record<string, mapboxgl.SourceSpecification>;
+  setGeoJsons: React.Dispatch<
     React.SetStateAction<Record<string, mapboxgl.SourceSpecification>>
   >;
 };
@@ -71,7 +71,7 @@ export function MapContextProvider({
   const [layers, setLayers] = useSessionStorage<
     Record<string, mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface>
   >("layers", {});
-  const [sources, setSources] = useSessionStorage<
+  const [geoJsons, setGeoJsons] = useSessionStorage<
     Record<string, mapboxgl.SourceSpecification>
   >("sources", {});
   const [location, setLocation] = useState<Location>(
@@ -111,8 +111,8 @@ export function MapContextProvider({
         setParentLayer,
         layers,
         setLayers,
-        sources,
-        setSources,
+        geoJsons,
+        setGeoJsons,
         attribute,
         setAttribute,
         color,
