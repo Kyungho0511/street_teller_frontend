@@ -18,6 +18,7 @@ export default function MapViewer() {
     mapViewer,
     setMapViewer,
     mapPreview,
+    parentLayer,
     setParentLayer,
     setColor,
     mapMode,
@@ -25,8 +26,7 @@ export default function MapViewer() {
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-
-  const { geoJson } = useGeoJson(geoJsonFilePath);
+  useGeoJson(geoJsonFilePath, mapViewer, parentLayer);
 
   useEffect(() => {
     // Create a map instance on component mount.

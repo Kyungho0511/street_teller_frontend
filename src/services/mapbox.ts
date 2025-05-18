@@ -12,6 +12,7 @@ import {
   themeColor,
   RGBA,
   BEFORE_ID,
+  FILL_OUTLINE_COLOR,
 } from "../constants/mapConstants";
 import { sectionMapConfigs } from "../constants/sectionConstants";
 import { ClusterList } from "../constants/surveyConstants";
@@ -123,11 +124,10 @@ export function setLayerOpacity(layer: MapLayer, map: mapboxgl.Map): void {
 
 /**
  * Set layer settings based on the section.
- * @param section Each url path corresponds to a section.
+ * @param section Current page section in the application.
  * @param map Map in which layers are set.
  */
 export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
-  // Exit if the section is not found.
   const mapSection = sectionMapConfigs.find((sec) => sec.id === section);
   if (!mapSection) return;
 
@@ -135,11 +135,9 @@ export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
   offLayers(map);
   mapSection.layers.forEach((layer) => setLayerOpacity(layer, map));
 
-  // Home: Update layer style, adjusting the color interpolation.
-  if (section === "home") {
-    const name = mapSection.attribute!.name;
-    updateLayerAttribute(mapSection.parentLayer!, name, mapSection.color!, map);
-  }
+  // Update layer style, adjusting the color interpolation.
+  const name = mapSection.attribute!.name;
+  updateLayerAttribute(mapSection.parentLayer!, name, mapSection.color!, map);
 }
 
 /**
@@ -233,6 +231,41 @@ export function addReportLayer(
         "fill-color": utils.rgbaToString(themeColor),
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+      },
+    },
+    BEFORE_ID
+  );
+}
+
+/**
+ * Add a layer to the mapbox map.
+ * @param geoJson GeoJson data to be added to the map.
+ * @param name Layer name to be added to the map.
+ * @param map Map to which the layer is added.
+ */
+export function addLayer(
+  geoJson: HealthcareFeatureCollection,
+  name: string,
+  map: mapboxgl.Map
+) {
+  // Remove the layer if it already exists.
+  map.getSource(name) && map.removeSource(name);
+  map.getLayer(name) && map.removeLayer(name);
+
+  // Add source and layer to the map.
+  map.addSource(name, {
+    type: "geojson",
+    data: geoJson,
+  });
+  map.addLayer(
+    {
+      id: name,
+      type: "fill",
+      source: name,
+      paint: {
+        "fill-color": utils.rgbaToString(themeColor),
+        "fill-opacity": 1,
+        "fill-outline-color": FILL_OUTLINE_COLOR,
       },
     },
     BEFORE_ID

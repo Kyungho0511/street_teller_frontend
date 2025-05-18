@@ -8,12 +8,8 @@ import * as kmeans from "../services/kmeans";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import * as utils from "../utils/utils";
-import {
-  geoJsonFilePath,
-  HealthcarePropertyName,
-} from "../constants/geoJsonConstants";
+import { HealthcarePropertyName } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
-import useGeoJson from "../hooks/useGeoJson";
 import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
@@ -67,7 +63,7 @@ export default function ClusterPage() {
   const clusterName = `cluster${clusterId}` as ClusterList["name"];
   const clusterList = survey[clusterName]!;
   const section = utils.pathToSection(location.pathname);
-  const hasMessage = messages[section].find(
+  const aiMessageLoaded = messages[section].find(
     (message) => message.type === "cluster"
   )
     ? true
@@ -75,11 +71,7 @@ export default function ClusterPage() {
   const { currentSelectedFeature } = useFeatureFromMap(clusterId!);
   const { selectedCountyName, selectedNeighborhoodName } = useNameFromMap();
 
-  // Run the clustering logic if a cluster message is not found.
-  const [loadingGeoJson, errorGeoJson, geoJson, setGeoJson] = useGeoJson(
-    geoJsonFilePath,
-    !hasMessage
-  );
+  // Run the clustering logic if a AI message has not been loaded yet.
 
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction(parseInt(clusterId!), [
@@ -105,7 +97,7 @@ export default function ClusterPage() {
   // Filter geoJson data based on the selected clusters from the previous page.
   // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    if (!mapViewer || hasMessage) {
+    if (!mapViewer || aiMessageLoaded) {
       return;
     }
     const clusterSurvey = getClusterSurvey();

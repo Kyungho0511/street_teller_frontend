@@ -1,6 +1,6 @@
 import { Feature, FeatureCollection, Polygon } from "geojson";
 
-export const geoJsonFilePath = "/data/tracts_features_nyc_normalized.geojson";
+export const geoJsonFilePath = "/data/tracts_features_nyc.geojson";
 
 export type HealthcarePropertyName =
   | "GEOID"
