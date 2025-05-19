@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { HealthcareFeatureCollection } from "../constants/geoJsonConstants";
+import { useContext, useEffect, useState } from "react";
+import { TractFeatureCollection } from "../constants/geoJsonConstants";
 import useEffectAfterMount from "./useEffectAfterMount";
 import * as mapbox from "../services/mapbox";
 import { pathToSection } from "../utils/utils";
+import { MapContext } from "../context/MapContext";
 
 /**
  * Custom hook to fetch geoJson data from the file path.
@@ -17,9 +18,7 @@ export default function useGeoJson(
 ) {
   const [loadingGeoJson, setLoadingGeoJson] = useState<boolean>(false);
   const [errorGeoJson, setErrorGeoJson] = useState<string | undefined>();
-  const [geoJson, setGeoJson] = useState<
-    HealthcareFeatureCollection | undefined
-  >();
+  const { geoJson, setGeoJson } = useContext(MapContext);
 
   // Fetch geoJson data from the file path.
   useEffect(() => {
@@ -52,5 +51,5 @@ export default function useGeoJson(
     mapbox.setLayerSettings(section, mapViewer);
   }, [mapViewer, geoJson]);
 
-  return { loadingGeoJson, errorGeoJson, geoJson, setGeoJson };
+  return { loadingGeoJson, errorGeoJson };
 }

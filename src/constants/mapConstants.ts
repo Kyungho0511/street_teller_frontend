@@ -1,6 +1,6 @@
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import * as utils from "../utils/utils";
-import { HealthcarePropertyName } from "./geoJsonConstants";
+import { HealthcareProperties } from "./geoJsonConstants";
 import { Section } from "./sectionConstants";
 
 export type Location = {
@@ -148,7 +148,7 @@ export type MapBound = {
 };
 
 export type MapAttribute = {
-  name: HealthcarePropertyName;
+  name: HealthcareProperties;
   bound: MapBound;
   unit: UnitType;
 };

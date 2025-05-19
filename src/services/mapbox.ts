@@ -19,8 +19,8 @@ import { ClusterList } from "../constants/surveyConstants";
 import { Section } from "../constants/sectionConstants";
 import * as utils from "../utils/utils";
 import {
-  HealthcareFeatureCollection,
-  HealthcarePropertyName,
+  TractFeatureCollection,
+  HealthcareProperties,
 } from "../constants/geoJsonConstants";
 import { MapMode } from "../context/MapContext";
 
@@ -136,8 +136,10 @@ export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
   mapSection.layers.forEach((layer) => setLayerOpacity(layer, map));
 
   // Update layer style, adjusting the color interpolation.
-  const name = mapSection.attribute!.name;
-  updateLayerAttribute(mapSection.parentLayer!, name, mapSection.color!, map);
+  if (section === "home") {
+    const name = mapSection.attribute!.name;
+    updateLayerAttribute(mapSection.parentLayer!, name, mapSection.color!, map);
+  }
 }
 
 /**
@@ -145,7 +147,7 @@ export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
  */
 export function updateLayerAttribute(
   layer: string,
-  attribute: HealthcarePropertyName,
+  attribute: HealthcareProperties,
   color: Color,
   map: mapboxgl.Map
 ) {
@@ -198,7 +200,7 @@ export function updateClusterLayer(
  */
 export function addReportLayer(
   name: string,
-  geoJson: HealthcareFeatureCollection,
+  geoJson: TractFeatureCollection,
   map: mapboxgl.Map
 ) {
   // Remove the layer if it already exists.
@@ -244,7 +246,7 @@ export function addReportLayer(
  * @param map Map to which the layer is added.
  */
 export function addLayer(
-  geoJson: HealthcareFeatureCollection,
+  geoJson: TractFeatureCollection,
   name: string,
   map: mapboxgl.Map
 ) {
@@ -279,13 +281,10 @@ export function addLayer(
  * @param map Map to which the layer is added.
  */
 export function addClusterLayer(
-  geoJson: HealthcareFeatureCollection,
+  geoJson: TractFeatureCollection,
   clusterList: ClusterList,
   map: mapboxgl.Map
-): {
-  layer: mapboxgl.LayerSpecification | mapboxgl.CustomLayerInterface;
-  source: mapboxgl.SourceSpecification;
-} {
+) {
   // Remove the layer if it already exists.
   map.getSource(clusterList.name) && map.removeSource(clusterList.name);
   map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
@@ -321,11 +320,6 @@ export function addClusterLayer(
     },
     BEFORE_ID
   );
-
-  return {
-    layer: map.getLayer(clusterList.name)!,
-    source,
-  };
 }
 
 /**

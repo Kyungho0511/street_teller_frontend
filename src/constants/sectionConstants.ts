@@ -26,36 +26,36 @@ export const sectionMapConfigs: MapSection[] = [
     id: "cluster1",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "nyc-tracts", opacity: 1 },
+      { name: "cluster1", opacity: 1 },
     ],
-    parentLayer: "nyc-tracts",
+    parentLayer: "cluster1",
     color: color.yellow,
   },
   {
     id: "cluster2",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "nyc-tracts", opacity: 1 },
+      { name: "cluster2", opacity: 1 },
     ],
-    parentLayer: "nyc-tracts",
+    parentLayer: "cluster2",
     color: color.blue,
   },
   {
     id: "cluster3",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "nyc-tracts", opacity: 1 },
+      { name: "cluster3", opacity: 1 },
     ],
-    parentLayer: "nyc-tracts",
+    parentLayer: "cluster3",
     color: color.green,
   },
   {
     id: "report",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "nyc-tracts", opacity: 1 },
+      { name: "report", opacity: 1 },
     ],
-    parentLayer: "nyc-tracts",
+    parentLayer: "report",
   },
 ];
 

@@ -12,10 +12,10 @@ import {
   Report,
 } from "../constants/surveyConstants";
 import {
-  HealthcareFeatureCollection,
-  HealthcarePropertyName,
+  TractFeatureCollection,
+  HealthcareProperties,
 } from "../constants/geoJsonConstants";
-import { getFilteredGeoJson } from "../services/kmeans";
+import { applySelectionProps } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
 import {
   defaultColor,
@@ -52,7 +52,7 @@ export default function ReportPage() {
     useContext(MapContext);
   const { selectedReport, setSelectedReport, selectedGeoId, setSelectedGeoId } =
     useContext(MapQueryContext);
-  const [geoJson, setGeoJson] = useState<HealthcareFeatureCollection>();
+  const [geoJson, setGeoJson] = useState<TractFeatureCollection>();
   const [prompt, setPrompt] = useState<ReportPrompt>();
 
   const location = useLocation();
@@ -80,7 +80,7 @@ export default function ReportPage() {
     if (!prevGeoJson || aiMessageLoaded) return;
 
     const selection = survey[lastCluster].list.map((item) => item.checked);
-    const geoJson = getFilteredGeoJson(
+    const geoJson = applySelectionProps(
       `${lastClusterId}`,
       selection,
       prevGeoJson
@@ -113,7 +113,7 @@ export default function ReportPage() {
     geoJson.features.forEach((feature, index) => {
       const report = reports.find((report) =>
         report.clusters.every((cluster) => {
-          const key = ("cluster" + cluster.clusterId) as HealthcarePropertyName;
+          const key = ("cluster" + cluster.clusterId) as HealthcareProperties;
           return feature.properties[key] === cluster.index;
         })
       );

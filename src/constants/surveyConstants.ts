@@ -1,13 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
-import {
-  HealthcareFeatureCollection,
-  HealthcarePropertyName,
-} from "./geoJsonConstants";
+import { TractProperties, HealthcareProperties } from "./geoJsonConstants";
 import { color, RGBA, transparentColor } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
+import { Section } from "./sectionConstants";
 
 /**
  * Site preference categories of the user survey.
@@ -26,7 +24,7 @@ export type Preference = {
   iconPath: string;
   selected: boolean;
   id: string;
-  subCategories: { name: HealthcarePropertyName; id: string }[];
+  subCategories: { name: HealthcareProperties; id: string }[];
 };
 
 export type PreferenceList = {
@@ -136,7 +134,7 @@ export const siteCategories = initialPreferenceList.list.map(
 export const NUMBER_OF_CLUSTERING_STEPS = 3;
 
 export type Centroid = {
-  name: HealthcarePropertyName;
+  name: HealthcareProperties;
   value: number;
   id: string;
 };
@@ -173,18 +171,20 @@ export type Report = ListItem & {
   id: string;
 };
 
+export type GeoIdProperties = Record<string, Partial<TractProperties>>;
+
 export type ClusterList = {
   name: `cluster1` | `cluster2` | `cluster3`;
   list: Cluster[];
   colors: RGBA[];
-  geoJson: HealthcareFeatureCollection | undefined;
-  attributes: HealthcarePropertyName[];
+  geoIdProps: GeoIdProperties | undefined;
+  attributes: HealthcareProperties[];
   kMeansResult: KMeansResult | undefined;
 };
 
 export type ReportList = {
   name: "report";
-  geoJson: HealthcareFeatureCollection | undefined;
+  geoIdProps: GeoIdProperties | undefined;
   list: Report[];
   colors: RGBA[];
 };
@@ -205,7 +205,7 @@ export const initialSurvey: Survey = {
     name: "report",
     list: [],
     colors: [],
-    geoJson: undefined,
+    geoIdProps: undefined,
   } as ReportList,
 };
 
@@ -230,7 +230,7 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
     name: `cluster${clusterId}` as ClusterList["name"],
     list,
     colors,
-    geoJson: undefined,
+    geoIdProps: undefined,
     attributes: [],
     kMeansResult: undefined,
   };

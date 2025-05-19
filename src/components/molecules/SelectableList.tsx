@@ -3,18 +3,18 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { MapContext } from "../../context/MapContext";
 import { mapAttributes } from "../../constants/mapConstants";
 import * as mapbox from "../../services/mapbox";
-import { HealthcarePropertyName } from "../../constants/geoJsonConstants";
+import { HealthcareProperties } from "../../constants/geoJsonConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 
 type SelectableListProps = {
-  list: { name: HealthcarePropertyName; id: string }[];
+  list: { name: HealthcareProperties; id: string }[];
 };
 
 /**
  * List component with selectable items associated with mapping.
  */
 export default function SelectableList({ list }: SelectableListProps) {
-  const [selectedItem, setSelectedItem] = useState<HealthcarePropertyName>(
+  const [selectedItem, setSelectedItem] = useState<HealthcareProperties>(
     list[0].name
   );
   const { mapViewer, parentLayer, color } = useContext(MapContext);
