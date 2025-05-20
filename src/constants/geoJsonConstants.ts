@@ -54,7 +54,7 @@ export type HealthcareProperties = (typeof healthcareProperties)[number];
 
 export type TractProperties = Record<
   HealthcareProperties | ClusterProperties,
-  number | string
+  number | string | boolean
 >;
 
 export type TractFeature = Feature<Polygon, TractProperties>;

@@ -138,14 +138,14 @@ export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
   // Update layer style, adjusting the color interpolation.
   if (section === "home") {
     const name = mapSection.attribute!.name;
-    updateLayerAttribute(mapSection.parentLayer!, name, mapSection.color!, map);
+    updateHomeLayer(mapSection.parentLayer!, name, mapSection.color!, map);
   }
 }
 
 /**
- * Update attribute of the mapbox layer to be drawn.
+ * Update a home layer color style on the mapbox map.
  */
-export function updateLayerAttribute(
+export function updateHomeLayer(
   layer: string,
   attribute: HealthcareProperties,
   color: Color,
@@ -164,7 +164,7 @@ export function updateLayerAttribute(
 }
 
 /**
- * Update a k-means cluster layer color style on the mapbox map.
+ * Update a cluster layer color style on the mapbox map.
  * @param clusterId clustering iteration number.
  * @param clusterList Informs which clusters are selected.
  * @param map Map to which the layer is updated.
@@ -275,7 +275,7 @@ export function addLayer(
 }
 
 /**
- * Add a k-means cluster layer to the mapbox map.
+ * Add a cluster layer to the mapbox map.
  * @param geoJson GeoJson data to be added to the map.
  * @param clusterList List of clusters to be added to the map.
  * @param map Map to which the layer is added.
@@ -323,7 +323,7 @@ export function addClusterLayer(
 }
 
 /**
- * Remove a k-means cluster layer from the mapbox map.
+ * Remove a cluster layer from the mapbox map.
  * @param clusterList List of clusters to be removed.
  * @param map Map from which the layer is removed.
  */
@@ -336,7 +336,7 @@ export function removeClusterLayer(
   }
 }
 /**
- * Remove all k-means cluster layers from the mapbox map.
+ * Remove all cluster layers from the mapbox map.
  * @param clusterListCollection Collection of cluster lists to be removed.
  * @param map Map from which the layers are removed.
  */

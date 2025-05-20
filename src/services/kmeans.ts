@@ -17,7 +17,11 @@ import {
 } from "../constants/kMeansConstants";
 import { normalize } from "../utils/utils";
 import { Section } from "../constants/sectionConstants";
-import { Cluster, GeoIdProperties } from "../constants/surveyConstants";
+import {
+  ReportList,
+  ClusterList,
+  GeoIdProperties,
+} from "../constants/surveyConstants";
 
 /**
  * Run kmeans clustering analysis.
@@ -123,18 +127,19 @@ export function applyHealthcareProps(
 
 /**
  * Apply user's selection of clusters to the geoJson.
- * @param prevClusterId previous clustering iteration number.
  * @param selection user's selection of clusters.
- * @param geoJson geoJson to apply selection properties.
+ * @param clusterList informs the cluster list to be selected.
  */
 export function applySelectionProps(
-  prevClusterId: string,
-  selection: boolean[],
-  geoJson: TractProperties
+  geoJson: TractFeatureCollection,
+  clusterList: ClusterList | ReportList
 ) {
+  const selection = clusterList.list.map((item) => item.checked);
+  const key = clusterList.name as ClusterProperties;
   geoJson.features.forEach((feature) => {
-    const clusterKey = ("cluster" + prevClusterId) as HealthcareProperties;
-    const cluster = feature.properties![clusterKey];
-    return selection[cluster as number];
+    const clusterIdx = feature.properties[key];
+    feature.properties.selected = selection[clusterIdx as number];
   });
+
+  console.log("geoJson", geoJson);
 }

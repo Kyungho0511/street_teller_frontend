@@ -54,12 +54,7 @@ export default function HomePage() {
       // Restore current layers and attributes.
       const section: Section = pathToSection(location.pathname);
       mapbox.setLayerSettings(section, mapViewer);
-      mapbox.updateLayerAttribute(
-        parentLayer,
-        attribute.name,
-        color!,
-        mapViewer
-      );
+      mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
     });
   }, [mapMode]);
 

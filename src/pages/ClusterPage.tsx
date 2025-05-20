@@ -48,7 +48,7 @@ export default function ClusterPage() {
     mapMode,
     parentLayer,
     layers,
-    setLayers,
+    // setLayers,
     geoJson,
     geoIdPropsSet,
     setGeoIdPropsSet,
@@ -128,7 +128,7 @@ export default function ClusterPage() {
       );
 
       kmeans.applySelectionProps(
-        clusterIndex.toString(),
+        "cluster" + clusterIndex.toString(),
         selection,
         prevClusterList.geoIdProps!
       );
@@ -208,10 +208,13 @@ export default function ClusterPage() {
 
   // Update cluster layer properties.
   useEffect(() => {
-    if (!mapViewer) return;
+    if (!mapViewer || !geoJson) return;
+
+    console.log("update cluster layer");
 
     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
-  }, [clusterList, mapViewer]);
+    kmeans.applySelectionProps(geoJson, clusterList);
+  }, [clusterList, mapViewer, geoJson]);
 
   // Restore mapping on mapMode change
   useEffectAfterMount(() => {

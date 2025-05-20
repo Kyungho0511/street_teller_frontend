@@ -27,7 +27,7 @@ export default function SelectableList({ list }: SelectableListProps) {
   useEffectAfterMount(() => {
     // Update Mapping with the selected item.
     if (mapViewer && parentLayer && color) {
-      mapbox.updateLayerAttribute(parentLayer, selectedItem, color, mapViewer);
+      mapbox.updateHomeLayer(parentLayer, selectedItem, color, mapViewer);
     }
     // Update the attribute for map legned.
     if (setAttribute) {

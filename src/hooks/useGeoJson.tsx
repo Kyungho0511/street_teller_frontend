@@ -42,9 +42,14 @@ export default function useGeoJson(
     }
   }, []);
 
-  // Add geoJson data to the map.
+  // Prepare geoJson data and add it to the map.
   useEffectAfterMount(() => {
     if (!mapViewer || !geoJson) return;
+
+    // Add selected properties to geoJson data.
+    geoJson.features.forEach((feature) => {
+      feature.properties.selected = true;
+    });
 
     mapbox.addLayer(geoJson, layerName, mapViewer);
     const section = pathToSection(location.pathname);
