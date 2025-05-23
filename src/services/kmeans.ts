@@ -20,7 +20,7 @@ import { Section } from "../constants/sectionConstants";
 import {
   ReportList,
   ClusterList,
-  GeoIdProperties,
+  GeoIdDictionary,
 } from "../constants/surveyConstants";
 
 /**
@@ -89,40 +89,28 @@ export function assignToGeoJson(
 }
 
 /**
- * Get the geoId properties necessary for clustering analysis
+ * Get the cluster properties of clustering analysis
  * from the geoJson for session storage purpose.
  * @param geoJson The geoJson to get the properties from.
  */
-export function getGeoIdProperties(
+export function getGeoJsonClusterProps(
   geoJson: TractFeatureCollection
-): GeoIdProperties {
-  const geoIdProps = {} as GeoIdProperties;
+): GeoIdDictionary {
+  const geoIdDict = {} as GeoIdDictionary;
   geoJson.features.forEach((feature) => {
     const geoId = feature?.properties?.GEOID;
     if (geoId) {
       const properties = Object.entries(feature.properties).filter(([key]) =>
         clusterProperties.includes(key as ClusterProperties)
       );
-      geoIdProps[geoId as string] = Object.fromEntries(properties);
+      geoIdDict[geoId as string] = Object.fromEntries(properties) as Record<
+        ClusterProperties,
+        string | boolean
+      >;
     }
   });
 
-  return geoIdProps;
-}
-
-export function applyHealthcareProps(
-  geoJson: TractFeatureCollection,
-  props: TractProperties
-) {
-  geoJson.features.forEach((feature: Feature) => {
-    const geoId = feature?.properties?.GEOID;
-    if (geoId) {
-      feature.properties = {
-        ...feature.properties,
-        ...props[geoId as string],
-      };
-    }
-  });
+  return geoIdDict;
 }
 
 /**
@@ -140,6 +128,4 @@ export function applySelectionProps(
     const clusterIdx = feature.properties[key];
     feature.properties.selected = selection[clusterIdx as number];
   });
-
-  console.log("geoJson", geoJson);
 }

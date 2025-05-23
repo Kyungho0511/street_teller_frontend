@@ -42,7 +42,6 @@ export default function useGeoJson(
     }
   }, []);
 
-  // Prepare geoJson data and add it to the map.
   useEffectAfterMount(() => {
     if (!mapViewer || !geoJson) return;
 
@@ -51,6 +50,7 @@ export default function useGeoJson(
       feature.properties.selected = true;
     });
 
+    // Add geoJson data to the map.
     mapbox.addLayer(geoJson, layerName, mapViewer);
     const section = pathToSection(location.pathname);
     mapbox.setLayerSettings(section, mapViewer);

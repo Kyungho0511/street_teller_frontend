@@ -50,8 +50,8 @@ export default function ClusterPage() {
     layers,
     // setLayers,
     geoJson,
-    geoIdPropsSet,
-    setGeoIdPropsSet,
+    geoIdDictSet,
+    setGeoIdDictSet,
   } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
@@ -97,47 +97,8 @@ export default function ClusterPage() {
   //   mapbox.restoreLayer(layers[section], sources[section], mapViewer);
   // }, [section, mapViewer]);
 
-  // Filter geoJson data based on the selected clusters from the previous page.
-  // Setting geoJson triggers the logic of this page to run.
   useEffect(() => {
-    const aiMessageLoaded = messages[section].find(
-      (message) => message.type === "cluster"
-    )
-      ? true
-      : false;
-
-    if (!mapViewer || aiMessageLoaded) {
-      return;
-    }
-    const clusterSurvey = getClusterSurvey();
-
-    // Set map layers and UI before starting a new clustering page.
-    mapbox.setLayerSettings(section, mapViewer);
-    setSelectedCluster(undefined);
-    setSelectedClusterInfo(undefined);
-
-    if (clusterIndex === 0 && clusterSurvey[0]?.geoIdProps) {
-      setGeoIdPropsSet((prev) => ({
-        ...prev,
-        ["cluster1"]: clusterSurvey[0].geoIdProps,
-      }));
-    } else if (clusterIndex > 0) {
-      const prevClusterList = clusterSurvey[clusterIndex - 1];
-      const selection: boolean[] = prevClusterList.list.map(
-        (cluster) => cluster.checked
-      );
-
-      kmeans.applySelectionProps(
-        "cluster" + clusterIndex.toString(),
-        selection,
-        prevClusterList.geoIdProps!
-      );
-      setGeoIdPropsSet(geoIdPropsSet);
-    }
-  }, [section, mapViewer]);
-
-  useEffect(() => {
-    if (!geoJson) return;
+    if (!geoJson || !mapViewer) return;
 
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
@@ -159,32 +120,26 @@ export default function ClusterPage() {
       kMeansResult,
       ("cluster" + clusterId!) as Section
     );
-
-    const geoIdProps = kmeans.getGeoIdProperties(geoJson!);
-    setGeoIdPropsSet((prev) => ({
-      ...prev,
-      [section]: geoIdProps,
-    }));
-    console.log("geoIdProps", geoIdProps);
-
+    const geoIdDict = kmeans.getGeoJsonClusterProps(geoJson!);
     const newClusterList: ClusterList = {
       name: clusterName,
       list: clusterList.list,
       colors: clusterList.colors,
-      geoIdProps,
+      geoIdDict,
       attributes: selectedAttributes,
       kMeansResult,
     };
 
     // Add cluster layer to the map.
     mapbox.addClusterLayer(geoJson, newClusterList, mapViewer!);
+    mapbox.setLayerSettings(section, mapViewer);
     // setLayers((prev) => ({ ...prev, [section]: layer }));
     // setSources((prev) => ({
     //   ...prev,
     //   [section]: source,
     // }));
 
-    // Prepare prompt and list for OpenAI.
+    // Prepare prompt for OpenAI to trigger AI response.
     newClusterList.list.forEach((item, i) => {
       item.centroids = selectedAttributes.map((attr, j) => ({
         name: attr,
@@ -194,7 +149,7 @@ export default function ClusterPage() {
     });
     const prompt: ClusterPrompt = {
       type: "cluster",
-      content: clusterList.list.map((item) => ({
+      content: newClusterList.list.map((item) => ({
         name: item.name,
         centroids: item.centroids,
       })),
@@ -202,18 +157,19 @@ export default function ClusterPage() {
     setPrompts((prev) =>
       prev.map((item, i) => (i === clusterIndex ? prompt : item))
     );
-
     setClusterSurvey(clusterId!, newClusterList);
-  }, [survey.preference.list, geoJson]);
+  }, [location.pathname, geoJson, mapViewer]);
 
-  // Update cluster layer properties.
+  // Reflect user selection on cluster list to the map and props.
   useEffect(() => {
     if (!mapViewer || !geoJson) return;
 
-    console.log("update cluster layer");
-
     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
     kmeans.applySelectionProps(geoJson, clusterList);
+    setGeoIdDictSet((prev) => ({
+      ...prev,
+      [clusterId!]: clusterList.geoIdDict,
+    }));
   }, [clusterList, mapViewer, geoJson]);
 
   // Restore mapping on mapMode change

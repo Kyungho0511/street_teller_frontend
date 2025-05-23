@@ -11,7 +11,7 @@ import Map3dViewer from "../components/organisms/Map3dViewer";
 import * as Cesium from "cesium";
 import useSessionStorage from "../hooks/useSessionStorage";
 import { TractFeatureCollection } from "../constants/geoJsonConstants";
-import { GeoIdProperties } from "../constants/surveyConstants";
+import { GeoIdDictionary } from "../constants/surveyConstants";
 
 export type MapMode = "satellite" | "map";
 
@@ -51,9 +51,9 @@ type MapContextProps = {
   setGeoJson: React.Dispatch<
     React.SetStateAction<TractFeatureCollection | undefined>
   >;
-  geoIdPropsSet: Record<Section, GeoIdProperties | undefined>;
-  setGeoIdPropsSet: React.Dispatch<
-    React.SetStateAction<Record<Section, GeoIdProperties | undefined>>
+  geoIdDictSet: Record<Section, GeoIdDictionary | undefined>;
+  setGeoIdDictSet: React.Dispatch<
+    React.SetStateAction<Record<Section, GeoIdDictionary | undefined>>
   >;
 };
 
@@ -87,9 +87,9 @@ export function MapContextProvider({
     report: undefined,
   });
   const [geoJson, setGeoJson] = useState<TractFeatureCollection>();
-  const [geoIdPropsSet, setGeoIdPropsSet] = useSessionStorage<
-    Record<Section, GeoIdProperties | undefined>
-  >("geoIdProps", {
+  const [geoIdDictSet, setGeoIdDictSet] = useSessionStorage<
+    Record<Section, GeoIdDictionary | undefined>
+  >("geoIdDictionary", {
     home: undefined,
     cluster1: undefined,
     cluster2: undefined,
@@ -135,8 +135,8 @@ export function MapContextProvider({
         setLayers,
         geoJson,
         setGeoJson,
-        geoIdPropsSet,
-        setGeoIdPropsSet,
+        geoIdDictSet,
+        setGeoIdDictSet,
         attribute,
         setAttribute,
         color,

@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { TractProperties, HealthcareProperties } from "./geoJsonConstants";
+import {
+  TractProperties,
+  HealthcareProperties,
+  ClusterProperties,
+} from "./geoJsonConstants";
 import { color, RGBA, transparentColor } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
@@ -171,20 +175,23 @@ export type Report = ListItem & {
   id: string;
 };
 
-export type GeoIdProperties = Record<string, Partial<TractProperties>>;
+export type GeoIdDictionary = Record<
+  string,
+  Record<ClusterProperties, string | boolean>
+>;
 
 export type ClusterList = {
   name: `cluster1` | `cluster2` | `cluster3`;
   list: Cluster[];
   colors: RGBA[];
-  geoIdProps: GeoIdProperties | undefined;
+  geoIdDict: GeoIdDictionary | undefined;
   attributes: HealthcareProperties[];
   kMeansResult: KMeansResult | undefined;
 };
 
 export type ReportList = {
   name: "report";
-  geoIdProps: GeoIdProperties | undefined;
+  geoIdDict: GeoIdDictionary | undefined;
   list: Report[];
   colors: RGBA[];
 };
@@ -205,7 +212,7 @@ export const initialSurvey: Survey = {
     name: "report",
     list: [],
     colors: [],
-    geoIdProps: undefined,
+    geoIdDict: undefined,
   } as ReportList,
 };
 
@@ -230,7 +237,7 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
     name: `cluster${clusterId}` as ClusterList["name"],
     list,
     colors,
-    geoIdProps: undefined,
+    geoIdDict: undefined,
     attributes: [],
     kMeansResult: undefined,
   };

@@ -131,15 +131,8 @@ export function setLayerSettings(section: Section, map: mapboxgl.Map): void {
   const mapSection = sectionMapConfigs.find((sec) => sec.id === section);
   if (!mapSection) return;
 
-  // Update layer opacity.
   offLayers(map);
   mapSection.layers.forEach((layer) => setLayerOpacity(layer, map));
-
-  // Update layer style, adjusting the color interpolation.
-  if (section === "home") {
-    const name = mapSection.attribute!.name;
-    updateHomeLayer(mapSection.parentLayer!, name, mapSection.color!, map);
-  }
 }
 
 /**
@@ -250,28 +243,32 @@ export function addLayer(
   name: string,
   map: mapboxgl.Map
 ) {
-  // Remove the layer if it already exists.
-  map.getSource(name) && map.removeSource(name);
-  map.getLayer(name) && map.removeLayer(name);
+  if (!map.getSource(name)) {
+    map.addSource(name, {
+      type: "geojson",
+      data: geoJson,
+    });
+  } else {
+    console.warn("Source already exists, skipping adding source");
+  }
 
-  // Add source and layer to the map.
-  map.addSource(name, {
-    type: "geojson",
-    data: geoJson,
-  });
-  map.addLayer(
-    {
-      id: name,
-      type: "fill",
-      source: name,
-      paint: {
-        "fill-color": utils.rgbaToString(themeColor),
-        "fill-opacity": 1,
-        "fill-outline-color": FILL_OUTLINE_COLOR,
+  if (!map.getLayer(name)) {
+    map.addLayer(
+      {
+        id: name,
+        type: "fill",
+        source: name,
+        paint: {
+          "fill-color": utils.rgbaToString(themeColor),
+          "fill-opacity": 1,
+          "fill-outline-color": FILL_OUTLINE_COLOR,
+        },
       },
-    },
-    BEFORE_ID
-  );
+      BEFORE_ID
+    );
+  } else {
+    console.warn("Layer already exists, skipping adding layer");
+  }
 }
 
 /**
@@ -285,41 +282,44 @@ export function addClusterLayer(
   clusterList: ClusterList,
   map: mapboxgl.Map
 ) {
-  // Remove the layer if it already exists.
-  map.getSource(clusterList.name) && map.removeSource(clusterList.name);
-  map.getLayer(clusterList.name) && map.removeLayer(clusterList.name);
+  if (!map.getSource(clusterList.name)) {
+    const source: mapboxgl.SourceSpecification = {
+      type: "geojson",
+      data: geoJson,
+    };
+    map.addSource(clusterList.name, source);
+  } else {
+    console.warn("Source already exists, skipping adding source");
+  }
 
-  // Add source and layer to the map.
-  const source: mapboxgl.SourceSpecification = {
-    type: "geojson",
-    data: geoJson,
-  };
-  map.addSource(clusterList.name, source);
-
-  map.addLayer(
-    {
-      id: clusterList.name,
-      type: "fill",
-      source: clusterList.name,
-      paint: {
-        "fill-color": [
-          "case",
-          ["==", ["get", clusterList.name], 0],
-          utils.rgbaToString(clusterList.list[0].color),
-          ["==", ["get", clusterList.name], 1],
-          utils.rgbaToString(clusterList.list[1].color),
-          ["==", ["get", clusterList.name], 2],
-          utils.rgbaToString(clusterList.list[2].color),
-          ["==", ["get", clusterList.name], 3],
-          utils.rgbaToString(clusterList.list[3].color),
-          transparent,
-        ],
-        "fill-opacity": 1,
-        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+  if (!map.getLayer(clusterList.name)) {
+    map.addLayer(
+      {
+        id: clusterList.name,
+        type: "fill",
+        source: clusterList.name,
+        paint: {
+          "fill-color": [
+            "case",
+            ["all", ["==", ["get", clusterList.name], 0], ["get", "selected"]],
+            utils.rgbaToString(clusterList.list[0].color),
+            ["all", ["==", ["get", clusterList.name], 1], ["get", "selected"]],
+            utils.rgbaToString(clusterList.list[1].color),
+            ["all", ["==", ["get", clusterList.name], 2], ["get", "selected"]],
+            utils.rgbaToString(clusterList.list[2].color),
+            ["all", ["==", ["get", clusterList.name], 3], ["get", "selected"]],
+            utils.rgbaToString(clusterList.list[3].color),
+            transparent,
+          ],
+          "fill-opacity": 1,
+          "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+        },
       },
-    },
-    BEFORE_ID
-  );
+      BEFORE_ID
+    );
+  } else {
+    console.warn("Layer already exists, skipping adding layer");
+  }
 }
 
 /**
