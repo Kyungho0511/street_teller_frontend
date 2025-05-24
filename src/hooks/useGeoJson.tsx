@@ -1,24 +1,22 @@
-import { useContext, useEffect, useState } from "react";
-import { TractFeatureCollection } from "../constants/geoJsonConstants";
+import { useEffect, useState } from "react";
 import useEffectAfterMount from "./useEffectAfterMount";
 import * as mapbox from "../services/mapbox";
-import { pathToSection } from "../utils/utils";
-import { MapContext } from "../context/MapContext";
+import { TractFeatureCollection } from "../constants/geoJsonConstants";
 
 /**
  * Custom hook to fetch geoJson data from the file path.
  * @param filePath File path of the geoJson data
  * @param mapViewer Map instance to add the geoJson data
- * @param layerName Name of the layer to add the geoJson data
+ * @param sourceName Name of the source to use the geoJson data
  */
 export default function useGeoJson(
   filePath: string,
   mapViewer: mapboxgl.Map | undefined,
-  layerName: string
+  sourceName: string
 ) {
   const [loadingGeoJson, setLoadingGeoJson] = useState<boolean>(false);
   const [errorGeoJson, setErrorGeoJson] = useState<string | undefined>();
-  const { geoJson, setGeoJson } = useContext(MapContext);
+  const [geoJson, setGeoJson] = useState<TractFeatureCollection | undefined>();
 
   // Fetch geoJson data from the file path.
   useEffect(() => {
@@ -51,9 +49,7 @@ export default function useGeoJson(
     });
 
     // Add geoJson data to the map.
-    mapbox.addLayer(geoJson, layerName, mapViewer);
-    const section = pathToSection(location.pathname);
-    mapbox.setLayerSettings(section, mapViewer);
+    mapbox.addSource(geoJson, sourceName, mapViewer);
   }, [mapViewer, geoJson]);
 
   return { loadingGeoJson, errorGeoJson };

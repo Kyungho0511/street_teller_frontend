@@ -4,7 +4,7 @@ import * as mapbox from "../../services/mapbox";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { MapContext } from "../../context/MapContext";
-import { mapConfigs } from "../../constants/mapConstants";
+import { mapConfigs, TRACTS_SOURCE_NAME } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import useGeoJson from "../../hooks/useGeoJson";
@@ -18,7 +18,6 @@ export default function MapViewer() {
     mapViewer,
     setMapViewer,
     mapPreview,
-    parentLayer,
     setParentLayer,
     setColor,
     mapMode,
@@ -26,7 +25,7 @@ export default function MapViewer() {
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  useGeoJson(geoJsonFilePath, mapViewer, parentLayer);
+  useGeoJson(geoJsonFilePath, mapViewer, TRACTS_SOURCE_NAME);
 
   useEffect(() => {
     // Create a map instance on component mount.

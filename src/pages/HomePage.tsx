@@ -20,13 +20,15 @@ import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import { mapAttributes, TRACTS_SOURCE_NAME } from "../constants/mapConstants";
+import { HealthcareProperties } from "../constants/geoJsonConstants";
 
 /**
  * Home page component where users sort their data preferences.
  */
 export default function HomePage() {
   const { survey } = useContext(SurveyContext);
-  const { mapViewer, mapMode, parentLayer, attribute, color } =
+  const { mapViewer, mapMode, parentLayer, attribute, setAttribute, color } =
     useContext(MapContext);
 
   // Currently selected preference.
@@ -37,6 +39,22 @@ export default function HomePage() {
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer);
+
+  // Add home mapping layer to the map.
+  useEffect(() => {
+    if (!mapViewer) return;
+
+    const onSourceDataLoaded = (event: mapboxgl.MapSourceDataEvent) => {
+      if (event.sourceId === TRACTS_SOURCE_NAME && event.isSourceLoaded) {
+        console.log("Source data loaded:", event);
+
+        mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE_NAME, mapViewer);
+        mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
+        mapViewer.off("sourcedata", onSourceDataLoaded);
+      }
+    };
+    mapViewer.on("sourcedata", onSourceDataLoaded);
+  }, [mapViewer]);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
@@ -58,6 +76,22 @@ export default function HomePage() {
     });
   }, [mapMode]);
 
+  const onSelectItem = (item: HealthcareProperties) => {
+    // Update Mapping with the selected item.
+    if (mapViewer && parentLayer && color) {
+      mapbox.updateHomeLayer(parentLayer, item, color, mapViewer);
+    }
+    // Update the attribute for map legned.
+    if (setAttribute) {
+      const newAttribute = mapAttributes.find(
+        (attribute) => attribute.name === item
+      );
+      newAttribute
+        ? setAttribute(newAttribute)
+        : console.error("Attribute not found.");
+    }
+  };
+
   return (
     <>
       <Sidebar>
@@ -73,7 +107,10 @@ export default function HomePage() {
       </Sidebar>
 
       <LegendSection title={preference.category as string}>
-        <SelectableList list={preference.subCategories} />
+        <SelectableList
+          list={preference.subCategories}
+          onSelectItem={onSelectItem}
+        />
         <GradientBar
           bound={attribute.bound}
           unit={attribute.unit}

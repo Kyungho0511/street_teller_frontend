@@ -4,7 +4,6 @@ import { Feature } from "geojson";
 import {
   TractFeature,
   TractFeatureCollection,
-  TractProperties,
   HealthcareProperties,
   clusterProperties,
   ClusterProperties,
@@ -48,11 +47,12 @@ export function processData(
   geoJson: TractFeatureCollection,
   attributes: HealthcareProperties[]
 ): number[][] {
-  // Filter the features based on the selected attributes
+  // Filter the features based on the selected attributes and tracts.
   const filteredFeatures = geoJson.features.map((feature: TractFeature) => {
     let filteredProperties: Partial<{
       [key in HealthcareProperties]: number;
     }> = {};
+
     attributes.forEach((attr) => {
       if (Object.prototype.hasOwnProperty.call(feature.properties, attr)) {
         const normalized = normalize(feature.properties[attr] as number, attr);
@@ -63,6 +63,7 @@ export function processData(
         }
       }
     });
+    
     return {
       ...feature,
       properties: filteredProperties,

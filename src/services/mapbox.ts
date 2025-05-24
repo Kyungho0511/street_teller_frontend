@@ -233,12 +233,12 @@ export function addReportLayer(
 }
 
 /**
- * Add a layer to the mapbox map.
+ * Add a source to the mapbox map.
  * @param geoJson GeoJson data to be added to the map.
- * @param name Layer name to be added to the map.
- * @param map Map to which the layer is added.
+ * @param name Source name to be added to the map.
+ * @param map Map to which the source is added.
  */
-export function addLayer(
+export function addSource(
   geoJson: TractFeatureCollection,
   name: string,
   map: mapboxgl.Map
@@ -248,16 +248,26 @@ export function addLayer(
       type: "geojson",
       data: geoJson,
     });
-  } else {
-    console.warn("Source already exists, skipping adding source");
   }
+}
 
-  if (!map.getLayer(name)) {
+/**
+ * Add a layer to the mapbox map.
+ * @param layerName Layer name to be added to the map.
+ * @param sourceName Source name to be used for the layer.
+ * @param map Map to which the layer is added.
+ */
+export function addHomeLayer(
+  layerName: string,
+  sourceName: string,
+  map: mapboxgl.Map
+) {
+  if (!map.getLayer(layerName)) {
     map.addLayer(
       {
-        id: name,
+        id: layerName,
         type: "fill",
-        source: name,
+        source: sourceName,
         paint: {
           "fill-color": utils.rgbaToString(themeColor),
           "fill-opacity": 1,
@@ -266,38 +276,26 @@ export function addLayer(
       },
       BEFORE_ID
     );
-  } else {
-    console.warn("Layer already exists, skipping adding layer");
   }
 }
 
 /**
  * Add a cluster layer to the mapbox map.
- * @param geoJson GeoJson data to be added to the map.
  * @param clusterList List of clusters to be added to the map.
+ * @param sourceName Source name to be used for the layer.
  * @param map Map to which the layer is added.
  */
 export function addClusterLayer(
-  geoJson: TractFeatureCollection,
   clusterList: ClusterList,
+  sourceName: string,
   map: mapboxgl.Map
 ) {
-  if (!map.getSource(clusterList.name)) {
-    const source: mapboxgl.SourceSpecification = {
-      type: "geojson",
-      data: geoJson,
-    };
-    map.addSource(clusterList.name, source);
-  } else {
-    console.warn("Source already exists, skipping adding source");
-  }
-
   if (!map.getLayer(clusterList.name)) {
     map.addLayer(
       {
         id: clusterList.name,
         type: "fill",
-        source: clusterList.name,
+        source: sourceName,
         paint: {
           "fill-color": [
             "case",
