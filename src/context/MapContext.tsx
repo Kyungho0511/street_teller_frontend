@@ -51,6 +51,8 @@ type MapContextProps = {
   setGeoJson: React.Dispatch<
     React.SetStateAction<TractFeatureCollection | undefined>
   >;
+  sourceLoaded: boolean;
+  setSourceLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   geoIdDictSet: Record<Section, GeoIdDictionary | undefined>;
   setGeoIdDictSet: React.Dispatch<
     React.SetStateAction<Record<Section, GeoIdDictionary | undefined>>
@@ -87,6 +89,7 @@ export function MapContextProvider({
     report: undefined,
   });
   const [geoJson, setGeoJson] = useState<TractFeatureCollection>();
+  const [sourceLoaded, setSourceLoaded] = useState(false);
   const [geoIdDictSet, setGeoIdDictSet] = useSessionStorage<
     Record<Section, GeoIdDictionary | undefined>
   >("geoIdDictionary", {
@@ -135,6 +138,8 @@ export function MapContextProvider({
         setLayers,
         geoJson,
         setGeoJson,
+        sourceLoaded,
+        setSourceLoaded,
         geoIdDictSet,
         setGeoIdDictSet,
         attribute,

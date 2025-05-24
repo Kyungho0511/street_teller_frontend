@@ -34,7 +34,7 @@ import {
   GEOID,
   OUTLINE_LAYER_SELECT,
   THICK_LINE_WEIGHT_SELECT,
-  TRACTS_SOURCE_NAME,
+  TRACTS_SOURCE,
 } from "../constants/mapConstants";
 import { Section } from "../constants/sectionConstants";
 
@@ -49,8 +49,7 @@ export default function ClusterPage() {
     mapMode,
     parentLayer,
     layers,
-    // setLayers,
-    geoJson,
+    setLayers,
     geoIdDictSet,
     setGeoIdDictSet,
   } = useContext(MapContext);
@@ -132,7 +131,7 @@ export default function ClusterPage() {
     };
 
     // Add cluster layer to the map.
-    mapbox.addClusterLayer(newClusterList, TRACTS_SOURCE_NAME, mapViewer!);
+    mapbox.addClusterLayer(newClusterList, TRACTS_SOURCE, mapViewer!);
     mapbox.setLayerSettings(section, mapViewer);
     // setLayers((prev) => ({ ...prev, [section]: layer }));
     // setSources((prev) => ({

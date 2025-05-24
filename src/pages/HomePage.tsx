@@ -20,7 +20,7 @@ import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
-import { mapAttributes, TRACTS_SOURCE_NAME } from "../constants/mapConstants";
+import { mapAttributes, TRACTS_SOURCE } from "../constants/mapConstants";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
 
 /**
@@ -28,8 +28,15 @@ import { HealthcareProperties } from "../constants/geoJsonConstants";
  */
 export default function HomePage() {
   const { survey } = useContext(SurveyContext);
-  const { mapViewer, mapMode, parentLayer, attribute, setAttribute, color } =
-    useContext(MapContext);
+  const {
+    mapViewer,
+    mapMode,
+    parentLayer,
+    attribute,
+    setAttribute,
+    color,
+    sourceLoaded,
+  } = useContext(MapContext);
 
   // Currently selected preference.
   const [preference, setPreference] = useState<Preference>(
@@ -42,19 +49,11 @@ export default function HomePage() {
 
   // Add home mapping layer to the map.
   useEffect(() => {
-    if (!mapViewer) return;
+    if (!mapViewer || !sourceLoaded) return;
 
-    const onSourceDataLoaded = (event: mapboxgl.MapSourceDataEvent) => {
-      if (event.sourceId === TRACTS_SOURCE_NAME && event.isSourceLoaded) {
-        console.log("Source data loaded:", event);
-
-        mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE_NAME, mapViewer);
-        mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
-        mapViewer.off("sourcedata", onSourceDataLoaded);
-      }
-    };
-    mapViewer.on("sourcedata", onSourceDataLoaded);
-  }, [mapViewer]);
+    mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE, mapViewer);
+    mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
+  }, [mapViewer, sourceLoaded]);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {

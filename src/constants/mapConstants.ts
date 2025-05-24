@@ -37,7 +37,7 @@ export const BEFORE_ID = "road-simple";
 
 export const GEOID = "GEOID";
 
-export const TRACTS_SOURCE_NAME = "nyc-tracts";
+export const TRACTS_SOURCE = "nyc-tracts";
 
 export const OUTLINE_LAYER_HOVER = "tracts-features-nyc-outline-hover";
 

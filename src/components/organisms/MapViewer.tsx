@@ -4,7 +4,7 @@ import * as mapbox from "../../services/mapbox";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { MapContext } from "../../context/MapContext";
-import { mapConfigs, TRACTS_SOURCE_NAME } from "../../constants/mapConstants";
+import { mapConfigs, TRACTS_SOURCE } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import useGeoJson from "../../hooks/useGeoJson";
@@ -20,12 +20,14 @@ export default function MapViewer() {
     mapPreview,
     setParentLayer,
     setColor,
+    geoJson,
+    setSourceLoaded,
     mapMode,
     setLocation,
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  useGeoJson(geoJsonFilePath, mapViewer, TRACTS_SOURCE_NAME);
+  useGeoJson(geoJsonFilePath, mapViewer);
 
   useEffect(() => {
     // Create a map instance on component mount.
@@ -50,7 +52,22 @@ export default function MapViewer() {
     };
   }, []);
 
-  // Update map layers and settings on page change.
+  // Add geojson data to the map source
+  useEffectAfterMount(() => {
+    if (!mapViewer || !geoJson) return;
+
+    mapbox.addSource(geoJson, TRACTS_SOURCE, mapViewer);
+    const onSourceLoaded = (event: mapboxgl.MapSourceDataEvent) => {
+      if (!(event.sourceId === TRACTS_SOURCE) || !event.isSourceLoaded) {
+        return;
+      }
+      setSourceLoaded(true);
+      mapViewer.off("sourcedata", onSourceLoaded);
+    };
+    mapViewer.on("sourcedata", onSourceLoaded);
+  }, [mapViewer, geoJson]);
+
+  // Update map settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 

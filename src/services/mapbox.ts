@@ -243,12 +243,13 @@ export function addSource(
   name: string,
   map: mapboxgl.Map
 ) {
-  if (!map.getSource(name)) {
-    map.addSource(name, {
-      type: "geojson",
-      data: geoJson,
-    });
+  if (map.getSource(name)) {
+    return;
   }
+  map.addSource(name, {
+    type: "geojson",
+    data: geoJson,
+  });
 }
 
 /**
@@ -262,21 +263,22 @@ export function addHomeLayer(
   sourceName: string,
   map: mapboxgl.Map
 ) {
-  if (!map.getLayer(layerName)) {
-    map.addLayer(
-      {
-        id: layerName,
-        type: "fill",
-        source: sourceName,
-        paint: {
-          "fill-color": utils.rgbaToString(themeColor),
-          "fill-opacity": 1,
-          "fill-outline-color": FILL_OUTLINE_COLOR,
-        },
-      },
-      BEFORE_ID
-    );
+  if (map.getLayer(layerName)) {
+    return;
   }
+  map.addLayer(
+    {
+      id: layerName,
+      type: "fill",
+      source: sourceName,
+      paint: {
+        "fill-color": utils.rgbaToString(themeColor),
+        "fill-opacity": 1,
+        "fill-outline-color": FILL_OUTLINE_COLOR,
+      },
+    },
+    BEFORE_ID
+  );
 }
 
 /**
@@ -290,34 +292,35 @@ export function addClusterLayer(
   sourceName: string,
   map: mapboxgl.Map
 ) {
-  if (!map.getLayer(clusterList.name)) {
-    map.addLayer(
-      {
-        id: clusterList.name,
-        type: "fill",
-        source: sourceName,
-        paint: {
-          "fill-color": [
-            "case",
-            ["all", ["==", ["get", clusterList.name], 0], ["get", "selected"]],
-            utils.rgbaToString(clusterList.list[0].color),
-            ["all", ["==", ["get", clusterList.name], 1], ["get", "selected"]],
-            utils.rgbaToString(clusterList.list[1].color),
-            ["all", ["==", ["get", clusterList.name], 2], ["get", "selected"]],
-            utils.rgbaToString(clusterList.list[2].color),
-            ["all", ["==", ["get", clusterList.name], 3], ["get", "selected"]],
-            utils.rgbaToString(clusterList.list[3].color),
-            transparent,
-          ],
-          "fill-opacity": 1,
-          "fill-outline-color": "rgba(217, 217, 217, 0.36)",
-        },
-      },
-      BEFORE_ID
-    );
-  } else {
-    console.warn("Layer already exists, skipping adding layer");
+  console.log("Adding cluster layer", clusterList.name);
+
+  if (map.getLayer(clusterList.name)) {
+    return;
   }
+  map.addLayer(
+    {
+      id: clusterList.name,
+      type: "fill",
+      source: sourceName,
+      paint: {
+        "fill-color": [
+          "case",
+          ["all", ["==", ["get", clusterList.name], 0], ["get", "selected"]],
+          utils.rgbaToString(clusterList.list[0].color),
+          ["all", ["==", ["get", clusterList.name], 1], ["get", "selected"]],
+          utils.rgbaToString(clusterList.list[1].color),
+          ["all", ["==", ["get", clusterList.name], 2], ["get", "selected"]],
+          utils.rgbaToString(clusterList.list[2].color),
+          ["all", ["==", ["get", clusterList.name], 3], ["get", "selected"]],
+          utils.rgbaToString(clusterList.list[3].color),
+          transparent,
+        ],
+        "fill-opacity": 1,
+        "fill-outline-color": "rgba(217, 217, 217, 0.36)",
+      },
+    },
+    BEFORE_ID
+  );
 }
 
 /**
