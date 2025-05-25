@@ -4,7 +4,7 @@ import * as mapbox from "../../services/mapbox";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { MapContext } from "../../context/MapContext";
-import { mapConfigs, TRACTS_SOURCE } from "../../constants/mapConstants";
+import { mapConfigs } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import useGeoJson from "../../hooks/useGeoJson";
@@ -20,14 +20,13 @@ export default function MapViewer() {
     mapPreview,
     setParentLayer,
     setColor,
-    geoJson,
-    setSourceLoaded,
     mapMode,
     setLocation,
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  useGeoJson(geoJsonFilePath, mapViewer);
+  const section = pathToSection(location.pathname);
+  useGeoJson(geoJsonFilePath);
 
   useEffect(() => {
     // Create a map instance on component mount.
@@ -52,29 +51,11 @@ export default function MapViewer() {
     };
   }, []);
 
-  // Add geojson data to the map source
-  useEffectAfterMount(() => {
-    if (!mapViewer || !geoJson) return;
-
-    mapbox.addSource(geoJson, TRACTS_SOURCE, mapViewer);
-    const onSourceLoaded = (event: mapboxgl.MapSourceDataEvent) => {
-      if (!(event.sourceId === TRACTS_SOURCE) || !event.isSourceLoaded) {
-        return;
-      }
-      setSourceLoaded(true);
-      mapViewer.off("sourcedata", onSourceLoaded);
-    };
-    mapViewer.on("sourcedata", onSourceLoaded);
-  }, [mapViewer, geoJson]);
-
   // Update map settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const section = pathToSection(location.pathname);
-    mapbox.setLayerSettings(section, mapViewer);
     setMapSettings();
-
     return () => {
       setParentLayer("");
       setColor(undefined);
@@ -94,7 +75,6 @@ export default function MapViewer() {
 
   function setMapSettings() {
     // Update the map parent layer and color of the current page.
-    const section = pathToSection(location.pathname);
     const mapSec = sectionMapConfigs.find((sec) => sec.id === section)!;
     setParentLayer(mapSec.parentLayer);
     setColor(mapSec.color);

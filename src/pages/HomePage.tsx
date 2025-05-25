@@ -8,7 +8,6 @@ import {
   initialPreferenceList,
   Preference,
 } from "../constants/surveyConstants";
-import { Section } from "../constants/sectionConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import PopupSection from "../components/organisms/PopupSection";
@@ -20,8 +19,9 @@ import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
-import { mapAttributes, TRACTS_SOURCE } from "../constants/mapConstants";
+import { mapAttributes } from "../constants/mapConstants";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
+import { useLocation } from "react-router-dom";
 
 /**
  * Home page component where users sort their data preferences.
@@ -34,9 +34,11 @@ export default function HomePage() {
     parentLayer,
     attribute,
     setAttribute,
+    geoJson,
     color,
-    sourceLoaded,
   } = useContext(MapContext);
+  const location = useLocation();
+  const section = pathToSection(location.pathname);
 
   // Currently selected preference.
   const [preference, setPreference] = useState<Preference>(
@@ -47,13 +49,15 @@ export default function HomePage() {
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer);
 
-  // Add home mapping layer to the map.
+  // Add mapping source and layer to the map.
   useEffect(() => {
-    if (!mapViewer || !sourceLoaded) return;
+    if (!mapViewer || !geoJson) return;
 
-    mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE, mapViewer);
+    mapbox.addSource(geoJson, section, mapViewer);
+    mapbox.addHomeLayer(parentLayer, section, mapViewer);
+    mapbox.setLayerSettings(section, mapViewer);
     mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
-  }, [mapViewer, sourceLoaded]);
+  }, [mapViewer, geoJson]);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
@@ -69,7 +73,6 @@ export default function HomePage() {
 
     mapViewer.on("style.load", () => {
       // Restore current layers and attributes.
-      const section: Section = pathToSection(location.pathname);
       mapbox.setLayerSettings(section, mapViewer);
       mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
     });

@@ -175,7 +175,7 @@ export type Report = ListItem & {
   id: string;
 };
 
-export type GeoIdDictionary = Record<
+export type ClusterPropertiesDict = Record<
   string,
   Record<ClusterProperties, string | boolean>
 >;
@@ -184,14 +184,14 @@ export type ClusterList = {
   name: `cluster1` | `cluster2` | `cluster3`;
   list: Cluster[];
   colors: RGBA[];
-  geoIdDict: GeoIdDictionary | undefined;
+  propsDict: ClusterPropertiesDict | undefined;
   attributes: HealthcareProperties[];
   kMeansResult: KMeansResult | undefined;
 };
 
 export type ReportList = {
   name: "report";
-  geoIdDict: GeoIdDictionary | undefined;
+  propsDict: ClusterPropertiesDict | undefined;
   list: Report[];
   colors: RGBA[];
 };
@@ -212,7 +212,7 @@ export const initialSurvey: Survey = {
     name: "report",
     list: [],
     colors: [],
-    geoIdDict: undefined,
+    propsDict: undefined,
   } as ReportList,
 };
 
@@ -226,7 +226,7 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
       name: "",
       centroids: [],
       content: "",
-      color: transparentColor,
+      color: colors[i],
       checked: true,
       index: i,
       clusterId,
@@ -237,7 +237,7 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
     name: `cluster${clusterId}` as ClusterList["name"],
     list,
     colors,
-    geoIdDict: undefined,
+    propsDict: undefined,
     attributes: [],
     kMeansResult: undefined,
   };

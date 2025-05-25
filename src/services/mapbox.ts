@@ -169,6 +169,8 @@ export function updateClusterLayer(
 ) {
   if (!map || !map.getLayer(clusterList.name)) return;
 
+  console.log("update cluster layer:", clusterList.name);
+
   const list = clusterList.list;
   map.setPaintProperty(clusterList.name, "fill-color", [
     "case",
@@ -292,11 +294,11 @@ export function addClusterLayer(
   sourceName: string,
   map: mapboxgl.Map
 ) {
-  console.log("Adding cluster layer", clusterList.name);
-
   if (map.getLayer(clusterList.name)) {
     return;
   }
+  console.log(map.getSource(sourceName));
+
   map.addLayer(
     {
       id: clusterList.name,
@@ -313,7 +315,7 @@ export function addClusterLayer(
           utils.rgbaToString(clusterList.list[2].color),
           ["all", ["==", ["get", clusterList.name], 3], ["get", "selected"]],
           utils.rgbaToString(clusterList.list[3].color),
-          transparent,
+          "black",
         ],
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",

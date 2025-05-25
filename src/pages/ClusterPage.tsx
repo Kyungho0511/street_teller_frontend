@@ -34,7 +34,6 @@ import {
   GEOID,
   OUTLINE_LAYER_SELECT,
   THICK_LINE_WEIGHT_SELECT,
-  TRACTS_SOURCE,
 } from "../constants/mapConstants";
 import { Section } from "../constants/sectionConstants";
 
@@ -49,9 +48,10 @@ export default function ClusterPage() {
     mapMode,
     parentLayer,
     layers,
+    geoJson,
+    setGeoJson,
+    sourceLoaded,
     setLayers,
-    geoIdDictSet,
-    setGeoIdDictSet,
   } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
@@ -98,7 +98,7 @@ export default function ClusterPage() {
   // }, [section, mapViewer]);
 
   useEffect(() => {
-    if (!geoJson || !mapViewer) return;
+    if (!geoJson || !mapViewer || !sourceLoaded) return;
 
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
@@ -112,26 +112,28 @@ export default function ClusterPage() {
       });
     }
 
-    // Set cluster list based on the selected attributes.
+    // Apply kmeans-clustering to cluster list and geojson.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    kmeans.assignToGeoJson(
+    const newGeoJson = kmeans.applyClusterProps(
       geoJson,
       kMeansResult,
       ("cluster" + clusterId!) as Section
     );
-    const geoIdDict = kmeans.getGeoJsonClusterProps(geoJson!);
+    setGeoJson(newGeoJson);
+    const geoIdDict = kmeans.getClusterProps(newGeoJson!);
+
     const newClusterList: ClusterList = {
       name: clusterName,
       list: clusterList.list,
       colors: clusterList.colors,
-      geoIdDict,
+      propsDict: geoIdDict,
       attributes: selectedAttributes,
       kMeansResult,
     };
 
     // Add cluster layer to the map.
-    mapbox.addClusterLayer(newClusterList, TRACTS_SOURCE, mapViewer!);
+    mapbox.addClusterLayer(newClusterList, section, mapViewer!);
     mapbox.setLayerSettings(section, mapViewer);
     // setLayers((prev) => ({ ...prev, [section]: layer }));
     // setSources((prev) => ({
@@ -158,46 +160,40 @@ export default function ClusterPage() {
       prev.map((item, i) => (i === clusterIndex ? prompt : item))
     );
     setClusterSurvey(clusterId!, newClusterList);
-  }, [location.pathname, geoJson, mapViewer]);
+  }, [location.pathname, sourceLoaded, mapViewer]);
 
   // Reflect user selection on cluster list to the map and props.
   useEffect(() => {
-    if (!mapViewer || !geoJson) return;
-
-    mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
-    kmeans.applySelectionProps(geoJson, clusterList);
-    setGeoIdDictSet((prev) => ({
-      ...prev,
-      [clusterId!]: clusterList.geoIdDict,
-    }));
-  }, [clusterList, mapViewer, geoJson]);
-
-  // Restore mapping on mapMode change
-  useEffectAfterMount(() => {
     if (!mapViewer) return;
+    mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
+  }, [clusterList, mapViewer]);
 
-    const onStyleLoad = () => {
-      // Restore current cluster layer.
-      mapbox.restoreLayer(layers[section], geoJsons[section], mapViewer);
-      mapbox.setLayerSettings(section, mapViewer);
-      mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
+  // // Restore mapping on mapMode change
+  // useEffectAfterMount(() => {
+  //   if (!mapViewer) return;
 
-      // Restore selected GeoId effect.
-      selectedGeoId &&
-        mapbox.setLineWidth(
-          OUTLINE_LAYER_SELECT,
-          GEOID,
-          selectedGeoId,
-          THICK_LINE_WEIGHT_SELECT,
-          mapViewer
-        );
-    };
-    mapViewer.on("style.load", onStyleLoad);
+  //   const onStyleLoad = () => {
+  //     // Restore current cluster layer.
+  //     mapbox.restoreLayer(layers[section], geoJsons[section], mapViewer);
+  //     mapbox.setLayerSettings(section, mapViewer);
+  //     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
 
-    return () => {
-      mapViewer.off("style.load", onStyleLoad);
-    };
-  }, [mapMode]);
+  //     // Restore selected GeoId effect.
+  //     selectedGeoId &&
+  //       mapbox.setLineWidth(
+  //         OUTLINE_LAYER_SELECT,
+  //         GEOID,
+  //         selectedGeoId,
+  //         THICK_LINE_WEIGHT_SELECT,
+  //         mapViewer
+  //       );
+  //   };
+  //   mapViewer.on("style.load", onStyleLoad);
+
+  //   return () => {
+  //     mapViewer.off("style.load", onStyleLoad);
+  //   };
+  // }, [mapMode]);
 
   // Turn off Legend section on leaving current url.
   useEffect(() => {

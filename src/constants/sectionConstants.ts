@@ -12,14 +12,14 @@ export const sectionMapConfigs: MapSection[] = [
     id: "home",
     layers: [
       { name: "tracts", opacity: 0.9 },
-      { name: "nyc-tracts", opacity: 1 },
+      { name: "home", opacity: 1 },
     ],
     attribute: {
       name: "unserved population / km2",
       bound: getBound("unserved population / km2")!,
       unit: "population density",
     },
-    parentLayer: "nyc-tracts",
+    parentLayer: "home",
     color: color.blue,
   },
   {
