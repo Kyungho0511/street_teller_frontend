@@ -50,7 +50,6 @@ export default function ClusterPage() {
     layers,
     geoJson,
     setGeoJson,
-    sourceLoaded,
     setLayers,
   } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
@@ -98,7 +97,7 @@ export default function ClusterPage() {
   // }, [section, mapViewer]);
 
   useEffect(() => {
-    if (!geoJson || !mapViewer || !sourceLoaded) return;
+    if (!geoJson || !mapViewer) return;
 
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
@@ -121,25 +120,16 @@ export default function ClusterPage() {
       ("cluster" + clusterId!) as Section
     );
     setGeoJson(newGeoJson);
-    const geoIdDict = kmeans.getClusterProps(newGeoJson!);
+    const properties = kmeans.getClusterProps(newGeoJson!);
 
     const newClusterList: ClusterList = {
       name: clusterName,
       list: clusterList.list,
       colors: clusterList.colors,
-      propsDict: geoIdDict,
+      properties: properties,
       attributes: selectedAttributes,
       kMeansResult,
     };
-
-    // Add cluster layer to the map.
-    mapbox.addClusterLayer(newClusterList, section, mapViewer!);
-    mapbox.setLayerSettings(section, mapViewer);
-    // setLayers((prev) => ({ ...prev, [section]: layer }));
-    // setSources((prev) => ({
-    //   ...prev,
-    //   [section]: source,
-    // }));
 
     // Prepare prompt for OpenAI to trigger AI response.
     newClusterList.list.forEach((item, i) => {
@@ -160,12 +150,32 @@ export default function ClusterPage() {
       prev.map((item, i) => (i === clusterIndex ? prompt : item))
     );
     setClusterSurvey(clusterId!, newClusterList);
-  }, [location.pathname, sourceLoaded, mapViewer]);
+  }, [geoJson, mapViewer]);
+
+  // Add geojson source and layer to the map.
+  useEffectAfterMount(() => {
+    if (!mapViewer || !geoJson) return;
+
+    // Add cluster layer to the map.
+    mapbox.addClusterLayer(newClusterList, section, mapViewer!);
+    mapbox.setLayerSettings(section, mapViewer);
+    // setLayers((prev) => ({ ...prev, [section]: layer }));
+    // setSources((prev) => ({
+    //   ...prev,
+    //   [section]: source,
+    // }));
+  }, [mapViewer, geoJson]);
 
   // Reflect user selection on cluster list to the map and props.
   useEffect(() => {
     if (!mapViewer) return;
     mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
+
+    // Update the map's GeoJSON source data with the latest properties
+    const source = mapViewer.getSource(section);
+    if (source && "setData" in source) {
+      source.setData(geoJson);
+    }
   }, [clusterList, mapViewer]);
 
   // // Restore mapping on mapMode change

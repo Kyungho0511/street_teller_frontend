@@ -50,6 +50,8 @@ type MapContextProps = {
   setGeoJson: React.Dispatch<
     React.SetStateAction<TractFeatureCollection | undefined>
   >;
+  sourceLoaded: boolean;
+  setSourceLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -82,6 +84,7 @@ export function MapContextProvider({
     report: undefined,
   });
   const [geoJson, setGeoJson] = useState<TractFeatureCollection>();
+  const [sourceLoaded, setSourceLoaded] = useState(false);
   const [location, setLocation] = useState<Location>(
     mapConfigs.location as Location
   );
@@ -121,6 +124,8 @@ export function MapContextProvider({
         setLayers,
         geoJson,
         setGeoJson,
+        sourceLoaded,
+        setSourceLoaded,
         attribute,
         setAttribute,
         color,

@@ -4,7 +4,7 @@ import * as mapbox from "../../services/mapbox";
 import { useLocation } from "react-router-dom";
 import { pathToSection } from "../../utils/utils";
 import { MapContext } from "../../context/MapContext";
-import { mapConfigs } from "../../constants/mapConstants";
+import { mapConfigs, TRACTS_SOURCE } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import useGeoJson from "../../hooks/useGeoJson";
@@ -21,6 +21,8 @@ export default function MapViewer() {
     setParentLayer,
     setColor,
     mapMode,
+    geoJson,
+    setSourceLoaded,
     setLocation,
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -51,10 +53,26 @@ export default function MapViewer() {
     };
   }, []);
 
+  // Add geojson data to the map source
+  useEffectAfterMount(() => {
+    if (!mapViewer || !geoJson) return;
+
+    mapbox.addSource(geoJson, TRACTS_SOURCE, mapViewer);
+    const onSourceLoaded = (event: mapboxgl.MapSourceDataEvent) => {
+      if (!(event.sourceId === TRACTS_SOURCE) || !event.isSourceLoaded) {
+        return;
+      }
+      setSourceLoaded(true);
+      mapViewer.off("sourcedata", onSourceLoaded);
+    };
+    mapViewer.on("sourcedata", onSourceLoaded);
+  }, [mapViewer, geoJson]);
+
   // Update map settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
+    mapbox.setLayerSettings(section, mapViewer);
     setMapSettings();
     return () => {
       setParentLayer("");

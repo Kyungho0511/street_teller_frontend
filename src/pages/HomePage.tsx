@@ -19,7 +19,7 @@ import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
-import { mapAttributes } from "../constants/mapConstants";
+import { mapAttributes, TRACTS_SOURCE } from "../constants/mapConstants";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
 import { useLocation } from "react-router-dom";
 
@@ -34,7 +34,7 @@ export default function HomePage() {
     parentLayer,
     attribute,
     setAttribute,
-    geoJson,
+    sourceLoaded,
     color,
   } = useContext(MapContext);
   const location = useLocation();
@@ -49,15 +49,13 @@ export default function HomePage() {
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer);
 
-  // Add mapping source and layer to the map.
+  // Add mapping layer to the map.
   useEffect(() => {
-    if (!mapViewer || !geoJson) return;
+    if (!mapViewer || !sourceLoaded) return;
 
-    mapbox.addSource(geoJson, section, mapViewer);
-    mapbox.addHomeLayer(parentLayer, section, mapViewer);
-    mapbox.setLayerSettings(section, mapViewer);
+    mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE, mapViewer);
     mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
-  }, [mapViewer, geoJson]);
+  }, [mapViewer, sourceLoaded]);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
