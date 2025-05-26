@@ -54,6 +54,7 @@ export default function HomePage() {
     if (!mapViewer || !sourceLoaded) return;
 
     mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE, mapViewer);
+    mapbox.setLayerSettings(section, mapViewer);
     mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
   }, [mapViewer, sourceLoaded]);
 

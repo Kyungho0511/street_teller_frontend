@@ -10,6 +10,8 @@ import { RGBA } from "../../constants/mapConstants";
 import DropdownManager from "./DropdownManager";
 import DropdownList from "./DropdownList";
 import { ListItem } from "../../constants/surveyConstants";
+import * as mapbox from "../../services/mapbox";
+import { MapContext } from "../../context/MapContext";
 
 type AIResponseListProps = {
   surveyName: keyof Survey;
@@ -82,6 +84,7 @@ export default function AIResponseList({
       ...prev,
       [surveyName]: { ...prev[surveyName], list: streaming },
     }));
+    console.log("streaming: ", streaming);
   }, [responses.length]);
 
   /**

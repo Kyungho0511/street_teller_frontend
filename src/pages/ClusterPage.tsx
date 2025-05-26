@@ -44,8 +44,15 @@ import { Section } from "../constants/sectionConstants";
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const { mapViewer, mapMode, parentLayer, layers, geoJson, setLayers } =
-    useContext(MapContext);
+  const {
+    mapViewer,
+    mapMode,
+    parentLayer,
+    layers,
+    geoJson,
+    sourceLoaded,
+    setLayers,
+  } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
     selectedCluster,
@@ -91,7 +98,7 @@ export default function ClusterPage() {
   // }, [section, mapViewer]);
 
   useEffect(() => {
-    if (!geoJson || !mapViewer) return;
+    if (!geoJson || !mapViewer || !sourceLoaded) return;
 
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
@@ -108,14 +115,13 @@ export default function ClusterPage() {
     // Apply kmeans-clustering to cluster list and source data.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    const newGeoJson = kmeans.applyClusterProps(
+    kmeans.addClusterProps(
       geoJson,
       kMeansResult,
       ("cluster" + clusterId!) as Section
     );
-    mapbox.updateSource(newGeoJson, TRACTS_SOURCE, mapViewer);
-    const properties = kmeans.getClusterProps(newGeoJson!);
-
+    mapbox.updateSource(geoJson, TRACTS_SOURCE, mapViewer);
+    const properties = kmeans.getClusterProps(geoJson!);
     const newClusterList: ClusterList = {
       name: clusterName,
       list: clusterList.list,
@@ -124,15 +130,6 @@ export default function ClusterPage() {
       attributes: selectedAttributes,
       kMeansResult,
     };
-
-    // Add cluster layer to the map.
-    mapbox.addClusterLayer(newClusterList, TRACTS_SOURCE, mapViewer!);
-    mapbox.setLayerSettings(section, mapViewer);
-    // setLayers((prev) => ({ ...prev, [section]: layer }));
-    // setSources((prev) => ({
-    //   ...prev,
-    //   [section]: source,
-    // }));
 
     // Prepare prompt for OpenAI to trigger AI response.
     newClusterList.list.forEach((item, i) => {
@@ -153,19 +150,23 @@ export default function ClusterPage() {
       prev.map((item, i) => (i === clusterIndex ? prompt : item))
     );
     setClusterSurvey(clusterId!, newClusterList);
-  }, [geoJson, mapViewer]);
 
-  // Reflect user selection on cluster list to the map and props.
+    // Add cluster layer to the map.
+    mapbox.addClusterLayer(newClusterList, TRACTS_SOURCE, mapViewer!);
+    mapbox.setLayerSettings(section, mapViewer);
+  }, [geoJson, mapViewer, sourceLoaded]);
+
+  // Update the map and its props when clusterList changes.
   useEffect(() => {
-    if (!mapViewer) return;
-    mapbox.updateClusterLayer(clusterId!, clusterList, mapViewer);
+    if (!mapViewer || !geoJson) return;
 
-    // Update the map's GeoJSON source data with the latest properties
-    const source = mapViewer.getSource(section);
-    if (source && "setData" in source) {
-      source.setData(geoJson!);
-    }
-  }, [clusterList, mapViewer]);
+    const callbackFn = async () => {
+      kmeans.updateClusterProps(geoJson, clusterList);
+      await mapbox.updateSource(geoJson, TRACTS_SOURCE, mapViewer);
+      mapbox.updateClusterLayer(clusterList, mapViewer);
+    };
+    callbackFn();
+  }, [clusterList, mapViewer, geoJson]);
 
   // // Restore mapping on mapMode change
   // useEffectAfterMount(() => {

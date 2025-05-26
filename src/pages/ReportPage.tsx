@@ -15,7 +15,7 @@ import {
   TractFeatureCollection,
   HealthcareProperties,
 } from "../constants/geoJsonConstants";
-import { applySelectionProps } from "../services/kmeans";
+import { updateClusterProps } from "../services/kmeans";
 import * as mapbox from "../services/mapbox";
 import {
   defaultColor,
@@ -80,7 +80,7 @@ export default function ReportPage() {
     if (!prevGeoJson || aiMessageLoaded) return;
 
     const selection = survey[lastCluster].list.map((item) => item.checked);
-    const geoJson = applySelectionProps(
+    const geoJson = updateClusterProps(
       `${lastClusterId}`,
       selection,
       prevGeoJson

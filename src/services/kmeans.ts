@@ -98,39 +98,35 @@ export function getClusterProps(
 }
 
 /**
- * Apply the kMeans clustering result to the geoJson.
+ * Add the kMeans clustering result to the geoJson.
  * @param geoJson The geoJson to be assigned.
  * @param kMeansResult The kMeans clustering result.
  * @param key geoJson feature property key to assign the clustering result.
  */
-export function applyClusterProps(
+export function addClusterProps(
   geoJson: TractFeatureCollection,
   kMeansResult: KMeansResult,
   key: Section
-): TractFeatureCollection {
-  const newGeoJson = structuredClone(geoJson);
-  newGeoJson.features.forEach((feature: Feature, index) => {
+): void {
+  geoJson.features.forEach((feature: Feature, index) => {
     feature.properties![key] = kMeansResult.clusters[index];
   });
-  return newGeoJson;
 }
 
 /**
- * Apply user's selection of clusters to the geoJson.
+ * Update user's selection of clusters to the geoJson.
  * @param geoJson GeoJson to be modified.
  * @param clusterList Cluster list to be applied.
  */
-export function applySelectionProps(
+export function updateClusterProps(
   geoJson: TractFeatureCollection,
   clusterList: ClusterList | ReportList
-): TractFeatureCollection {
-  const selection = clusterList.list.map((item) => item.checked);
+): void {
+  const selections = clusterList.list.map((item) => item.checked);
+  const names = clusterList.list.map((item) => item.name);
   const key = clusterList.name as ClusterProperties;
-  const newGeoJson = structuredClone(geoJson);
-
-  newGeoJson.features.forEach((feature) => {
-    const clusterIdx = feature.properties[key];
-    feature.properties.selected = selection[clusterIdx as number];
+  geoJson.features.forEach((feature) => {
+    const clusterIdx = feature.properties[key] as number;
+    feature.properties.selected = selections[clusterIdx] && !!names[clusterIdx];
   });
-  return newGeoJson;
 }

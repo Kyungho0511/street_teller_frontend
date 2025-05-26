@@ -158,30 +158,29 @@ export function updateHomeLayer(
 
 /**
  * Update a cluster layer color style on the mapbox map.
- * @param clusterId clustering iteration number.
  * @param clusterList Informs which clusters are selected.
  * @param map Map to which the layer is updated.
  */
 export function updateClusterLayer(
-  clusterId: string,
   clusterList: ClusterList,
   map?: mapboxgl.Map
 ) {
   if (!map || !map.getLayer(clusterList.name)) return;
 
-  console.log("update cluster layer:", clusterList.name);
+  const { list, name } = clusterList;
 
-  const list = clusterList.list;
+  console.log(name);
+
   map.setPaintProperty(clusterList.name, "fill-color", [
     "case",
-    ["==", ["get", "cluster" + clusterId], 0],
-    list[0].checked ? utils.rgbaToString(list[0].color!) : transparent,
-    ["==", ["get", "cluster" + clusterId], 1],
-    list[1].checked ? utils.rgbaToString(list[1].color!) : transparent,
-    ["==", ["get", "cluster" + clusterId], 2],
-    list[2].checked ? utils.rgbaToString(list[2].color!) : transparent,
-    ["==", ["get", "cluster" + clusterId], 3],
-    list[3].checked ? utils.rgbaToString(list[3].color!) : transparent,
+    ["all", ["==", ["get", name], 0], ["get", "selected"]],
+    utils.rgbaToString(list[0].color),
+    ["all", ["==", ["get", name], 1], ["get", "selected"]],
+    utils.rgbaToString(list[1].color),
+    ["all", ["==", ["get", name], 2], ["get", "selected"]],
+    utils.rgbaToString(list[2].color),
+    ["all", ["==", ["get", name], 3], ["get", "selected"]],
+    utils.rgbaToString(list[3].color),
     transparent,
   ]);
 }
@@ -235,40 +234,61 @@ export function addReportLayer(
 }
 
 /**
- * Add a source to the mapbox map.
+ * Add a source to the mapbox map asynchronously.
  * @param geoJson GeoJson data to be added to the map.
  * @param name Source name to be added to the map.
  * @param map Map to which the source is added.
+ * @returns A promise that resolves when the source is added.
  */
 export function addSource(
   geoJson: TractFeatureCollection,
   name: string,
   map: mapboxgl.Map
-) {
-  if (map.getSource(name)) {
-    return;
-  }
-  map.addSource(name, {
-    type: "geojson",
-    data: geoJson,
+): Promise<void> {
+  return new Promise((resolve) => {
+    if (map.getSource(name)) {
+      resolve();
+      return;
+    }
+    map.addSource(name, {
+      type: "geojson",
+      data: geoJson,
+    });
+    const onSourceLoaded = (event: mapboxgl.MapSourceDataEvent) => {
+      if (event.sourceId === name && event.isSourceLoaded) {
+        map.off("sourcedata", onSourceLoaded);
+        resolve();
+      }
+    };
+    map.on("sourcedata", onSourceLoaded);
   });
 }
 
 /**
- * Update a source on the mapbox map with new GeoJSON data.
+ * Update a source on the mapbox map with new GeoJSON data asynchronously.
  * @param geoJson GeoJSON data to be used to update the source.
  * @param name Name of the source to be updated.
  * @param map Map to which the source is updated.
+ * @returns A promise that resolves when the source is updated.
  */
-export function updateSource(
+export async function updateSource(
   geoJson: TractFeatureCollection,
   name: string,
   map: mapboxgl.Map
-) {
-  const source = map.getSource(name);
-  if (source && "setData" in source) {
-    source.setData(geoJson);
-  }
+): Promise<void> {
+  return new Promise((resolve) => {
+    const source = map.getSource(name);
+    if (source && "setData" in source) {
+      source.setData(geoJson);
+    }
+    const onSourceLoaded = (event: mapboxgl.MapSourceDataEvent) => {
+      if (event.sourceId === name && event.isSourceLoaded) {
+        map.off("sourcedata", onSourceLoaded);
+        resolve();
+      }
+    };
+    map.on("sourcedata", onSourceLoaded);
+  });
 }
 
 /**
@@ -311,27 +331,17 @@ export function addClusterLayer(
   sourceName: string,
   map: mapboxgl.Map
 ) {
-  if (map.getLayer(clusterList.name)) {
+  const name = clusterList.name;
+  if (map.getLayer(name)) {
     return;
   }
   map.addLayer(
     {
-      id: clusterList.name,
+      id: name,
       type: "fill",
       source: sourceName,
       paint: {
-        "fill-color": [
-          "case",
-          ["all", ["==", ["get", clusterList.name], 0], ["get", "selected"]],
-          utils.rgbaToString(clusterList.list[0].color),
-          ["all", ["==", ["get", clusterList.name], 1], ["get", "selected"]],
-          utils.rgbaToString(clusterList.list[1].color),
-          ["all", ["==", ["get", clusterList.name], 2], ["get", "selected"]],
-          utils.rgbaToString(clusterList.list[2].color),
-          ["all", ["==", ["get", clusterList.name], 3], ["get", "selected"]],
-          utils.rgbaToString(clusterList.list[3].color),
-          "black",
-        ],
+        "fill-color": transparent,
         "fill-opacity": 1,
         "fill-outline-color": "rgba(217, 217, 217, 0.36)",
       },

@@ -57,22 +57,17 @@ export default function MapViewer() {
   useEffectAfterMount(() => {
     if (!mapViewer || !geoJson) return;
 
-    mapbox.addSource(geoJson, TRACTS_SOURCE, mapViewer);
-    const onSourceLoaded = (event: mapboxgl.MapSourceDataEvent) => {
-      if (!(event.sourceId === TRACTS_SOURCE) || !event.isSourceLoaded) {
-        return;
-      }
+    const callbackFn = async () => {
+      await mapbox.addSource(geoJson, TRACTS_SOURCE, mapViewer);
       setSourceLoaded(true);
-      mapViewer.off("sourcedata", onSourceLoaded);
     };
-    mapViewer.on("sourcedata", onSourceLoaded);
+    callbackFn();
   }, [mapViewer, geoJson]);
 
   // Update map settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    mapbox.setLayerSettings(section, mapViewer);
     setMapSettings();
     return () => {
       setParentLayer("");
