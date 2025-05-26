@@ -255,6 +255,23 @@ export function addSource(
 }
 
 /**
+ * Update a source on the mapbox map with new GeoJSON data.
+ * @param geoJson GeoJSON data to be used to update the source.
+ * @param name Name of the source to be updated.
+ * @param map Map to which the source is updated.
+ */
+export function updateSource(
+  geoJson: TractFeatureCollection,
+  name: string,
+  map: mapboxgl.Map
+) {
+  const source = map.getSource(name);
+  if (source && "setData" in source) {
+    source.setData(geoJson);
+  }
+}
+
+/**
  * Add a layer to the mapbox map.
  * @param layerName Layer name to be added to the map.
  * @param sourceName Source name to be used for the layer.
@@ -297,8 +314,6 @@ export function addClusterLayer(
   if (map.getLayer(clusterList.name)) {
     return;
   }
-  console.log(map.getSource(sourceName));
-
   map.addLayer(
     {
       id: clusterList.name,

@@ -34,6 +34,7 @@ import {
   GEOID,
   OUTLINE_LAYER_SELECT,
   THICK_LINE_WEIGHT_SELECT,
+  TRACTS_SOURCE,
 } from "../constants/mapConstants";
 import { Section } from "../constants/sectionConstants";
 
@@ -43,15 +44,8 @@ import { Section } from "../constants/sectionConstants";
 export default function ClusterPage() {
   const { survey, getClusterSurvey, setClusterSurvey } =
     useContext(SurveyContext);
-  const {
-    mapViewer,
-    mapMode,
-    parentLayer,
-    layers,
-    geoJson,
-    setGeoJson,
-    setLayers,
-  } = useContext(MapContext);
+  const { mapViewer, mapMode, parentLayer, layers, geoJson, setLayers } =
+    useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
     selectedCluster,
@@ -111,7 +105,7 @@ export default function ClusterPage() {
       });
     }
 
-    // Apply kmeans-clustering to cluster list and geojson.
+    // Apply kmeans-clustering to cluster list and source data.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
     const newGeoJson = kmeans.applyClusterProps(
@@ -119,7 +113,7 @@ export default function ClusterPage() {
       kMeansResult,
       ("cluster" + clusterId!) as Section
     );
-    setGeoJson(newGeoJson);
+    mapbox.updateSource(newGeoJson, TRACTS_SOURCE, mapViewer);
     const properties = kmeans.getClusterProps(newGeoJson!);
 
     const newClusterList: ClusterList = {
@@ -130,6 +124,15 @@ export default function ClusterPage() {
       attributes: selectedAttributes,
       kMeansResult,
     };
+
+    // Add cluster layer to the map.
+    mapbox.addClusterLayer(newClusterList, TRACTS_SOURCE, mapViewer!);
+    mapbox.setLayerSettings(section, mapViewer);
+    // setLayers((prev) => ({ ...prev, [section]: layer }));
+    // setSources((prev) => ({
+    //   ...prev,
+    //   [section]: source,
+    // }));
 
     // Prepare prompt for OpenAI to trigger AI response.
     newClusterList.list.forEach((item, i) => {
@@ -152,20 +155,6 @@ export default function ClusterPage() {
     setClusterSurvey(clusterId!, newClusterList);
   }, [geoJson, mapViewer]);
 
-  // Add geojson source and layer to the map.
-  useEffectAfterMount(() => {
-    if (!mapViewer || !geoJson) return;
-
-    // Add cluster layer to the map.
-    mapbox.addClusterLayer(newClusterList, section, mapViewer!);
-    mapbox.setLayerSettings(section, mapViewer);
-    // setLayers((prev) => ({ ...prev, [section]: layer }));
-    // setSources((prev) => ({
-    //   ...prev,
-    //   [section]: source,
-    // }));
-  }, [mapViewer, geoJson]);
-
   // Reflect user selection on cluster list to the map and props.
   useEffect(() => {
     if (!mapViewer) return;
@@ -174,7 +163,7 @@ export default function ClusterPage() {
     // Update the map's GeoJSON source data with the latest properties
     const source = mapViewer.getSource(section);
     if (source && "setData" in source) {
-      source.setData(geoJson);
+      source.setData(geoJson!);
     }
   }, [clusterList, mapViewer]);
 
