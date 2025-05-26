@@ -1,6 +1,6 @@
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import * as utils from "../utils/utils";
-import { HealthcarePropertyName } from "./geoJsonConstants";
+import { HealthcareProperties } from "./geoJsonConstants";
 import { Section } from "./sectionConstants";
 
 export type Location = {
@@ -30,6 +30,9 @@ export const mapConfigs = {
   bbox: [-74.25909, 40.477399, -73.700272, 40.917577] as MapboxGeocoder.Bbox,
 };
 
+/**
+ * Layer ID to insert new layers before
+ */
 export const BEFORE_ID = "road-simple";
 
 export const GEOID = "GEOID";
@@ -42,7 +45,7 @@ export const THICK_LINE_WEIGHT_HOVER = 3;
 
 export const THICK_LINE_WEIGHT_SELECT = 6;
 
-export const ZOOM_MODIFIER = 3; // zoom level modifier for map preview.
+export const ZOOM_MODIFIER = 3;
 
 export const POPUP = {
   width: 300,
@@ -77,6 +80,8 @@ export const themeColor: RGBA = {
   b: 255,
   a: 255,
 };
+
+export const FILL_OUTLINE_COLOR = "rgba(217, 217, 217, 0.36)";
 
 export type Color = {
   categorized: RGBA[];
@@ -143,7 +148,7 @@ export type MapBound = {
 };
 
 export type MapAttribute = {
-  name: HealthcarePropertyName;
+  name: HealthcareProperties;
   bound: MapBound;
   unit: UnitType;
 };

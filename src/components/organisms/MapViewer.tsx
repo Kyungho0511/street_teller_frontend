@@ -7,6 +7,8 @@ import { MapContext } from "../../context/MapContext";
 import { mapConfigs } from "../../constants/mapConstants";
 import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
+import useGeoJson from "../../hooks/useGeoJson";
+import { geoJsonFilePath } from "../../constants/geoJsonConstants";
 
 /**
  * Mapbox map viewer component.
@@ -23,6 +25,8 @@ export default function MapViewer() {
   } = useContext(MapContext);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const section = pathToSection(location.pathname);
+  useGeoJson(geoJsonFilePath);
 
   useEffect(() => {
     // Create a map instance on component mount.
@@ -47,14 +51,11 @@ export default function MapViewer() {
     };
   }, []);
 
-  // Update map layers and settings on page change.
+  // Update map settings on page change.
   useEffectAfterMount(() => {
     if (!mapViewer) return;
 
-    const section = pathToSection(location.pathname);
-    mapbox.setLayerSettings(section, mapViewer);
     setMapSettings();
-
     return () => {
       setParentLayer("");
       setColor(undefined);
@@ -74,7 +75,6 @@ export default function MapViewer() {
 
   function setMapSettings() {
     // Update the map parent layer and color of the current page.
-    const section = pathToSection(location.pathname);
     const mapSec = sectionMapConfigs.find((sec) => sec.id === section)!;
     setParentLayer(mapSec.parentLayer);
     setColor(mapSec.color);
