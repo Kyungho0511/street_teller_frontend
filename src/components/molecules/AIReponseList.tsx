@@ -84,7 +84,6 @@ export default function AIResponseList({
       ...prev,
       [surveyName]: { ...prev[surveyName], list: streaming },
     }));
-    console.log("streaming: ", streaming);
   }, [responses.length]);
 
   /**
