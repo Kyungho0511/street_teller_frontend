@@ -9,6 +9,7 @@ import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import useGeoJson from "../../hooks/useGeoJson";
 import { geoJsonFilePath } from "../../constants/geoJsonConstants";
+import { map } from "framer-motion/client";
 
 /**
  * Mapbox map viewer component.
@@ -52,6 +53,22 @@ export default function MapViewer() {
       setMapViewer(undefined);
     };
   }, []);
+
+  // Temp testing code!!!!!!
+  // Temp testing code!!!!!!
+  // Temp testing code!!!!!!
+  useEffect(() => {
+    if (!mapViewer) return;
+    mapViewer.on("click", (e) => {
+      const features = mapViewer.queryRenderedFeatures(e.point);
+      const clusterLayers = ["cluster1", "cluster2", "cluster3"];
+      features.forEach((feature) => {
+        if (feature.layer && clusterLayers.includes(feature.layer.id)) {
+          console.log(feature);
+        }
+      });
+    });
+  }, [mapViewer]);
 
   // Add geojson data to the map source
   useEffectAfterMount(() => {

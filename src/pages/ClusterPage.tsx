@@ -100,8 +100,6 @@ export default function ClusterPage() {
   useEffect(() => {
     if (!geoJson || !mapViewer || !sourceLoaded) return;
 
-    console.log("Processing clustering for clusterId:", clusterId);
-
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
     const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);
@@ -122,6 +120,9 @@ export default function ClusterPage() {
       kMeansResult,
       ("cluster" + clusterId!) as Section
     );
+
+    console.log("updating source: ", geoJson);
+
     mapbox.updateSource(geoJson, TRACTS_SOURCE, mapViewer);
     const properties = kmeans.getClusterProps(geoJson!);
     const newClusterList: ClusterList = {
@@ -162,10 +163,11 @@ export default function ClusterPage() {
   useEffect(() => {
     if (!mapViewer || !geoJson) return;
 
-    console.log("Update the map");
-
     const callbackFn = async () => {
-      kmeans.updateClusterProps(geoJson, clusterList);
+      const clusterListSet = getClusterSurvey().filter(
+        (_, index) => index <= clusterIndex
+      );
+      kmeans.updateClusterProps(geoJson, clusterListSet);
       await mapbox.updateSource(geoJson, TRACTS_SOURCE, mapViewer);
       mapbox.updateClusterLayer(clusterList, mapViewer);
     };
