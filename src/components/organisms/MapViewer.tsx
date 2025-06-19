@@ -9,7 +9,6 @@ import { sectionMapConfigs } from "../../constants/sectionConstants";
 import useEffectAfterMount from "../../hooks/useEffectAfterMount";
 import useGeoJson from "../../hooks/useGeoJson";
 import { geoJsonFilePath } from "../../constants/geoJsonConstants";
-import { map } from "framer-motion/client";
 
 /**
  * Mapbox map viewer component.
