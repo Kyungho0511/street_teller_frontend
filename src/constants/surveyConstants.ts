@@ -1,15 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import {
-  TractProperties,
-  HealthcareProperties,
-  ClusterProperties,
-} from "./geoJsonConstants";
-import { color, RGBA, transparentColor } from "./mapConstants";
+import { HealthcareProperties, ClusterProperties } from "./geoJsonConstants";
+import { color, RGBA } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
-import { Section } from "./sectionConstants";
 
 /**
  * Site preference categories of the user survey.

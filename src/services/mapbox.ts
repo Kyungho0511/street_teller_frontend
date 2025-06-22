@@ -170,13 +170,33 @@ export function updateClusterLayer(
   const { list, name } = clusterList;
   map.setPaintProperty(clusterList.name, "fill-color", [
     "case",
-    ["all", ["==", ["get", name], 0], ["get", "selected"]],
+    [
+      "all",
+      ["==", ["get", name], 0],
+      ["get", "selected"],
+      ["!", ["get", "disabled"]],
+    ],
     utils.rgbaToString(list[0].color),
-    ["all", ["==", ["get", name], 1], ["get", "selected"]],
+    [
+      "all",
+      ["==", ["get", name], 1],
+      ["get", "selected"],
+      ["!", ["get", "disabled"]],
+    ],
     utils.rgbaToString(list[1].color),
-    ["all", ["==", ["get", name], 2], ["get", "selected"]],
+    [
+      "all",
+      ["==", ["get", name], 2],
+      ["get", "selected"],
+      ["!", ["get", "disabled"]],
+    ],
     utils.rgbaToString(list[2].color),
-    ["all", ["==", ["get", name], 3], ["get", "selected"]],
+    [
+      "all",
+      ["==", ["get", name], 3],
+      ["get", "selected"],
+      ["!", ["get", "disabled"]],
+    ],
     utils.rgbaToString(list[3].color),
     transparent,
   ]);

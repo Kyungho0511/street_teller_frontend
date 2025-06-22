@@ -21,9 +21,10 @@ export default function useGeoJson(filePath: string) {
           const response = await fetch(filePath);
           const data: TractFeatureCollection = await response.json();
 
-          // Add selected properties to geoJson dat
+          // Add selection properties to geoJson data
           data.features.forEach((feature) => {
             feature.properties.selected = true;
+            feature.properties.disabled = false;
           });
 
           setGeoJson(data);

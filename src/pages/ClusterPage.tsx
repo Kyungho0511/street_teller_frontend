@@ -10,7 +10,6 @@ import { MapContext } from "../context/MapContext";
 import * as utils from "../utils/utils";
 import { HealthcareProperties } from "../constants/geoJsonConstants";
 import * as mapbox from "../services/mapbox";
-import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import PopupSection from "../components/organisms/PopupSection";
 import PopupContentCluster from "../components/atoms/PopupContentCluster";
 import Sidebar from "../components/organisms/Sidebar";
@@ -31,12 +30,13 @@ import BarChartList from "../components/molecules/BarChartList";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
 import useMap3dSetViewOnClick from "../hooks/useMap3dSetViewOnClick";
 import {
-  GEOID,
-  OUTLINE_LAYER_SELECT,
-  THICK_LINE_WEIGHT_SELECT,
+  // GEOID,
+  // OUTLINE_LAYER_SELECT,
+  // THICK_LINE_WEIGHT_SELECT,
   TRACTS_SOURCE,
 } from "../constants/mapConstants";
 import { Section } from "../constants/sectionConstants";
+import * as geoJsonUtils from "../utils/geoJsonUtils";
 
 /**
  * Cluster page component which consists of three clustering sub-sections.
@@ -46,12 +46,12 @@ export default function ClusterPage() {
     useContext(SurveyContext);
   const {
     mapViewer,
-    mapMode,
+    // mapMode,
     parentLayer,
-    layers,
+    // layers,
     geoJson,
     sourceLoaded,
-    setLayers,
+    // setLayers,
   } = useContext(MapContext);
   const { messages } = useContext(MessageContext);
   const {
@@ -59,7 +59,7 @@ export default function ClusterPage() {
     setSelectedCluster,
     selectedClusterInfo,
     setSelectedClusterInfo,
-    selectedGeoId,
+    // selectedGeoId,
     setSelectedGeoId,
   } = useContext(MapQueryContext);
 
@@ -100,6 +100,12 @@ export default function ClusterPage() {
   useEffect(() => {
     if (!geoJson || !mapViewer || !sourceLoaded) return;
 
+    // Disable geoJson features based on previous selections.
+    const prevClusters = getClusterSurvey().filter(
+      (_, index) => index < clusterIndex
+    );
+    geoJsonUtils.setDisabled(geoJson, prevClusters);
+
     // Get attributes selected by users.
     const startIndex = CLUSTERING_SIZE * (parseInt(clusterId!) - 1);
     const endIndex = CLUSTERING_SIZE * parseInt(clusterId!);
@@ -115,16 +121,14 @@ export default function ClusterPage() {
     // Apply kmeans-clustering to cluster list and source data.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    kmeans.addClusterProps(
+    kmeans.addKMeansToGeoJson(
       geoJson,
       kMeansResult,
       ("cluster" + clusterId!) as Section
     );
 
-    console.log("updating source: ", geoJson);
-
     mapbox.updateSource(geoJson, TRACTS_SOURCE, mapViewer);
-    const properties = kmeans.getClusterProps(geoJson!);
+    const properties = geoJsonUtils.getClusterProps(geoJson!);
     const newClusterList: ClusterList = {
       name: clusterName,
       list: clusterList.list,
@@ -164,10 +168,7 @@ export default function ClusterPage() {
     if (!mapViewer || !geoJson) return;
 
     const callbackFn = async () => {
-      const clusterListSet = getClusterSurvey().filter(
-        (_, index) => index <= clusterIndex
-      );
-      kmeans.updateClusterProps(geoJson, clusterListSet);
+      geoJsonUtils.updateSelection(geoJson, clusterList);
       await mapbox.updateSource(geoJson, TRACTS_SOURCE, mapViewer);
       mapbox.updateClusterLayer(clusterList, mapViewer);
     };

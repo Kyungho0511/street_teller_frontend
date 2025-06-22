@@ -5,8 +5,6 @@ import {
   TractFeature,
   TractFeatureCollection,
   HealthcareProperties,
-  clusterProperties,
-  ClusterProperties,
 } from "../constants/geoJsonConstants";
 import {
   INITIALIZATION,
@@ -16,11 +14,6 @@ import {
 } from "../constants/kMeansConstants";
 import { normalize } from "../utils/utils";
 import { Section } from "../constants/sectionConstants";
-import {
-  ReportList,
-  ClusterList,
-  ClusterPropertiesDict,
-} from "../constants/surveyConstants";
 
 /**
  * Run kmeans clustering analysis.
@@ -74,36 +67,12 @@ export function processData(
 }
 
 /**
- * Get the cluster properties of clustering analysis
- * from the geoJson for session storage purpose.
- * @param geoJson The geoJson to get the properties from.
- */
-export function getClusterProps(
-  geoJson: TractFeatureCollection
-): ClusterPropertiesDict {
-  const dict = {} as ClusterPropertiesDict;
-  geoJson.features.forEach((feature) => {
-    const geoId = feature?.properties?.GEOID;
-    if (geoId) {
-      const properties = Object.entries(feature.properties).filter(([key]) =>
-        clusterProperties.includes(key as ClusterProperties)
-      );
-      dict[geoId as string] = Object.fromEntries(properties) as Record<
-        ClusterProperties,
-        string | boolean
-      >;
-    }
-  });
-  return dict;
-}
-
-/**
  * Add the kMeans clustering result to the geoJson.
  * @param geoJson The geoJson to be updated.
  * @param kMeansResult The kMeans clustering result.
  * @param key geoJson feature property key to assign the clustering result.
  */
-export function addClusterProps(
+export function addKMeansToGeoJson(
   geoJson: TractFeatureCollection,
   kMeansResult: KMeansResult,
   key: Section
@@ -111,39 +80,4 @@ export function addClusterProps(
   geoJson.features.forEach((feature: Feature, index) => {
     feature.properties![key] = kMeansResult.clusters[index];
   });
-}
-
-/**
- * Update user's selection of clusters to the geoJson.
- * @param geoJson GeoJson to be updated.
- * @param clusterListSet Cluster list collection to be applied.
- */
-export function updateClusterProps(
-  geoJson: TractFeatureCollection,
-  clusterListSet: ClusterList[] | ReportList[]
-): void {
-  for (let i = 0, n = clusterListSet.length; i < n; i++) {
-    const clusterList = clusterListSet[i];
-    const selections = clusterList.list.map((item) => item.checked);
-
-    console.log(clusterList.name, selections);
-
-    const key = clusterList.name as ClusterProperties;
-
-    geoJson.features.forEach((feature) => {
-      const clusterIdx = feature.properties[key] as number;
-      feature.properties.selected = selections[clusterIdx];
-    });
-
-    if (i === n - 1) {
-      const names = clusterList.list.map((item) => item.name);
-      geoJson.features.forEach((feature) => {
-        const clusterIdx = feature.properties[key] as number;
-        feature.properties.selected =
-          feature.properties.selected &&
-          selections[clusterIdx] &&
-          !!names[clusterIdx];
-      });
-    }
-  }
 }

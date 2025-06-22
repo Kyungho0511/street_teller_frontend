@@ -1,5 +1,6 @@
 import { Feature, FeatureCollection, Polygon } from "geojson";
 
+// TODO: fetch geoJson data from AWS DB
 export const geoJsonFilePath = "/data/tracts_features_nyc.geojson";
 
 export const clusterProperties = [
@@ -9,6 +10,7 @@ export const clusterProperties = [
   "cluster3",
   "report",
   "selected",
+  "disabled",
 ] as const;
 
 export type ClusterProperties = (typeof clusterProperties)[number];
