@@ -21,6 +21,8 @@ import { Section } from "../constants/sectionConstants";
  * @returns KMeans clustering result.
  */
 export function runKMeans(data: number[][]): KMeansResult {
+  console.log("run KMeans with data: ", data.length);
+
   // Run kMeans clustering
   const options: Options = {
     seed: SEED,
@@ -41,27 +43,32 @@ export function processData(
   attributes: HealthcareProperties[]
 ): number[][] {
   // Filter the features based on the selected attributes and tracts.
-  const filteredFeatures = geoJson.features.map((feature: TractFeature) => {
-    let filteredProperties: Partial<{
-      [key in HealthcareProperties]: number;
-    }> = {};
+  const filteredFeatures = geoJson.features
+    .filter((feature: TractFeature) => !feature.properties.disabled)
+    .map((feature: TractFeature) => {
+      let filteredProperties: Partial<{
+        [key in HealthcareProperties]: number;
+      }> = {};
 
-    attributes.forEach((attr) => {
-      if (Object.prototype.hasOwnProperty.call(feature.properties, attr)) {
-        const normalized = normalize(feature.properties[attr] as number, attr);
-        if (filteredProperties) {
-          filteredProperties[attr] = normalized;
-        } else {
-          filteredProperties = { [attr]: normalized };
+      attributes.forEach((attr) => {
+        if (Object.prototype.hasOwnProperty.call(feature.properties, attr)) {
+          const normalized = normalize(
+            feature.properties[attr] as number,
+            attr
+          );
+          if (filteredProperties) {
+            filteredProperties[attr] = normalized;
+          } else {
+            filteredProperties = { [attr]: normalized };
+          }
         }
-      }
-    });
+      });
 
-    return {
-      ...feature,
-      properties: filteredProperties,
-    };
-  });
+      return {
+        ...feature,
+        properties: filteredProperties,
+      };
+    });
   // Convert the filtered features to a 2D array
   return filteredFeatures.map((item) => Object.values(item.properties));
 }
@@ -72,12 +79,15 @@ export function processData(
  * @param kMeansResult The kMeans clustering result.
  * @param key geoJson feature property key to assign the clustering result.
  */
-export function addKMeansToGeoJson(
+export function addToGeoJson(
   geoJson: TractFeatureCollection,
   kMeansResult: KMeansResult,
   key: Section
 ): void {
   geoJson.features.forEach((feature: Feature, index) => {
+    if (feature.properties!.disabled) {
+      return;
+    }
     feature.properties![key] = kMeansResult.clusters[index];
   });
 }

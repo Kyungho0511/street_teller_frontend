@@ -121,7 +121,7 @@ export default function ClusterPage() {
     // Apply kmeans-clustering to cluster list and source data.
     const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
     const kMeansResult: KMeansResult = kmeans.runKMeans(data);
-    kmeans.addKMeansToGeoJson(
+    kmeans.addToGeoJson(
       geoJson,
       kMeansResult,
       ("cluster" + clusterId!) as Section
