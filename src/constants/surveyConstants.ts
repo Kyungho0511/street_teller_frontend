@@ -4,7 +4,6 @@ import { color, RGBA } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
-import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 /**
  * Site preference categories of the user survey.
@@ -244,5 +243,6 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
     properties: undefined,
     attributes: [],
     kMeansDict: undefined,
+    centroidsList: [],
   };
 }

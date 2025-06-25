@@ -5,7 +5,6 @@ import SidebarSection from "../components/organisms/SidebarSection";
 import { SurveyContext } from "../context/SurveyContext";
 import { useLocation, useParams } from "react-router-dom";
 import * as kmeans from "../services/kmeans";
-import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 import { MapContext } from "../context/MapContext";
 import * as utils from "../utils/utils";
 import { HealthcareProperties } from "../constants/geoJsonConstants";

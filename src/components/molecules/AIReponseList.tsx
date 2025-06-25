@@ -10,8 +10,6 @@ import { RGBA } from "../../constants/mapConstants";
 import DropdownManager from "./DropdownManager";
 import DropdownList from "./DropdownList";
 import { ListItem } from "../../constants/surveyConstants";
-import * as mapbox from "../../services/mapbox";
-import { MapContext } from "../../context/MapContext";
 
 type AIResponseListProps = {
   surveyName: keyof Survey;

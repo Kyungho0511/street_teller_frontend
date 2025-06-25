@@ -53,22 +53,6 @@ export default function MapViewer() {
     };
   }, []);
 
-  // Temp testing code!!!!!!
-  // Temp testing code!!!!!!
-  // Temp testing code!!!!!!
-  useEffect(() => {
-    if (!mapViewer) return;
-    mapViewer.on("click", (e) => {
-      const features = mapViewer.queryRenderedFeatures(e.point);
-      const clusterLayers = ["cluster1", "cluster2", "cluster3"];
-      features.forEach((feature) => {
-        if (feature.layer && clusterLayers.includes(feature.layer.id)) {
-          console.log(feature);
-        }
-      });
-    });
-  }, [mapViewer]);
-
   // Add geojson data to the map source
   useEffectAfterMount(() => {
     if (!mapViewer || !geoJson) return;
