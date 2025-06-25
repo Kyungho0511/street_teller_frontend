@@ -1,13 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import {
-  HealthcareFeatureCollection,
-  HealthcarePropertyName,
-} from "./geoJsonConstants";
-import { color, RGBA, transparentColor } from "./mapConstants";
+import { HealthcareProperties, ClusterProperties } from "./geoJsonConstants";
+import { color, RGBA } from "./mapConstants";
 import { iconPaths } from "./IconConstants";
 import { NUMBER_OF_CLUSTERS } from "./kMeansConstants";
 import { Survey } from "../context/SurveyContext";
-import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 /**
  * Site preference categories of the user survey.
@@ -26,7 +22,7 @@ export type Preference = {
   iconPath: string;
   selected: boolean;
   id: string;
-  subCategories: { name: HealthcarePropertyName; id: string }[];
+  subCategories: { name: HealthcareProperties; id: string }[];
 };
 
 export type PreferenceList = {
@@ -136,7 +132,7 @@ export const siteCategories = initialPreferenceList.list.map(
 export const NUMBER_OF_CLUSTERING_STEPS = 3;
 
 export type Centroid = {
-  name: HealthcarePropertyName;
+  name: HealthcareProperties;
   value: number;
   id: string;
 };
@@ -173,18 +169,32 @@ export type Report = ListItem & {
   id: string;
 };
 
+/**
+ * GeoId-ClusterIndex key-value pairs.
+ */
+export type KMeansDict = Record<string, number>;
+
+/**
+ * GeoId-ClusterProperties key-value pairs.
+ */
+export type ClusterPropertiesDict = Record<
+  string,
+  Record<ClusterProperties, string | boolean>
+>;
+
 export type ClusterList = {
   name: `cluster1` | `cluster2` | `cluster3`;
   list: Cluster[];
   colors: RGBA[];
-  geoJson: HealthcareFeatureCollection | undefined;
-  attributes: HealthcarePropertyName[];
-  kMeansResult: KMeansResult | undefined;
+  properties: ClusterPropertiesDict | undefined;
+  attributes: HealthcareProperties[];
+  kMeansDict: KMeansDict | undefined;
+  centroidsList: number[][];
 };
 
 export type ReportList = {
   name: "report";
-  geoJson: HealthcareFeatureCollection | undefined;
+  properties: ClusterPropertiesDict | undefined;
   list: Report[];
   colors: RGBA[];
 };
@@ -205,7 +215,7 @@ export const initialSurvey: Survey = {
     name: "report",
     list: [],
     colors: [],
-    geoJson: undefined,
+    properties: undefined,
   } as ReportList,
 };
 
@@ -219,7 +229,7 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
       name: "",
       centroids: [],
       content: "",
-      color: transparentColor,
+      color: colors[i],
       checked: true,
       index: i,
       clusterId,
@@ -230,8 +240,9 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
     name: `cluster${clusterId}` as ClusterList["name"],
     list,
     colors,
-    geoJson: undefined,
+    properties: undefined,
     attributes: [],
-    kMeansResult: undefined,
+    kMeansDict: undefined,
+    centroidsList: [],
   };
 }

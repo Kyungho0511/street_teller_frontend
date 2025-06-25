@@ -8,7 +8,6 @@ import {
   initialPreferenceList,
   Preference,
 } from "../constants/surveyConstants";
-import { Section } from "../constants/sectionConstants";
 import GradientBar from "../components/atoms/GradientBar";
 import Colorbox from "../components/atoms/Colorbox";
 import PopupSection from "../components/organisms/PopupSection";
@@ -20,14 +19,26 @@ import useEffectAfterMount from "../hooks/useEffectAfterMount";
 import { pathToSection } from "../utils/utils";
 import * as mapbox from "../services/mapbox";
 import useMapSelectEffect from "../hooks/useMapSelectEffect";
+import { mapAttributes, TRACTS_SOURCE } from "../constants/mapConstants";
+import { HealthcareProperties } from "../constants/geoJsonConstants";
+import { useLocation } from "react-router-dom";
 
 /**
  * Home page component where users sort their data preferences.
  */
 export default function HomePage() {
   const { survey } = useContext(SurveyContext);
-  const { mapViewer, mapMode, parentLayer, attribute, color } =
-    useContext(MapContext);
+  const {
+    mapViewer,
+    mapMode,
+    parentLayer,
+    attribute,
+    setAttribute,
+    sourceLoaded,
+    color,
+  } = useContext(MapContext);
+  const location = useLocation();
+  const section = pathToSection(location.pathname);
 
   // Currently selected preference.
   const [preference, setPreference] = useState<Preference>(
@@ -37,6 +48,15 @@ export default function HomePage() {
   // Set OpenAI instruction and map select effect.
   useOpenaiInstruction();
   useMapSelectEffect(parentLayer, mapViewer);
+
+  // Add mapping layer to the map.
+  useEffect(() => {
+    if (!mapViewer || !sourceLoaded) return;
+
+    mapbox.addHomeLayer(parentLayer, TRACTS_SOURCE, mapViewer);
+    mapbox.setLayerSettings(section, mapViewer);
+    mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
+  }, [mapViewer, sourceLoaded]);
 
   // Retrieve selected preference from the survey context.
   useEffect(() => {
@@ -52,16 +72,26 @@ export default function HomePage() {
 
     mapViewer.on("style.load", () => {
       // Restore current layers and attributes.
-      const section: Section = pathToSection(location.pathname);
       mapbox.setLayerSettings(section, mapViewer);
-      mapbox.updateLayerAttribute(
-        parentLayer,
-        attribute.name,
-        color!,
-        mapViewer
-      );
+      mapbox.updateHomeLayer(parentLayer, attribute.name, color!, mapViewer);
     });
   }, [mapMode]);
+
+  const onSelectItem = (item: HealthcareProperties) => {
+    // Update Mapping with the selected item.
+    if (mapViewer && parentLayer && color) {
+      mapbox.updateHomeLayer(parentLayer, item, color, mapViewer);
+    }
+    // Update the attribute for map legned.
+    if (setAttribute) {
+      const newAttribute = mapAttributes.find(
+        (attribute) => attribute.name === item
+      );
+      newAttribute
+        ? setAttribute(newAttribute)
+        : console.error("Attribute not found.");
+    }
+  };
 
   return (
     <>
@@ -78,7 +108,10 @@ export default function HomePage() {
       </Sidebar>
 
       <LegendSection title={preference.category as string}>
-        <SelectableList list={preference.subCategories} />
+        <SelectableList
+          list={preference.subCategories}
+          onSelectItem={onSelectItem}
+        />
         <GradientBar
           bound={attribute.bound}
           unit={attribute.unit}
