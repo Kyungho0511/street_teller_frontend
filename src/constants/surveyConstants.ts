@@ -171,6 +171,11 @@ export type Report = ListItem & {
 };
 
 /**
+ * GeoId-ClusterIndex key-value pairs.
+ */
+export type KMeansDict = Record<string, number>;
+
+/**
  * GeoId-ClusterProperties key-value pairs.
  */
 export type ClusterPropertiesDict = Record<
@@ -184,7 +189,8 @@ export type ClusterList = {
   colors: RGBA[];
   properties: ClusterPropertiesDict | undefined;
   attributes: HealthcareProperties[];
-  kMeansResult: KMeansResult | undefined;
+  kMeansDict: KMeansDict | undefined;
+  centroidsList: number[][];
 };
 
 export type ReportList = {
@@ -237,6 +243,6 @@ function createClusterList(clusterId: string, colors: RGBA[]): ClusterList {
     colors,
     properties: undefined,
     attributes: [],
-    kMeansResult: undefined,
+    kMeansDict: undefined,
   };
 }

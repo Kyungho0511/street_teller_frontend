@@ -294,8 +294,6 @@ export async function updateSource(
   map: mapboxgl.Map
 ): Promise<void> {
   return new Promise((resolve) => {
-    console.log("Updating source", name, geoJson);
-
     const source = map.getSource(name);
     if (source && "setData" in source) {
       source.setData(geoJson);

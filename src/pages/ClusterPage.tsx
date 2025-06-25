@@ -119,11 +119,11 @@ export default function ClusterPage() {
     }
 
     // Apply kmeans-clustering to cluster list and source data.
-    const data: number[][] = kmeans.processData(geoJson!, selectedAttributes);
-    const kMeansResult: KMeansResult = kmeans.runKMeans(data);
+    const data: number[][] = kmeans.processData(geoJson, selectedAttributes);
+    const { kMeansDict, centroidsList } = kmeans.runKMeans(data, geoJson);
     kmeans.addToGeoJson(
       geoJson,
-      kMeansResult,
+      kMeansDict,
       ("cluster" + clusterId!) as Section
     );
 
@@ -135,22 +135,23 @@ export default function ClusterPage() {
       colors: clusterList.colors,
       properties: properties,
       attributes: selectedAttributes,
-      kMeansResult,
+      kMeansDict,
+      centroidsList,
     };
 
     // Prepare prompt for OpenAI to trigger AI response.
-    newClusterList.list.forEach((item, i) => {
-      item.centroids = selectedAttributes.map((attr, j) => ({
+    newClusterList.list.forEach((cluster, i) => {
+      cluster.centroids = selectedAttributes.map((attr, j) => ({
         name: attr,
-        value: newClusterList.kMeansResult!.centroids[i][j],
+        value: newClusterList.centroidsList[i][j],
         id: uuidv4(),
       }));
     });
     const prompt: ClusterPrompt = {
       type: "cluster",
-      content: newClusterList.list.map((item) => ({
-        name: item.name,
-        centroids: item.centroids,
+      content: newClusterList.list.map((cluster) => ({
+        name: cluster.name,
+        centroids: cluster.centroids,
       })),
     };
     setPrompts((prev) =>

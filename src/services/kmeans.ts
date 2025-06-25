@@ -14,22 +14,38 @@ import {
 } from "../constants/kMeansConstants";
 import { normalize } from "../utils/utils";
 import { Section } from "../constants/sectionConstants";
+import { KMeansDict } from "../constants/surveyConstants";
 
 /**
  * Run kmeans clustering analysis.
  * @param data 2D array data to be clustered.
  * @returns KMeans clustering result.
  */
-export function runKMeans(data: number[][]): KMeansResult {
-  console.log("run KMeans with data: ", data.length);
-
-  // Run kMeans clustering
+export function runKMeans(
+  data: number[][],
+  geoJson: TractFeatureCollection
+): { kMeansDict: KMeansDict; centroidsList: number[][] } {
   const options: Options = {
     seed: SEED,
     initialization: INITIALIZATION,
     maxIterations: MAX_ITERATIONS,
   };
-  return kmeans(data, NUMBER_OF_CLUSTERS, options);
+
+  console.log("Running kMeans with data counts: ", data.length);
+
+  const kMeansResult: KMeansResult = kmeans(data, NUMBER_OF_CLUSTERS, options);
+  const geoIds = geoJson.features.map(
+    (feature) => feature.properties.GEOID as string
+  );
+  const entries = kMeansResult.clusters.map((cluster, index) => [
+    geoIds[index],
+    cluster,
+  ]);
+  const kMeansDict = Object.fromEntries(entries);
+
+  console.log("GEOID 36047118201: ", kMeansDict["36047118201"]);
+
+  return { kMeansDict, centroidsList: kMeansResult.centroids };
 }
 
 /**
@@ -76,18 +92,22 @@ export function processData(
 /**
  * Add the kMeans clustering result to the geoJson.
  * @param geoJson The geoJson to be updated.
- * @param kMeansResult The kMeans clustering result.
+ * @param kMeansDict The kMeans dictionary with geoId as key and cluster index as value.
  * @param key geoJson feature property key to assign the clustering result.
  */
 export function addToGeoJson(
   geoJson: TractFeatureCollection,
-  kMeansResult: KMeansResult,
+  kMeansDict: KMeansDict,
   key: Section
 ): void {
-  geoJson.features.forEach((feature: Feature, index) => {
+  console.log("geoJson features: ", geoJson.features);
+  console.log("kMeansDict: ", Object.entries(kMeansDict));
+
+  geoJson.features.forEach((feature: Feature) => {
     if (feature.properties!.disabled) {
       return;
     }
-    feature.properties![key] = kMeansResult.clusters[index];
+    const geoId = feature.properties!.GEOID as string;
+    feature.properties![key] = kMeansDict[geoId];
   });
 }
