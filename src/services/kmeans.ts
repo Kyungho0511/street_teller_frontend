@@ -30,20 +30,15 @@ export function runKMeans(
     initialization: INITIALIZATION,
     maxIterations: MAX_ITERATIONS,
   };
-
-  console.log("Running kMeans with data counts: ", data.length);
-
   const kMeansResult: KMeansResult = kmeans(data, NUMBER_OF_CLUSTERS, options);
-  const geoIds = geoJson.features.map(
-    (feature) => feature.properties.GEOID as string
-  );
+  const geoIds = geoJson.features
+    .filter((feature) => !feature.properties.disabled)
+    .map((feature) => feature.properties.GEOID as string);
   const entries = kMeansResult.clusters.map((cluster, index) => [
     geoIds[index],
     cluster,
   ]);
   const kMeansDict = Object.fromEntries(entries);
-
-  console.log("GEOID 36047118201: ", kMeansDict["36047118201"]);
 
   return { kMeansDict, centroidsList: kMeansResult.centroids };
 }
@@ -100,9 +95,6 @@ export function addToGeoJson(
   kMeansDict: KMeansDict,
   key: Section
 ): void {
-  console.log("geoJson features: ", geoJson.features);
-  console.log("kMeansDict: ", Object.entries(kMeansDict));
-
   geoJson.features.forEach((feature: Feature) => {
     if (feature.properties!.disabled) {
       return;
